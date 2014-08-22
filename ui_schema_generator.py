@@ -161,7 +161,11 @@ def ui_body(html, format):
         i += 1
     print "\n".join(schema)
 
-url = 'https://spreadsheets.google.com/feeds/list/1ZMVzcvlcWmTthlBZg_sOJmRVGmGQoxboqr4SPYkVat4/od6/public/basic?prettyprint=true&alt=json';
+if len(sys.argv) < 2:
+    sys.stderr.write("Specify Google Spreadsheet ID as argument")
+    exit()
+sheet_id = sys.argv[1]
+url = 'https://spreadsheets.google.com/feeds/list/' + sheet_id + '/od6/public/basic?prettyprint=true&alt=json';
  
 response = urllib2.urlopen(url)
 html = response.read()

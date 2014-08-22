@@ -73,7 +73,11 @@ def dfs(depth, terms, current):
     s += "\n" +'  ' * depth + "</term>"
     return s
 
-url = 'https://spreadsheets.google.com/feeds/list/1NARd_WO1PBWu8woV-WdVyImx9Tl8JDsALHjzWlo7T98/od6/public/basic?prettyprint=true&alt=json';
+if len(sys.argv) < 2:
+    sys.stderr.write("Specify Google Spreadsheet ID as argument")
+    exit()
+sheet_id = sys.argv[1]
+url = 'https://spreadsheets.google.com/feeds/list/' + sheet_id + '/od6/public/basic?prettyprint=true&alt=json';
 response = urllib2.urlopen(url)
 html = response.read()
 
