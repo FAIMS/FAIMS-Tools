@@ -32,7 +32,12 @@ File.open(sql_file, 'r') do |file|
     if line =~ /;/
       begin
       sql = sql.gsub(/(\n|\s|\t)+/, ' ').strip
-      puts db.execute(sql) unless sql.nil? or sql == ''
+      unless sql.nil? or sql == ''
+        result = db.execute(sql) 
+        result.each do |r|
+          puts r;
+        end
+      end
       sql = ""
       rescue Exception => e
         puts e
