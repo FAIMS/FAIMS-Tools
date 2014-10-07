@@ -3,7 +3,7 @@ require_relative 'StatementParser'
 
 $lexer_cache = {}
 $expression_cache = {}
-$debug = true
+$debug = false
 
 class StringFormatter
 
@@ -16,7 +16,7 @@ class StringFormatter
     self
   end
 
-  def evaluate(arguments)
+  def evaluate(arguments = nil)
     argument_mapper = ArgumentMap.new(arguments)
     formatted_value = ''
     @expressions.each do |expression|
@@ -68,7 +68,8 @@ class ArgumentMap
   end
 
   def apply(value)
-    return unless value
+    return value unless value
+    return value unless @arguments
     @arguments.each_with_index do |argument, index|
       value = value.to_s.gsub(/\$#{index + 1}/, argument.to_s)
     end
