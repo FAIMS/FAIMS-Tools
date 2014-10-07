@@ -5,7 +5,7 @@
 # Generated using ANTLR version: 3.5
 # Ruby runtime library version: 1.10.0
 # Input grammar file: Statement.g
-# Generated at: 2014-10-03 12:53:02
+# Generated at: 2014-10-07 12:11:49
 #
 
 # ~~~> start load path setup
@@ -69,8 +69,9 @@ module Statement
                    :T__14 => 14, :T__15 => 15, :T__16 => 16, :T__17 => 17, 
                    :T__18 => 18, :T__19 => 19, :T__20 => 20, :T__21 => 21, 
                    :T__22 => 22, :T__23 => 23, :T__24 => 24, :T__25 => 25, 
-                   :T__26 => 26, :T__27 => 27, :DIGIT => 4, :INT => 5, :NEWLINE => 6, 
-                   :NUMBER => 7, :SPACE => 8, :STRING => 9, :VARIABLE => 10 )
+                   :T__26 => 26, :T__27 => 27, :T__28 => 28, :DIGIT => 4, 
+                   :INT => 5, :NEWLINE => 6, :NUMBER => 7, :SPACE => 8, 
+                   :STRING => 9, :VARIABLE => 10 )
 
 
     # register the proper human-readable name or literal value
@@ -80,8 +81,8 @@ module Statement
     # created from literal values in the grammar, do not
     # have descriptive names
     register_names( "DIGIT", "INT", "NEWLINE", "NUMBER", "SPACE", "STRING", 
-                    "VARIABLE", "')'", "','", "'['", "']'", "'and('", "'else'", 
-                    "'elsif'", "'equal('", "'greaterThan('", "'greaterThanEqual('", 
+                    "VARIABLE", "')'", "','", "'['", "']'", "'and('", "'between('", 
+                    "'else'", "'elsif'", "'equal('", "'greaterThan('", "'greaterThanEqual('", 
                     "'if'", "'in('", "'lessThan('", "'lessThanEqual('", 
                     "'not('", "'or('", "'then'" )
 
@@ -222,7 +223,7 @@ module Statement
 
 
       # at line 21:7: 'if' e= multi_expression 'then' v= literal (s= next_statement )?
-      string_literal1 = match( T__21, TOKENS_FOLLOWING_T__21_IN_statement_79 )
+      string_literal1 = match( T__22, TOKENS_FOLLOWING_T__22_IN_statement_79 )
       tree_for_string_literal1 = @adaptor.create_with_payload( string_literal1 )
       @adaptor.add_child( root_0, tree_for_string_literal1 )
 
@@ -232,7 +233,7 @@ module Statement
       @state.following.pop
       @adaptor.add_child( root_0, e.tree )
 
-      string_literal2 = match( T__27, TOKENS_FOLLOWING_T__27_IN_statement_85 )
+      string_literal2 = match( T__28, TOKENS_FOLLOWING_T__28_IN_statement_85 )
       tree_for_string_literal2 = @adaptor.create_with_payload( string_literal2 )
       @adaptor.add_child( root_0, tree_for_string_literal2 )
 
@@ -246,7 +247,7 @@ module Statement
       alt_1 = 2
       look_1_0 = @input.peek( 1 )
 
-      if ( look_1_0.between?( T__16, T__17 ) )
+      if ( look_1_0.between?( T__17, T__18 ) )
         alt_1 = 1
       end
       case alt_1
@@ -333,9 +334,9 @@ module Statement
       alt_3 = 2
       look_3_0 = @input.peek( 1 )
 
-      if ( look_3_0 == T__17 )
+      if ( look_3_0 == T__18 )
         alt_3 = 1
-      elsif ( look_3_0 == T__16 )
+      elsif ( look_3_0 == T__17 )
         alt_3 = 2
       else
         raise NoViableAlternative( "", 3, 0 )
@@ -347,7 +348,7 @@ module Statement
 
 
         # at line 32:7: 'elsif' e= multi_expression 'then' v= literal (s= next_statement )?
-        string_literal3 = match( T__17, TOKENS_FOLLOWING_T__17_IN_next_statement_126 )
+        string_literal3 = match( T__18, TOKENS_FOLLOWING_T__18_IN_next_statement_126 )
         tree_for_string_literal3 = @adaptor.create_with_payload( string_literal3 )
         @adaptor.add_child( root_0, tree_for_string_literal3 )
 
@@ -357,7 +358,7 @@ module Statement
         @state.following.pop
         @adaptor.add_child( root_0, e.tree )
 
-        string_literal4 = match( T__27, TOKENS_FOLLOWING_T__27_IN_next_statement_132 )
+        string_literal4 = match( T__28, TOKENS_FOLLOWING_T__28_IN_next_statement_132 )
         tree_for_string_literal4 = @adaptor.create_with_payload( string_literal4 )
         @adaptor.add_child( root_0, tree_for_string_literal4 )
 
@@ -371,7 +372,7 @@ module Statement
         alt_2 = 2
         look_2_0 = @input.peek( 1 )
 
-        if ( look_2_0.between?( T__16, T__17 ) )
+        if ( look_2_0.between?( T__17, T__18 ) )
           alt_2 = 1
         end
         case alt_2
@@ -401,7 +402,7 @@ module Statement
 
 
         # at line 40:7: 'else' v= literal
-        string_literal5 = match( T__16, TOKENS_FOLLOWING_T__16_IN_next_statement_159 )
+        string_literal5 = match( T__17, TOKENS_FOLLOWING_T__17_IN_next_statement_159 )
         tree_for_string_literal5 = @adaptor.create_with_payload( string_literal5 )
         @adaptor.add_child( root_0, tree_for_string_literal5 )
 
@@ -488,8 +489,8 @@ module Statement
       alt_4 = 3
       case look_4 = @input.peek( 1 )
       when T__15 then alt_4 = 1
-      when T__26 then alt_4 = 2
-      when INT, NUMBER, STRING, VARIABLE, T__18, T__19, T__20, T__22, T__23, T__24, T__25 then alt_4 = 3
+      when T__27 then alt_4 = 2
+      when INT, NUMBER, STRING, VARIABLE, T__16, T__19, T__20, T__21, T__23, T__24, T__25, T__26 then alt_4 = 3
       else
         raise NoViableAlternative( "", 4, 0 )
 
@@ -536,7 +537,7 @@ module Statement
 
 
         # at line 48:7: 'or(' l= single_expression ',' r= multi_expression ')'
-        string_literal9 = match( T__26, TOKENS_FOLLOWING_T__26_IN_multi_expression_216 )
+        string_literal9 = match( T__27, TOKENS_FOLLOWING_T__27_IN_multi_expression_216 )
         tree_for_string_literal9 = @adaptor.create_with_payload( string_literal9 )
         @adaptor.add_child( root_0, tree_for_string_literal9 )
 
@@ -614,7 +615,7 @@ module Statement
     # parser rule single_expression
     #
     # (in Statement.g)
-    # 52:1: single_expression returns [value] : ( 'equal(' l= literal ',' r= literal ')' | 'greaterThan(' l= literal ',' r= literal ')' | 'greaterThanEqual(' l= literal ',' r= literal ')' | 'lessThan(' l= literal ',' r= literal ')' | 'lessThanEqual(' l= literal ',' r= literal ')' | 'not(' e= single_expression ')' | 'in(' v= literal ',' l= list ')' |e= literal );
+    # 52:1: single_expression returns [value] : ( 'equal(' l= literal ',' r= literal ')' | 'greaterThan(' l= literal ',' r= literal ')' | 'greaterThanEqual(' l= literal ',' r= literal ')' | 'lessThan(' l= literal ',' r= literal ')' | 'lessThanEqual(' l= literal ',' r= literal ')' | 'between(' l= literal ',' min= literal ',' max= literal ')' | 'not(' e= single_expression ')' | 'in(' v= literal ',' l= list ')' |e= literal );
     #
     def single_expression
       # -> uncomment the next line to manually enable rule tracing
@@ -646,11 +647,17 @@ module Statement
       char_literal26 = nil
       string_literal27 = nil
       char_literal28 = nil
-      string_literal29 = nil
+      char_literal29 = nil
       char_literal30 = nil
-      char_literal31 = nil
+      string_literal31 = nil
+      char_literal32 = nil
+      string_literal33 = nil
+      char_literal34 = nil
+      char_literal35 = nil
       l = nil
       r = nil
+      min = nil
+      max = nil
       e = nil
       v = nil
 
@@ -672,22 +679,27 @@ module Statement
       tree_for_char_literal26 = nil
       tree_for_string_literal27 = nil
       tree_for_char_literal28 = nil
-      tree_for_string_literal29 = nil
+      tree_for_char_literal29 = nil
       tree_for_char_literal30 = nil
-      tree_for_char_literal31 = nil
+      tree_for_string_literal31 = nil
+      tree_for_char_literal32 = nil
+      tree_for_string_literal33 = nil
+      tree_for_char_literal34 = nil
+      tree_for_char_literal35 = nil
 
       begin
-      # at line 53:5: ( 'equal(' l= literal ',' r= literal ')' | 'greaterThan(' l= literal ',' r= literal ')' | 'greaterThanEqual(' l= literal ',' r= literal ')' | 'lessThan(' l= literal ',' r= literal ')' | 'lessThanEqual(' l= literal ',' r= literal ')' | 'not(' e= single_expression ')' | 'in(' v= literal ',' l= list ')' |e= literal )
-      alt_5 = 8
+      # at line 53:5: ( 'equal(' l= literal ',' r= literal ')' | 'greaterThan(' l= literal ',' r= literal ')' | 'greaterThanEqual(' l= literal ',' r= literal ')' | 'lessThan(' l= literal ',' r= literal ')' | 'lessThanEqual(' l= literal ',' r= literal ')' | 'between(' l= literal ',' min= literal ',' max= literal ')' | 'not(' e= single_expression ')' | 'in(' v= literal ',' l= list ')' |e= literal )
+      alt_5 = 9
       case look_5 = @input.peek( 1 )
-      when T__18 then alt_5 = 1
-      when T__19 then alt_5 = 2
-      when T__20 then alt_5 = 3
-      when T__23 then alt_5 = 4
-      when T__24 then alt_5 = 5
-      when T__25 then alt_5 = 6
-      when T__22 then alt_5 = 7
-      when INT, NUMBER, STRING, VARIABLE then alt_5 = 8
+      when T__19 then alt_5 = 1
+      when T__20 then alt_5 = 2
+      when T__21 then alt_5 = 3
+      when T__24 then alt_5 = 4
+      when T__25 then alt_5 = 5
+      when T__16 then alt_5 = 6
+      when T__26 then alt_5 = 7
+      when T__23 then alt_5 = 8
+      when INT, NUMBER, STRING, VARIABLE then alt_5 = 9
       else
         raise NoViableAlternative( "", 5, 0 )
 
@@ -698,7 +710,7 @@ module Statement
 
 
         # at line 53:7: 'equal(' l= literal ',' r= literal ')'
-        string_literal12 = match( T__18, TOKENS_FOLLOWING_T__18_IN_single_expression_263 )
+        string_literal12 = match( T__19, TOKENS_FOLLOWING_T__19_IN_single_expression_263 )
         tree_for_string_literal12 = @adaptor.create_with_payload( string_literal12 )
         @adaptor.add_child( root_0, tree_for_string_literal12 )
 
@@ -734,7 +746,7 @@ module Statement
 
 
         # at line 54:7: 'greaterThan(' l= literal ',' r= literal ')'
-        string_literal15 = match( T__19, TOKENS_FOLLOWING_T__19_IN_single_expression_285 )
+        string_literal15 = match( T__20, TOKENS_FOLLOWING_T__20_IN_single_expression_285 )
         tree_for_string_literal15 = @adaptor.create_with_payload( string_literal15 )
         @adaptor.add_child( root_0, tree_for_string_literal15 )
 
@@ -761,7 +773,7 @@ module Statement
 
 
         # --> action
-         return_value.value = ( l.nil? ? nil : l.value ).to_f > ( r.nil? ? nil : r.value ).to_f 
+         return_value.value = ( l.nil? ? nil : l.value ).nil? == false && ( r.nil? ? nil : r.value ).nil? == false && ( l.nil? ? nil : l.value ).to_f > ( r.nil? ? nil : r.value ).to_f 
         # <-- action
 
 
@@ -770,7 +782,7 @@ module Statement
 
 
         # at line 55:7: 'greaterThanEqual(' l= literal ',' r= literal ')'
-        string_literal18 = match( T__20, TOKENS_FOLLOWING_T__20_IN_single_expression_307 )
+        string_literal18 = match( T__21, TOKENS_FOLLOWING_T__21_IN_single_expression_307 )
         tree_for_string_literal18 = @adaptor.create_with_payload( string_literal18 )
         @adaptor.add_child( root_0, tree_for_string_literal18 )
 
@@ -797,7 +809,7 @@ module Statement
 
 
         # --> action
-         return_value.value = ( l.nil? ? nil : l.value ).to_f >= ( r.nil? ? nil : r.value ).to_f 
+         return_value.value = ( l.nil? ? nil : l.value ).nil? == false && ( r.nil? ? nil : r.value ).nil? == false && ( l.nil? ? nil : l.value ).to_f >= ( r.nil? ? nil : r.value ).to_f 
         # <-- action
 
 
@@ -806,7 +818,7 @@ module Statement
 
 
         # at line 56:7: 'lessThan(' l= literal ',' r= literal ')'
-        string_literal21 = match( T__23, TOKENS_FOLLOWING_T__23_IN_single_expression_328 )
+        string_literal21 = match( T__24, TOKENS_FOLLOWING_T__24_IN_single_expression_328 )
         tree_for_string_literal21 = @adaptor.create_with_payload( string_literal21 )
         @adaptor.add_child( root_0, tree_for_string_literal21 )
 
@@ -833,7 +845,7 @@ module Statement
 
 
         # --> action
-         return_value.value = ( l.nil? ? nil : l.value ).to_f < ( r.nil? ? nil : r.value ).to_f 
+         return_value.value = ( l.nil? ? nil : l.value ).nil? == false && ( r.nil? ? nil : r.value ).nil? == false && ( l.nil? ? nil : l.value ).to_f < ( r.nil? ? nil : r.value ).to_f 
         # <-- action
 
 
@@ -842,34 +854,34 @@ module Statement
 
 
         # at line 57:7: 'lessThanEqual(' l= literal ',' r= literal ')'
-        string_literal24 = match( T__24, TOKENS_FOLLOWING_T__24_IN_single_expression_350 )
+        string_literal24 = match( T__25, TOKENS_FOLLOWING_T__25_IN_single_expression_350 )
         tree_for_string_literal24 = @adaptor.create_with_payload( string_literal24 )
         @adaptor.add_child( root_0, tree_for_string_literal24 )
 
 
-        @state.following.push( TOKENS_FOLLOWING_literal_IN_single_expression_353 )
+        @state.following.push( TOKENS_FOLLOWING_literal_IN_single_expression_354 )
         l = literal
         @state.following.pop
         @adaptor.add_child( root_0, l.tree )
 
-        char_literal25 = match( T__12, TOKENS_FOLLOWING_T__12_IN_single_expression_355 )
+        char_literal25 = match( T__12, TOKENS_FOLLOWING_T__12_IN_single_expression_356 )
         tree_for_char_literal25 = @adaptor.create_with_payload( char_literal25 )
         @adaptor.add_child( root_0, tree_for_char_literal25 )
 
 
-        @state.following.push( TOKENS_FOLLOWING_literal_IN_single_expression_359 )
+        @state.following.push( TOKENS_FOLLOWING_literal_IN_single_expression_360 )
         r = literal
         @state.following.pop
         @adaptor.add_child( root_0, r.tree )
 
-        char_literal26 = match( T__11, TOKENS_FOLLOWING_T__11_IN_single_expression_361 )
+        char_literal26 = match( T__11, TOKENS_FOLLOWING_T__11_IN_single_expression_362 )
         tree_for_char_literal26 = @adaptor.create_with_payload( char_literal26 )
         @adaptor.add_child( root_0, tree_for_char_literal26 )
 
 
 
         # --> action
-         return_value.value = ( l.nil? ? nil : l.value ).to_f <= ( r.nil? ? nil : r.value ).to_f 
+         return_value.value = ( l.nil? ? nil : l.value ).nil? == false && ( r.nil? ? nil : r.value ).nil? == false && ( l.nil? ? nil : l.value ).to_f <= ( r.nil? ? nil : r.value ).to_f 
         # <-- action
 
 
@@ -877,20 +889,66 @@ module Statement
         root_0 = @adaptor.create_flat_list
 
 
-        # at line 58:7: 'not(' e= single_expression ')'
-        string_literal27 = match( T__25, TOKENS_FOLLOWING_T__25_IN_single_expression_371 )
+        # at line 58:7: 'between(' l= literal ',' min= literal ',' max= literal ')'
+        string_literal27 = match( T__16, TOKENS_FOLLOWING_T__16_IN_single_expression_372 )
         tree_for_string_literal27 = @adaptor.create_with_payload( string_literal27 )
         @adaptor.add_child( root_0, tree_for_string_literal27 )
 
 
-        @state.following.push( TOKENS_FOLLOWING_single_expression_IN_single_expression_375 )
+        @state.following.push( TOKENS_FOLLOWING_literal_IN_single_expression_376 )
+        l = literal
+        @state.following.pop
+        @adaptor.add_child( root_0, l.tree )
+
+        char_literal28 = match( T__12, TOKENS_FOLLOWING_T__12_IN_single_expression_378 )
+        tree_for_char_literal28 = @adaptor.create_with_payload( char_literal28 )
+        @adaptor.add_child( root_0, tree_for_char_literal28 )
+
+
+        @state.following.push( TOKENS_FOLLOWING_literal_IN_single_expression_382 )
+        min = literal
+        @state.following.pop
+        @adaptor.add_child( root_0, min.tree )
+
+        char_literal29 = match( T__12, TOKENS_FOLLOWING_T__12_IN_single_expression_384 )
+        tree_for_char_literal29 = @adaptor.create_with_payload( char_literal29 )
+        @adaptor.add_child( root_0, tree_for_char_literal29 )
+
+
+        @state.following.push( TOKENS_FOLLOWING_literal_IN_single_expression_388 )
+        max = literal
+        @state.following.pop
+        @adaptor.add_child( root_0, max.tree )
+
+        char_literal30 = match( T__11, TOKENS_FOLLOWING_T__11_IN_single_expression_390 )
+        tree_for_char_literal30 = @adaptor.create_with_payload( char_literal30 )
+        @adaptor.add_child( root_0, tree_for_char_literal30 )
+
+
+
+        # --> action
+         return_value.value = ( l.nil? ? nil : l.value ).nil? == false && ( min.nil? ? nil : min.value ).nil? == false && ( max.nil? ? nil : max.value ).nil? == false && ( l.nil? ? nil : l.value ).to_f >= ( min.nil? ? nil : min.value ).to_f && ( l.nil? ? nil : l.value ).to_f <= ( max.nil? ? nil : max.value ).to_f 
+        # <-- action
+
+
+      when 7
+        root_0 = @adaptor.create_flat_list
+
+
+        # at line 59:7: 'not(' e= single_expression ')'
+        string_literal31 = match( T__26, TOKENS_FOLLOWING_T__26_IN_single_expression_400 )
+        tree_for_string_literal31 = @adaptor.create_with_payload( string_literal31 )
+        @adaptor.add_child( root_0, tree_for_string_literal31 )
+
+
+        @state.following.push( TOKENS_FOLLOWING_single_expression_IN_single_expression_404 )
         e = single_expression
         @state.following.pop
         @adaptor.add_child( root_0, e.tree )
 
-        char_literal28 = match( T__11, TOKENS_FOLLOWING_T__11_IN_single_expression_377 )
-        tree_for_char_literal28 = @adaptor.create_with_payload( char_literal28 )
-        @adaptor.add_child( root_0, tree_for_char_literal28 )
+        char_literal32 = match( T__11, TOKENS_FOLLOWING_T__11_IN_single_expression_406 )
+        tree_for_char_literal32 = @adaptor.create_with_payload( char_literal32 )
+        @adaptor.add_child( root_0, tree_for_char_literal32 )
 
 
 
@@ -905,34 +963,34 @@ module Statement
         # <-- action
 
 
-      when 7
+      when 8
         root_0 = @adaptor.create_flat_list
 
 
-        # at line 66:7: 'in(' v= literal ',' l= list ')'
-        string_literal29 = match( T__22, TOKENS_FOLLOWING_T__22_IN_single_expression_396 )
-        tree_for_string_literal29 = @adaptor.create_with_payload( string_literal29 )
-        @adaptor.add_child( root_0, tree_for_string_literal29 )
+        # at line 67:7: 'in(' v= literal ',' l= list ')'
+        string_literal33 = match( T__23, TOKENS_FOLLOWING_T__23_IN_single_expression_425 )
+        tree_for_string_literal33 = @adaptor.create_with_payload( string_literal33 )
+        @adaptor.add_child( root_0, tree_for_string_literal33 )
 
 
-        @state.following.push( TOKENS_FOLLOWING_literal_IN_single_expression_400 )
+        @state.following.push( TOKENS_FOLLOWING_literal_IN_single_expression_429 )
         v = literal
         @state.following.pop
         @adaptor.add_child( root_0, v.tree )
 
-        char_literal30 = match( T__12, TOKENS_FOLLOWING_T__12_IN_single_expression_402 )
-        tree_for_char_literal30 = @adaptor.create_with_payload( char_literal30 )
-        @adaptor.add_child( root_0, tree_for_char_literal30 )
+        char_literal34 = match( T__12, TOKENS_FOLLOWING_T__12_IN_single_expression_431 )
+        tree_for_char_literal34 = @adaptor.create_with_payload( char_literal34 )
+        @adaptor.add_child( root_0, tree_for_char_literal34 )
 
 
-        @state.following.push( TOKENS_FOLLOWING_list_IN_single_expression_406 )
+        @state.following.push( TOKENS_FOLLOWING_list_IN_single_expression_435 )
         l = list
         @state.following.pop
         @adaptor.add_child( root_0, l.tree )
 
-        char_literal31 = match( T__11, TOKENS_FOLLOWING_T__11_IN_single_expression_408 )
-        tree_for_char_literal31 = @adaptor.create_with_payload( char_literal31 )
-        @adaptor.add_child( root_0, tree_for_char_literal31 )
+        char_literal35 = match( T__11, TOKENS_FOLLOWING_T__11_IN_single_expression_437 )
+        tree_for_char_literal35 = @adaptor.create_with_payload( char_literal35 )
+        @adaptor.add_child( root_0, tree_for_char_literal35 )
 
 
 
@@ -943,12 +1001,12 @@ module Statement
         # <-- action
 
 
-      when 8
+      when 9
         root_0 = @adaptor.create_flat_list
 
 
-        # at line 70:7: e= literal
-        @state.following.push( TOKENS_FOLLOWING_literal_IN_single_expression_430 )
+        # at line 71:7: e= literal
+        @state.following.push( TOKENS_FOLLOWING_literal_IN_single_expression_459 )
         e = literal
         @state.following.pop
         @adaptor.add_child( root_0, e.tree )
@@ -990,7 +1048,7 @@ module Statement
     # parser rule list
     #
     # (in Statement.g)
-    # 73:1: list returns [value] : '[' l= literals ']' ;
+    # 74:1: list returns [value] : '[' l= literals ']' ;
     #
     def list
       # -> uncomment the next line to manually enable rule tracing
@@ -1005,32 +1063,32 @@ module Statement
 
       root_0 = nil
 
-      char_literal32 = nil
-      char_literal33 = nil
+      char_literal36 = nil
+      char_literal37 = nil
       l = nil
 
 
-      tree_for_char_literal32 = nil
-      tree_for_char_literal33 = nil
+      tree_for_char_literal36 = nil
+      tree_for_char_literal37 = nil
 
       begin
       root_0 = @adaptor.create_flat_list
 
 
-      # at line 74:7: '[' l= literals ']'
-      char_literal32 = match( T__13, TOKENS_FOLLOWING_T__13_IN_list_453 )
-      tree_for_char_literal32 = @adaptor.create_with_payload( char_literal32 )
-      @adaptor.add_child( root_0, tree_for_char_literal32 )
+      # at line 75:7: '[' l= literals ']'
+      char_literal36 = match( T__13, TOKENS_FOLLOWING_T__13_IN_list_482 )
+      tree_for_char_literal36 = @adaptor.create_with_payload( char_literal36 )
+      @adaptor.add_child( root_0, tree_for_char_literal36 )
 
 
-      @state.following.push( TOKENS_FOLLOWING_literals_IN_list_457 )
+      @state.following.push( TOKENS_FOLLOWING_literals_IN_list_486 )
       l = literals
       @state.following.pop
       @adaptor.add_child( root_0, l.tree )
 
-      char_literal33 = match( T__14, TOKENS_FOLLOWING_T__14_IN_list_458 )
-      tree_for_char_literal33 = @adaptor.create_with_payload( char_literal33 )
-      @adaptor.add_child( root_0, tree_for_char_literal33 )
+      char_literal37 = match( T__14, TOKENS_FOLLOWING_T__14_IN_list_487 )
+      tree_for_char_literal37 = @adaptor.create_with_payload( char_literal37 )
+      @adaptor.add_child( root_0, tree_for_char_literal37 )
 
 
 
@@ -1069,7 +1127,7 @@ module Statement
     # parser rule literals
     #
     # (in Statement.g)
-    # 77:1: literals returns [value] : (l= literal rest= literals |l= literal );
+    # 78:1: literals returns [value] : (l= literal ',' rest= literals |l= literal );
     #
     def literals
       # -> uncomment the next line to manually enable rule tracing
@@ -1084,18 +1142,20 @@ module Statement
 
       root_0 = nil
 
+      char_literal38 = nil
       l = nil
       rest = nil
 
 
+      tree_for_char_literal38 = nil
 
       begin
-      # at line 78:5: (l= literal rest= literals |l= literal )
+      # at line 79:5: (l= literal ',' rest= literals |l= literal )
       alt_6 = 2
       case look_6 = @input.peek( 1 )
       when STRING then look_6_1 = @input.peek( 2 )
 
-      if ( look_6_1 == INT || look_6_1 == NUMBER || look_6_1.between?( STRING, VARIABLE ) )
+      if ( look_6_1 == T__12 )
         alt_6 = 1
       elsif ( look_6_1 == T__14 )
         alt_6 = 2
@@ -1105,7 +1165,7 @@ module Statement
       end
       when VARIABLE then look_6_2 = @input.peek( 2 )
 
-      if ( look_6_2 == INT || look_6_2 == NUMBER || look_6_2.between?( STRING, VARIABLE ) )
+      if ( look_6_2 == T__12 )
         alt_6 = 1
       elsif ( look_6_2 == T__14 )
         alt_6 = 2
@@ -1115,7 +1175,7 @@ module Statement
       end
       when NUMBER then look_6_3 = @input.peek( 2 )
 
-      if ( look_6_3 == INT || look_6_3 == NUMBER || look_6_3.between?( STRING, VARIABLE ) )
+      if ( look_6_3 == T__12 )
         alt_6 = 1
       elsif ( look_6_3 == T__14 )
         alt_6 = 2
@@ -1125,7 +1185,7 @@ module Statement
       end
       when INT then look_6_4 = @input.peek( 2 )
 
-      if ( look_6_4 == INT || look_6_4 == NUMBER || look_6_4.between?( STRING, VARIABLE ) )
+      if ( look_6_4 == T__12 )
         alt_6 = 1
       elsif ( look_6_4 == T__14 )
         alt_6 = 2
@@ -1142,13 +1202,18 @@ module Statement
         root_0 = @adaptor.create_flat_list
 
 
-        # at line 78:7: l= literal rest= literals
-        @state.following.push( TOKENS_FOLLOWING_literal_IN_literals_483 )
+        # at line 79:7: l= literal ',' rest= literals
+        @state.following.push( TOKENS_FOLLOWING_literal_IN_literals_512 )
         l = literal
         @state.following.pop
         @adaptor.add_child( root_0, l.tree )
 
-        @state.following.push( TOKENS_FOLLOWING_literals_IN_literals_487 )
+        char_literal38 = match( T__12, TOKENS_FOLLOWING_T__12_IN_literals_514 )
+        tree_for_char_literal38 = @adaptor.create_with_payload( char_literal38 )
+        @adaptor.add_child( root_0, tree_for_char_literal38 )
+
+
+        @state.following.push( TOKENS_FOLLOWING_literals_IN_literals_518 )
         rest = literals
         @state.following.pop
         @adaptor.add_child( root_0, rest.tree )
@@ -1163,8 +1228,8 @@ module Statement
         root_0 = @adaptor.create_flat_list
 
 
-        # at line 79:7: l= literal
-        @state.following.push( TOKENS_FOLLOWING_literal_IN_literals_499 )
+        # at line 80:7: l= literal
+        @state.following.push( TOKENS_FOLLOWING_literal_IN_literals_530 )
         l = literal
         @state.following.pop
         @adaptor.add_child( root_0, l.tree )
@@ -1206,7 +1271,7 @@ module Statement
     # parser rule literal
     #
     # (in Statement.g)
-    # 82:1: literal returns [value] : (s= STRING |v= VARIABLE |n= NUMBER |i= INT );
+    # 83:1: literal returns [value] : (s= STRING |v= VARIABLE |n= NUMBER |i= INT );
     #
     def literal
       # -> uncomment the next line to manually enable rule tracing
@@ -1233,7 +1298,7 @@ module Statement
       tree_for_i = nil
 
       begin
-      # at line 83:5: (s= STRING |v= VARIABLE |n= NUMBER |i= INT )
+      # at line 84:5: (s= STRING |v= VARIABLE |n= NUMBER |i= INT )
       alt_7 = 4
       case look_7 = @input.peek( 1 )
       when STRING then alt_7 = 1
@@ -1249,8 +1314,8 @@ module Statement
         root_0 = @adaptor.create_flat_list
 
 
-        # at line 83:7: s= STRING
-        s = match( STRING, TOKENS_FOLLOWING_STRING_IN_literal_524 )
+        # at line 84:7: s= STRING
+        s = match( STRING, TOKENS_FOLLOWING_STRING_IN_literal_555 )
         tree_for_s = @adaptor.create_with_payload( s )
         @adaptor.add_child( root_0, tree_for_s )
 
@@ -1265,8 +1330,8 @@ module Statement
         root_0 = @adaptor.create_flat_list
 
 
-        # at line 84:7: v= VARIABLE
-        v = match( VARIABLE, TOKENS_FOLLOWING_VARIABLE_IN_literal_536 )
+        # at line 85:7: v= VARIABLE
+        v = match( VARIABLE, TOKENS_FOLLOWING_VARIABLE_IN_literal_567 )
         tree_for_v = @adaptor.create_with_payload( v )
         @adaptor.add_child( root_0, tree_for_v )
 
@@ -1281,8 +1346,8 @@ module Statement
         root_0 = @adaptor.create_flat_list
 
 
-        # at line 85:7: n= NUMBER
-        n = match( NUMBER, TOKENS_FOLLOWING_NUMBER_IN_literal_548 )
+        # at line 86:7: n= NUMBER
+        n = match( NUMBER, TOKENS_FOLLOWING_NUMBER_IN_literal_579 )
         tree_for_n = @adaptor.create_with_payload( n )
         @adaptor.add_child( root_0, tree_for_n )
 
@@ -1297,8 +1362,8 @@ module Statement
         root_0 = @adaptor.create_flat_list
 
 
-        # at line 86:7: i= INT
-        i = match( INT, TOKENS_FOLLOWING_INT_IN_literal_560 )
+        # at line 87:7: i= INT
+        i = match( INT, TOKENS_FOLLOWING_INT_IN_literal_591 )
         tree_for_i = @adaptor.create_with_payload( i )
         @adaptor.add_child( root_0, tree_for_i )
 
@@ -1337,73 +1402,81 @@ module Statement
 
 
     TOKENS_FOLLOWING_statement_IN_program_56 = Set[ 1 ]
-    TOKENS_FOLLOWING_T__21_IN_statement_79 = Set[ 5, 7, 9, 10, 15, 18, 19, 20, 22, 23, 24, 25, 26 ]
-    TOKENS_FOLLOWING_multi_expression_IN_statement_83 = Set[ 27 ]
-    TOKENS_FOLLOWING_T__27_IN_statement_85 = Set[ 5, 7, 9, 10 ]
-    TOKENS_FOLLOWING_literal_IN_statement_89 = Set[ 1, 16, 17 ]
+    TOKENS_FOLLOWING_T__22_IN_statement_79 = Set[ 5, 7, 9, 10, 15, 16, 19, 20, 21, 23, 24, 25, 26, 27 ]
+    TOKENS_FOLLOWING_multi_expression_IN_statement_83 = Set[ 28 ]
+    TOKENS_FOLLOWING_T__28_IN_statement_85 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_literal_IN_statement_89 = Set[ 1, 17, 18 ]
     TOKENS_FOLLOWING_next_statement_IN_statement_93 = Set[ 1 ]
-    TOKENS_FOLLOWING_T__17_IN_next_statement_126 = Set[ 5, 7, 9, 10, 15, 18, 19, 20, 22, 23, 24, 25, 26 ]
-    TOKENS_FOLLOWING_multi_expression_IN_next_statement_130 = Set[ 27 ]
-    TOKENS_FOLLOWING_T__27_IN_next_statement_132 = Set[ 5, 7, 9, 10 ]
-    TOKENS_FOLLOWING_literal_IN_next_statement_136 = Set[ 1, 16, 17 ]
+    TOKENS_FOLLOWING_T__18_IN_next_statement_126 = Set[ 5, 7, 9, 10, 15, 16, 19, 20, 21, 23, 24, 25, 26, 27 ]
+    TOKENS_FOLLOWING_multi_expression_IN_next_statement_130 = Set[ 28 ]
+    TOKENS_FOLLOWING_T__28_IN_next_statement_132 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_literal_IN_next_statement_136 = Set[ 1, 17, 18 ]
     TOKENS_FOLLOWING_next_statement_IN_next_statement_140 = Set[ 1 ]
-    TOKENS_FOLLOWING_T__16_IN_next_statement_159 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_T__17_IN_next_statement_159 = Set[ 5, 7, 9, 10 ]
     TOKENS_FOLLOWING_literal_IN_next_statement_163 = Set[ 1 ]
-    TOKENS_FOLLOWING_T__15_IN_multi_expression_194 = Set[ 5, 7, 9, 10, 18, 19, 20, 22, 23, 24, 25 ]
+    TOKENS_FOLLOWING_T__15_IN_multi_expression_194 = Set[ 5, 7, 9, 10, 16, 19, 20, 21, 23, 24, 25, 26 ]
     TOKENS_FOLLOWING_single_expression_IN_multi_expression_198 = Set[ 12 ]
-    TOKENS_FOLLOWING_T__12_IN_multi_expression_200 = Set[ 5, 7, 9, 10, 15, 18, 19, 20, 22, 23, 24, 25, 26 ]
+    TOKENS_FOLLOWING_T__12_IN_multi_expression_200 = Set[ 5, 7, 9, 10, 15, 16, 19, 20, 21, 23, 24, 25, 26, 27 ]
     TOKENS_FOLLOWING_multi_expression_IN_multi_expression_204 = Set[ 11 ]
     TOKENS_FOLLOWING_T__11_IN_multi_expression_206 = Set[ 1 ]
-    TOKENS_FOLLOWING_T__26_IN_multi_expression_216 = Set[ 5, 7, 9, 10, 18, 19, 20, 22, 23, 24, 25 ]
+    TOKENS_FOLLOWING_T__27_IN_multi_expression_216 = Set[ 5, 7, 9, 10, 16, 19, 20, 21, 23, 24, 25, 26 ]
     TOKENS_FOLLOWING_single_expression_IN_multi_expression_220 = Set[ 12 ]
-    TOKENS_FOLLOWING_T__12_IN_multi_expression_222 = Set[ 5, 7, 9, 10, 15, 18, 19, 20, 22, 23, 24, 25, 26 ]
+    TOKENS_FOLLOWING_T__12_IN_multi_expression_222 = Set[ 5, 7, 9, 10, 15, 16, 19, 20, 21, 23, 24, 25, 26, 27 ]
     TOKENS_FOLLOWING_multi_expression_IN_multi_expression_226 = Set[ 11 ]
     TOKENS_FOLLOWING_T__11_IN_multi_expression_228 = Set[ 1 ]
     TOKENS_FOLLOWING_single_expression_IN_multi_expression_240 = Set[ 1 ]
-    TOKENS_FOLLOWING_T__18_IN_single_expression_263 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_T__19_IN_single_expression_263 = Set[ 5, 7, 9, 10 ]
     TOKENS_FOLLOWING_literal_IN_single_expression_267 = Set[ 12 ]
     TOKENS_FOLLOWING_T__12_IN_single_expression_269 = Set[ 5, 7, 9, 10 ]
     TOKENS_FOLLOWING_literal_IN_single_expression_273 = Set[ 11 ]
     TOKENS_FOLLOWING_T__11_IN_single_expression_275 = Set[ 1 ]
-    TOKENS_FOLLOWING_T__19_IN_single_expression_285 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_T__20_IN_single_expression_285 = Set[ 5, 7, 9, 10 ]
     TOKENS_FOLLOWING_literal_IN_single_expression_289 = Set[ 12 ]
     TOKENS_FOLLOWING_T__12_IN_single_expression_291 = Set[ 5, 7, 9, 10 ]
     TOKENS_FOLLOWING_literal_IN_single_expression_295 = Set[ 11 ]
     TOKENS_FOLLOWING_T__11_IN_single_expression_297 = Set[ 1 ]
-    TOKENS_FOLLOWING_T__20_IN_single_expression_307 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_T__21_IN_single_expression_307 = Set[ 5, 7, 9, 10 ]
     TOKENS_FOLLOWING_literal_IN_single_expression_310 = Set[ 12 ]
     TOKENS_FOLLOWING_T__12_IN_single_expression_312 = Set[ 5, 7, 9, 10 ]
     TOKENS_FOLLOWING_literal_IN_single_expression_316 = Set[ 11 ]
     TOKENS_FOLLOWING_T__11_IN_single_expression_318 = Set[ 1 ]
-    TOKENS_FOLLOWING_T__23_IN_single_expression_328 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_T__24_IN_single_expression_328 = Set[ 5, 7, 9, 10 ]
     TOKENS_FOLLOWING_literal_IN_single_expression_332 = Set[ 12 ]
     TOKENS_FOLLOWING_T__12_IN_single_expression_334 = Set[ 5, 7, 9, 10 ]
     TOKENS_FOLLOWING_literal_IN_single_expression_338 = Set[ 11 ]
     TOKENS_FOLLOWING_T__11_IN_single_expression_340 = Set[ 1 ]
-    TOKENS_FOLLOWING_T__24_IN_single_expression_350 = Set[ 5, 7, 9, 10 ]
-    TOKENS_FOLLOWING_literal_IN_single_expression_353 = Set[ 12 ]
-    TOKENS_FOLLOWING_T__12_IN_single_expression_355 = Set[ 5, 7, 9, 10 ]
-    TOKENS_FOLLOWING_literal_IN_single_expression_359 = Set[ 11 ]
-    TOKENS_FOLLOWING_T__11_IN_single_expression_361 = Set[ 1 ]
-    TOKENS_FOLLOWING_T__25_IN_single_expression_371 = Set[ 5, 7, 9, 10, 18, 19, 20, 22, 23, 24, 25 ]
-    TOKENS_FOLLOWING_single_expression_IN_single_expression_375 = Set[ 11 ]
-    TOKENS_FOLLOWING_T__11_IN_single_expression_377 = Set[ 1 ]
-    TOKENS_FOLLOWING_T__22_IN_single_expression_396 = Set[ 5, 7, 9, 10 ]
-    TOKENS_FOLLOWING_literal_IN_single_expression_400 = Set[ 12 ]
-    TOKENS_FOLLOWING_T__12_IN_single_expression_402 = Set[ 13 ]
-    TOKENS_FOLLOWING_list_IN_single_expression_406 = Set[ 11 ]
-    TOKENS_FOLLOWING_T__11_IN_single_expression_408 = Set[ 1 ]
-    TOKENS_FOLLOWING_literal_IN_single_expression_430 = Set[ 1 ]
-    TOKENS_FOLLOWING_T__13_IN_list_453 = Set[ 5, 7, 9, 10 ]
-    TOKENS_FOLLOWING_literals_IN_list_457 = Set[ 14 ]
-    TOKENS_FOLLOWING_T__14_IN_list_458 = Set[ 1 ]
-    TOKENS_FOLLOWING_literal_IN_literals_483 = Set[ 5, 7, 9, 10 ]
-    TOKENS_FOLLOWING_literals_IN_literals_487 = Set[ 1 ]
-    TOKENS_FOLLOWING_literal_IN_literals_499 = Set[ 1 ]
-    TOKENS_FOLLOWING_STRING_IN_literal_524 = Set[ 1 ]
-    TOKENS_FOLLOWING_VARIABLE_IN_literal_536 = Set[ 1 ]
-    TOKENS_FOLLOWING_NUMBER_IN_literal_548 = Set[ 1 ]
-    TOKENS_FOLLOWING_INT_IN_literal_560 = Set[ 1 ]
+    TOKENS_FOLLOWING_T__25_IN_single_expression_350 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_literal_IN_single_expression_354 = Set[ 12 ]
+    TOKENS_FOLLOWING_T__12_IN_single_expression_356 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_literal_IN_single_expression_360 = Set[ 11 ]
+    TOKENS_FOLLOWING_T__11_IN_single_expression_362 = Set[ 1 ]
+    TOKENS_FOLLOWING_T__16_IN_single_expression_372 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_literal_IN_single_expression_376 = Set[ 12 ]
+    TOKENS_FOLLOWING_T__12_IN_single_expression_378 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_literal_IN_single_expression_382 = Set[ 12 ]
+    TOKENS_FOLLOWING_T__12_IN_single_expression_384 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_literal_IN_single_expression_388 = Set[ 11 ]
+    TOKENS_FOLLOWING_T__11_IN_single_expression_390 = Set[ 1 ]
+    TOKENS_FOLLOWING_T__26_IN_single_expression_400 = Set[ 5, 7, 9, 10, 16, 19, 20, 21, 23, 24, 25, 26 ]
+    TOKENS_FOLLOWING_single_expression_IN_single_expression_404 = Set[ 11 ]
+    TOKENS_FOLLOWING_T__11_IN_single_expression_406 = Set[ 1 ]
+    TOKENS_FOLLOWING_T__23_IN_single_expression_425 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_literal_IN_single_expression_429 = Set[ 12 ]
+    TOKENS_FOLLOWING_T__12_IN_single_expression_431 = Set[ 13 ]
+    TOKENS_FOLLOWING_list_IN_single_expression_435 = Set[ 11 ]
+    TOKENS_FOLLOWING_T__11_IN_single_expression_437 = Set[ 1 ]
+    TOKENS_FOLLOWING_literal_IN_single_expression_459 = Set[ 1 ]
+    TOKENS_FOLLOWING_T__13_IN_list_482 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_literals_IN_list_486 = Set[ 14 ]
+    TOKENS_FOLLOWING_T__14_IN_list_487 = Set[ 1 ]
+    TOKENS_FOLLOWING_literal_IN_literals_512 = Set[ 12 ]
+    TOKENS_FOLLOWING_T__12_IN_literals_514 = Set[ 5, 7, 9, 10 ]
+    TOKENS_FOLLOWING_literals_IN_literals_518 = Set[ 1 ]
+    TOKENS_FOLLOWING_literal_IN_literals_530 = Set[ 1 ]
+    TOKENS_FOLLOWING_STRING_IN_literal_555 = Set[ 1 ]
+    TOKENS_FOLLOWING_VARIABLE_IN_literal_567 = Set[ 1 ]
+    TOKENS_FOLLOWING_NUMBER_IN_literal_579 = Set[ 1 ]
+    TOKENS_FOLLOWING_INT_IN_literal_591 = Set[ 1 ]
 
   end # class Parser < ANTLR3::Parser
 
