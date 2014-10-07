@@ -1,0 +1,5 @@
+{
+	"cmd": ["bash", "--login", "./testFormat.sh", "$file"],
+	"shell": true,
+	"selector": "source.format"
+}
