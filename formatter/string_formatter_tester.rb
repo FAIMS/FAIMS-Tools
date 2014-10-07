@@ -24,16 +24,21 @@ db.create_function('format', -1) do |func, *args|
   end
 end
 
+
 File.open(sql_file, 'r') do |file|
   sql = ""
   file.readlines.each do |line|
     sql += line.gsub(/--.*/, '')
     if line =~ /;/
+      begin
       sql = sql.gsub(/(\n|\s|\t)+/, ' ').strip
       puts db.execute(sql) unless sql.nil? or sql == ''
       sql = ""
+      rescue Exception => e
+        puts e
+        sql = ""
+      end
     end
   end
 end
-
 
