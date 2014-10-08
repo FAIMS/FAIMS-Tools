@@ -1,17 +1,34 @@
 select sqlite_version();
 
+select debug_format(); 
+
 select format('hello world {{ if $1 then $1 }}', '1');
 
-select format('{{if and($2,$1) then "$2 $1" elsif and($2, not($1)) then $2 elsif and(not($2), $1) then $1}}{{if and($1,$3) then "("}}{{if $3 then $3}}{{if and($1,$3) then ")"}}{{if and(greaterThan($4,0), lessThan($4,1)) then "?"}}', 'Vocabname', 'Measure', 'Freetext', 'Certainty');
+-- select format('{{if and($2,$1) then "$2 $1" elsif and($2, not($1)) then $2 elsif and(not($2), $1) then $1}}{{if and($1,$3) then " ("}}{{if $3 then $3}}{{if and($1,$3) then ")"}}{{if and(greaterThan($4,0), lessThan($4,1)) then "?"}}', 'Vocabname', 'Measure', 'Freetext', 'Certainty');
 
 
-select format('$1 formatString:"$2"',attributename, formatstring) from attributekey;
+-- select format('$1 formatString:"$2"',attributename, formatstring) from attributekey;
 
-select uuid from latestnondeletedarchent limit 1;
+-- select uuid from latestnondeletedarchent limit 1;
 
 
 begin;
+update idealaent set isIdentifier = null;
+
 update attributekey set formatstring = '{{if and($2,$1) then "$2 $1" elsif and($2, not($1)) then $2 elsif and(not($2), $1) then $1}}{{if and($1,$3) then "("}}{{if $3 then $3}}{{if and($1,$3) then ")"}}{{if and(greaterThan($4,0), lessThan($4,1)) then "?"}}' where formatstring is null;
+
+select attributename, isIdentifier, aentcountorder from idealaent join attributekey using (attributeid);
+
+update idealaent set isIdentifier = 'true' where attributeid in (select attributeid from attributekey where attributename in ('entity', 'location', 'date'));
+
+update attributekey set AppendCharacterString = ', ';
+
+
+
+
+-- select aenttypeid, aenttypename from aenttype;
+
+select vocabname from latestNonDeletedArchEntIdentifiers limit 5;
 
 -- select uuid, group_concat(response, ', ') as response, deleted, aenttimestamp
 -- from (
@@ -36,18 +53,37 @@ update attributekey set formatstring = '{{if and($2,$1) then "$2 $1" elsif and($
 -- offset :offset
 
 
-select count(*) from aentvalue;
 
-select uuid, freetext from latestNonDeletedArchentIdentifiers limit 1;
-select aenttypeid, aenttypename from aenttype;
+select uuid, group_concat(response, ' '), deleted, aenttimestamp
+from (select uuid, deleted, aenttimestamp
+		from latestnondeletedarchent
+	   where aenttypeid=167583672827
+	   limit 5
+	  offset 5) 
+join (select uuid, group_concat(format(formatstring, vocabname, measure, freetext, certainty), appendcharacterstring) as response
+		from latestNonDeletedArchentIdentifiers
+	group by uuid, attributeid
+    order by uuid, aentcountorder) using (uuid)
+group by uuid
+;
 
 
-select uuid, group_concat(format(formatstring, vocabname, measure, freetext, certainty), appendcharacterstring), deleted, aenttimestamp
-from latestNonDeletedArchentIdentifiers
-group by uuid, attributeid
-limit 5
-offset 5;
 
+-- select count(*)
+-- from (
+--   select uuid
+--   from (
+--     select uuid, attributeid
+--     from latestNonDeletedArchEntIdentifiers
+--     where aenttypeid = :type
+--     group by uuid, attributeid
+--     order by epoch)
+--   group by uuid
+-- );
+
+select count(uuid)
+from latestNonDeletedArchEnt
+where aenttypeid = 167583672827;
 
 
 
