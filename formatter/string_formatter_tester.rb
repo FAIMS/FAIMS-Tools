@@ -16,11 +16,20 @@ db = SQLite3::Database.new(db_file)
 db.enable_load_extension(true)
 db.execute("select load_extension('#{spatialite_library}')")
 
+db.create_function('debug_format', -1) do |func, *args|
+  $debug = true
+  func.result = 'Format debugging on'
+end
+
 db.create_function('format', -1) do |func, *args|
   if args.empty? or args.size < 1
     func.result = nil
   else
-    func.result = StringFormatter.new(args[0]).pre_compute.evaluate(args[1..-1])
+    if args[0].nil?
+      func.result = args[1..-1].join(', ')
+    else
+      func.result = StringFormatter.new(args[0]).pre_compute.evaluate(args[1..-1])
+    end
   end
 end
 

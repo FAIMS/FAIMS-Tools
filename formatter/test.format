@@ -1,3 +1,5 @@
+--select debug_format();
+
 select sqlite_version();
 
 select debug_format(); 

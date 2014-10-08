@@ -78,7 +78,7 @@ class ArgumentMap
 
   def get_value(argument)
     index = argument[1..-1].to_i - 1
-    $stderr.puts "argument #{argument} does not exist" if $debug and @arguments.size <= index
+    $stderr.puts "parse error #{argument} not found" if $debug and @arguments.size <= index
     @arguments[index]
   end
 
@@ -98,9 +98,9 @@ class Expression
     parsed_statement = @statement
 
     unless parsed_statement.nil? || parsed_statement.strip.nil?
-      $stderr.puts "parsing #{@index}: #{parsed_statement}" if $debug
+      $stderr.puts "parse #{@index}:#{@index + parsed_statement.size}" if $debug
 
-          lexer = create_or_find_lexer(parsed_statement)
+      lexer = create_or_find_lexer(parsed_statement)
       parser = Statement::Parser.new(lexer)
       parsed_statement = parser.program.value
     end
