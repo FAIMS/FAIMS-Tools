@@ -1,3 +1,5 @@
+--select debug_format();
+
 select sqlite_version();
 
 select format('hello world {{ if $1 then $1 }}', '1');
