@@ -3,6 +3,9 @@
 select sqlite_version();
 
 
+select '====================================';
+select 'creating createdModifiedAtBy';
+
 drop view if exists createdModifiedAtBy;
 
 create view createdModifiedAtBy as select uuid, createdAt, createdBy, modifiedAt, modifiedBy
@@ -16,7 +19,9 @@ create view createdModifiedAtBy as select uuid, createdAt, createdBy, modifiedAt
   		group by uuid) using (uuid)		  ;
 
 
-select '1';
+select '====================================';
+select 'creating latestNonDeletedArchEntFormattedIdentifiers';
+
 drop view if exists latestNonDeletedArchEntFormattedIdentifiers;
 create view if not exists latestNonDeletedArchEntFormattedIdentifiers as
   select uuid, aenttypeid, aenttypename, group_concat(format(formatstring, vocabname, measure, freetext, certainty), appendcharacterstring) as response, null as deleted
@@ -30,7 +35,10 @@ create view if not exists latestNonDeletedArchEntFormattedIdentifiers as
  group by uuid, attributeid
  order by uuid, aentcountorder;
 
-select '2';
+select '====================================';
+select 'creating latestAllArchEntFormattedIdentifiers';
+
+
 drop view if exists latestAllArchEntFormattedIdentifiers;
 create view if not exists latestAllArchEntFormattedIdentifiers as
   select uuid, aenttypeid, aenttypename, group_concat(format(formatstring, vocabname, measure, freetext, certainty), appendcharacterstring) as response, archentity.deleted
@@ -46,10 +54,13 @@ create view if not exists latestAllArchEntFormattedIdentifiers as
   JOIN idealaent using (aenttypeid, attributeid)
   join attributekey using (attributeid)
   left outer join vocabulary using (attributeid, vocabid)
- WHERE isIdentifier = 'true';
+ WHERE isIdentifier = 'true'
+ group by uuid, attributeid
+ order by uuid, aentcountorder;
 
 
-select format('hello world {{ if $1 then $1 }}', '1');
+
+select format('Testing formatstring: hello world {{ if $1 then $1 }}', '1');
 
 -- select format('{{if and($2,$1) then "$2 $1" elsif and($2, not($1)) then $2 elsif and(not($2), $1) then $1}}{{if and($1,$3) then " ("}}{{if $3 then $3}}{{if and($1,$3) then ")"}}{{if and(greaterThan($4,0), lessThan($4,1)) then "?"}}', 'Vocabname', 'Measure', 'Freetext', 'Certainty');
 
@@ -60,17 +71,23 @@ select format('hello world {{ if $1 then $1 }}', '1');
 
 
 begin;
+select '====================================';
+select 'updates';
+
+
 update idealaent set isIdentifier = null;
 
 update attributekey set formatstring = '{{if and($2,$1) then "$2 $1" elsif and($2, not($1)) then $2 elsif and(not($2), $1) then $1}}{{if and($1,$3) then "("}}{{if $3 then $3}}{{if and($1,$3) then ")"}}{{if and(greaterThan($4,0), lessThan($4,1)) then "?"}}' where formatstring is null;
 
-select attributename, isIdentifier, aentcountorder from idealaent join attributekey using (attributeid);
+-- select attributename, isIdentifier, aentcountorder from idealaent join attributekey using (attributeid);
 
 update idealaent set isIdentifier = 'true' where attributeid in (select attributeid from attributekey where attributename in ('entity', 'location', 'date'));
 
 update attributekey set AppendCharacterString = ', ';
 
-
+-- delete from archentity where uuid not in (select uuid from archentity order by uuid limit 25);
+-- delete from aentvalue where uuid not in (select uuid from archentity);
+-- delete from aentreln where uuid not in (select uuid from archentity)	
 
 
 -- select aenttypeid, aenttypename from aenttype;
@@ -100,14 +117,17 @@ update attributekey set AppendCharacterString = ', ';
 
 --  def self.load_arch_entities
 
+select '====================================';
+select 'self.load_arch_entities';
+
 
 select uuid, group_concat(response, ' '), deleted, aenttimestamp, createdAt, modifiedAt, createdBy, modifiedBy
-from (select uuid, deleted, aenttimestamp
+from (select uuid, aenttimestamp
 		from latestnondeletedarchent
 	   where aenttypeid=167583672827
 	   order by uuid
-	   limit 5
-	  offset 5) 
+	   limit 2
+	  offset 2) 
 join latestNonDeletedArchEntFormattedIdentifiers using (uuid)
 join createdModifiedAtBy using (uuid)    
 group by uuid
@@ -129,6 +149,9 @@ order by createdAt
 -- );
 
 --   def self.total_arch_entities
+
+select '====================================';
+select 'self.total_arch_entities';
 
 
 select count(uuid)
@@ -159,16 +182,19 @@ where aenttypeid = 167583672827;
 -- offset :offset;
 
 --   def self.load_arch_entities_include_deleted
+select '====================================';
+select 'self.load_arch_entities_include_deleted';
+
 
 select uuid, group_concat(response, ' '), deleted, aenttimestamp, createdAt, modifiedAt, createdBy, modifiedBy
-from (select uuid, deleted, aenttimestamp
+from (select uuid, aenttimestamp
 		from archentity
 	   where aenttypeid=167583672827
     group by uuid
 	  having max(aenttimestamp)
 	order by uuid
-	   limit 5
-	  offset 5) 
+	   limit 2
+	  offset 2) 
 join latestAllArchEntFormattedIdentifiers using (uuid)
 join createdModifiedAtBy using (uuid)    
 group by uuid
@@ -190,6 +216,10 @@ order by createdBy
 --   group by uuid
 -- );
 -- EOF
+
+select '====================================';
+select 'self.total_arch_entities_include_deleted';
+
 
 select count(uuid)
 from archentity
@@ -218,7 +248,26 @@ where aenttypeid = 167583672827;
 -- group by uuid
 -- limit :limit
 -- offset :offset;
-rollback;
+
+select '====================================';
+select 'self.load_all_arch_entities';
+
+
+select uuid, group_concat(response, ' '), deleted, aenttimestamp, createdAt, modifiedAt, createdBy, modifiedBy
+from (select uuid, aenttimestamp
+		from latestnondeletedarchent	   
+	   order by uuid
+	   limit 5
+	  offset 5) 
+join latestNonDeletedArchEntFormattedIdentifiers using (uuid)
+join createdModifiedAtBy using (uuid)    
+group by uuid
+order by createdAt
+;
+
+
+
+
 
 
 --   def self.total_all_arch_entities
@@ -236,6 +285,13 @@ rollback;
 -- EOF
 --     )
 --   end
+
+select '====================================';
+select 'def self.total_all_arch_entities';
+
+
+select count(uuid)
+from latestNonDeletedArchEnt;
 -- 
 --   def self.load_all_arch_entities_include_deleted
 --     cleanup_query(<<EOF
@@ -262,6 +318,24 @@ rollback;
 -- EOF
 --     )
 --   end
+
+select '====================================';
+select 'self.load_all_arch_entities_include_deleted';
+
+
+select uuid, group_concat(response, ' '), deleted, aenttimestamp, createdAt, modifiedAt, createdBy, modifiedBy
+from (select uuid, aenttimestamp
+		from archentity	   
+		group by uuid
+		having max(aenttimestamp)
+	   order by uuid
+	   limit 5
+	  offset 5) 
+join latestAllArchEntFormattedIdentifiers using (uuid)
+join createdModifiedAtBy using (uuid)    
+group by uuid
+order by createdAt;
+
 -- 
 --   def self.total_all_arch_entities_include_deleted
 --     cleanup_query(<<EOF
@@ -278,6 +352,12 @@ rollback;
 -- EOF
 --     )
 --   end
+select '====================================';
+select 'self.total_all_arch_entities_include_deleted';
+
+select count(distinct uuid)
+from archentity;
+
 -- 
 --   def self.search_arch_entity
 --     cleanup_query(<<EOF
@@ -310,6 +390,31 @@ rollback;
 -- EOF
 --     )
 --   end
+
+select '====================================';
+select 'self.search_arch_entity';
+
+
+-- user 'Faims Admin' instead of :query
+
+select uuid, group_concat(response, ' '), latestnondeletedarchent.deleted, aenttimestamp, createdAt, modifiedAt, createdBy, modifiedBy
+from  latestnondeletedarchent join createdModifiedAtBy using (uuid) join latestNonDeletedArchEntFormattedIdentifiers using (uuid)
+where uuid in (select uuid
+      from latestnondeletedarchent join createdModifiedAtBy using (uuid) join latestnondeletedaentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)     
+      where freetext LIKE '%'||'Faims Admin'||'%'  
+         OR measure LIKE '%'||'Faims Admin'||'%' 
+         OR vocabname LIKE '%'||'Faims Admin'||'%'
+         OR createdAt LIKE '%'||'Faims Admin'||'%'
+         or createdBy LIKE '%'||'Faims Admin'||'%'
+         or modifiedAt LIKE '%'||'Faims Admin'||'%'
+         or modifiedBy LIKE '%'||'Faims Admin'||'%'
+   order by createdAt
+      limit 5
+     offset 5
+      )
+group by uuid
+order by createdAt
+;
 -- 
 --   def self.total_search_arch_entity
 --     cleanup_query(<<EOF
@@ -2229,3 +2334,5 @@ rollback;
 --               WHERE pkid MATCH RTreeIntersects(?, ?, ?, ?))
 --             ORDER BY uuid, attributename ASC, valuetimestamp desc)
 --         GROUP BY uuid limit ?;    
+
+rollback;

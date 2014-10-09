@@ -46,6 +46,7 @@ File.open(sql_file, 'r') do |file|
         result.each do |r|
           puts r.join(', ')
         end
+        puts ""
       end
       sql = ""
       rescue Exception => e
