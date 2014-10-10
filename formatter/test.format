@@ -34,7 +34,7 @@ create view if not exists latestNonDeletedArchEntFormattedIdentifiers as
  WHERE isIdentifier = 'true'
  group by uuid, attributeid
  having response is not null
- order by uuid, aentcountorder;
+ order by uuid, aentcountorder, vocabcountorder;
 
 select '====================================';
 select 'creating latestAllArchEntFormattedIdentifiers';
@@ -58,7 +58,7 @@ create view if not exists latestAllArchEntFormattedIdentifiers as
  WHERE isIdentifier = 'true'
  group by uuid, attributeid
  having response is not null
- order by uuid, aentcountorder;
+ order by uuid, aentcountorder, vocabcountorder;
 
 
 
@@ -496,9 +496,32 @@ select uuid
 --   end
 
 
+
+
+
 select '==  @IMPORTANT  ==================================';
 select 'self.search_arch_entity_include_deleted';
 
+
+
+select uuid, group_concat(response, ' '), archentity.deleted, aenttimestamp, createdAt, modifiedAt, createdBy, modifiedBy
+from  (select uuid, max(aenttimestamp) as aenttimestamp
+      from archentity join createdModifiedAtBy using (uuid) join latestnondeletedaentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)     
+      where freetext LIKE '%'||'Faims Admin'||'%'  
+         OR measure LIKE '%'||'Faims Admin'||'%' 
+         OR vocabname LIKE '%'||'Faims Admin'||'%'
+         OR createdAt LIKE '%'||'Faims Admin'||'%'
+         or createdBy LIKE '%'||'Faims Admin'||'%'
+         or modifiedAt LIKE '%'||'Faims Admin'||'%'
+         or modifiedBy LIKE '%'||'Faims Admin'||'%'
+   group by uuid         
+   order by createdAt
+      limit 5
+     offset 5
+      ) join archentity using (aenttimestamp, uuid) join createdModifiedAtBy using (uuid) join latestallArchEntFormattedIdentifiers using (uuid)
+group by uuid
+order by createdAt
+;
 
 -- @IMPORTANT
 --   def self.get_arch_ent_attribute_for_comparison
@@ -533,20 +556,26 @@ select 'self.search_arch_entity_include_deleted';
 --     )
 --   end
 -- 
---   def self.get_arch_ent_history
---     cleanup_query(<<EOF
---     select uuid, aenttimestamp as tstamp
---       FROM archentity
---         where uuid = ?
---       union
---       select uuid, valuetimestamp as tstamp
---         FROM aentvalue
---         where uuid = ?
---         group by tstamp
---       order by tstamp desc;
--- EOF
---     )
---   end
+
+-- note, select uuid from latestnondeletedarchent limit 1; is the prepared statment
+
+select '==  @IMPORTANT  ==================================';
+select 'self.get_arch_ent_attribute_for_comparison';
+
+
+select uuid, attributename, attributeid, attributetype, valuetimestamp, group_concat(format(formatstring, vocabname, measure, freetext, certainty), appendcharacterstring) as response, group_concat(vocabcountorder), format("$1 $2", fname, lname) as modifiedBy
+  from latestNonDeletedArchent
+  join createdModifiedAtBy using (uuid)
+  JOIN aenttype using (aenttypeid)
+  JOIN idealaent using (aenttypeid)
+  join attributekey using (attributeid)
+  join latestNonDeletedAentValue using (uuid, attributeid)
+  join user on (latestNonDeletedAentValue.userid = user.userid)
+  left outer join vocabulary using (attributeid, vocabid)
+  where uuid = (select uuid from latestnondeletedarchent limit 1)
+  group by uuid, attributename
+  order by AEntCountOrder, vocabcountorder;
+
 -- 
 -- @IMPORTANT
 --   def self.get_arch_ent_attributes_at_timestamp
@@ -589,6 +618,8 @@ select 'self.search_arch_entity_include_deleted';
 -- EOF
 --     )
 --   end
+select '==  @IMPORTANT  ==================================';
+select 'self.get_arch_ent_attributes_at_timestamp';
 -- 
 -- @IMPORTANT
 --   def self.get_arch_ent_attributes_changes_at_timestamp
@@ -676,7 +707,8 @@ select 'self.search_arch_entity_include_deleted';
 -- EOF
 --     )
 --   end
-
+select '==  @IMPORTANT  ==================================';
+select 'self.get_arch_ent_attributes_changes_at_timestamp';
 
 -- @IMPORTANT
 --   def self.get_related_arch_entities
@@ -802,7 +834,8 @@ select 'self.search_arch_entity_include_deleted';
 -- EOF
 --     )
 --   end
-
+select '==  @IMPORTANT  ==================================';
+select 'self.get_related_arch_entities';
 
 
 -- @IMPORTANT
@@ -830,6 +863,8 @@ select 'self.search_arch_entity_include_deleted';
 -- EOF
 --     )
 --   end
+select '==  @IMPORTANT  ==================================';
+select 'self.get_entity_identifier';
 -- 
 -- @IMPORTANT
 --   def self.get_entity_uuid
@@ -857,7 +892,8 @@ select 'self.search_arch_entity_include_deleted';
 --     )
 --   end
 
-
+select '==  @IMPORTANT  ==================================';
+select 'fetch entityt list';
 
 
 -- @IMPORTANT
@@ -877,6 +913,10 @@ select 'self.search_arch_entity_include_deleted';
 -- FROM latestNonDeletedArchentIdentifiers
 -- WHERE laenttypename = ?
 -- GROUP BY uuid;
+
+select '==  @IMPORTANT  ==================================';
+select 'fetch visible geometry';
+
 -- 
 -- @IMPORTANT
 -- -- fetch visible geometry
@@ -2404,5 +2444,18 @@ select 'self.search_arch_entity_include_deleted';
 --     )
 -- 
 -- 
-
+--   def self.get_arch_ent_history
+--     cleanup_query(<<EOF
+--     select uuid, aenttimestamp as tstamp
+--       FROM archentity
+--         where uuid = ?
+--       union
+--       select uuid, valuetimestamp as tstamp
+--         FROM aentvalue
+--         where uuid = ?
+--         group by tstamp
+--       order by tstamp desc;
+-- EOF
+--     )
+--   end
 rollback;

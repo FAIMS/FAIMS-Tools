@@ -44,7 +44,7 @@ File.open(sql_file, 'r') do |file|
       unless sql.nil? or sql == ''
         result = db.execute(sql) 
         result.each do |r|
-          puts r.join(', ')
+          puts r.join("\t")
         end
         puts ""
       end
