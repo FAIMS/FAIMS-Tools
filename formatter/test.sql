@@ -1,10 +1,13 @@
-  select uuid, aenttypeid, aenttypename, group_concat(coalsece(formatstring, vocabname, measure, freetext, certainty), appendcharacterstring) as response, null as deleted
-  from latestNonDeletedArchent 
+.null <null>
+select uuid, attributename, attributeid, attributetype, valuetimestamp, vocabname, measure, freetext, certainty, appendcharacterstring as response
+  from latestNonDeletedArchent
+  join createdModifiedAtBy using (uuid)
   JOIN aenttype using (aenttypeid)
   JOIN idealaent using (aenttypeid)
   join attributekey using (attributeid)
-  join latestNonDeletedAentValue using (uuid, attributeid)  
+  left outer join latestNonDeletedAentValue using (uuid, attributeid)
+  left outer join user on (latestNonDeletedAentValue.userid = user.userid)
   left outer join vocabulary using (attributeid, vocabid)
- WHERE isIdentifier = 'true'
- group by uuid, attributeid
- order by uuid, aentcountorder;
+  where uuid = (select uuid from latestnondeletedarchent limit 1)
+  group by uuid, attributename
+  order by AEntCountOrder, vocabcountorder;

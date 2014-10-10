@@ -79,13 +79,16 @@ select 'updates';
 
 update idealaent set isIdentifier = null;
 
-update attributekey set formatstring = '{{if and($2,$1) then "$2 $1" elsif and($2, not($1)) then $2 elsif and(not($2), $1) then $1}}{{if and($1,$3) then "("}}{{if $3 then $3}}{{if and($1,$3) then ")"}}{{if and(greaterThan($4,0), lessThan($4,1)) then "?"}}' where formatstring is null;
+update attributekey set formatstring = '{{if and($2,$1) then "$2 $1" elsif and($2, not($1)) then $2 elsif and(not($2), $1) then $1}}{{if and($1,$3) then "("}}{{if $3 then $3}}{{if and($1,$3) then ")"}}{{if and(greaterThan($4,0), lessThan($4,0.75)) then "??" elsif lessThan($4,1) then "?"}}' where formatstring is null;
+
 
 -- select attributename, isIdentifier, aentcountorder from idealaent join attributekey using (attributeid);
 
 update idealaent set isIdentifier = 'true' where attributeid in (select attributeid from attributekey where attributename in ('entity', 'location', 'date'));
 
 update attributekey set AppendCharacterString = ', ';
+update aentvalue set freetext = null where freetext = '';
+
 
 -- delete from archentity where uuid not in (select uuid from archentity order by uuid limit 25);
 -- delete from aentvalue where uuid not in (select uuid from archentity);
@@ -559,22 +562,23 @@ order by createdAt
 
 -- note, select uuid from latestnondeletedarchent limit 1; is the prepared statment
 
+
 select '==  @IMPORTANT  ==================================';
 select 'self.get_arch_ent_attribute_for_comparison';
 
 
-select uuid, attributename, attributeid, attributetype, valuetimestamp, group_concat(format(formatstring, vocabname, measure, freetext, certainty), appendcharacterstring) as response, group_concat(vocabcountorder), format("$1 $2", fname, lname) as modifiedBy
+	select uuid, attributename, attributeid, attributetype, valuetimestamp, group_concat(format(formatstring, vocabname, measure, freetext, certainty), appendcharacterstring) as response, format("$1 $2", fname, lname) as modifiedBy
   from latestNonDeletedArchent
   join createdModifiedAtBy using (uuid)
   JOIN aenttype using (aenttypeid)
   JOIN idealaent using (aenttypeid)
   join attributekey using (attributeid)
-  join latestNonDeletedAentValue using (uuid, attributeid)
-  join user on (latestNonDeletedAentValue.userid = user.userid)
+  left outer join latestNonDeletedAentValue using (uuid, attributeid)
+  left outer join user on (latestNonDeletedAentValue.userid = user.userid)
   left outer join vocabulary using (attributeid, vocabid)
   where uuid = (select uuid from latestnondeletedarchent limit 1)
   group by uuid, attributename
-  order by AEntCountOrder, vocabcountorder;
+  order by uuid, AEntCountOrder, vocabcountorder;
 
 -- 
 -- @IMPORTANT
@@ -620,6 +624,40 @@ select uuid, attributename, attributeid, attributetype, valuetimestamp, group_co
 --   end
 select '==  @IMPORTANT  ==================================';
 select 'self.get_arch_ent_attributes_at_timestamp';
+
+
+select uuid, attributename, attributeid, group_concat(DISTINCT afname || ' ' || alname) as auser, astext(transform(GeoSpatialColumn,?)), 
+       group_concat(DISTINCT vfname || ' ' || vlname) as vuser, aenttimestamp, valuetimestamp, max(deleted) as entityDeleted,
+       group_concat(format(formatstring, vocabname, measure, freetext, certainty), appendcharacterstring) as response,
+       auserid, vuserid, aentforked, avalforked, valdeleted
+from  (  SELECT uuid, attributeid, GeoSpatialColumn, vocabid, aentuser.fname as afname, aentuser.lname as alname, valueuser.fname as vfname, 
+                valueuser.lname as vlname, attributename, vocabname, archentity.deleted, aentvalue.deleted as valdeleted, measure, freetext, certainty, 
+                attributetype, valuetimestamp, aenttimestamp, aentuser.userid as auserid, valueuser.userid as vuserid, archentity.isforked as aentforked, 
+                aentvalue.isforked as avalforked, aentcountorder, vocabcountorder, appendcharacterstring, formatstring
+           FROM archentity
+           join idealaent using (aenttypeid)
+           JOIN attributekey USING (attributeid)
+           left outer join aentvalue using (uuid, attributeid)
+           LEFT OUTER JOIN vocabulary USING (vocabid, attributeid)
+           JOIN (SELECT uuid, attributeid, max(valuetimestamp) as valuetimestamp
+                   FROM aentvalue
+                  WHERE uuid = (select uuid from latestnondeletedarchent limit 1)
+                    and valuetimestamp <= (select valuetimestamp from latestnondeletedaentvalue where uuid = (select uuid from latestnondeletedarchent limit 1) order by valuetimestamp desc limit 1 offset 2)
+               GROUP BY uuid, attributeid) USING (uuid, attributeid, valuetimestamp)
+           JOIN (
+                 SELECT uuid, max(aenttimestamp) as aenttimestamp
+                   FROM archentity
+                  WHERE uuid = (select uuid from latestnondeletedarchent limit 1)
+                    and aenttimestamp <= (select valuetimestamp from latestnondeletedaentvalue where uuid = (select uuid from latestnondeletedarchent limit 1) order by valuetimestamp desc limit 1 offset 2)
+               GROUP BY uuid) USING (uuid, aenttimestamp)
+           left outer join user as aentuser on (aentuser.userid = archentity.userid)
+           left outer join user as valueuser on (valueuser.userid = aentvalue.userid)
+        ORDER BY uuid,  AEntCountOrder, vocabcountorder, archentity.deleted desc)
+  group by uuid, attributename
+  order by uuid, aentcountorder, vocabcountorder;      
+
+
+
 -- 
 -- @IMPORTANT
 --   def self.get_arch_ent_attributes_changes_at_timestamp
