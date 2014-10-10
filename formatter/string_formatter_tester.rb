@@ -26,7 +26,7 @@ db.create_function('format', -1) do |func, *args|
     func.result = nil
   else
     if args[0].nil?
-      func.result = args[1..-1].join(', ')
+      func.result = args[1..-1].select { |arg| !arg.nil? }.join(', ')
     else
       func.result = StringFormatter.new(args[0]).pre_compute.evaluate(args[1..-1])
     end
