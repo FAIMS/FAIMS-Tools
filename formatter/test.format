@@ -460,7 +460,7 @@ select uuid
       limit 5
      offset 5);
 -- 
--- @IMPORTANT
+
 --   def self.search_arch_entity_include_deleted
 --     cleanup_query(<<EOF
 -- select uuid, group_concat(response, ', ') as response, deleted, aenttimestamp
@@ -494,164 +494,12 @@ select uuid
 -- EOF
 --     )
 --   end
--- 
---   def self.total_search_arch_entity_include_deleted
---     cleanup_query(<<EOF
--- select count(*)
--- from (
---   select uuid
---   from (select uuid, attributeid
---         from latestAllArchEntIdentifiers
---         where uuid IN (select uuid
---                         FROM aentvalue join (select uuid, attributeid, max(valuetimestamp) as ValueTimestamp
---                                               from aentvalue
---                                           group by uuid, attributeid) USING (uuid, attributeid, valuetimestamp)
---                         LEFT OUTER JOIN vocabulary using (attributeid, vocabid)
---                        WHERE (freetext LIKE '%'||:query||'%'
---                           OR measure LIKE '%'||:query||'%'
---                           OR vocabname LIKE '%'||:query||'%')
---                        order by uuid)
---         group by uuid, attributeid
---         order by epoch)
---   group by uuid
--- );
--- EOF
---     )
---   end
--- 
---   def self.get_arch_entity_deleted_status
---     cleanup_query(<<EOF
---     SELECT uuid, deleted from ArchEntity where uuid || aenttimestamp IN
--- 			( SELECT uuid || max(aenttimestamp) FROM archentity WHERE uuid = ?);
--- EOF
---     )
---   end
--- 
---   def self.get_arch_entity_attributes
---     cleanup_query(<<EOF
--- SELECT uuid, attributeid, vocabid, attributename, vocabname, measure, freetext, certainty, attributetype, valuetimestamp, av.isDirty, av.isDirtyReason, attributeisfile, attributeusethumbnail
--- from latestnondeletedarchent
--- join idealaent using (aenttypeid)
--- join attributekey using (attributeid)
--- left outer join latestnondeletedaentvalue av using (uuid, attributeid)
--- left outer join vocabulary using (vocabid, attributeid)
--- where uuid = ?
--- order by AEntCountOrder, VocabCountOrder, valuetimestamp;
--- EOF
---     )
---   end
--- 
---   def self.insert_version
---     cleanup_query(<<EOF
--- insert into version (versionnum, uploadtimestamp, userid, ismerged) select count(*) + 1, ?, ?, 1 from version;
--- EOF
---     )
---   end
--- 
---   def self.insert_arch_entity
---     cleanup_query(<<EOF
--- INSERT INTO archentity (uuid, userid, AEntTypeID, GeoSpatialColumnType, GeoSpatialColumn, deleted, aenttimestamp, versionnum, parenttimestamp)
--- SELECT uuid, :userid, AEntTypeID, GeoSpatialColumnType, GeoSpatialColumn, NULL, :aenttimestamp, v.versionnum,
---                                                                                                 :parenttimestamp
--- FROM
---   (SELECT uuid,
---           max(aenttimestamp) AS aenttimestamp
---    FROM archentity
---    WHERE uuid = :uuid
---    GROUP BY uuid)
--- JOIN archentity USING (uuid,
---                        aenttimestamp),
---   (SELECT versionnum
---    FROM VERSION
---    WHERE ismerged = 1
---    ORDER BY versionnum DESC LIMIT 1) v ;
--- EOF
---     )
---   end
--- 
---   def self.insert_arch_entity_attribute
---     cleanup_query(<<EOF
--- INSERT INTO aentvalue (uuid, userid, attributeid, vocabid, measure, freetext, certainty, versionnum, parenttimestamp, valuetimestamp, deleted)
--- SELECT :uuid, :userid, :attributeid, :vocabid, :measure, :freetext, :certainty, v.versionnum, :parenttimestamp, :valuetimestamp, :deleted
--- FROM
---   (SELECT versionnum
---    FROM VERSION
---    WHERE ismerged = 1
---    ORDER BY versionnum DESC LIMIT 1) v;
--- EOF
---     )
---   end
--- 
---   def self.get_arch_ent_parenttimestamp
---     cleanup_query(<<EOF
--- SELECT max(aenttimestamp) FROM archentity WHERE uuid = ? group by uuid;
--- EOF
---     )
---   end
--- 
---   def self.get_aentvalue_parenttimestamp
---     cleanup_query(<<EOF
--- SELECT max(valuetimestamp) FROM aentvalue WHERE uuid = ? and attributeid = ? group by uuid, attributeid;
--- EOF
---     )
---   end
--- 
---   def self.update_aent_value_as_dirty
---     cleanup_query(<<EOF
---       update aentvalue set isdirty = ?, isdirtyreason = ?
-      -- where uuid is ? and valuetimestamp is ? and userid is ? and attributeid is ? and vocabid is ? and measure is ? and freetext is ? and certainty is ? and versionnum is ?
--- EOF
---     )
---   end
--- 
---   def self.delete_or_restore_arch_entity
---     cleanup_query(<<EOF
--- INSERT INTO archentity (uuid, userid, AEntTypeID, GeoSpatialColumnType, GeoSpatialColumn, deleted, versionnum, parentTimestamp)
--- SELECT uuid, :userid, AEntTypeID,
---                        GeoSpatialColumnType,
---                        GeoSpatialColumn,
---                        :deleted,
---                        v.versionnum,
---                        :parenttimestamp
--- FROM
---   (SELECT uuid,
---           max(aenttimestamp) AS aenttimestamp
---    FROM archentity
---    WHERE uuid = :uuid
---    GROUP BY uuid)
--- JOIN archentity USING (uuid,
---                        aenttimestamp),
---   (SELECT versionnum
---    FROM VERSION
---    WHERE ismerged = 1
---    ORDER BY versionnum DESC LIMIT 1) v ;
--- EOF
---     )
---   end
--- 
---   def self.get_arch_ent_info
---     cleanup_query(<<EOF
--- select 'Last Edit by: ' || fname || ' ' || lname || ' at '|| aenttimestamp
--- from archentity
--- join user using (userid)
--- where uuid = ?
---   and aenttimestamp = ?;
--- EOF
---     )
---   end
--- 
---   def self.get_arch_ent_attribute_info
---     cleanup_query(<<EOF
--- select 'Last Edit by: ' || fname || ' ' || lname || ' at '|| valuetimestamp
--- from aentvalue
--- join user using (userid)
--- where uuid = ?
---   and valuetimestamp = ?
---   and attributeid = ?;
--- EOF
---     )
---   end
--- 
+
+
+select '==  @IMPORTANT  ==================================';
+select 'self.search_arch_entity_include_deleted';
+
+
 -- @IMPORTANT
 --   def self.get_arch_ent_attribute_for_comparison
 --     cleanup_query(<<EOF
@@ -828,54 +676,8 @@ select uuid
 -- EOF
 --     )
 --   end
--- 
---   def self.insert_arch_ent_at_timestamp
---      cleanup_query(<<EOF
--- INSERT INTO archentity (uuid, userid, doi, aenttypeid, deleted, versionnum, isDirty, isDirtyReason, ParentTimestamp, GeoSpatialColumnType, GeoSpatialColumn, aenttimestamp)
--- SELECT uuid, :userid, doi, aenttypeid, deleted, v.versionnum, isDirty, isDirtyReason, :parenttimestamp, GeoSpatialColumnType,GeoSpatialColumn, :aenttimestamp
--- FROM archentity
--- JOIN
---   (SELECT uuid,
---           aenttimestamp
---    FROM archentity
---    WHERE uuid = :uuid
---      AND aenttimestamp <= :timestamp
---    GROUP BY uuid HAVING max(aenttimestamp)) USING (uuid,
---                                                    aenttimestamp),
---   (SELECT versionnum
---    FROM VERSION
---    WHERE ismerged = 1
---    ORDER BY versionnum DESC LIMIT 1) v ;
--- EOF
---     )
---   end
--- 
--- 
---   def self.insert_aentvalue_at_timestamp
---     cleanup_query(<<EOF
--- INSERT INTO aentvalue (uuid, userid, attributeid, vocabid, measure, freetext, certainty, deleted, versionnum, isdirty, isdirtyreason, parenttimestamp, valuetimestamp)
--- SELECT uuid, :userid, attributeid, vocabid, measure, freetext, certainty, deleted, v.versionnum, isdirty, isdirtyreason, :parenttimestamp, :valuetimestamp
--- FROM aentvalue
--- JOIN
---   (SELECT uuid,
---           valuetimestamp,
---           attributeid
---    FROM aentvalue
---    WHERE uuid = :uuid
---      AND attributeid = :attributeid
---      AND valuetimestamp <= :timestamp
---    GROUP BY uuid,
---             attributeid HAVING MAX (valuetimestamp)) USING (uuid,
---                                                             valuetimestamp,
---                                                             attributeid),
---   (SELECT versionnum
---    FROM VERSION
---    WHERE ismerged = 1
---    ORDER BY versionnum DESC LIMIT 1) v;
--- EOF
---     )
---   end
--- 
+
+
 -- @IMPORTANT
 --   def self.get_related_arch_entities
 --     cleanup_query(<<EOF
@@ -1000,6 +802,332 @@ select uuid
 -- EOF
 --     )
 --   end
+
+
+
+-- @IMPORTANT
+--   def self.get_entity_identifier
+--     cleanup_query(<<EOF
+-- select group_concat(response, ', ') as response
+-- from (
+--   select uuid, aenttypename, attributename, group_concat(coalesce(measure    || ' '  || vocabname  || '(' ||freetext||'; '|| (certainty * 100.0) || '% certain)',
+--                                         measure    || ' (' || freetext   ||'; '|| (certainty * 100.0)  || '% certain)',
+--                                         vocabname  || ' (' || freetext   ||'; '|| (certainty * 100.0)  || '% certain)',
+--                                         measure    || ' ' || vocabname   ||' ('|| (certainty * 100.0)  || '% certain)',
+--                                         vocabname  || ' (' || freetext || ')',
+--                                         measure    || ' (' || freetext || ')',
+--                                         measure    || ' (' || (certainty * 100.0) || '% certain)',
+--                                         vocabname  || ' (' || (certainty * 100.0) || '% certain)',
+--                                         freetext   || ' (' || (certainty * 100.0) || '% certain)',
+--                                         measure,
+--                                         vocabname,
+--                                         freetext), ' | ') as response, attributeid, deleted, aenttimestamp
+--   from latestAllArchEntIdentifiers
+--   where uuid = ?
+--   group by uuid, attributeid
+--   order by epoch)
+-- group by uuid
+-- EOF
+--     )
+--   end
+-- 
+-- @IMPORTANT
+--   def self.get_entity_uuid
+--     cleanup_query(<<EOF
+-- select uuid from (
+-- select uuid, group_concat(response, ', ') as response
+-- from (
+--   select uuid, aenttypename, attributename, group_concat(coalesce(measure    || ' '  || vocabname  || '(' ||freetext||'; '|| (certainty * 100.0) || '% certain)',
+--                                         measure    || ' (' || freetext   ||'; '|| (certainty * 100.0)  || '% certain)',
+--                                         vocabname  || ' (' || freetext   ||'; '|| (certainty * 100.0)  || '% certain)',
+--                                         measure    || ' ' || vocabname   ||' ('|| (certainty * 100.0)  || '% certain)',
+--                                         vocabname  || ' (' || freetext || ')',
+--                                         measure    || ' (' || freetext || ')',
+--                                         measure    || ' (' || (certainty * 100.0) || '% certain)',
+--                                         vocabname  || ' (' || (certainty * 100.0) || '% certain)',
+--                                         freetext   || ' (' || (certainty * 100.0) || '% certain)',
+--                                         measure,
+--                                         vocabname,
+--                                         freetext), ' | ') as response, attributeid, deleted, aenttimestamp
+--   from latestAllArchEntIdentifiers
+--   group by uuid, attributeid
+--   order by epoch)
+-- group by uuid) where response = ?
+-- EOF
+--     )
+--   end
+
+
+
+
+-- @IMPORTANT
+-- -- fetch entityt list
+-- SELECT uuid, group_concat(coalesce(measure   || ' '  || vocabname || '('  ||  freetext           ||'; '|| (certainty * 100.0) || '% certain)',
+-- measure   || ' (' || freetext  || '; ' || (certainty * 100.0) || '% certain)',
+-- vocabname || ' (' || freetext  || '; ' || (certainty * 100.0) || '% certain)',
+-- measure   || ' '  || vocabname || ' (' || (certainty * 100.0) || '% certain)',
+--   vocabname || ' (' || freetext  || ')',
+--   measure   || ' (' || freetext  || ')',
+-- measure   || ' (' ||(certainty * 100.0) || '% certain)',
+-- vocabname || ' (' ||(certainty * 100.0) || '% certain)',
+-- freetext  || ' (' ||(certainty * 100.0) || '% certain)',
+-- measure,
+-- vocabname,
+-- freetext), ' | ') as response
+-- FROM latestNonDeletedArchentIdentifiers
+-- WHERE laenttypename = ?
+-- GROUP BY uuid;
+-- 
+-- @IMPORTANT
+-- -- fetch visible geometry
+-- SELECT uuid, group_concat(coalesce(measure   || ' '  || vocabname || '(' ||freetext||'; '|| (certainty * 100.0) || '% certain)',
+--             measure   || ' (' || freetext  ||'; '|| (certainty * 100.0) || '% certain)',
+--             vocabname || ' (' || freetext  ||'; '|| (certainty * 100.0) || '% certain)',
+--             measure   || ' '  || vocabname  ||' ('|| (certainty * 100.0) || '% certain)',
+--             vocabname || ' (' || freetext || ')',
+--             measure   || ' (' || freetext || ')',
+--             measure   || ' (' || (certainty * 100.0) || '% certain)',
+--             vocabname || ' (' || (certainty * 100.0) || '% certain)',
+--             freetext  || ' (' || (certainty * 100.0) || '% certain)',
+--             measure,
+--             vocabname,
+--             freetext), ' | ') as response, hex(asbinary(geospatialcolumn))
+--         FROM ( SELECT uuid, geospatialcolumn, attributeid, vocabid, attributename, vocabname, measure, freetext, certainty, attributetype, valuetimestamp, archentity.rowid as arowid
+--   FROM latestNonDeletedArchentIdentifiers join archentity using (uuid, aenttimestamp, geospatialcolumn)
+-- WHERE arowid in (SELECT pkid
+--     FROM idx_archentity_geospatialcolumn
+--               WHERE pkid MATCH RTreeIntersects(?, ?, ?, ?))
+--             ORDER BY uuid, attributename ASC, valuetimestamp desc)
+--         GROUP BY uuid limit ?;    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- 
+--   def self.total_search_arch_entity_include_deleted
+--     cleanup_query(<<EOF
+-- select count(*)
+-- from (
+--   select uuid
+--   from (select uuid, attributeid
+--         from latestAllArchEntIdentifiers
+--         where uuid IN (select uuid
+--                         FROM aentvalue join (select uuid, attributeid, max(valuetimestamp) as ValueTimestamp
+--                                               from aentvalue
+--                                           group by uuid, attributeid) USING (uuid, attributeid, valuetimestamp)
+--                         LEFT OUTER JOIN vocabulary using (attributeid, vocabid)
+--                        WHERE (freetext LIKE '%'||:query||'%'
+--                           OR measure LIKE '%'||:query||'%'
+--                           OR vocabname LIKE '%'||:query||'%')
+--                        order by uuid)
+--         group by uuid, attributeid
+--         order by epoch)
+--   group by uuid
+-- );
+-- EOF
+--     )
+--   end
+-- 
+--   def self.get_arch_entity_deleted_status
+--     cleanup_query(<<EOF
+--     SELECT uuid, deleted from ArchEntity where uuid || aenttimestamp IN
+-- 			( SELECT uuid || max(aenttimestamp) FROM archentity WHERE uuid = ?);
+-- EOF
+--     )
+--   end
+-- 
+--   def self.get_arch_entity_attributes
+--     cleanup_query(<<EOF
+-- SELECT uuid, attributeid, vocabid, attributename, vocabname, measure, freetext, certainty, attributetype, valuetimestamp, av.isDirty, av.isDirtyReason, attributeisfile, attributeusethumbnail
+-- from latestnondeletedarchent
+-- join idealaent using (aenttypeid)
+-- join attributekey using (attributeid)
+-- left outer join latestnondeletedaentvalue av using (uuid, attributeid)
+-- left outer join vocabulary using (vocabid, attributeid)
+-- where uuid = ?
+-- order by AEntCountOrder, VocabCountOrder, valuetimestamp;
+-- EOF
+--     )
+--   end
+-- 
+--   def self.insert_version
+--     cleanup_query(<<EOF
+-- insert into version (versionnum, uploadtimestamp, userid, ismerged) select count(*) + 1, ?, ?, 1 from version;
+-- EOF
+--     )
+--   end
+-- 
+--   def self.insert_arch_entity
+--     cleanup_query(<<EOF
+-- INSERT INTO archentity (uuid, userid, AEntTypeID, GeoSpatialColumnType, GeoSpatialColumn, deleted, aenttimestamp, versionnum, parenttimestamp)
+-- SELECT uuid, :userid, AEntTypeID, GeoSpatialColumnType, GeoSpatialColumn, NULL, :aenttimestamp, v.versionnum,
+--                                                                                                 :parenttimestamp
+-- FROM
+--   (SELECT uuid,
+--           max(aenttimestamp) AS aenttimestamp
+--    FROM archentity
+--    WHERE uuid = :uuid
+--    GROUP BY uuid)
+-- JOIN archentity USING (uuid,
+--                        aenttimestamp),
+--   (SELECT versionnum
+--    FROM VERSION
+--    WHERE ismerged = 1
+--    ORDER BY versionnum DESC LIMIT 1) v ;
+-- EOF
+--     )
+--   end
+-- 
+--   def self.insert_arch_entity_attribute
+--     cleanup_query(<<EOF
+-- INSERT INTO aentvalue (uuid, userid, attributeid, vocabid, measure, freetext, certainty, versionnum, parenttimestamp, valuetimestamp, deleted)
+-- SELECT :uuid, :userid, :attributeid, :vocabid, :measure, :freetext, :certainty, v.versionnum, :parenttimestamp, :valuetimestamp, :deleted
+-- FROM
+--   (SELECT versionnum
+--    FROM VERSION
+--    WHERE ismerged = 1
+--    ORDER BY versionnum DESC LIMIT 1) v;
+-- EOF
+--     )
+--   end
+-- 
+--   def self.get_arch_ent_parenttimestamp
+--     cleanup_query(<<EOF
+-- SELECT max(aenttimestamp) FROM archentity WHERE uuid = ? group by uuid;
+-- EOF
+--     )
+--   end
+-- 
+--   def self.get_aentvalue_parenttimestamp
+--     cleanup_query(<<EOF
+-- SELECT max(valuetimestamp) FROM aentvalue WHERE uuid = ? and attributeid = ? group by uuid, attributeid;
+-- EOF
+--     )
+--   end
+-- 
+--   def self.update_aent_value_as_dirty
+--     cleanup_query(<<EOF
+--       update aentvalue set isdirty = ?, isdirtyreason = ?
+      -- where uuid is ? and valuetimestamp is ? and userid is ? and attributeid is ? and vocabid is ? and measure is ? and freetext is ? and certainty is ? and versionnum is ?
+-- EOF
+--     )
+--   end
+-- 
+--   def self.delete_or_restore_arch_entity
+--     cleanup_query(<<EOF
+-- INSERT INTO archentity (uuid, userid, AEntTypeID, GeoSpatialColumnType, GeoSpatialColumn, deleted, versionnum, parentTimestamp)
+-- SELECT uuid, :userid, AEntTypeID,
+--                        GeoSpatialColumnType,
+--                        GeoSpatialColumn,
+--                        :deleted,
+--                        v.versionnum,
+--                        :parenttimestamp
+-- FROM
+--   (SELECT uuid,
+--           max(aenttimestamp) AS aenttimestamp
+--    FROM archentity
+--    WHERE uuid = :uuid
+--    GROUP BY uuid)
+-- JOIN archentity USING (uuid,
+--                        aenttimestamp),
+--   (SELECT versionnum
+--    FROM VERSION
+--    WHERE ismerged = 1
+--    ORDER BY versionnum DESC LIMIT 1) v ;
+-- EOF
+--     )
+--   end
+-- 
+--   def self.get_arch_ent_info
+--     cleanup_query(<<EOF
+-- select 'Last Edit by: ' || fname || ' ' || lname || ' at '|| aenttimestamp
+-- from archentity
+-- join user using (userid)
+-- where uuid = ?
+--   and aenttimestamp = ?;
+-- EOF
+--     )
+--   end
+-- 
+--   def self.get_arch_ent_attribute_info
+--     cleanup_query(<<EOF
+-- select 'Last Edit by: ' || fname || ' ' || lname || ' at '|| valuetimestamp
+-- from aentvalue
+-- join user using (userid)
+-- where uuid = ?
+--   and valuetimestamp = ?
+--   and attributeid = ?;
+-- EOF
+--     )
+--   end
+-- 
+
+-- 
+--   def self.insert_arch_ent_at_timestamp
+--      cleanup_query(<<EOF
+-- INSERT INTO archentity (uuid, userid, doi, aenttypeid, deleted, versionnum, isDirty, isDirtyReason, ParentTimestamp, GeoSpatialColumnType, GeoSpatialColumn, aenttimestamp)
+-- SELECT uuid, :userid, doi, aenttypeid, deleted, v.versionnum, isDirty, isDirtyReason, :parenttimestamp, GeoSpatialColumnType,GeoSpatialColumn, :aenttimestamp
+-- FROM archentity
+-- JOIN
+--   (SELECT uuid,
+--           aenttimestamp
+--    FROM archentity
+--    WHERE uuid = :uuid
+--      AND aenttimestamp <= :timestamp
+--    GROUP BY uuid HAVING max(aenttimestamp)) USING (uuid,
+--                                                    aenttimestamp),
+--   (SELECT versionnum
+--    FROM VERSION
+--    WHERE ismerged = 1
+--    ORDER BY versionnum DESC LIMIT 1) v ;
+-- EOF
+--     )
+--   end
+-- 
+-- 
+--   def self.insert_aentvalue_at_timestamp
+--     cleanup_query(<<EOF
+-- INSERT INTO aentvalue (uuid, userid, attributeid, vocabid, measure, freetext, certainty, deleted, versionnum, isdirty, isdirtyreason, parenttimestamp, valuetimestamp)
+-- SELECT uuid, :userid, attributeid, vocabid, measure, freetext, certainty, deleted, v.versionnum, isdirty, isdirtyreason, :parenttimestamp, :valuetimestamp
+-- FROM aentvalue
+-- JOIN
+--   (SELECT uuid,
+--           valuetimestamp,
+--           attributeid
+--    FROM aentvalue
+--    WHERE uuid = :uuid
+--      AND attributeid = :attributeid
+--      AND valuetimestamp <= :timestamp
+--    GROUP BY uuid,
+--             attributeid HAVING MAX (valuetimestamp)) USING (uuid,
+--                                                             valuetimestamp,
+--                                                             attributeid),
+--   (SELECT versionnum
+--    FROM VERSION
+--    WHERE ismerged = 1
+--    ORDER BY versionnum DESC LIMIT 1) v;
+-- EOF
+--     )
+--   end
+-- 
+
 -- 
 --   def self.merge_copy_arch_entity_relationships
 --     cleanup_query(<<EOF
@@ -2228,57 +2356,7 @@ select uuid
 --     )
 --   end
 -- 
--- @IMPORTANT
---   def self.get_entity_identifier
---     cleanup_query(<<EOF
--- select group_concat(response, ', ') as response
--- from (
---   select uuid, aenttypename, attributename, group_concat(coalesce(measure    || ' '  || vocabname  || '(' ||freetext||'; '|| (certainty * 100.0) || '% certain)',
---                                         measure    || ' (' || freetext   ||'; '|| (certainty * 100.0)  || '% certain)',
---                                         vocabname  || ' (' || freetext   ||'; '|| (certainty * 100.0)  || '% certain)',
---                                         measure    || ' ' || vocabname   ||' ('|| (certainty * 100.0)  || '% certain)',
---                                         vocabname  || ' (' || freetext || ')',
---                                         measure    || ' (' || freetext || ')',
---                                         measure    || ' (' || (certainty * 100.0) || '% certain)',
---                                         vocabname  || ' (' || (certainty * 100.0) || '% certain)',
---                                         freetext   || ' (' || (certainty * 100.0) || '% certain)',
---                                         measure,
---                                         vocabname,
---                                         freetext), ' | ') as response, attributeid, deleted, aenttimestamp
---   from latestAllArchEntIdentifiers
---   where uuid = ?
---   group by uuid, attributeid
---   order by epoch)
--- group by uuid
--- EOF
---     )
---   end
--- 
--- @IMPORTANT
---   def self.get_entity_uuid
---     cleanup_query(<<EOF
--- select uuid from (
--- select uuid, group_concat(response, ', ') as response
--- from (
---   select uuid, aenttypename, attributename, group_concat(coalesce(measure    || ' '  || vocabname  || '(' ||freetext||'; '|| (certainty * 100.0) || '% certain)',
---                                         measure    || ' (' || freetext   ||'; '|| (certainty * 100.0)  || '% certain)',
---                                         vocabname  || ' (' || freetext   ||'; '|| (certainty * 100.0)  || '% certain)',
---                                         measure    || ' ' || vocabname   ||' ('|| (certainty * 100.0)  || '% certain)',
---                                         vocabname  || ' (' || freetext || ')',
---                                         measure    || ' (' || freetext || ')',
---                                         measure    || ' (' || (certainty * 100.0) || '% certain)',
---                                         vocabname  || ' (' || (certainty * 100.0) || '% certain)',
---                                         freetext   || ' (' || (certainty * 100.0) || '% certain)',
---                                         measure,
---                                         vocabname,
---                                         freetext), ' | ') as response, attributeid, deleted, aenttimestamp
---   from latestAllArchEntIdentifiers
---   group by uuid, attributeid
---   order by epoch)
--- group by uuid) where response = ?
--- EOF
---     )
---   end
+
 -- 
 --   def self.get_rel_identifier
 --     cleanup_query(<<EOF
@@ -2326,44 +2404,5 @@ select uuid
 --     )
 -- 
 -- 
--- @IMPORTANT
--- -- fetch entityt list
--- SELECT uuid, group_concat(coalesce(measure   || ' '  || vocabname || '('  ||  freetext           ||'; '|| (certainty * 100.0) || '% certain)',
--- measure   || ' (' || freetext  || '; ' || (certainty * 100.0) || '% certain)',
--- vocabname || ' (' || freetext  || '; ' || (certainty * 100.0) || '% certain)',
--- measure   || ' '  || vocabname || ' (' || (certainty * 100.0) || '% certain)',
---   vocabname || ' (' || freetext  || ')',
---   measure   || ' (' || freetext  || ')',
--- measure   || ' (' ||(certainty * 100.0) || '% certain)',
--- vocabname || ' (' ||(certainty * 100.0) || '% certain)',
--- freetext  || ' (' ||(certainty * 100.0) || '% certain)',
--- measure,
--- vocabname,
--- freetext), ' | ') as response
--- FROM latestNonDeletedArchentIdentifiers
--- WHERE laenttypename = ?
--- GROUP BY uuid;
--- 
--- @IMPORTANT
--- -- fetch visible geometry
--- SELECT uuid, group_concat(coalesce(measure   || ' '  || vocabname || '(' ||freetext||'; '|| (certainty * 100.0) || '% certain)',
---             measure   || ' (' || freetext  ||'; '|| (certainty * 100.0) || '% certain)',
---             vocabname || ' (' || freetext  ||'; '|| (certainty * 100.0) || '% certain)',
---             measure   || ' '  || vocabname  ||' ('|| (certainty * 100.0) || '% certain)',
---             vocabname || ' (' || freetext || ')',
---             measure   || ' (' || freetext || ')',
---             measure   || ' (' || (certainty * 100.0) || '% certain)',
---             vocabname || ' (' || (certainty * 100.0) || '% certain)',
---             freetext  || ' (' || (certainty * 100.0) || '% certain)',
---             measure,
---             vocabname,
---             freetext), ' | ') as response, hex(asbinary(geospatialcolumn))
---         FROM ( SELECT uuid, geospatialcolumn, attributeid, vocabid, attributename, vocabname, measure, freetext, certainty, attributetype, valuetimestamp, archentity.rowid as arowid
---   FROM latestNonDeletedArchentIdentifiers join archentity using (uuid, aenttimestamp, geospatialcolumn)
--- WHERE arowid in (SELECT pkid
---     FROM idx_archentity_geospatialcolumn
---               WHERE pkid MATCH RTreeIntersects(?, ?, ?, ?))
---             ORDER BY uuid, attributename ASC, valuetimestamp desc)
---         GROUP BY uuid limit ?;    
 
 rollback;
