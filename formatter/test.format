@@ -33,6 +33,7 @@ create view if not exists latestNonDeletedArchEntFormattedIdentifiers as
   left outer join vocabulary using (attributeid, vocabid)
  WHERE isIdentifier = 'true'
  group by uuid, attributeid
+ having response is not null
  order by uuid, aentcountorder;
 
 select '====================================';
@@ -56,6 +57,7 @@ create view if not exists latestAllArchEntFormattedIdentifiers as
   left outer join vocabulary using (attributeid, vocabid)
  WHERE isIdentifier = 'true'
  group by uuid, attributeid
+ having response is not null
  order by uuid, aentcountorder;
 
 
@@ -391,6 +393,7 @@ from archentity;
 --     )
 --   end
 
+
 select '====================================';
 select 'self.search_arch_entity';
 
@@ -408,6 +411,7 @@ where uuid in (select uuid
          or createdBy LIKE '%'||'Faims Admin'||'%'
          or modifiedAt LIKE '%'||'Faims Admin'||'%'
          or modifiedBy LIKE '%'||'Faims Admin'||'%'
+   group by uuid         
    order by createdAt
       limit 5
      offset 5
@@ -415,6 +419,7 @@ where uuid in (select uuid
 group by uuid
 order by createdAt
 ;
+
 -- 
 --   def self.total_search_arch_entity
 --     cleanup_query(<<EOF
@@ -437,6 +442,23 @@ order by createdAt
 -- EOF
 --     )
 --   end
+select '====================================';
+select 'self.total_search_arch_entity';
+
+select count(*)
+from (
+select uuid
+      from latestnondeletedarchent join createdModifiedAtBy using (uuid) join latestnondeletedaentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)     
+      where freetext LIKE '%'||'Faims Admin'||'%'  
+         OR measure LIKE '%'||'Faims Admin'||'%' 
+         OR vocabname LIKE '%'||'Faims Admin'||'%'
+         OR createdAt LIKE '%'||'Faims Admin'||'%'
+         or createdBy LIKE '%'||'Faims Admin'||'%'
+         or modifiedAt LIKE '%'||'Faims Admin'||'%'
+         or modifiedBy LIKE '%'||'Faims Admin'||'%'            
+   order by createdAt
+      limit 5
+     offset 5);
 -- 
 --   def self.search_arch_entity_include_deleted
 --     cleanup_query(<<EOF
