@@ -460,6 +460,7 @@ select uuid
       limit 5
      offset 5);
 -- 
+-- @IMPORTANT
 --   def self.search_arch_entity_include_deleted
 --     cleanup_query(<<EOF
 -- select uuid, group_concat(response, ', ') as response, deleted, aenttimestamp
@@ -651,6 +652,7 @@ select uuid
 --     )
 --   end
 -- 
+-- @IMPORTANT
 --   def self.get_arch_ent_attribute_for_comparison
 --     cleanup_query(<<EOF
 -- select uuid, attributename, attributeid, attributetype, valuetimestamp, group_concat(coalesce(measure    || ' '  || vocabname  || '(' ||freetext||'; '|| (certainty * 100.0) || '% certain)',
@@ -698,6 +700,7 @@ select uuid
 --     )
 --   end
 -- 
+-- @IMPORTANT
 --   def self.get_arch_ent_attributes_at_timestamp
 --     cleanup_query(<<EOF
 -- select uuid, attributename, attributeid, group_concat(DISTINCT afname || ' ' || alname) as auser, astext(transform(GeoSpatialColumn,?)), group_concat(DISTINCT vfname || ' ' || vlname) as vuser, aenttimestamp, valuetimestamp, max(deleted) as entityDeleted, group_concat(coalesce(
@@ -739,6 +742,7 @@ select uuid
 --     )
 --   end
 -- 
+-- @IMPORTANT
 --   def self.get_arch_ent_attributes_changes_at_timestamp
 --     cleanup_query(<<EOF
 -- select uuid, 'EntityDeleted' as attribute, ifnull(deleted, 'Record Present') as 'What changed'
@@ -872,6 +876,7 @@ select uuid
 --     )
 --   end
 -- 
+-- @IMPORTANT
 --   def self.get_related_arch_entities
 --     cleanup_query(<<EOF
 -- SELECT uuid,
@@ -2223,6 +2228,7 @@ select uuid
 --     )
 --   end
 -- 
+-- @IMPORTANT
 --   def self.get_entity_identifier
 --     cleanup_query(<<EOF
 -- select group_concat(response, ', ') as response
@@ -2248,6 +2254,7 @@ select uuid
 --     )
 --   end
 -- 
+-- @IMPORTANT
 --   def self.get_entity_uuid
 --     cleanup_query(<<EOF
 -- select uuid from (
@@ -2319,6 +2326,7 @@ select uuid
 --     )
 -- 
 -- 
+-- @IMPORTANT
 -- -- fetch entityt list
 -- SELECT uuid, group_concat(coalesce(measure   || ' '  || vocabname || '('  ||  freetext           ||'; '|| (certainty * 100.0) || '% certain)',
 -- measure   || ' (' || freetext  || '; ' || (certainty * 100.0) || '% certain)',
@@ -2336,6 +2344,7 @@ select uuid
 -- WHERE laenttypename = ?
 -- GROUP BY uuid;
 -- 
+-- @IMPORTANT
 -- -- fetch visible geometry
 -- SELECT uuid, group_concat(coalesce(measure   || ' '  || vocabname || '(' ||freetext||'; '|| (certainty * 100.0) || '% certain)',
 --             measure   || ' (' || freetext  ||'; '|| (certainty * 100.0) || '% certain)',
