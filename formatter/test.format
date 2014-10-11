@@ -748,6 +748,69 @@ from  (  SELECT uuid, attributeid, GeoSpatialColumn, vocabid, aentuser.fname as 
 select '==  @IMPORTANT  ==================================';
 select 'self.get_arch_ent_attributes_changes_at_timestamp';
 
+
+ select uuid, 'EntityDeleted' as attribute, ifnull(deleted, 'Record Present') as 'What changed'
+   from archentity
+ where uuid = (select uuid from archentity group by uuid limit 1)
+   AND aenttimestamp = (select max(aenttimestamp) from archentity where uuid = (select uuid from archentity group by uuid limit 1))
+ EXCEPT
+ SELECT  uuid, 'EntityDeleted', ifnull(deleted, 'Record Present')
+  from ( SELECT uuid, aenttimestamp, deleted
+           FROM archentity
+          where uuid = (select uuid from archentity group by uuid limit 1)
+            AND aenttimestamp < (select max(aenttimestamp) from archentity where uuid = (select uuid from archentity group by uuid limit 1) and deleted = 'true')
+       group by uuid
+       having max(aenttimestamp)
+   )
+ union
+ select uuid, 'geospatialcolumn', astext(transform(GeoSpatialColumn,?))
+   from archentity
+ where uuid = (select uuid from archentity group by uuid limit 1)
+   AND aenttimestamp = (select max(aenttimestamp) from archentity where uuid = (select uuid from archentity group by uuid limit 1))
+ EXCEPT
+ SELECT  uuid, 'geospatialcolumn', astext(transform(GeoSpatialColumn,?))
+  from ( SELECT uuid, aenttimestamp, GeoSpatialColumn
+           FROM archentity
+          where uuid = (select uuid from archentity group by uuid limit 1)
+            AND aenttimestamp < (select max(aenttimestamp) from archentity where uuid = (select uuid from archentity group by uuid limit 1) and deleted = 'true')
+            group by uuid
+       having max(aenttimestamp)
+   )
+ union
+ select uuid, attributename, ifnull(deleted, 'Attribute Present') as 'What changed'
+   from aentvalue join attributekey using (attributeid)
+ where uuid = (select uuid from archentity group by uuid limit 1)
+   AND valuetimestamp = (select distinct valuetimestamp from aentvalue where uuid = (select uuid from archentity group by uuid limit 1) order by valuetimestamp desc limit 1 offset 1)
+ EXCEPT
+ SELECT  uuid, attributename, ifnull(deleted, 'Attribute Present')
+  from ( SELECT uuid, valuetimestamp, deleted, attributename
+                 from aentvalue join attributekey using (attributeid)
+       where uuid = (select uuid from archentity group by uuid limit 1)
+         AND valuetimestamp < (select distinct valuetimestamp from aentvalue where uuid = (select uuid from archentity group by uuid limit 1) order by valuetimestamp desc limit 1 offset 2)
+    group by uuid, attributeid
+      having max(valuetimestamp)
+   )
+ union
+ select uuid, attributename, group_concat(format(formatstring, vocabname, measure, freetext, certainty), appendcharacterstring) as response
+   from aentvalue join attributekey using (attributeid) left outer join vocabulary using (vocabid, attributeid)
+ where uuid = (select uuid from archentity group by uuid limit 1)
+   AND valuetimestamp = (select distinct valuetimestamp from aentvalue where uuid = (select uuid from archentity group by uuid limit 1) order by valuetimestamp desc limit 1 offset 1)
+ group by uuid, attributename
+
+EXCEPT
+ SELECT  uuid, attributename,  group_concat(format(formatstring, vocabname, measure, freetext, certainty), appendcharacterstring) as response
+  from ( select uuid, measure , vocabname, freetext, attributename, valuetimestamp, certainty, appendcharacterstring, formatstring
+           from aentvalue join attributekey using (attributeid) left outer join vocabulary using (vocabid, attributeid)
+          where uuid = (select uuid from archentity group by uuid limit 1)
+            AND valuetimestamp < (select distinct valuetimestamp from aentvalue where uuid = (select uuid from archentity group by uuid limit 1) order by valuetimestamp desc limit 1 offset 2)
+       group by uuid, attributeid
+       having max(valuetimestamp)
+   )
+  group by uuid, attributename; 
+
+
+  -- the uuid = (query) and *timestamp [<=] (query) should be replaced with their original parameters. This needs thorough testing, as I'm not sure if vocaborder is necessary here.
+
 -- @IMPORTANT
 --   def self.get_related_arch_entities
 --     cleanup_query(<<EOF
@@ -875,6 +938,18 @@ select 'self.get_arch_ent_attributes_changes_at_timestamp';
 select '==  @IMPORTANT  ==================================';
 select 'self.get_related_arch_entities';
 
+   SELECT uuid, aenttypename || ' ' || coalesce(participatesverb, 'in') || ' '|| relntypename||': '||group_concat(response,' ')
+     FROM latestNonDeletedArchEntFormattedIdentifiers 
+     JOIN latestnondeletedaentreln using (uuid) 
+     join relationship using (relationshipid) 
+     join relntype using (relntypeid)
+    where relationshipid in (select relationshipid 
+                               from latestnondeletedaentreln
+                              where uuid = (select uuid from archentity group by uuid limit 1)
+                             )
+      and uuid != (select uuid from archentity group by uuid limit 1)
+group by uuid
+order by aentrelntimestamp;
 
 -- @IMPORTANT
 --   def self.get_entity_identifier
@@ -903,6 +978,12 @@ select 'self.get_related_arch_entities';
 --   end
 select '==  @IMPORTANT  ==================================';
 select 'self.get_entity_identifier';
+
+
+select group_concat(response, ' ') as response
+from latestAllArchEntFormattedIdentifiers
+where uuid = (select uuid from archentity group by uuid limit 1)
+group by uuid;
 -- 
 -- @IMPORTANT
 --   def self.get_entity_uuid
@@ -930,6 +1011,7 @@ select 'self.get_entity_identifier';
 --     )
 --   end
 
+
 select '==  @IMPORTANT  ==================================';
 select 'fetch entityt list';
 
@@ -951,6 +1033,11 @@ select 'fetch entityt list';
 -- FROM latestNonDeletedArchentIdentifiers
 -- WHERE laenttypename = ?
 -- GROUP BY uuid;
+
+
+select uuid 
+  from latestAllArchEntFormattedIdentifiers
+where response = (select response from latestAllArchEntFormattedIdentifiers where uuid = (select uuid from archentity group by uuid limit 1));
 
 select '==  @IMPORTANT  ==================================';
 select 'fetch visible geometry';
@@ -981,7 +1068,13 @@ select 'fetch visible geometry';
 
 
 
-
+select uuid, group_concat(response, ' '), hex(asbinary(geospatialcolumn)
+  from latestnondeletedarchentidientifiers join latestnondeletedarchent using (uuid)
+  WHERE arowid in (SELECT pkid
+                     FROM idx_archentity_geospatialcolumn
+                    WHERE pkid MATCH RTreeIntersects(?, ?, ?, ?))
+                 ORDER BY uuid, attributename ASC, valuetimestamp desc)
+                 GROUP BY uuid limit ?;  
 
 
 
