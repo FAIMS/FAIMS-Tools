@@ -1011,6 +1011,13 @@ group by uuid;
 --     )
 --   end
 
+select '==  @IMPORTANT  ==================================';
+select 'self.get_entity_uuid';
+
+select uuid 
+  from latestAllArchEntFormattedIdentifiers
+where response = (select response from latestAllArchEntFormattedIdentifiers where uuid = (select uuid from archentity group by uuid limit 1));
+
 
 select '==  @IMPORTANT  ==================================';
 select 'fetch entityt list';
@@ -1035,9 +1042,18 @@ select 'fetch entityt list';
 -- GROUP BY uuid;
 
 
-select uuid 
-  from latestAllArchEntFormattedIdentifiers
-where response = (select response from latestAllArchEntFormattedIdentifiers where uuid = (select uuid from archentity group by uuid limit 1));
+select uuid, group_concat(response, ' '), deleted, aenttimestamp, createdAt, modifiedAt, createdBy, modifiedBy
+from (select uuid, aenttimestamp
+		from latestnondeletedarchent join aenttype using(aenttypeid)
+	   where aenttypename='small'
+	   order by uuid
+	   limit 2
+	  offset 2) 
+join latestNonDeletedArchEntFormattedIdentifiers using (uuid)
+join createdModifiedAtBy using (uuid)    
+group by uuid
+order by createdAt
+;
 
 select '==  @IMPORTANT  ==================================';
 select 'fetch visible geometry';
