@@ -1053,7 +1053,7 @@ join latestNonDeletedArchEntFormattedIdentifiers using (uuid)
 join createdModifiedAtBy using (uuid)    
 group by uuid
 order by createdAt
-;
+;	
 
 select '==  @IMPORTANT  ==================================';
 select 'fetch visible geometry';
@@ -1093,10 +1093,28 @@ select uuid, group_concat(response, ' '), hex(asbinary(geospatialcolumn)
                  GROUP BY uuid limit ?;  
 
 
+select '==  @IMPORTANT  ==================================';
+select 'self.total_search_arch_entity_include_deleted';
 
 
 
-
+select count(uuid)
+from  (select uuid, max(aenttimestamp) as aenttimestamp
+      from archentity join createdModifiedAtBy using (uuid) join latestnondeletedaentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)     
+      where freetext LIKE '%'||'Faims Admin'||'%'  
+         OR measure LIKE '%'||'Faims Admin'||'%' 
+         OR vocabname LIKE '%'||'Faims Admin'||'%'
+         OR createdAt LIKE '%'||'Faims Admin'||'%'
+         or createdBy LIKE '%'||'Faims Admin'||'%'
+         or modifiedAt LIKE '%'||'Faims Admin'||'%'
+         or modifiedBy LIKE '%'||'Faims Admin'||'%'
+   group by uuid         
+   order by createdAt
+      limit 5
+     offset 5
+      ) join archentity using (aenttimestamp, uuid) join createdModifiedAtBy using (uuid) join latestallArchEntFormattedIdentifiers using (uuid)
+order by createdAt
+;
 
 
 
