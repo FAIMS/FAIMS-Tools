@@ -21,6 +21,7 @@ from  (select distinct uuid, max(aenttimestamp) as aenttimestamp
    order by createdAt
       limit 50
      offset 0
-      ) join archentity using (aenttimestamp, uuid) join createdModifiedAtBy using (uuid) join latestallArchEntFormattedIdentifiers using (uuid)
+      ) join archentity using (aenttimestamp, uuid) join allcreatedModifiedAtBy using (uuid) join latestallArchEntFormattedIdentifiers using (uuid)
 group by uuid
 order by createdAt;
+
