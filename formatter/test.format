@@ -17,7 +17,7 @@ create view createdModifiedAtBy as select uuid, createdAt, createdBy, modifiedAt
   join (select uuid, valuetimestamp as modifiedAt, fname || ' ' || lname as modifiedBy, userid as modifiedUserid
   		from latestnondeletedaentvalue join user using (userid)
   		group by uuid) using (uuid)		  ;
-  
+
   drop view if exists allCreatedModifiedAtBy;
 
 create view allCreatedModifiedAtBy as select uuid, createdAt, createdBy, modifiedAt, modifiedBy, modifiedUserid, createdUserid
@@ -1299,9 +1299,44 @@ from  (select distinct uuid
 
 
 
+--   def self.get_arch_ent_info
+--     cleanup_query(<<EOF
+-- select 'Last Edit by: ' || fname || ' ' || lname || ' at '|| aenttimestamp
+-- from archentity
+-- join user using (userid)
+-- where uuid = ?
+--   and aenttimestamp = ?;
+-- EOF
+--     )
+--   end
+
+select '====================================';
+select 'self.get_arch_ent_info';
+
+select format('Last Edit by $1 $2 at $3', fname, lname, max(aenttimestamp))
+  from archentity join user using (userid)
+ where uuid = (select uuid from archentity group by uuid limit 1);
+-- 
+--   def self.get_arch_ent_attribute_info
+--     cleanup_query(<<EOF
+-- select 'Last Edit by: ' || fname || ' ' || lname || ' at '|| valuetimestamp
+-- from aentvalue
+-- join user using (userid)
+-- where uuid = ?
+--   and valuetimestamp = ?
+--   and attributeid = ?;
+-- EOF
+--     )
+--   end
 
 
+select '====================================';
+select 'self.get_arch_ent_attribute_info';
 
+select format('Last Edit by $1 $2 at $3', fname, lname, max(valuetimestamp))
+  from aentvalue join user using (userid)
+ where uuid = (select uuid from archentity group by uuid limit 1)
+   and attributeid = (select attributeid from idealaent where aenttypeid = (select aenttypeid from archentity group by uuid limit 1) limit 1);
 
 
 -- 
