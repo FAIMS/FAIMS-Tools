@@ -50,6 +50,9 @@ File.open(sql_file, 'r') do |file|
       end
       sql = ""
       rescue Exception => e
+        $stderr.puts sql
+        $stderr.puts e
+        puts sql
         puts e
         sql = ""
       end

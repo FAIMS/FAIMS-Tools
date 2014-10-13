@@ -8,16 +8,27 @@ select 'creating createdModifiedAtBy';
 
 drop view if exists createdModifiedAtBy;
 
-create view createdModifiedAtBy as select uuid, createdAt, createdBy, modifiedAt, modifiedBy
-  from (select uuid, aenttimestamp as createdAt, fname || ' ' || lname as createdBy
+create view createdModifiedAtBy as select uuid, createdAt, createdBy, modifiedAt, modifiedBy, modifiedUserid, createdUserid
+  from (select uuid, aenttimestamp as createdAt, fname || ' ' || lname as createdBy, userid as createdUserid
 		  from archentity join user using (userid)
 		  where uuid in (select uuid from latestnondeletedarchent)
 		  group by uuid
 		  having min(aenttimestamp)) as created
-  join (select uuid, valuetimestamp as modifiedAt, fname || ' ' || lname as modifiedBy
+  join (select uuid, valuetimestamp as modifiedAt, fname || ' ' || lname as modifiedBy, userid as modifiedUserid
   		from latestnondeletedaentvalue join user using (userid)
   		group by uuid) using (uuid)		  ;
+  
+  drop view if exists allCreatedModifiedAtBy;
 
+create view allCreatedModifiedAtBy as select uuid, createdAt, createdBy, modifiedAt, modifiedBy, modifiedUserid, createdUserid
+  from (select uuid, aenttimestamp as createdAt, fname || ' ' || lname as createdBy, userid as createdUserid
+      from archentity join user using (userid)      
+      group by uuid
+      having min(aenttimestamp)) as created
+  join (select uuid, valuetimestamp as modifiedAt, fname || ' ' || lname as modifiedBy, userid as modifiedUserid
+      from aentvalue join user using (userid)
+      group by uuid
+      having valuetimestamp = max(valuetimestamp)) using (uuid)     ;
 
 select '====================================';
 select 'creating latestNonDeletedArchEntFormattedIdentifiers';
@@ -201,7 +212,7 @@ from (select uuid, aenttimestamp
 	   limit 2
 	  offset 2) 
 join latestAllArchEntFormattedIdentifiers using (uuid)
-join createdModifiedAtBy using (uuid)    
+join allcreatedModifiedAtBy using (uuid)    
 group by uuid
 order by createdBy
 ;
@@ -226,7 +237,7 @@ select '====================================';
 select 'self.total_arch_entities_include_deleted';
 
 
-select count(uuid)
+select count(distinct uuid)
 from archentity
 where aenttypeid = 167583672827;
 
@@ -295,8 +306,8 @@ select '====================================';
 select 'def self.total_all_arch_entities';
 
 
-select count(uuid)
-from latestNonDeletedArchEnt;
+select count(distinct uuid)
+from ArchEntity;
 -- 
 --   def self.load_all_arch_entities_include_deleted
 --     cleanup_query(<<EOF
@@ -337,7 +348,7 @@ from (select uuid, aenttimestamp
 	   limit 5
 	  offset 5) 
 join latestAllArchEntFormattedIdentifiers using (uuid)
-join createdModifiedAtBy using (uuid)    
+join allcreatedModifiedAtBy using (uuid)    
 group by uuid
 order by createdAt;
 
@@ -448,10 +459,10 @@ order by createdAt
 select '====================================';
 select 'self.total_search_arch_entity';
 
-select count(*)
+select count(distinct uuid)
 from (
 select uuid
-      from latestnondeletedarchent join createdModifiedAtBy using (uuid) join latestnondeletedaentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)     
+      from latestnondeletedarchent join allcreatedModifiedAtBy using (uuid) join latestnondeletedaentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)     
       where freetext LIKE '%'||'Faims Admin'||'%'  
          OR measure LIKE '%'||'Faims Admin'||'%' 
          OR vocabname LIKE '%'||'Faims Admin'||'%'
@@ -459,9 +470,7 @@ select uuid
          or createdBy LIKE '%'||'Faims Admin'||'%'
          or modifiedAt LIKE '%'||'Faims Admin'||'%'
          or modifiedBy LIKE '%'||'Faims Admin'||'%'            
-   order by createdAt
-      limit 5
-     offset 5);
+   order by createdAt);
 -- 
 
 --   def self.search_arch_entity_include_deleted
@@ -509,7 +518,7 @@ select 'self.search_arch_entity_include_deleted';
 
 select uuid, group_concat(response, ' '), archentity.deleted, aenttimestamp, createdAt, modifiedAt, createdBy, modifiedBy
 from  (select uuid, max(aenttimestamp) as aenttimestamp
-      from archentity join createdModifiedAtBy using (uuid) join latestnondeletedaentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)     
+      from archentity join allcreatedModifiedAtBy using (uuid) join latestnondeletedaentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)     
       where freetext LIKE '%'||'Faims Admin'||'%'  
          OR measure LIKE '%'||'Faims Admin'||'%' 
          OR vocabname LIKE '%'||'Faims Admin'||'%'
@@ -1099,8 +1108,8 @@ select 'self.total_search_arch_entity_include_deleted';
 
 
 select count(uuid)
-from  (select uuid, max(aenttimestamp) as aenttimestamp
-      from archentity join createdModifiedAtBy using (uuid) join latestnondeletedaentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)     
+from  (select uuid
+      from archentity join allcreatedModifiedAtBy using (uuid) join latestnondeletedaentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)     
       where freetext LIKE '%'||'Faims Admin'||'%'  
          OR measure LIKE '%'||'Faims Admin'||'%' 
          OR vocabname LIKE '%'||'Faims Admin'||'%'
@@ -1108,15 +1117,185 @@ from  (select uuid, max(aenttimestamp) as aenttimestamp
          or createdBy LIKE '%'||'Faims Admin'||'%'
          or modifiedAt LIKE '%'||'Faims Admin'||'%'
          or modifiedBy LIKE '%'||'Faims Admin'||'%'
+   group by uuid            
+      ) 
+;
+
+
+
+
+
+select '====================================';
+select 'self.search_arch_entity_by_type';
+
+
+-- user 'Faims Admin' instead of :query
+
+select uuid, group_concat(response, ' '), latestnondeletedarchent.deleted, aenttimestamp, createdAt, modifiedAt, createdBy, modifiedBy
+from  latestnondeletedarchent join createdModifiedAtBy using (uuid) join latestNonDeletedArchEntFormattedIdentifiers using (uuid)
+where uuid in (select uuid
+      from latestnondeletedarchent join createdModifiedAtBy using (uuid) join latestnondeletedaentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)           
+      where (aenttypeid = (select aenttypeid from aenttype limit 1) 
+             or 'all' = (select aenttypeid from aenttype limit 1)) --type dropdown
+      	 and ( 'all' = (select userid from user limit 1) --user dropdown
+      	     or createdUserid = (select userid from user limit 1)
+      	     or modifiedUserid = (select userid from user limit 1)
+      	      )
+         and (freetext LIKE '%'||'Faims Admin'||'%'  
+         OR measure LIKE '%'||'Faims Admin'||'%' 
+         OR vocabname LIKE '%'||'Faims Admin'||'%'
+         OR createdAt LIKE '%'||'Faims Admin'||'%'
+         or createdBy LIKE '%'||'Faims Admin'||'%'
+         or modifiedAt LIKE '%'||'Faims Admin'||'%'
+         or modifiedBy LIKE '%'||'Faims Admin'||'%')
    group by uuid         
    order by createdAt
       limit 5
      offset 5
+      )
+group by uuid
+order by createdAt
+;
+
+-- 
+--   def self.total_search_arch_entity
+--     cleanup_query(<<EOF
+-- select count(*)
+-- from (
+--   select uuid
+--   from (select uuid, attributeid
+--         from latestNonDeletedArchEntIdentifiers
+--         where uuid IN (select uuid
+--                         FROM latestNonDeletedAentValue
+--                         LEFT OUTER JOIN vocabulary using (attributeid, vocabid)
+--                        WHERE (freetext LIKE '%'||:query||'%'
+--                           OR measure LIKE '%'||:query||'%'
+--                           OR vocabname LIKE '%'||:query||'%')
+--                        order by uuid)
+--         group by uuid, attributeid
+--         order by epoch)
+--   group by uuid
+-- );
+-- EOF
+--     )
+--   end
+select '====================================';
+select 'self.total_search_arch_entity_by_type';
+
+select count(uuid)
+from (
+select distinct uuid
+      from latestnondeletedarchent join allcreatedModifiedAtBy using (uuid) join latestnondeletedaentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)     
+      where  (aenttypeid = (select aenttypeid from aenttype limit 1) 
+             or 'all' = (select aenttypeid from aenttype limit 1)) --type dropdown
+      	 and ( 'all' = (select userid from user limit 1) --user dropdown
+      	     or createdUserid = (select userid from user limit 1)
+      	     or modifiedUserid = (select userid from user limit 1)
+      	      )
+         and (freetext LIKE '%'||'Faims Admin'||'%'  
+         OR measure LIKE '%'||'Faims Admin'||'%' 
+         OR vocabname LIKE '%'||'Faims Admin'||'%'
+         OR createdAt LIKE '%'||'Faims Admin'||'%'
+         or createdBy LIKE '%'||'Faims Admin'||'%'
+         or modifiedAt LIKE '%'||'Faims Admin'||'%'
+         or modifiedBy LIKE '%'||'Faims Admin'||'%')            
+   order by createdAt);
+-- 
+
+--   def self.search_arch_entity_include_deleted
+--     cleanup_query(<<EOF
+-- select uuid, group_concat(response, ', ') as response, deleted, aenttimestamp
+-- from ( select uuid, aenttypename, attributename, group_concat(coalesce(measure    || ' '  || vocabname  || '(' ||freetext||'; '|| (certainty * 100.0) || '% certain)',
+--                                         measure    || ' (' || freetext   ||'; '|| (certainty * 100.0)  || '% certain)',
+--                                         vocabname  || ' (' || freetext   ||'; '|| (certainty * 100.0)  || '% certain)',
+--                                         measure    || ' ' || vocabname   ||' ('|| (certainty * 100.0)  || '% certain)',
+--                                         vocabname  || ' (' || freetext || ')',
+--                                         measure    || ' (' || freetext || ')',
+--                                         measure    || ' (' || (certainty * 100.0) || '% certain)',
+--                                         vocabname  || ' (' || (certainty * 100.0) || '% certain)',
+--                                         freetext   || ' (' || (certainty * 100.0) || '% certain)',
+--                                         measure,
+--                                         vocabname,
+--                                         freetext), ' | ') as response, attributeid, deleted, aenttimestamp
+--       from latestAllArchEntIdentifiers
+--      where uuid IN (select uuid
+--                       FROM aentvalue join (select uuid, attributeid, max(valuetimestamp) as ValueTimestamp
+--                                             from aentvalue
+--                                         group by uuid, attributeid) USING (uuid, attributeid, valuetimestamp)
+--                       LEFT OUTER JOIN vocabulary using (attributeid, vocabid)
+--                      WHERE (freetext LIKE '%'||:query||'%'
+--                         OR measure LIKE '%'||:query||'%'
+--                         OR vocabname LIKE '%'||:query||'%')
+--                      order by uuid)
+--        group by uuid, attributeid
+--        order by epoch)
+-- group by uuid
+-- limit :limit
+-- offset :offset;
+-- EOF
+--     )
+--   end
+
+
+
+select '==  @IMPORTANT  ==================================';
+select 'self.search_arch_entity_include_deleted_by_type';
+
+
+
+select uuid, group_concat(response, ' '), archentity.deleted, aenttimestamp, createdAt, modifiedAt, createdBy, modifiedBy
+from  (select distinct uuid, max(aenttimestamp) as aenttimestamp
+      from archentity join allCreatedModifiedAtBy using (uuid) join aentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)     
+      where  (aenttypeid = (select aenttypeid from aenttype limit 1) 
+             or 'all' = (select aenttypeid from aenttype limit 1)) --type dropdown
+      	 and ( 'all' = (select userid from user limit 1) --user dropdown
+      	     or createdUserid = (select userid from user limit 1)
+      	     or modifiedUserid = (select userid from user limit 1)
+      	      )
+         and (freetext LIKE '%'||'Faims Admin'||'%'  
+         OR measure LIKE '%'||'Faims Admin'||'%' 
+         OR vocabname LIKE '%'||'Faims Admin'||'%'
+         OR createdAt LIKE '%'||'Faims Admin'||'%'
+         or createdBy LIKE '%'||'Faims Admin'||'%'
+         or modifiedAt LIKE '%'||'Faims Admin'||'%'
+         or modifiedBy LIKE '%'||'Faims Admin'||'%')
+   group by uuid, attributeid
+   having valuetimestamp = max(valuetimestamp)         
+   order by createdAt
+      limit 5
+     offset 5
       ) join archentity using (aenttimestamp, uuid) join createdModifiedAtBy using (uuid) join latestallArchEntFormattedIdentifiers using (uuid)
+group by uuid
 order by createdAt
 ;
 
 
+select '==  @IMPORTANT  ==================================';
+select 'self.total_search_arch_entity_include_deleted_by_type';
+
+
+
+select count(uuid)
+from  (select distinct uuid
+      from archentity join allCreatedModifiedAtBy using (uuid) join aentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)     
+      where  (aenttypeid = (select aenttypeid from aenttype limit 1) 
+             or 'all' = (select aenttypeid from aenttype limit 1)) --type dropdown
+      	 and ( 'all' = (select userid from user limit 1) --user dropdown
+      	     or createdUserid = (select userid from user limit 1)
+      	     or modifiedUserid = (select userid from user limit 1)
+      	      )
+         and (freetext LIKE '%'||'Faims Admin'||'%'  
+         OR measure LIKE '%'||'Faims Admin'||'%' 
+         OR vocabname LIKE '%'||'Faims Admin'||'%'
+         OR createdAt LIKE '%'||'Faims Admin'||'%'
+         or createdBy LIKE '%'||'Faims Admin'||'%'
+         or modifiedAt LIKE '%'||'Faims Admin'||'%'
+         or modifiedBy LIKE '%'||'Faims Admin'||'%')
+         group by uuid, attributeid
+   		having valuetimestamp = max(valuetimestamp)                 
+   order by createdAt
+      )
+;
 
 
 
