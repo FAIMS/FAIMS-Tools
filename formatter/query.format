@@ -1,6 +1,27 @@
-select uuid, deleted from archentity;
+select uuid, response, latestnondeletedarchent.deleted, aenttimestamp, createdAt, modifiedAt, createdBy, modifiedBy
+from  latestnondeletedarchent join createdModifiedAtBy using (uuid) join latestNonDeletedArchEntFormattedIdentifiers using (uuid)
+where uuid in (select uuid
+      from latestnondeletedarchent join createdModifiedAtBy using (uuid) join latestnondeletedaentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)
+      where (aenttypeid = 'all'
+             or 'all' = 'all')
+         and ( 'all' = 'all'
+             or createdUserid = 'all'
+             or modifiedUserid = 'all'
+              )
+         and (freetext LIKE '%'||''||'%'
+         OR measure LIKE '%'||''||'%'
+         OR vocabname LIKE '%'||''||'%'
+         OR createdAt LIKE '%'||''||'%'
+         or createdBy LIKE '%'||''||'%'
+         or modifiedAt LIKE '%'||''||'%'
+         or modifiedBy LIKE '%'||''||'%')
+   group by uuid
+   order by createdAt
+      )
+order by createdAt
+;
 
-select uuid, group_concat(response, ' '), archentity.deleted, aenttimestamp, createdAt, modifiedAt, createdBy, modifiedBy
+select uuid, response, archentity.deleted, aenttimestamp, createdAt, modifiedAt, createdBy, modifiedBy
 from  (select distinct uuid, max(aenttimestamp) as aenttimestamp
       from archentity join allCreatedModifiedAtBy using (uuid) join aentvalue using (uuid) left outer join vocabulary using (attributeid, vocabid)
       where  (aenttypeid = 'all'
@@ -19,9 +40,6 @@ from  (select distinct uuid, max(aenttimestamp) as aenttimestamp
    group by uuid, attributeid
    having valuetimestamp = max(valuetimestamp)
    order by createdAt
-      limit 50
-     offset 0
       ) join archentity using (aenttimestamp, uuid) join allcreatedModifiedAtBy using (uuid) join latestallArchEntFormattedIdentifiers using (uuid)
-group by uuid
-order by createdAt;
-
+order by createdAt
+;
