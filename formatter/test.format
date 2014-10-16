@@ -65,13 +65,10 @@ from (
   JOIN (select uuid, max(aenttimestamp) as aenttimestamp
           from archentity
          group by uuid) USING (uuid, aenttimestamp)
-  join aentvalue using (uuid)
-  JOIN (select uuid, attributeid, max(valuetimestamp) as ValueTimestamp
-        from aentvalue
-        group by uuid, attributeid) USING (uuid, attributeid, valuetimestamp)
   JOIN aenttype using (aenttypeid)
-  JOIN idealaent using (aenttypeid, attributeid)
+  JOIN idealaent using (aenttypeid)
   join attributekey using (attributeid)
+  join latestnondeletedaentvalue using (uuid, attributeid)
   left outer join vocabulary using (attributeid, vocabid)
  WHERE isIdentifier = 'true'
  group by uuid, attributeid
