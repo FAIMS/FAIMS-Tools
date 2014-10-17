@@ -1,0 +1,15 @@
+
+select spatialite_version();
+
+select uuid, response, hex(asbinary(a.geospatialcolumn))
+  from latestNonDeletedArchEntFormattedIdentifiers
+  join latestnondeletedarchent using (uuid)
+  join archentity a using (uuid, aenttimestamp)
+  join createdModifiedAtBy using (uuid)
+ WHERE a.rowid in (SELECT rowid
+                    FROM spatialindex
+                   WHERE f_table_name = 'archentity'
+			and search_frame = polyfromtext( format(' polygon(($1 $2, $3 $2, $3 $4, $1 $4))', 151.17888414861255, -33.86774119732246, 151.18299329266145, -33.87097489743746), 4326)
+                   )
+ order by createdAt
+ limit 250;
