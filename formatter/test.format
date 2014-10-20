@@ -2704,6 +2704,12 @@ select format('Last Edit by $1 $2 at $3', fname, lname, max(valuetimestamp))
 --     cleanup_query(<<EOF
 --     insert into user (fname, lname, email) values (?,?,?);
 -- EOF
+
+select '=========================';
+select 'self.update_list_of_users';
+
+replace into user (userid, fname, lname, email, userdeleted) select (select userid from user where email = 'faimsadmin@intersect.org.au'), 'Faims2', 'Admin', 'faimsadmin@intersect.org.au', null;
+
 --     )
 --   end
 -- 
