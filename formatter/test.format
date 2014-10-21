@@ -957,7 +957,24 @@ select 'self.get_related_arch_entities';
                               where uuid = (select uuid from archentity group by uuid limit 1)
                              )
       and uuid != (select uuid from archentity group by uuid limit 1)
-order by aentrelntimestamp;
+ order by aentrelntimestamp;
+
+
+select '==  @IMPORTANT  ==================================';
+select 'self.get_related_arch_entities_include_deleted';
+
+   SELECT uuid, aenttypename || ' ' || coalesce(participatesverb, 'in') || ' '|| relntypename||': '||response
+     FROM latestNonDeletedArchEntFormattedIdentifiers 
+     JOIN (select uuid, relationshipid, participatesverb, aentrelntimestamp from aentreln group by uuid, relationshipid having max(aentrelntimestamp)) using (uuid) 
+     join relationship using (relationshipid) 
+     join relntype using (relntypeid)
+    where relationshipid in (select relationshipid 
+                               from latestnondeletedaentreln
+                              where uuid = (select uuid from archentity group by uuid limit 1)
+                             )
+      and uuid != (select uuid from archentity group by uuid limit 1)
+ order by aentrelntimestamp;
+
 
 -- @IMPORTANT
 --   def self.get_entity_identifier
