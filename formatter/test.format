@@ -39,13 +39,13 @@ create view if not exists latestNonDeletedArchEntFormattedIdentifiers as
 
 select uuid, aenttypeid, aenttypename, group_concat(response, ' ') as response, null as deleted, aentcountorder
 from (
-  select uuid, aenttypeid, aenttypename, group_concat(format(formatstring, vocabname, measure, freetext, certainty), appendcharacterstring) as response, null as deleted, aentcountorder
-  from latestNonDeletedArchent 
+select uuid, aenttypeid, aenttypename, group_concat(format(formatstring, vocabname, measure, freetext, certainty), appendcharacterstring) as response, null as deleted, aentcountorder, group_concat(vocabcountorder)
+  from latestNonDeletedArchent
   JOIN aenttype using (aenttypeid)
   JOIN idealaent using (aenttypeid)
   join attributekey using (attributeid)
-  join latestNonDeletedAentValue using (uuid, attributeid)  
-  left outer join vocabulary using (attributeid, vocabid)
+  join (select * from latestNonDeletedAentValue
+  left outer join vocabulary using (attributeid, vocabid) order by vocabcountorder)  using (uuid, attributeid)
  WHERE isIdentifier = 'true'
  group by uuid, attributeid
  having response is not null
@@ -68,8 +68,8 @@ from (
   JOIN aenttype using (aenttypeid)
   JOIN idealaent using (aenttypeid)
   join attributekey using (attributeid)
-  join latestnondeletedaentvalue using (uuid, attributeid)
-  left outer join vocabulary using (attributeid, vocabid)
+  join (select * from latestNonDeletedAentValue
+  left outer join vocabulary using (attributeid, vocabid) order by vocabcountorder)  using (uuid, attributeid)
  WHERE isIdentifier = 'true'
  group by uuid, attributeid
  having response is not null
