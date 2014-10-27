@@ -1,5 +1,10 @@
 #!/usr/bin/python
 
+# Written by Vincent Tran and Brian Ballsun-Stanton
+
+# Scrapes a google spreasheet following the format specified in the README file.
+# Generates an appropriate data_schema.xml file, as well as the arch16N translations.
+
 import urllib2, json, sys
 
 arch16n = dict()
@@ -125,6 +130,7 @@ for entry in html['feed']['entry']:
                 p['terms'] = []
                 p['parents'] = []
             vocabTable[entity]['properties'].append(p)
+
 print """<?xml version="1.0" encoding="UTF-8"?>
 <dataSchema>"""
 depth = 1
@@ -163,6 +169,8 @@ for entity in vocabTable:
         if p['type'] != "":
             if p['type'] == "hierarchical":
                 s = s + " type=\"enum\""
+            elif p['type'] == "file":
+                s = s + " type=\"file\" file=\"true\" thumbnail=\"true\""
             else:
                 s = s + " type=\"" + p['type'] + "\""
         if p['identifier'] != "":
@@ -196,6 +204,6 @@ for entity in vocabTable:
         print '  ' * depth + "</RelationshipElement>"
 print "</dataSchema>"
 
-print "\n\n\n\n\n\n"
+print "\n\n\n\n"
 for key in arch16n:
     print key + "=" + str(arch16n[key])
