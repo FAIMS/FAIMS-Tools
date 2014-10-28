@@ -1,7 +1,11 @@
 #!/usr/bin/python
- 
-import urllib2
-import json
+
+# Written by Vincent Tran and Brian Ballsun-Stanton
+
+# Scrapes a google spreasheet following the format specified in the README file.
+# Generates an appropriate ui_schema.xml file, as well as the arch16N translations.
+
+import urllib2, json, sys
 
 arch16n = {}
 
@@ -133,6 +137,8 @@ def ui_body(html, format):
             s = s + " faims_style=\"" + getRowValue(row, format, 'faimsstyle').lower() + "\""
         if getRowValue(row, format, 'faimsscrollable') != "":
             s = s + " faims_scrollable=\"" + getRowValue(row, format, 'faimsscrollable').lower() + "\""
+        if getRowValue(row, format, 'faimsstyleclass') != "":
+            s = s + " faims_style_class=\"" + getRowValue(row, format, 'faimsstyleclass').lower() + "\""
         s = s + ">"
         schema.append(s)
         s = "  " * (int(depth)+1) + "<label>" 
@@ -171,7 +177,7 @@ response = urllib2.urlopen(url)
 html = response.read()
 
 html = json.loads(html)
-format = ['level', 'ref', 'type', 'faimsattributename', 'faimsattributetype', 'certainty', 'annotation', 'readonly', 'hidden', 'label', 'faimsarchenttype', 'arch16n', 'faimsstyle','faimsscrollable']
+format = ['level', 'ref', 'type', 'faimsattributename', 'faimsattributetype', 'certainty', 'annotation', 'readonly', 'hidden', 'label', 'faimsarchenttype', 'arch16n', 'faimsstyle', 'faimsscrollable', 'faimsstyleclass']
 print """<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <h:head>
     <h:title>hdb FAIMS Community Server</h:title>
@@ -207,6 +213,6 @@ ui_body(html, format)
 print """  </h:body>
 </h:html>"""
 
-print "\n\n\n\n\n\n"
+print "\n\n\n\n"
 for key in arch16n:
     print key + "=" + str(arch16n[key])

@@ -1,5 +1,11 @@
 #!/usr/bin/python
 
+# Written by Vincent Tran
+
+# Given an arch16N.properties, ui_schema.xml and data_schema.xml file,
+# go through all the arch16N values and strip out the ones that aren't mentioned
+# in any of the files.
+
 import sys, re
 
 class AutoVivification(dict):
@@ -11,7 +17,7 @@ class AutoVivification(dict):
             return value
 
 if len(sys.argv) < 4:
-    sys.stderr.write("Please specify a arch16N.properties file, ui_schema.xml and a data_schema.xml file")
+    sys.stderr.write("Please specify an arch16N.properties file, ui_schema.xml and a data_schema.xml file")
     exit()
 
 arch16N = sys.argv[1]
