@@ -3,301 +3,444 @@
 # Written by Vincent Tran
 
 # NEEDS A COMPLETE REWRITE
-# import fileinput, sys
+import fileinput, sys
 
-# archents = []
-# # Write to stderr this line won't appear when you pipe out from stdout.
-# sys.stderr.write("Enter archent names using capitals and spaces, ie Bucket, Tower Pole. Press Enter for each new archent.\n")
+archents = []
+# Write to stderr this line won't appear when you pipe out from stdout.
+sys.stderr.write("Do you need to specify an area code or something similar when you log in? [Y/n]\n")
+line = raw_input()
+listLogin = False
+if line == "n" or line == "N":
+    listLogin = True
 
-# print """/*** 'Editable' - you can edit the code below based on the needs ***/
-# User user; // don't touch
-# String userid;
+sys.stderr.write("Enter archent names using capitals and spaces, ie Bucket, Tower Pole. Press Enter for each new archent.\n")
 
-# /*setSyncEnabled(true);
-# setFileSyncEnabled(true);*/
+print """/*** 'Editable' - you can edit the code below based on the needs ***/
+import java.util.concurrent.Callable;
+User user; // don't touch
+String userid;
 
-# makeLocalID(){
-#     fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);");
-#     fetchOne("drop view if exists identifierAsSpreadsheet;");
-#     fetchOne("create view identifierAsSpreadsheet as select uuid, group_concat(coalesce(measure || ' ' || vocabname || '(' ||freetext||')',  measure || ' (' || freetext ||')',  vocabname || ' (' || freetext ||')',  measure || ' ' || vocabname ,  vocabname || ' (' || freetext || ')',  measure || ' (' || freetext || ')',  measure,  vocabname,  freetext,  measure,  vocabname,  freetext), ' ') as response from (select * from latestNonDeletedArchentIdentifiers order by attributename) group by uuid;");
-# }
+/*setSyncEnabled(true);
+setFileSyncEnabled(true);*/
 
-# makeLocalID();"""
+makeLocalID(){
+    fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);");
+    fetchOne("drop view if exists identifierAsSpreadsheet;");
+    fetchOne("create view identifierAsSpreadsheet as select uuid, group_concat(coalesce(measure || ' ' || vocabname || '(' ||freetext||')',  measure || ' (' || freetext ||')',  vocabname || ' (' || freetext ||')',  measure || ' ' || vocabname ,  vocabname || ' (' || freetext || ')',  measure || ' (' || freetext || ')',  measure,  vocabname,  freetext,  measure,  vocabname,  freetext), ' ') as response from (select * from latestNonDeletedArchentIdentifiers order by attributename) group by uuid;");
+}
 
-# for line in fileinput.input():
-#     archents.append(line)
+makeLocalID();
 
-# for archent in archents:
-#     archent = archent.rstrip()
-#     archent_id = archent.lower().replace(" ", "_") + "_id"
-#     archent_ui = archent.replace(" ", "_")
-#     archent_method = archent.replace(" ", "")
-#     print "String " + archent_id + """ = null;
+/*** CONTROL ***/
+// Put your control tab things here
+onEvent("control", "show", "refreshBuildings();removeNavigationButtons();");
 
-# new""" + archent_method + """() {
-#     """ + archent_id + """ = null;
-#     newTabGroup(\"""" + archent_ui + """\");
-# }
+removeNavigationButtons() {
+    removeNavigationButton("save");
+    removeNavigationButton("save_and_new");
+    removeNavigationButton("delete");
+}
 
-# load""" + archent_method + """() {
-#     """ + archent_id + """ = getListItemValue();
-#     load""" + archent_method + """From(""" + archent_id + """);
-# }
+"""
 
-# load""" + archent_method + """From(archentid) {
-#     """ + archent_id + """ = archentid;
-#     if (isNull(""" + archent_id + """)) {
-#         showToast("No """ + archent + """ selected");
-#         return;
-#     }
+for line in fileinput.input():
+    archents.append(line)
 
-#     showTabGroup(\"""" + archent_ui + """\", """ + archent_id + """);
-# }
+for archent in archents:
+    archent = archent.rstrip()
+    archent_id = archent.lower().replace(" ", "_") + "_id"
+    archent_ui = archent.replace(" ", "_")
+    archent_method = archent.replace(" ", "")
+    print "/*** " + archent.upper() + """***/
 
-# save""" + archent_method + """(String callback) {
-#     /* Add identifiers
-#     if (isNull()) {
-#         showWarning("Validation Error", "Cannot save """ + archent + """ without identifiers");
-#         return;
-#     }
-#     */
-#     if (!isNull(""" + archent_id + """)) {
-#         entity = fetchArchEnt(""" + archent_id + """);
-#     }
-#     saveTabGroup(\"""" + archent_ui + """\", """ + archent_id + """, null, null, \"""" + archent_id + """ = getLastSavedRecordId();" + callback);
-# }
+onEvent(\"""" + archent_ui + """\", "show", "add""" + archent_method + """Navigation();");
+/* Only necessary when you can return to this tab group from a child tab group
+onEvent(\"""" + archent_ui + """\", "show", "add""" + archent_method + """Navigation();autoSave""" + archent_method + """();");
+*/
+/* Only necessary when autosaving should be activated when a specific field is filled in
+onFocus("Path/To/Required_Filed", null, "activateAutoSave""" + archent_method + """();");
+*/
 
-# delete""" + archent_method + """() {
-#     if (!isNull(""" + archent_id + """)) {
-#         showAlert("Confirm Deletion", "Press OK to Delete this """ + archent + """!", "reallyDelete""" + archent_method + """()", "doNotDelete()");
-#     } else {
-#         cancelTabGroup(\"""" + archent_ui + """\", true);
-#     }
-# }
+String """ + archent_id + """ = null;
 
-# reallyDelete""" + archent_method + """() {
-#     deleteArchEnt(""" + archent_id + """);
-#     cancelTabGroup(\"""" + archent_ui + """\", false);
-# }
+new""" + archent_method + """() {
+    newTabGroup(\"""" + archent_ui + """\");
+    """ + archent_id + """ = null;
+}
 
-# load""" + archent_method + """Attributes() {
-# }
-# """
-# print """/*** MISC ***/
+load""" + archent_method + """() {
+    """ + archent_id + """ = getListItemValue();
+    load""" + archent_method + """From(""" + archent_id + """);
+}
 
-# saveEntitiesToRel(type, entity1, entity2) {
-#     if (isNull(entity1) || isNull(entity2)) return;
-    
-#     rel_id = saveRel(null, type, null, null);
-#     addReln(entity1, rel_id, null);
-#     addReln(entity2, rel_id, null);
-# }
+load""" + archent_method + """From(archentid) {
+    if (isNull(archentid)) {
+        showToast("No {""" + archent + """} selected");
+        return;
+    }
 
-# saveEntitiesToHierRel(type, entity1, entity2, e1verb, e2verb) {
-#     if (isNull(entity1) || isNull(entity2)) return;
-    
-#     rel_id = saveRel(null, type, null, null);
-#     addReln(entity1, rel_id, e1verb);
-#     addReln(entity2, rel_id, e2verb);
-# }
+    showTabGroup(\"""" + archent_ui + """\", archentid, new FetchCallback() {
+        onFetch(result) {
+            """ + archent_id + """ = archentid;
+            saveTabGroup(\"""" + archent_ui + "\", " + archent_id + """, null, null, new SaveCallback() {
+                onSave(uuid, newRecord) {
+                    """ + archent_id + """ = uuid;
+                }
+            }, true);
+        }
+    });
+}
 
-# makeVocab(String attrib) {
-#     Object a = fetchAll("select vocabid, vocabname from vocabulary join attributekey using (attributeid) where attributename = '"+attrib+"' ");
-#     return a;
-# }
+save""" + archent_method + """(Callable callback) {
+    /* Add required fields
+    if (isNull()) {
+        showWarning("Validation Error", "Cannot save {""" + archent + """} without required fields");
+        return;
+    }
+    */
+    saveTabGroup(\"""" + archent_ui + """\", """ + archent_id + """, null, null, new SaveCallback() {
+        onSave(uuid, newRecord) {
+            """ + archent_id + """ = uuid;
+            if(callback != null) callback.call();
+        }
+    });
+}
 
-# getVocabName(String vocabid) {
-#     Object a = fetchOne("select vocabName from vocabulary where vocabid = '"+ vocabid +"';");
-#     return a.get(0);
-# }
+/* Only necessary when autosaving should be activated when a specific field is filled in
+activateAutoSave""" + archent_method + """() {
+    if(!isNull(""" + archent_id + """)) return;
+    /* Add required fields
+    if (isNull()) return;
+    */
+    saveTabGroup(""" + archent_method + """, """ + archent_id + """, null, null, new SaveCallback() {
+        onSave(uuid, newRecord) {
+            """ + archent_id + """ = uuid;
+            saveTabGroup(""" + archent_method + """, """ + archent_id + """, null, null, new SaveCallback() {
+                onSave(uuid, newRecord) {
+                    """ + archent_id + """ = uuid;
+                }
+            }, true);
+        }
+    });
+}
+*/
 
-# makePictureGallery(String attrib) {
-#     fetchAll("select vocabid, vocabname, pictureurl from vocabulary left join attributekey using (attributeid) where attributename = '" + attrib + "' order by vocabname;");
-# }
+/* Only necessary when you can return to this tab group from a child tab group
+autosave""" + archent_method + """() {
+    if(isNull(""" + archent_id + """)) return;
+    saveTabGroup("""" + archent_method + """", """ + archent_id + """, null, null, new SaveCallback() {
+        onSave(uuid, newRecord) {
+            """ + archent_id + """ = uuid;
+        }
+    }, true);
+}
+*/
 
-# doNotDelete() {
-#     showToast("Delete Cancelled.");
-# }
+delete""" + archent_method + """() {
+    if (!isNull(""" + archent_id + """)) {
+        showAlert("Confirm Deletion", "Press OK to Delete this {""" + archent + """}!", "reallyDelete""" + archent_method + """()", "doNotDelete()");
+    } else {
+        cancelTabGroup(\"""" + archent_ui + """\", true);
+    }
+}
 
-# fillInGPS(String path) {
-#     Object position = getGPSPosition();    
-#     Object projPosition = getGPSPositionProjected();
-#     if (projPosition != null ){
-#         Double latitude = position.getLatitude();
-#         Double longitude = position.getLongitude();
-#         Double northing = projPosition.getLatitude();
-#         Double easting = projPosition.getLongitude();
-#         setFieldValue(path+"Latitude", latitude);
-#         setFieldValue(path+"Longitude", longitude);
-#         setFieldValue(path+"Northing", northing);
-#         setFieldValue(path+"Easting", easting);
-#     } else {
-#         showToast("GPS Not initialized");
-#     }
-# }
+reallyDelete""" + archent_method + """() {
+    deleteArchEnt(""" + archent_id + """);
+    cancelTabGroup(\"""" + archent_ui + """\", false);
+}
 
-# /*** 'Uneditable' - you can edit the code below with extreme precaution ***/
+load""" + archent_method + """Attributes() {
+}
+"""
+    archent_method = archent.replace(" ", "").rstrip()
+    print "\nload" + archent_method + """Attributes();
 
-# DATA_ENTRY_LAYER = "Data Entry Layer";
-# DATA_ENTRY_LAYER_ID = 0;
+add""" + archent_method + """Navigation();() {
+    removeNavigationButton("save");
+    removeNavigationButton("save_and_new");
+    removeNavigationButton("delete");   
 
-# initMap() {
-#     setMapZoom("Context/map/map", 15.0f);
+    addNavigationButton("save", new ActionButtonCallback() {
+        actionOnLabel() {
+            "Save {""" + archent_method + """}";
+        }
+        actionOn() {
+            save""" + archent_method + """(null);
+        }
+    }, "success");
 
-#     showBaseMap("Context/map/map", "Base Layer", "files/data/maps/OraraSmall.tif");
-#     createCanvasLayer("Context/map/map", "Non-saved sketch layer");
+    addNavigationButton("save_and_new", new ActionButtonCallback() {
+        actionOnLabel() {
+            "Save and New {""" + archent_method + """}";
+        }
+        actionOn() {
+            save""" + archent_method + """(new Callable() {
+                call() {
+                    new""" + archent_method + """();
+                }
+            });
+        }
+    }, "success");
 
-#     DATA_ENTRY_LAYER_ID = createCanvasLayer("Context/map/map", DATA_ENTRY_LAYER);
+    addNavigationButton("delete", new ActionButtonCallback() {
+        actionOnLabel() {
+            "Delete {""" + archent_method + """}";
+        }
+        actionOn() {
+            delete""" + archent_method + """();
+        }
+    }, "danger");
+}
 
-#     isEntity = true;
-#     queryName = "All entities";
-#     querySQL = "SELECT uuid, aenttimestamp FROM latestNonDeletedArchEntIdentifiers";
-        
-#     addDatabaseLayerQuery("Context/map/map", queryName, querySQL);
+"""
 
-#     addTrackLogLayerQuery("Context/map/map", "track log entities", 
-#         "SELECT uuid, max(aenttimestamp) as aenttimestamp " + 
-#         " FROM archentity join aenttype using (aenttypeid) " +
-#         " where archentity.deleted is null " + 
-#         "   and lower(aenttypename) = lower('gps_track') " + 
-#         " group by uuid " + 
-#         " having max(aenttimestamp)");
-        
-#     addSelectQueryBuilder("Context/map/map", "Select entity by type", createQueryBuilder(
-#         "select uuid " + 
-#         "  from latestNonDeletedArchent " + 
-#         "  JOIN latestNonDeletedAentValue using (uuid) " + 
-#         "  join aenttype using (aenttypeid) " + 
-#         "  LEFT OUTER JOIN vocabulary using (vocabid, attributeid) " + 
-#         "  where lower(aenttypename) = lower(?) " + 
-#         "   group by uuid").addParameter("Type", "RemoteSensingContext"));
-        
-#     //addLegacySelectQueryBuilder("Context/map/map", "Select geometry by id", "files/data/maps/sydney.sqlite", "Geology100_Sydney", 
-#     //    createLegacyQueryBuilder("Select PK_UID from Geology100_Sydney where PK_UID = ?").addParameter("ID", null));
-                    
-#     // define database layer styles for points, lines, polygons and text
-#     ps = createPointStyle(10, Color.BLUE, 0.2f, 0.5f);
-#     ls = createLineStyle(10, Color.GREEN, 0.05f, 0.3f, null);
-#     pos = createPolygonStyle(10, Color.parseColor("#440000FF"), createLineStyle(10, Color.parseColor("#AA000000"), 0.01f, 0.3f, null));
-#     ts = createTextStyle(10, Color.WHITE, 40, Typeface.SANS_SERIF);
+print """/*** MISC ***/
 
-#     showDatabaseLayer("Context/map/map", "Saved Data Layer", isEntity, queryName, querySQL, ps, ls, pos, ts);
-# }
+saveEntitiesToRel(String type, String entity1, String entity2) {
+    if (isNull(entity1) || isNull(entity2)) return;
+    saveRel(null, type, null, null, new SaveCallback() {
+        onSave(rel_id, newRecord) {
+            addReln(entity1, rel_id, null);
+            addReln(entity2, rel_id, null);
+        }
+    });
+}
 
-# //initMap();
+saveEntitiesToRel(String type, String entity1, String entity2, Callable callback) {
+    if (isNull(entity1) || isNull(entity2)) return;
+    saveRel(null, type, null, null, new SaveCallback() {
+        onSave(rel_id, newRecord) {
+            addReln(entity1, rel_id, null);
+            addReln(entity2, rel_id, null);
+            if(callback != null) callback.call();
+        }
+    });
+}
 
+saveEntitiesToHierRel(String type, String entity1, String entity2, String e1verb, String e2verb) {
+    if (isNull(entity1) || isNull(entity2)) return;
+    saveRel(null, type, null, null, new SaveCallback() {
+        onSave(rel_id, newRecord) {
+            addReln(entity1, rel_id, e1verb);
+            addReln(entity2, rel_id, e2verb);
+        }
+    });
+}
 
-# /*** TRACKLOG ***/
-# /*
-# setGPSUpdateInterval(4);
+makeVocab(String type, String path, String attrib){
+    fetchAll("select vocabid, vocabname from vocabulary join attributekey using (attributeid) where attributename = '"+attrib+"' order by vocabcountorder",
+        new FetchCallback() {
+            onFetch(result) {
+                if(type.equals("CheckBoxGroup")) {
+                    populateCheckBoxGroup(path, result);
+                } else if(type.equals("DropDown")) {
+                    populateDropDown(path, result);
+                } else if(type.equals("RadioGroup")) {
+                    populateRadioGroup(path, result);
+                } else if(type.equals("List")) {
+                    populateList(path, result);
+                }
+            }
+        });
+}
 
-# onEvent("control/gps/startTimeLog", "click", "startTrackingGPS(\\"time\\", 10, \\"saveTimeGPSTrack()\\")");
-# onEvent("control/gps/startDistanceLog", "click", "startTrackingGPS(\\"distance\\", 10, \\"saveDistanceGPSTrack()\\")");
-# onEvent("control/gps/stopTrackLog", "click", "stopTrackingGPS()");
+makePictureGallery(String path, String attrib) {
+    fetchAll("select vocabid, vocabname, pictureurl from vocabulary left join attributekey using (attributeid) where attributename = '" + attrib + "' order by vocabcountorder;",
+        new FetchCallback() {
+            onFetch(result) {
+                populatePictureGallery(path, result);
+            }
+        });
+}
 
-# saveTimeGPSTrack() {
-#     List attributes = createAttributeList();
-#     attributes.add(createEntityAttribute("gps_type", "time", null, null, null));
-#     saveGPSTrack(attributes);
-# }
+doNotDelete() {
+    showToast("Delete Cancelled.");
+}
 
-# saveDistanceGPSTrack() {
-#     List attributes = createAttributeList();
-#     attributes.add(createEntityAttribute("gps_type", "distance", null, null, null));
-#     saveGPSTrack(attributes);
-# }
+fillInGPS(String path) {
+    Object position = getGPSPosition();
+    Object projPosition = getGPSPositionProjected();
+    if (position != null) {
+        Double latitude = position.getLatitude();
+        Double longitude = position.getLongitude();
+        Double northing = projPosition.getLatitude();
+        Double easting = projPosition.getLongitude();
+        setFieldValue(path+"Latitude", latitude);
+        setFieldValue(path+"Longitude", longitude);
+        setFieldValue(path+"Northing", northing);
+        setFieldValue(path+"Easting", easting);
+    } else {
+        showToast("GPS Not initialized");
+    }
+}
 
-# saveGPSTrack(List attributes) {
-#     position = getGPSPosition();
-#     if (position == null) return;
+/*** 'Uneditable' - you can edit the code below with extreme precaution ***/
+/*** USER ***/
+"""
+if listLogin:
+    print """loadUsers() {
+    fetchAll("select userid, fname || ' ' || lname from user", new FetchCallback() {
+        onFetch(result) {
+            populateList("user/usertab/users", result);
+        }
+    });
+}
 
-#     //attributes.add(createEntityAttribute("gps_user", "" + user.getUserId(), null, null, null));
-#     attributes.add(createEntityAttribute("gps_timestamp", "" + getCurrentTime(), null, null, null));
-#     attributes.add(createEntityAttribute("gps_longitude", "" + position.getLongitude(), null, null, null));
-#     attributes.add(createEntityAttribute("gps_latitude", "" + position.getLatitude(), null, null, null));
-#     //attributes.add(createEntityAttribute("gps_heading", "" + getGPSHeading(), null, null, null));
-#     attributes.add(createEntityAttribute("gps_accuracy", "" + getGPSEstimatedAccuracy(), null, null, null));
-    
-#     positionProj = getGPSPositionProjected();
-#     Point p = new Point(new MapPos(positionProj.getLongitude(), positionProj.getLatitude()), null, (PointStyle) null, null);
-#     ArrayList l = new ArrayList();
-#     l.add(p);
-    
-#     saveArchEnt(null, "gps_track", l, attributes);
-# }
-# */
-# /*** USER ***/
+loadUsers();
 
-# getDefaultUsersList() {
-#     users = fetchAll("select userid, fname ||' ' || lname from user");
-#     return users;
-# }
+String username = "";
 
-# populateListForUsers(){
-#     populateDropDown("user/usertab/users", getDefaultUsersList());
-#     populateRadioGroup("user/usertab/Area_Code", makeVocab("AreaCode"));
+login() {
+    fetchOne("select userid,fname,lname,email from user where userid='" + getListItemValue() + "';", new FetchCallback() {
+        onFetch(result) {
+            user = new User(result.get(0),result.get(1),result.get(2),result.get(3));
+            setUser(user);
+            username = result.get(1) + " " + result.get(2);
+            showTabGroup("control");
+        }
+    });
+}
 
-#     Object localArea = fetchOne("select value from localSettings where key = 'Area';");
-#     Object localUser = fetchOne("select value from localSettings where key = 'User';");
+"""
+else:
+    print """populateListForUsers() {
+    fetchAll("select userid, fname ||' ' || lname from user", new FetchCallback() {
+        onFetch(result) {
+            populateDropDown("user/usertab/users", result);
+            fetchOne("select value from localSettings where key = 'User';", new FetchCallback() {
+                onFetch(result) {
+                    if (!isNull(result)){
+                        setFieldValue("user/usertab/users", result.get(0));
+                    }
+                }
+            });  
+        }
+    });
 
-#     if (!isNull(localArea)){
-#         setFieldValue("user/usertab/Area_Code", localArea.get(0));
-#     }
+    fetchOne("select value from localSettings where key = 'Area';", new FetchCallback() {
+        onFetch(result) {
+            if (!isNull(result)){
+                setFieldValue("user/usertab/area", result.get(0));
+            }
+        }
+    });
+}
 
-#     if (!isNull(localUser)){
-#         setFieldValue("user/usertab/users", localUser.get(0));
-#     }
+populateListForUsers();
 
-# }
+String username = "";
+String areaCode = "";
 
-# populateListForUsers();
+login(){
+    if(isNull(getFieldValue("user/usertab/area")) || isNull(getFieldValue("user/usertab/users"))){
+        showWarning("Warning", "Please select a User and enter an Area before logging in.");
+    } else {
+        fetchOne("select userid,fname,lname,email from user where userid='" + getFieldValue("user/usertab/users") + "';",
+            new FetchCallback() {
+                onFetch(result) {
+                    User user = new User(result.get(0),result.get(1),result.get(2),result.get(3));
+                    userid = result.get(0);
+                    setUser(user);
+                    username = result.get(1) + " " + result.get(2);
+                    showTabGroup("control");
 
-# String username = "";
-# String device = "";
-# String areaCode = "";
+                    fetchOne("REPLACE INTO localSettings(key, value) VALUES('User', '"+userid+"');", null);
+                    fetchOne("REPLACE INTO localSettings(key, value) VALUES('Area', '"+getFieldValue("user/usertab/area")+"');", null);
+                    areaCode = getFieldValue("user/usertab/area");
+                }
+            });
+    }
+}
 
-# login(){
-#     if(isNull(getFieldValue("user/usertab/Area_Code")) || isNull(getFieldValue("user/usertab/users"))){
-#         showWarning("Warning", "Please select a User and an Area Code before logging in.");
-#     } else {
-#         Object userResult = fetchOne("select userid,fname,lname,email from user where userid='" + getFieldValue("user/usertab/users") + "';");
-#         User user = new User(userResult.get(0),userResult.get(1),userResult.get(2),userResult.get(3));
-#         userid = userResult.get(0);
-#         setUser(user);
-#         username = userResult.get(1) + " " + userResult.get(2);
-#         showTabGroup("control");
+"""
+print """onEvent("user/usertab/login", "click", "login()");
 
-#         fetchOne("REPLACE INTO localSettings(key, value) VALUES('User', '"+userid+"');");
-#         fetchOne("REPLACE INTO localSettings(key, value) VALUES('Area', '"+getFieldValue("user/usertab/Area_Code")+"');");
+/*** SYNC ***/
+setSyncMinInterval(10.0f);
+setSyncMaxInterval(20.0f);
+setSyncDelay(5.0f);
 
-#         areaCode = fetchOne("select vocabid, vocabname from vocabulary join localSettings on (value=vocabid) where key = 'Area' ").get(1);
-#     }
+startSync() {
+    setSyncEnabled(true);
+    setFileSyncEnabled(true);
+}
 
-# }
+stopSync() {
+    setSyncEnabled(false);
+    setFileSyncEnabled(false);
+}
 
-# onEvent("user/usertab/login", "click", "login()");
-# onEvent("user/usertab/guide", "click", "showTab(\\"user/help\\")");
+addActionBarItem("sync", new ToggleActionButtonCallback() {
+    actionOnLabel() {
+        "Sync enabled";
+    }
+    actionOn() {
+        setSyncEnabled(false);
+        setFileSyncEnabled(false);
+        showToast("Sync disabled.");
+    }
+    isActionOff() {
+        isSyncEnabled();
+    }
+    actionOffLabel() {
+        "Sync disabled";
+    }
+    actionOff() {
+        setSyncEnabled(true);
+        setFileSyncEnabled(true);
+        showToast("Sync enabled.");
+    }
+});
 
-# /*** SYNC ***/
+addActionBarItem("internal_gps", new ToggleActionButtonCallback() {
+    actionOnLabel() {
+        "Internal GPS enabled";
+    }
+    actionOn() {
+        stopGPS();
+        showToast("GPS disabled.");
+    }
+    isActionOff() {
+        isInternalGPSOn();
+    }
+    actionOffLabel() {
+        "Internal GPS disabled";
+    }
+    actionOff() {
+        if(isExternalGPSOn()) {
+            stopGPS();
+        }
+        startInternalGPS();
+        showToast("GPS enabled.");
+    }
+});
 
-# onEvent("control/gps/startsync", "click", "startSync()");
-# onEvent("control/gps/stopsync", "click", "stopSync()");
+addActionBarItem("external_gps", new ToggleActionButtonCallback() {
+    actionOnLabel() {
+        "External GPS enabled";
+    }
+    actionOn() {
+        stopGPS();
+        showToast("GPS disabled.");
 
-# setSyncMinInterval(10.0f);
-# setSyncMaxInterval(20.0f);
-# setSyncDelay(5.0f);
-
-# startSync() {
-#     setSyncEnabled(true);
-#     setFileSyncEnabled(true);
-# }
-
-# stopSync() {
-#     setSyncEnabled(false);
-#     setFileSyncEnabled(false);
-# }
-# """
-
-# for archent in archents:
-#     archent_method = archent.replace(" ", "").rstrip()
-#     print "load" + archent_method + "Attributes();"
+    }
+    isActionOff() {
+        isExternalGPSOn();
+    }
+    actionOffLabel() {
+        "External GPS disabled";
+    }
+    actionOff() {
+        if(isInternalGPSOn()) {
+            stopGPS();
+        }
+        startExternalGPS();
+        if(isBluetoothConnected()) {
+            showToast("GPS enabled.");
+        } else {
+            showToast("Please enable bluetooth.");
+            this.isActionOff();
+        }
+    }
+});
+"""

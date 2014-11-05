@@ -10,7 +10,7 @@ while($line = <>) {
         $path = $2;
         $attrib = $3;
         next if $type =~ "Hierarchical";
-        if($type =~ "Picture") {
+        if($type =~ "PictureGallery") {
             print "makePictureGallery(\"$path\", \"$attrib\");\n";
         } else {
             print "makeVocab(\"$type\", \"$path\", \"$attrib\");\n";    

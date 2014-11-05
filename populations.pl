@@ -27,8 +27,6 @@ while($line = <>) {
             } else {
                 push @pops, "makeVocab(\"DropDown\", \"$path\", \"$1\");";
             }    
-        } elsif ($line =~ "input" && $line =~ "faims_attribute_type=\"measure\"") {
-            push @nodesets, "<bind nodeset=\"/faims/$path\" type=\"decimal\"/>";
         }
     }
     if($line =~ "</group|</input|</trigger|</select") {
@@ -37,5 +35,3 @@ while($line = <>) {
 }
 print "ui_logic populations\n";
 print join("\n", @pops);
-print ("\n\nBind nodesets\n");
-print join("\n", @nodesets);

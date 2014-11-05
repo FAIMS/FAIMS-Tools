@@ -9,8 +9,7 @@ import urllib2, json, sys
 
 arch16n = dict()
 
-def getRowValue(row, format, column_name):
-    
+def getRowValue(row, format, column_name):    
     if str(column_name) == '':
         raise ValueError('column_name must not empty')
     begin = row.find('%s:' % column_name)       
@@ -39,8 +38,8 @@ def getRowValue(row, format, column_name):
     value = row[begin: end].strip()
     return value
 
+#Implementation of perl's autovivification feature.
 class AutoVivification(dict):
-    #Implementation of perl's autovivification feature.
     def __getitem__(self, item):
         try:
             return dict.__getitem__(self, item)
@@ -58,6 +57,7 @@ class Term:
         self.arch16n = arch16n
         self.children = []
 
+# Do a depth first search to print out hierarchical vocabulary
 
 def dfs(depth, terms, current):
     s = "\n" + '  ' * depth + "<term" 
@@ -77,6 +77,8 @@ def dfs(depth, terms, current):
         s = s + dfs(depth+1, terms, terms[child])
     s += "\n" +'  ' * depth + "</term>"
     return s
+
+# Program starts here
 
 if len(sys.argv) < 2:
     sys.stderr.write("Specify Google Spreadsheet ID as argument")

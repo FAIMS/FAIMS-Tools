@@ -1,6 +1,8 @@
 FAIMS-Tools
 ===========
-These are a collection of tools designed to help with developing modules faster. They are written in a variety of languages, mostly which ever language is most convenient for the job. 
+These are a collection of tools designed to help with developing modules faster. These scripts are not designed to output a working module in one go. They are designed to speed up the process of developing modules so that you can focus on the details.
+
+The scripts are written in a variety of languages, mostly which ever language is most convenient for the job. I encourage you to do the same.
 ## Basics
 ### Permissions
 To run them, you need to give executable permissions by doing:
@@ -175,21 +177,20 @@ Hierarchical terms are a little bit complicated to express on a spreadsheet, so 
 |       | Example     |         | Hier-Attr | enum |            | T5   |         |            |             |        |       |
 
 And we want the following hierarchy:
+
+```
 T1:
-
->T2
-
+  T2
 T5:
-
->T3
-
->T4
+  T3
+  T4
+```
 
 What happens is we place T1 through to T5 in an array
 
-| 0  | 1  | 2  | 3  | 4  |
-| -- | -- | -- | -- | -- |
-| T1 | T2 | T3 | T4 | T5 |
+| 0   | 1   | 2   | 3   | 4   |
+| --- | --- | --- | --- | --- |
+| T1  | T2  | T3  | T4  | T5  |
 
 In the parent field, we specify which element in the array is the parent of that term. If the term is in the top level, the parent is -1. So to get this heirarchy, we want to have:
 
@@ -206,7 +207,52 @@ In the parent field, we specify which element in the array is the parent of that
 So the parent of T1 and T5 is -1 because they are at the top level. The parent of T2 is T1, so we put 0 because the index of T1 is 0. The parent of T3 and T4 is T5, so we put 4.
 
 ## ui_schema_generator.py
+To run:
+```bash
+$ ./data_schema.py <google_spreadsheet_id>
+```
+Supply the Google Spreadsheet ID and it will generates an appropriate data_schema.xml file, as well as the arch16N translations.
+
+| DUMMY | level | ref   | type  | faims_attribute_name | faims_attribute_type | certainty | annotation | read_only | hidden | label | arch16n | faims_archent_type | faims_rel_type | faims_style | faims_sync | faims_style_class |
+| ----- | ----- | ----- | ----- | -------------------- | -------------------- | --------- | ---------- | --------- | ------ | ----- | ------- | ------------------ | -------------- | ----------- | ----- | ----------------- |
+|       | Value | Value | Value | Value                | Value                | Value     | Value      | Value     | Value  | Value | Value   | Value              | Value          | Value       | Value | Value             |
+
 ## arch16N_cleaner.py
+To run:
+
+```
+./arch16N_cleaner.py <arch16n.properties> <ui_schema.xml> <data_schema.xml>
+```
+
+The script goes through the arch16.properties files and records all the properties. It then goes through ui_schema.xml and data_schema.xml and looks at which of the arch16N values have actually been used. It then prints out a sorted arch16N.properties file for you to use.
+
 ## convertVocab.pl
+To run:
+
+```
+./convertVocab.pl <ui_logic.bsh>
+```
+
+This script is used to upgrade vocabulary populations from the FAIMS 1.3 format to the FAIMS 2.0 format. Will be redundant once all FAIMS 1.3 modules have been upgraded.
+
 ## populations.pl
+To run:
+
+```
+./populations.pl <ui_schema.xml>
+```
+
+This script goes through the ui_schema.xml file and generates all the vocabulary population statements that you need in the ui_logic.bsh. Note that it cannot differentiate between a heirarchical and non-hierarchical drop down and picture gallery, so it's up to you to remember to change them to hierarchical.
+
 ## ui_logic_generator.py
+To run:
+
+```
+./ui_logic_generator.py
+```
+
+Reads in arch entity names from STDIN and generates some basic methods for those arch_ents. For example:
+
+```
+echo "Water Sample" | ./ui_logic_generator.py
+```
