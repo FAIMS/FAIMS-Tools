@@ -150,10 +150,8 @@ reallyDelete""" + archent_method + """() {
 }
 
 load""" + archent_method + """Attributes() {
+    // Add attribute populations
 }
-"""
-    archent_method = archent.replace(" ", "").rstrip()
-    print "\nload" + archent_method + """Attributes();
 
 add""" + archent_method + """Navigation();() {
     removeNavigationButton("save");
@@ -443,4 +441,9 @@ addActionBarItem("external_gps", new ToggleActionButtonCallback() {
         }
     }
 });
+
 """
+
+for archent in archents:
+    archent_method = archent.replace(" ", "").rstrip()
+    print "load" + archent_method + "Attributes();"
