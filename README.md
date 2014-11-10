@@ -217,6 +217,59 @@ Supply the Google Spreadsheet ID and it will generates an appropriate data_schem
 | ----- | ----- | ----- | ----- | -------------------- | -------------------- | --------- | ---------- | --------- | ------ | ----- | ------- | ------------------ | -------------- | ----------- | ----- | ----------------- |
 |       | Value | Value | Value | Value                | Value                | Value     | Value      | Value     | Value  | Value | Value   | Value              | Value          | Value       | Value | Value             |
 
+Most of this should be self explanatory. For all the fields except for level and type, it will simply put an equals sign between the column name and column value. For example:
+
+| DUMMY | level | ref   | type  | faims_attribute_name | faims_attribute_type | certainty | annotation | read_only | hidden | label | arch16n | faims_archent_type | faims_rel_type | faims_style | faims_sync | faims_style_class |
+| ----- | ----- | ----- | ----- | -------------------- | -------------------- | --------- | ---------- | --------- | ------ | ----- | ------- | ------------------ | -------------- | ----------- | ----- | ----------------- |
+|       |       | test  | input | Test                 | Test                 | TRUE      | TRUE       |           |        | Test  |         |                    |                |             |       |                   |
+
+will output:
+```
+<input ref="test" faims_attribute_name="Test" faims_attribute_type="Test" faims_certainty="true" faims_annotation="true">
+  <label>Test</label>
+</input>
+```
+
+The *level* and *type* column are less self explanatory
+
+### level
+The level field is a number that specifies the depth of the element. In a standard UI schema, you have something like:
+
+```
+<tabgroup>
+  <tab>
+    <field/>
+  </tab>
+</tabgroup>
+```
+
+To create this, you would specify something like:
+
+
+| DUMMY | level | ref      | type    | faims_attribute_name | faims_attribute_type | certainty | annotation | read_only | hidden | label | arch16n | faims_archent_type | faims_rel_type | faims_style | faims_sync | faims_style_class |
+| ----- | ----- | -------- | ------- | -------------------- | -------------------- | --------- | ---------- | --------- | ------ | ----- | ------- | ------------------ | -------------- | ----------- | ----- | ----------------- |
+|       | 1     | tabgroup | group   |                      |                      |           |            |           |        |       |         |                    |                |             |       |                   |
+|       | 2     | tab      | group   |                      |                      |           |            |           |        |       |         |                    |                |             |       |                   |
+|       | 3     | field    | trigger |                      |                      |           |            |           |        |       |         |                    |                |             |       |                   |
+
+Of course if you want something like containers you can go as many levels deep as you want. The underlying implementation is a stack, so when you specify levels, make sure that it only increments by 1 and a time. It can decrement by as many as you want however (it just keeps popping off the stack).
+
+### type
+The *type* column is where you specify what kind of element you want. The following options are:
+
+| type     | output                                         |
+| -------- | ---------------------------------------------- |
+| dropdown | &lt;select1&gt;                                |
+| radio    | &lt;select1 appearance="full"&gt;              |
+| list     | &lt;select1 appearance="compact"&gt;           |
+| checkbox | &lt;select&gt;                                 |
+| input    | &lt;input&gt;                                  |
+| trigger  | &lt;trigger&gt;                                |
+| group    | &lt;group&gt;                                  |
+| picture  | &lt;select1 type="image"&gt;                   |
+| camera   | &lt;select type="camera" faims_sync="true"&gt; |
+| file     | &lt;select type="file"&gt;                     |
+
 ## arch16N_cleaner.py
 To run:
 
