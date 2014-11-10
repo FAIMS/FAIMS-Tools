@@ -36,8 +36,9 @@ makeLocalID();
 onEvent("control", "show", "refreshBuildings();removeNavigationButtons();");
 
 removeNavigationButtons() {
-    removeNavigationButton("save");
+    removeNavigationButton("duplicate");
     removeNavigationButton("save_and_new");
+    removeNavigationButton("save_and_close");
     removeNavigationButton("delete");
 }
 
@@ -154,16 +155,21 @@ load""" + archent_method + """Attributes() {
 }
 
 add""" + archent_method + """Navigation();() {
-    removeNavigationButton("save");
+    removeNavigationButton("duplicate");
     removeNavigationButton("save_and_new");
-    removeNavigationButton("delete");   
+    removeNavigationButton("save_and_close");
+    removeNavigationButton("delete");
 
-    addNavigationButton("save", new ActionButtonCallback() {
+    addNavigationButton("duplicate", new ActionButtonCallback() {
         actionOnLabel() {
             "Save {""" + archent_method + """}";
         }
         actionOn() {
-            save""" + archent_method + """(null);
+            save""" + archent_method + """(new Callable() {
+                call() {
+                    """ + archent_id + """ = null;
+                }
+            });
         }
     }, "success");
 
@@ -175,6 +181,19 @@ add""" + archent_method + """Navigation();() {
             save""" + archent_method + """(new Callable() {
                 call() {
                     new""" + archent_method + """();
+                }
+            });
+        }
+    }, "success");
+
+    addNavigationButton("save_and_close", new ActionButtonCallback() {
+        actionOnLabel() {
+            "Save {""" + archent_method + """}";
+        }
+        actionOn() {
+            save""" + archent_method + """(new Callable() {
+                call() {
+                    cancelTabGroup(""" + archent_ui + """, false);
                 }
             });
         }
