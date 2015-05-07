@@ -64,13 +64,13 @@ def dfs(depth, terms, current):
     if current.pictureurl != "":
         s = s + " pictureURL=\"" + current.pictureurl + "\""
     s = s + "> "
-    if term.arch16n == "":
+    if current.arch16n == "":
         s = s + current.term
     else:
         s = s + "{" + current.term  + "}"
-        arch16n[current.term] = term.arch16n
-    if term.description != "":
-        s += "\n" + '  ' * (int(depth)+1) +  "<description>" + term.description + "</description>"
+        arch16n[current.term] = current.arch16n
+    if current.description != "":
+        s += "\n" + '  ' * (int(depth)+1) +  "<description>" + current.description + "</description>"
     else:
         s += "\n" +'  ' * (int(depth)+1) + "<description/>"
     for child in current.children:
@@ -115,7 +115,7 @@ for entry in html['feed']['entry']:
                 found = True
         if found:
             t = Term(getRowValue(row, format, 'term'), getRowValue(row, format, 'description'), getRowValue(row, format, 'parent'), len(p['terms']), getRowValue(row, format, 'pictureurl'), getRowValue(row, format, 'arch16n'))
-
+            
             if int(t.parent) != -1:
                 p['terms'][int(t.parent)].children.append(t.index)
             else:
