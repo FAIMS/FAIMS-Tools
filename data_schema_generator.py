@@ -166,14 +166,17 @@ for entry in html['feed']['entry']:
                 found = True
         if found:
             t = Term(getRowValue(row, format, 'term'), getRowValue(row, format, 'description'), getRowValue(row, format, 'parent'), len(p['terms']), getRowValue(row, format, 'pictureurl'), getRowValue(row, format, 'arch16n'))
-            
+            print "%s %s %s %s" % (attr['attribute'], t.term, t.index, t.parent)
             
 
-            if int(t.parent) != -1:                
+            if int(t.parent) != -1:                                
                 p['terms'][int(t.parent)].children.append(int(t.index))
+
             else:
                 p['parents'].append(t)
             p['terms'].append(t)
+
+
         else:
             p = AutoVivification()
             p['attribute'] = getRowValue(row, format, 'attribute')
