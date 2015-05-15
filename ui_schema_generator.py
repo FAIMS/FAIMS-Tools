@@ -10,48 +10,18 @@ import urllib2, json, sys
 arch16n = {}
 
 def getRowValue(row, format, column_name):
-    
-    if str(column_name) == '':
-        raise ValueError('column_name must not empty')
-        
-    begin = row.find('%s:' % column_name)
-       
-    if begin == -1:
-        return ''
-    
-    begin = begin + len(column_name) + 1
-    
-    end = -1
-    found_begin = False
-    
-    for entity in format:
-        if found_begin and row.find(entity) != -1:
-            end = row.find(entity)
-            break
-        
-        if entity == column_name:
-            found_begin = True
-    
-    
-    #check if last element
-    if format[len(format) -1 ] == column_name:
-        end = len(row)
+    #print row
+    if 'gsx$%s' % (column_name) in row:
+        return row['gsx$%s' % (column_name)]['$t'].encode('utf-8').strip()
     else:
-        if end == -1:
-            end = len(row)
-        else:
-            end = end - 2
-    
-    value = row[begin: end].strip()
- 
-    return value
+        return ''
 
 def ui_header(html, format):
     stack = []
     schema = []
     depth = 0
     for entry in html['feed']['entry']:
-        row = entry['content']['$t'].encode('utf-8').strip()
+        row = entry
         if int(getRowValue(row, format, 'level')) <= int(depth):
             while int(getRowValue(row, format, 'level')) <= int(depth):
                 element = stack.pop()
@@ -94,7 +64,7 @@ def ui_body(html, format):
              "file": "select"}
     needs_placeholder = ['radio', 'checkbox', 'camera', 'picture', 'list', 'dropdown', 'file']
     for entry in html['feed']['entry']:
-        row = entry['content']['$t'].encode('utf-8').strip()
+        row = entry
         if int(getRowValue(row, format, 'level')) <= int(depth):
             while int(getRowValue(row, format, 'level')) <= int(depth):
                 element = stack.pop()
@@ -171,7 +141,7 @@ if len(sys.argv) < 2:
     sys.stderr.write("Specify Google Spreadsheet ID as argument")
     exit()
 sheet_id = sys.argv[1]
-url = 'https://spreadsheets.google.com/feeds/list/' + sheet_id + '/od6/public/basic?prettyprint=true&alt=json';
+url = 'https://spreadsheets.google.com/feeds/list/' + sheet_id + '/od6/public/values?prettyprint=true&alt=json';
  
 response = urllib2.urlopen(url)
 html = response.read()
