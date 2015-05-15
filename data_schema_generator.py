@@ -8,7 +8,7 @@
 import urllib2, json, sys
 
 arch16n = dict()
-
+'''
 def getRowValue(row, format, column_name):    
     if str(column_name) == '':
         raise ValueError('column_name must not empty')
@@ -37,7 +37,7 @@ def getRowValue(row, format, column_name):
             end = end - 2
     value = row[begin: end].strip()
     return value
-
+'''
 #Implementation of perl's autovivification feature.
 class AutoVivification(dict):
     def __getitem__(self, item):
@@ -78,13 +78,18 @@ def dfs(depth, terms, current):
     s += "\n" +'  ' * depth + "</term>"
     return s
 
+
+def getRowValue(row, format, column_name):
+    #print row
+    return row['gsx$%s' % (column_name)]['$t'].encode('utf-8').strip()
+
 # Program starts here
 
 if len(sys.argv) < 2:
     sys.stderr.write("Specify Google Spreadsheet ID as argument")
     exit()
 sheet_id = sys.argv[1]
-url = 'https://spreadsheets.google.com/feeds/list/' + sheet_id + '/od6/public/basic?prettyprint=true&alt=json';
+url = 'https://spreadsheets.google.com/feeds/list/' + sheet_id + '/od6/public/values?prettyprint=true&alt=json';
 response = urllib2.urlopen(url)
 html = response.read()
 
@@ -95,9 +100,15 @@ format = ['entityname', 'element', 'attribute', 'type', 'identifier', 'term', 'a
 vocabTable = AutoVivification()
 
 for entry in html['feed']['entry']:
-    row = entry['content']['$t'].encode('utf-8').strip()
+    #print entry
+    row = entry
+
     entity = getRowValue(row, format, 'entityname')
-    print entity
+
+
+    
+
+
     if getRowValue(row, format, 'element') != "":
         vocabTable[entity]['enttype'] = getRowValue(row, format, 'element')
         vocabTable[entity]['description'] = getRowValue(row, format, 'description')
@@ -109,7 +120,7 @@ for entry in html['feed']['entry']:
                 vocabTable[entity]['child'] = getRowValue(row, format, 'child')
     else:
         attribute =  getRowValue(row, format, 'attribute')
-        # print attribute
+        #print attribute
         found = False
         for attr in vocabTable[entity]['properties']:
             if attr['attribute'] == attribute:
@@ -132,7 +143,7 @@ for entry in html['feed']['entry']:
             if p['type'] == "enum" or p['type'] == "hierarchical":
                 p['terms'] = []
                 p['parents'] = []
-            print "%s %s %s" % (entity, attribute, type(vocabTable[entity]['properties']))
+            #print "%s %s %s" % (entity, attribute, type(vocabTable[entity]['properties']))
             vocabTable[entity]['properties'].append(p)
 
 print """<?xml version="1.0" encoding="UTF-8"?>
