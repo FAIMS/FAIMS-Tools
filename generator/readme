@@ -1,0 +1,180 @@
+TODO Warnings should be generated separately to the xml files
+TODO formatString, appendCharacterString
+TODO ?not-null validation
+TODO invalid arch16n entries are produced if the label contains an equals sign
+TODO Warn if checkbox, dropdown, picture, or radio doesn't contain <opts>
+TODO Add "View Attached Files" button?
+       - onEvent call
+       - addition to ui schema
+
+Quick Start
+  1. Modify the example module.xml. If you see something there which you don't
+     understand, check this file.
+  2. Run `./generate.sh`
+  3. Collect your new shiny new module from the 'module' directory.
+
+Attributes
+  b                  Binding (See 'Bindings')
+  c                  Alias for faims_style_class
+  f                  Flags (See 'Flags')
+  l                  Link to tab or tab group in the format Tabgroup/Tab/
+  p                  Equivalent to pictureURL attribute
+  suppressWarnings   Prevents warnings from being shown when equal to "true" and
+                     present in the <module> tag. Does not suppress errors.
+  t                  Type of GUI element (See 'Types'). If this attribute is
+                     omitted from a view, t="input" is assumed.
+
+Bindings
+  - decimal
+  Other bindings are possible (e.g. by writing b = "string") but generate a
+  warning.
+
+Flags
+  hidden          Equivalent to faims_hidden="true".
+  id              Equivalent to isIdentifier="true".
+  noannotation    Equivalent to faims_annotation="false".
+  nocertainty     Equivalent to faims_certainty="false".
+  nolabel         Prevents labels from being displayed or generated from element
+                  names.
+  nosync          Removes the faims_sync="true" attribute from audio, camera,
+                  file and video GUI elements.
+  nothumb[nail]   Removes the thumbnail="true" attribute from audio, camera,
+                  file and video elements in the data schema.
+  notscrollable   Equivalent to faims_scrollable="false".
+  onlydata        Only allows code to be generated for the data schema.
+  onlyui          Only allows code to be generated for the UI schema.
+  readonly        Equivalent to faims_read_only="true".
+
+Types
+  Types of GUI element:
+  - audio        <select type="file" faims_sync=true>
+  - button       <trigger>
+  - camera       <select type="camera" faims_sync=true>
+  - checkbox     <select>
+  - dropdown     <select1>
+  - file         <select type="file" faims_sync=true>
+  - group        <group>
+  - input        <input>
+  - list         <select1 appearance="compact">
+  - map          <input faims_map="true">
+  - picture      <select1 type="image">
+  - radio        <select1 appearance="full">
+  - video        <select type="file" faims_sync=true>
+  - webview      <input faims_web="true">
+
+Naming Conventions and Reserved Element Names
+  "Reserved" elements only contain lower case letters:
+    - <col>      One column in a <cols> tag
+    - <cols>     Columns
+    - <desc>     Description to put in the data schema
+    - <module>
+    - <opt>      Option in <opts> tag
+    - <opts>     Options for, say, a dropdown menu
+    - <rels>     Intended to be a direct child of <module> and hold
+                 <RelationshipElement> tags
+  User-defined elements should start with an upper case letter and use
+  underscores as separators:
+    - <My_User_Defined_Element t="dropdown" />
+  Neither of these naming conventions are strictly enforced however.
+
+Intended Purpose of The <rels> Tag
+  When placed as a direct child of the <module> element, contents of the <rels>
+  tag are copied as-is to the generated data schema. No warnings are shown if
+  something is awry with its contents.
+
+  Because the <rels> tags' contents are directly copied, in principle you could
+  put anything in there which you want to appear in the data schema. This would
+  make you a bad person.
+
+Semantics of <cols> Tags
+  Direct children of <cols> tags are interpreted as columns. For example,
+      <cols>
+         <Field_1 t="input"/>
+         <Field_2 t="input"/>
+         <Field_3 t="input"/>
+      </cols>
+  has three columns, each containing an input. The left-most column is Field_1,
+  whereas the right-most is Field_3.
+
+  When a <col> tag is a direct child, its contents are interpreted as being part
+  of a distinct column. Therefore,
+      <cols>
+         <Field_1 t="input"/>
+         <col>
+           <Field_2 t="input"/>
+           <Field_3 t="input"/>
+         </col>
+      </cols>
+  results in two columns. The left column contains Field_1, while the right
+  contains Field_2 and Field_3.
+
+Labels
+  An element's text is taken as its label. For instance, the following input
+      <My_Input t="input">
+        Droopy Soup
+        <desc>Similar to drippy soup, but not quite...</desc>
+      </My_Input>
+  has the label "Droopy Soupy". Note that following and preceding whitespace is
+  stripped.
+
+  If a label is not provided, it is inferred from the element's name. More
+  specifically, underscores in the element's name are replaced with whitespace,
+  which becomes the element's label. Therefore, the element
+      <Droopy_Soup t="input" />
+  has the same label as in the above example.
+
+  You are encouraged to use this feature, as it encourages consistency between
+  the label, which the user sees, and the view's reference, which the programmer
+  sees. Note that it merely "encourages" consistency as the programmer can
+  change the corresponding, generated, arch16n (english.0.properties) entry.
+
+Generation of The arch16n File
+  Labels and menu options (e.g. from checkboxes and dropdowns) have arch16n
+  entries generated for them. The left-hand side of an arch16n entry (i.e.
+  everything to the left of the equals sign) is produced by changing all
+  non-alphanumeric characters in the label or menu option to underscores. The
+  right-hand side is the unmodified text.
+
+  The created arch16n entries are used in the generated UI and data schemas.
+
+  It should be carefully noted that replacing characters as described above can
+  cause naming conflicts. For example, if the module contains the labels "I'm
+  cool!" and "I'm cool?", the generated arch16n file will contain the following
+  lines:
+      I_m_cool_=I'm cool!
+      I_m_cool_=I'm cool?
+  Moreover, the programmer is not warned if such a conflict exists, as, in
+  practise, it assumed that such conflicts are very rare and checking for them
+  in XSLT 1.0 violates Article 5 of 'The Universal Declaration of Human Rights'.
+
+Known Issues
+  Arbitrarily nested group elements cannot be specified within a tab. For
+  example, the following module is poorly defined:
+      <?xml version="1.0" ?>
+      <module>
+        <Tab_Group>
+          <Tab>
+            <Field_1 t="group">
+              <Field_2 t="group"/>  <!-- Well, *there's* your problem! -->
+            </Field_1>
+          </Tab>
+        </Tab_Group>
+      </module>
+  Moreover, the programmer will not be warned about this and should expect un-
+  expected behaviour.
+
+Grammar
+  The empty string is denoted by a period (.), comments begin with hash symbols
+  (#), and \w is used to indicate an arbitrary tag name. Also, non-terminals and
+  starting symbols are surrounded by backticks.
+
+  `start`            -> <module `suppressWarnings`> `rels` `tabGroups` </module>
+  `suppressWarnings` -> suppressWarnings=true" | .
+  `rels`             -> <rels> `rels_` </rels>
+  `rels_`            -> `rel` `rels_` | .
+  `rel`              -> # A bunch of ordinary <RelationshipElement> tags
+  `tabGroups`        -> `tabGroup` `tabGroups` | .
+  `tabGroup`         -> <\w `f`> `tabs` <\w>
+  `f`                -> # Flags
+  `tabs`             -> `tab` `tabs` | .
+  `tab`              -> <\w `f`> # This grammar is a clusterfuck

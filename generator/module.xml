@@ -1,0 +1,296 @@
+<?xml version="1.0" ?>
+<module>
+
+<Control>
+  <Main>
+    <Take_Feature t="button" l="Burial_Mound"/>
+    <Object_Starting_ID/>
+    <GPS_Diagnostics/>
+  </Main>
+  <Records>
+    <cols>
+      <Search_Term/>
+      <Search t="button"/>
+    </cols>
+    <Results t="list"/>
+  </Records>
+  <Map>
+    <Map t="map"/>
+  </Map>
+</Control>
+
+<Burial_Mound>
+  <General>
+    <Object_ID d="decimal" f="id"/>
+    <Timestamp f="onlyui"/>
+    <Author f="onlyui"/>
+    <Type t="dropdown">
+      <opts>
+        <opt>Burial mound</opt>
+        <opt>Surface concentration</opt>
+        <opt>Special find</opt>
+        <opt>Standing masonry</opt>
+        <opt>Earthwork</opt>
+        <opt>Unknown</opt>
+        <opt>Other</opt>
+      </opts>
+    </Type>
+    <Site_Significance t="dropdown">
+      <desc>Assess the site's potential for our research objectives or for excavation. Add details in Recommendation at the end of this module.</desc>
+      <opts>
+        <opt>None</opt>
+        <opt>Low</opt>
+        <opt>Medium</opt>
+        <opt>High</opt>
+      </opts>
+    </Site_Significance>
+    <Name/>
+    <Description/>
+    <Source t="dropdown">
+      <opts>
+        <opt>Survey</opt>
+        <opt>Remote sensing</opt>
+        <opt>Informant</opt>
+        <opt>Legacy verification</opt>
+        <opt>Bibliography</opt>
+        <opt>Other</opt>
+      </opts>
+    </Source>
+    <Exists_in_Legacy t="checkbox">
+      <opts>
+        <opt>Topo</opt>
+        <opt>Satellite Image</opt>
+        <opt>Other</opt>
+      </opts>
+    </Exists_in_Legacy>
+    <Surrounding_Landuse t="dropdown">
+      <opts>
+        <opt>Annual agriculture
+          <opt>Ploughed</opt>
+          <opt>Harrowed</opt>
+          <opt>Seedlings</opt>
+          <opt>Mature crop</opt>
+          <opt>Harvested</opt>
+        </opt>
+        <opt>Perennial
+          <opt>Orchard</opt>
+          <opt>Lavender</opt>
+          <opt>Vineyard</opt>
+        </opt>
+        <opt>Other
+          <opt>Meadow</opt>
+          <opt>Beach</opt>
+          <opt>Scrub</opt>
+          <opt>Forest</opt>
+          <opt>Other</opt>
+        </opt>
+      </opts>
+    </Surrounding_Landuse>
+    <Surface_Landuse t="dropdown">
+      <opts>
+        <opt>Annual agriculture
+          <opt>Ploughed</opt>
+          <opt>Harrowed</opt>
+          <opt>Seedlings</opt>
+          <opt>Mature crop</opt>
+          <opt>Harvested</opt>
+        </opt>
+        <opt>Perennial
+          <opt>Orchard</opt>
+          <opt>Lavender</opt>
+          <opt>Vineyard</opt>
+        </opt>
+        <opt>Other
+          <opt>Meadow</opt>
+          <opt>Beach</opt>
+          <opt>Scrub</opt>
+          <opt>Forest</opt>
+          <opt>Other</opt>
+        </opt>
+      </opts>
+    </Surface_Landuse>
+    <Visibility t="dropdown">
+      <opts>
+        <opt>0-20%</opt>
+        <opt>20-40%</opt>
+        <opt>40-60%</opt>
+        <opt>60-80%</opt>
+        <opt>80-100%</opt>
+      </opts>
+    </Visibility>
+    <cols>
+      <Lat/>
+      <Long/>
+    </cols>
+    <cols>
+      <Easting/>
+      <Northing/>
+    </cols>
+    <Elevation d="decimal">
+      Elevation (MASL)
+    </Elevation>
+    <General_Notes/>
+    <Create_Shapefile t="button"/>
+    <General_Photo t="camera">
+      <desc>Take 1 general overview shot that includes the complete feature profile, and a scale. Include direction in the Annotation (from which direction was the image taken)</desc>
+    </General_Photo>
+  </General>
+  <Dimensions>
+    <Profile t="picture"/>
+    <Plan t="picture">
+      <opts>
+        <opt>Circular</opt>
+        <opt>Elipsoid</opt>
+        <opt>Uneven</opt>
+      </opts>
+    </Plan>
+    <cols>
+      <col>
+        <Length_Max/>
+        <Width_Max/>
+        <Height_Max/>
+        <Area_Max/>
+      </col>
+      <col>
+        <Length_Min/>
+        <Width_Min/>
+        <Height_Min/>
+        <Area_Min/>
+      </col>
+    </cols>
+    <Other_Dimension/>
+    <Dimensions_Notes/>
+    <Attach_A_Sketch t="file"/>
+    <Sketch_Photo t="camera"/>
+  </Dimensions>
+  <Material>
+    <Stone_Feature_Present_And_Visible t="radio">
+      Stone Feature Present And Visible?
+      <opts>
+        <opt>Yes</opt>
+        <opt>No</opt>
+      </opts>
+    </Stone_Feature_Present_And_Visible>
+    <Stone_Feature_Description/>
+    <Surface_Material_Density t="dropdown">
+      <opts>
+        <opt>zero</opt>
+        <opt>scarce</opt>
+        <opt>medium</opt>
+        <opt>high</opt>
+      </opts>
+    </Surface_Material_Density>
+    <Surface_Material_Description/>
+    <Sample_Collected t="radio">
+      Sample Collected?
+      <opts>
+        <opt>Yes</opt>
+        <opt>No</opt>
+      </opts>
+    </Sample_Collected>
+    <Material_Photo t="camera"/>
+  </Material>
+  <CRM>
+    <Disturbance_Kind t="dropdown">
+      <opts>
+        <opt>undisturbed</opt>
+        <opt>surface sediment disturbed</opt>
+        <opt>subsurface disturbed</opt>
+        <opt>totally disturbed</opt>
+        <opt>unknown</opt>
+      </opts>
+    </Disturbance_Kind>
+    <Disturbance_Factors t="checkbox">
+      <opts>
+        <opt>anthropic</opt>
+        <opt>animal activity</opt>
+        <opt>post depositional</opt>
+        <opt>topographic</opt>
+      </opts>
+    </Disturbance_Factors>
+    <Principal_Factors t="dropdown">
+      <desc>Select one factor that contributes to most visible damage</desc>
+      <opts>
+        <opt>Anthropic
+          <opt>Agricultural</opt>
+          <opt>Looting</opt>
+          <opt>Development</opt>
+        </opt>
+        <opt>Post-depositional
+          <opt>Mound geomorphology</opt>
+          <opt>Erosion</opt>
+          <opt>Wind damage</opt>
+          <opt>Water damage</opt>
+          <opt>Age</opt>
+        </opt>
+        <opt>Topographic
+          <opt>Aspect</opt>
+          <opt>Slope</opt>
+          <opt>Exposure</opt>
+          <opt>Hydrology</opt>
+        </opt>
+      </opts>
+    </Principal_Factors>
+    <Age_of_Damage t="checkbox">
+      <opts>
+        <opt>Remote</opt>
+        <opt>Recent</opt>
+        <opt>Fresh</opt>
+      </opts>
+    </Age_of_Damage>
+    <Disturbance_Description/>
+    <RT_Kind t="checkbox">
+      <opts>
+        <opt>Basic pit</opt>
+        <opt>Trench</opt>
+        <opt>Tunnel</opt>
+      </opts>
+    </RT_Kind>
+    <RT_Method t="checkbox">
+      <opts>
+        <opt>Manual</opt>
+        <opt>Mechanized</opt>
+      </opts>
+    </RT_Method>
+    <RT_Frequency t="picture"/>
+    <RT_Description/>
+    <Volume_of_Soil_Removed_via_RT t="dropdown">
+      <opts>
+        <opt>&lt;10%</opt>
+        <opt>10-20%</opt>
+        <opt>20-30%</opt>
+        <opt>30-40%</opt>
+        <opt>40-40%</opt>
+        <opt>50-40%</opt>
+        <opt>60-40%</opt>
+        <opt>70-40%</opt>
+        <opt>80-40%</opt>
+        <opt>90-100%</opt>
+      </opts>
+    </Volume_of_Soil_Removed_via_RT>
+    <Affect t="dropdown">
+      <desc>1=0-20% of the entire feature is missing or disrupted, 5= 80-100% of the feature's surface is missing or disrupted</desc>
+      <opts>
+        <opt>1</opt>
+        <opt>2</opt>
+        <opt>3</opt>
+        <opt>4</opt>
+        <opt>5</opt>
+      </opts>
+    </Affect>
+    <Impact t="dropdown">
+      <desc>1= context is nearly intact; 5 = original context of the feature is nearly all destroyed</desc>
+      <opts>
+        <opt>1</opt>
+        <opt>2</opt>
+        <opt>3</opt>
+        <opt>4</opt>
+        <opt>5</opt>
+      </opts>
+    </Impact>
+    <Comments_and_Recommendations/>
+    <CRM_Photo t="camera"/>
+  </CRM>
+</Burial_Mound>
+
+</module>
