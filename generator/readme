@@ -177,4 +177,4 @@ Grammar
   `tabGroup`         -> <\w `f`> `tabs` <\w>
   `f`                -> # Flags
   `tabs`             -> `tab` `tabs` | .
-  `tab`              -> <\w `f`> # This grammar is a clusterfuck
+  `tab`              -> <\w `f`> # This grammar is a clustermuck
