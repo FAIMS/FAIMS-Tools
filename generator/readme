@@ -1,8 +1,7 @@
 TODO Warnings should be generated separately to the xml files
 TODO formatString, appendCharacterString <str><pos><fmt><app>
        - Warn if these are found in an element which isn't an id
-TODO ?not-null validation
-TODO invalid arch16n entries are produced if the label contains an equals sign
+TODO ?blank-checking validation ("required") flag
 TODO Warn if checkbox, dropdown, picture, or radio doesn't contain <opts>
 TODO Add "View Attached Files" button?
        - onEvent call

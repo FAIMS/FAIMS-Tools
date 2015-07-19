@@ -94,7 +94,9 @@
     <xsl:for-each select="/module/*">                                <!-- Iterate over tab group nodes -->
       <xsl:element name="group">
         <xsl:attribute name="ref"><xsl:value-of select="name()"/></xsl:attribute>
-        <xsl:attribute name="faims_archent_type"><xsl:value-of select="name()"/></xsl:attribute>
+        <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+          <xsl:attribute name="faims_archent_type"><xsl:value-of select="name()"/></xsl:attribute>
+        </xsl:if>
         <xsl:call-template name="label" />
         <xsl:for-each select="*">                                      <!-- Iterate over tab nodes -->
           <xsl:if test="not(translate(name(.), $smallcase, '') = '')"> <!-- Skip nodes with "reserved" names (i.e. all lower case letters -->
