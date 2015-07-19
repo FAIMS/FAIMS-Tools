@@ -111,14 +111,20 @@ newTab(String tab, Boolean resolveTabGroups) {
   }
 }
 
+saveTabGroup(String tabGroup) {
+  String uuidVar = "uuid" + tabGroup.replaceAll("_", "");
+  saveTabGroup(tabGroup, uuidVar);
+}
+
 saveTabGroup(String tabGroup, String uuidVar) {
   saveTabGroup(tabGroup, uuidVar, "");
 }
+
 saveTabGroup(String tabGroup, String uuidVar, String callback) {
   Boolean enableAutosave = true;
-  String id              = eval(uuidVar);
-  List geometry          = null;
-  List attributes        = null;
+  String  id             = eval(uuidVar);
+  List    geometry       = null;
+  List    attributes     = null;
   SaveCallback saveCallback  = new SaveCallback() {
     onSave(uuid, newRecord) {
       execute(uuidVar + " = uuid;");
@@ -129,6 +135,7 @@ saveTabGroup(String tabGroup, String uuidVar, String callback) {
     }
   };
 
+  keepTabGroupChanges(tabGroup);
   saveTabGroup(tabGroup, id, geometry, attributes, saveCallback, enableAutosave);
 }
 

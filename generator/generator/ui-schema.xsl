@@ -241,10 +241,10 @@
       <xsl:when test="normalize-space(@t)='audio'">
         <xsl:element name="select">
           <xsl:attribute name="type">file</xsl:attribute>
-          <xsl:if test="not(contains(@f, 'onlyui'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
             <xsl:attribute name="faims_attribute_type">measure</xsl:attribute>
           </xsl:if>
-          <xsl:if test="not(contains(@f, 'nosync'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nosync')])">
             <xsl:attribute name="faims_sync">true</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -269,10 +269,10 @@
       <xsl:when test="normalize-space(@t)='camera'">
         <xsl:element name="select">
           <xsl:attribute name="type">camera</xsl:attribute>
-          <xsl:if test="not(contains(@f, 'onlyui'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
             <xsl:attribute name="faims_attribute_type">measure</xsl:attribute>
           </xsl:if>
-          <xsl:if test="not(contains(@f, 'nosync'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nosync')])">
             <xsl:attribute name="faims_sync">true</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -291,7 +291,7 @@
       </xsl:when>
       <xsl:when test="normalize-space(@t)='checkbox'">
         <xsl:element name="select">
-          <xsl:if test="not(contains(@f, 'onlyui'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
             <xsl:attribute name="faims_attribute_type">vocab</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -303,7 +303,7 @@
       </xsl:when>
       <xsl:when test="normalize-space(@t)='dropdown'">
         <xsl:element name="select1">
-          <xsl:if test="not(contains(@f, 'onlyui'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
             <xsl:attribute name="faims_attribute_type">vocab</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -316,10 +316,10 @@
       <xsl:when test="normalize-space(@t)='file'">
         <xsl:element name="select">
           <xsl:attribute name="type">file</xsl:attribute>
-          <xsl:if test="not(contains(@f, 'onlyui'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
             <xsl:attribute name="faims_attribute_type">measure</xsl:attribute>
           </xsl:if>
-          <xsl:if test="not(contains(@f, 'nosync'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nosync')])">
             <xsl:attribute name="faims_sync">true</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -343,7 +343,7 @@
       </xsl:when>
       <xsl:when test="normalize-space(@t)='input'">
         <xsl:element name="{normalize-space(@t)}">
-          <xsl:if test="not(contains(@f, 'onlyui'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
             <xsl:attribute name="faims_attribute_type">measure</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -368,7 +368,7 @@
       <xsl:when test="normalize-space(@t)='picture'">
         <xsl:element name="select1">
           <xsl:attribute name="type">image</xsl:attribute>
-          <xsl:if test="not(contains(@f, 'onlyui'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
             <xsl:attribute name="faims_attribute_type">vocab</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -381,7 +381,7 @@
       <xsl:when test="normalize-space(@t)='radio'">
         <xsl:element name="select1">
           <xsl:attribute name="appearance">full</xsl:attribute>
-          <xsl:if test="not(contains(@f, 'onlyui'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
             <xsl:attribute name="faims_attribute_type">vocab</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -394,10 +394,10 @@
       <xsl:when test="normalize-space(@t)='video'">
         <xsl:element name="select">
           <xsl:attribute name="type">video</xsl:attribute>
-          <xsl:if test="not(contains(@f, 'onlyui'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
             <xsl:attribute name="faims_attribute_type">measure</xsl:attribute>
           </xsl:if>
-          <xsl:if test="not(contains(@f, 'nosync'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nosync')])">
             <xsl:attribute name="faims_sync">true</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -422,7 +422,7 @@
       </xsl:when>
       <xsl:when test="normalize-space(@t) = ''">
         <xsl:element name="input">
-          <xsl:if test="not(contains(@f, 'onlyui'))">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
             <xsl:attribute name="faims_attribute_type">measure</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -447,7 +447,11 @@
     <xsl:if test="@c">
       <xsl:attribute name="faims_style_class"><xsl:value-of select="@c"/></xsl:attribute>
     </xsl:if>
-    <xsl:if test="normalize-space(@t) != 'group' and normalize-space(@t) != 'button' and normalize-space(@t) != 'map' and normalize-space(@t) != 'webview' and normalize-space(@t) != '' and not(contains(@f, 'onlyui'))">
+    <xsl:if test="normalize-space(@t) != 'group' and
+      normalize-space(@t) != 'button' and
+      normalize-space(@t) != 'map' and
+      normalize-space(@t) != 'webview' and
+      not(ancestor-or-self::*[contains(@f, 'onlyui')])">
       <xsl:attribute name="faims_attribute_name">
         <xsl:call-template name="string-replace-all">
           <xsl:with-param name="text" select="name()" />
