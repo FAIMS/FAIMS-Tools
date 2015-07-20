@@ -44,6 +44,7 @@ Flags
   onlydata        Only allows code to be generated for the data schema.
   onlyui          Only allows code to be generated for the UI schema.
   readonly        Equivalent to faims_read_only="true".
+  user            Used to indicate that a menu contains a list of users.
 
 Types
   Types of GUI element:

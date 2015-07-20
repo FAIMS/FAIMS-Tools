@@ -2,6 +2,11 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <xsl:output method="text" indent="no"/>
 
+  <xsl:variable name="newline" >
+<xsl:text>
+</xsl:text>
+  </xsl:variable>
+
   <xsl:template match="/">
 
 <xsl:text>
@@ -127,7 +132,7 @@ saveTabGroup(String tabGroup, String uuidVar, String callback) {
   List    attributes     = null;
   SaveCallback saveCallback  = new SaveCallback() {
     onSave(uuid, newRecord) {
-      execute(uuidVar + " = uuid;");
+      eval(uuidVar + " = uuid;");
       execute(callback);
     }
     onError(message) {
@@ -135,14 +140,37 @@ saveTabGroup(String tabGroup, String uuidVar, String callback) {
     }
   };
 
-  keepTabGroupChanges(tabGroup);
   saveTabGroup(tabGroup, id, geometry, attributes, saveCallback, enableAutosave);
 }
 
 </xsl:text>
 
+    <!-- User login stuff -->
+    <xsl:choose>
+      <xsl:when test="count(//*[contains(@f, 'user')]) = 0">
+<xsl:text>
+// WARNING: This module is missing a login menu
+String userId    = "1";
+String nameFirst = "";
+String nameLast  = "";
+String email     = "";
+User   user      = new User(userId, nameFirst, nameLast, email);
+setUser(user);
+</xsl:text>
+      </xsl:when>
+      <xsl:when test="count(//*[contains(@f, 'user')]) = 1">
+        <xsl:call-template name="users"/>
+      </xsl:when>
+      <xsl:when test="count(//*[contains(@f, 'user')]) &gt; 1">
+        <xsl:text>//WARNING: This module has more than one login menu</xsl:text>
+        <xsl:value-of select="$newline" />
+        <xsl:call-template name="users"/>
+      </xsl:when>
+    </xsl:choose>
+    <xsl:value-of select="$newline" />
+
     <!-- makeVocab stuff -->
-    <xsl:for-each select="//*[@t]">
+    <xsl:for-each select="//*[@t and not(ancestor-or-self::*[contains(@f, 'onlyui')]) and not(contains(@f, 'user'))]">
       <xsl:variable name="is-hierarchical">
         <xsl:call-template name="is-hierarchical"/>
       </xsl:variable>
@@ -186,11 +214,10 @@ saveTabGroup(String tabGroup, String uuidVar, String callback) {
       </xsl:choose>
     </xsl:for-each>
 
-<xsl:text>
-</xsl:text>
+    <xsl:value-of select="$newline" />
 
     <!-- Autosaving -->
-    <xsl:for-each select="/module/*[not(contains(@f, 'onlyui'))]">
+    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui')])]">
       <xsl:text>uuid</xsl:text>
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text" select="name()" />
@@ -198,12 +225,10 @@ saveTabGroup(String tabGroup, String uuidVar, String callback) {
         <xsl:with-param name="by" select="''" />
       </xsl:call-template>
       <xsl:text> = null;</xsl:text>
-<xsl:text>
-</xsl:text>
+      <xsl:value-of select="$newline" />
     </xsl:for-each>
-<xsl:text>
-</xsl:text>
-    <xsl:for-each select="/module/*[not(contains(@f, 'onlyui'))]">
+    <xsl:value-of select="$newline" />
+    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui')])]">
       <xsl:text>onShow</xsl:text>
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text" select="name()" />
@@ -216,12 +241,10 @@ saveTabGroup(String tabGroup, String uuidVar, String callback) {
       <xsl:value-of select="name()" />
 <xsl:text>");
 }</xsl:text>
-<xsl:text>
-</xsl:text>
+      <xsl:value-of select="$newline" />
     </xsl:for-each>
-<xsl:text>
-</xsl:text>
-    <xsl:for-each select="/module/*[not(contains(@f, 'onlyui'))]">
+    <xsl:value-of select="$newline" />
+    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui')])]">
       <xsl:text>onEvent("</xsl:text>
       <xsl:value-of select="name()"/>
       <xsl:text>", "show", "onShow</xsl:text>
@@ -231,12 +254,10 @@ saveTabGroup(String tabGroup, String uuidVar, String callback) {
         <xsl:with-param name="by" select="''" />
       </xsl:call-template>
       <xsl:text>()");</xsl:text>
-<xsl:text>
-</xsl:text>
+      <xsl:value-of select="$newline" />
     </xsl:for-each>
 
-<xsl:text>
-</xsl:text>
+    <xsl:value-of select="$newline" />
 
     <!-- Triggers/buttons which link to a tab or tabgroup -->
     <xsl:for-each select="//*[@l]">
@@ -256,69 +277,63 @@ saveTabGroup(String tabGroup, String uuidVar, String callback) {
 
       <xsl:text>onEvent("</xsl:text>
       <xsl:value-of select="$button-path"/>
-      <xsl:text>", "delayclick", </xsl:text>
+      <xsl:text>", "click", </xsl:text>
       <xsl:value-of select="$show-tab-string"/>
       <xsl:text>);</xsl:text>
-<xsl:text>
-</xsl:text>
+      <xsl:value-of select="$newline" />
     </xsl:for-each>
 
-<xsl:text>
-</xsl:text>
+    <xsl:value-of select="$newline" />
 
-  <!-- onEvent calls for audio, camera, file and video GUI elements -->
-  <xsl:for-each select="//*[normalize-space(@t) = 'audio']">
-    <xsl:text>onEvent("</xsl:text>
-    <xsl:value-of select="name(ancestor::*[last()-1])"/>
-    <xsl:text>/</xsl:text>
-    <xsl:value-of select="name(ancestor::*[last()-2])"/>
-    <xsl:text>/Button_</xsl:text>
-    <xsl:value-of select="name()"/>
-    <xsl:text>", "click", "attachAudioTo(\"</xsl:text>
-    <xsl:call-template name="ref" />
-    <xsl:text>\")");</xsl:text>
-<xsl:text>
-</xsl:text>
-  </xsl:for-each>
-  <xsl:for-each select="//*[normalize-space(@t) = 'camera']">
-    <xsl:text>onEvent("</xsl:text>
-    <xsl:value-of select="name(ancestor::*[last()-1])"/>
-    <xsl:text>/</xsl:text>
-    <xsl:value-of select="name(ancestor::*[last()-2])"/>
-    <xsl:text>/Button_</xsl:text>
-    <xsl:value-of select="name()"/>
-    <xsl:text>", "click", "attachPictureTo(\"</xsl:text>
-    <xsl:call-template name="ref" />
-    <xsl:text>\")");</xsl:text>
-<xsl:text>
-</xsl:text>
-  </xsl:for-each>
-  <xsl:for-each select="//*[normalize-space(@t) = 'file']">
-    <xsl:text>onEvent("</xsl:text>
-    <xsl:value-of select="name(ancestor::*[last()-1])"/>
-    <xsl:text>/</xsl:text>
-    <xsl:value-of select="name(ancestor::*[last()-2])"/>
-    <xsl:text>/Button_</xsl:text>
-    <xsl:value-of select="name()"/>
-    <xsl:text>", "click", "attachFileTo(\"</xsl:text>
-    <xsl:call-template name="ref" />
-    <xsl:text>\")");</xsl:text>
-<xsl:text>
-</xsl:text>
-  </xsl:for-each>
-  <xsl:for-each select="//*[normalize-space(@t) = 'video']">
-    <xsl:text>onEvent("</xsl:text>
-    <xsl:value-of select="name(ancestor::*[last()-1])"/>
-    <xsl:text>/</xsl:text>
-    <xsl:value-of select="name(ancestor::*[last()-2])"/>
-    <xsl:text>/Button_</xsl:text>
-    <xsl:value-of select="name()"/>
-    <xsl:text>", "click", "attachVideoTo(\"</xsl:text>
-    <xsl:call-template name="ref" />
-    <xsl:text>\")");</xsl:text>
-<xsl:text>
-</xsl:text>
-  </xsl:for-each>
+    <!-- onEvent calls for audio, camera, file and video GUI elements -->
+    <xsl:for-each select="//*[normalize-space(@t) = 'audio']">
+      <xsl:text>onEvent("</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])"/>
+      <xsl:text>/</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-2])"/>
+      <xsl:text>/Button_</xsl:text>
+      <xsl:value-of select="name()"/>
+      <xsl:text>", "click", "attachAudioTo(\"</xsl:text>
+      <xsl:call-template name="ref" />
+      <xsl:text>\")");</xsl:text>
+      <xsl:value-of select="$newline" />
+    </xsl:for-each>
+    <xsl:for-each select="//*[normalize-space(@t) = 'camera']">
+      <xsl:text>onEvent("</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])"/>
+      <xsl:text>/</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-2])"/>
+      <xsl:text>/Button_</xsl:text>
+      <xsl:value-of select="name()"/>
+      <xsl:text>", "click", "attachPictureTo(\"</xsl:text>
+      <xsl:call-template name="ref" />
+      <xsl:text>\")");</xsl:text>
+      <xsl:value-of select="$newline" />
+    </xsl:for-each>
+    <xsl:for-each select="//*[normalize-space(@t) = 'file']">
+      <xsl:text>onEvent("</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])"/>
+      <xsl:text>/</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-2])"/>
+      <xsl:text>/Button_</xsl:text>
+      <xsl:value-of select="name()"/>
+      <xsl:text>", "click", "attachFileTo(\"</xsl:text>
+      <xsl:call-template name="ref" />
+      <xsl:text>\")");</xsl:text>
+      <xsl:value-of select="$newline" />
+    </xsl:for-each>
+    <xsl:for-each select="//*[normalize-space(@t) = 'video']">
+      <xsl:text>onEvent("</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])"/>
+      <xsl:text>/</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-2])"/>
+      <xsl:text>/Button_</xsl:text>
+      <xsl:value-of select="name()"/>
+      <xsl:text>", "click", "attachVideoTo(\"</xsl:text>
+      <xsl:call-template name="ref" />
+      <xsl:text>\")");</xsl:text>
+      <xsl:value-of select="$newline" />
+    </xsl:for-each>
 
   </xsl:template>
 
@@ -337,20 +352,64 @@ saveTabGroup(String tabGroup, String uuidVar, String callback) {
   </xsl:template>
 
   <xsl:template name="complete-makevocab">
-      <xsl:variable name="faims-attribute-name">
-        <xsl:call-template name="string-replace-all">
-          <xsl:with-param name="text" select="name(.)" />
-          <xsl:with-param name="replace" select="'_'" />
-          <xsl:with-param name="by" select="' '" />
-        </xsl:call-template>
-      </xsl:variable>
+    <xsl:variable name="faims-attribute-name">
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name(.)" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="' '" />
+      </xsl:call-template>
+    </xsl:variable>
 
-      <xsl:call-template name="ref" />
-      <xsl:text>", "</xsl:text>
-      <xsl:value-of select="$faims-attribute-name" />
-      <xsl:text>");</xsl:text>
+    <xsl:call-template name="ref" />
+    <xsl:text>", "</xsl:text>
+    <xsl:value-of select="$faims-attribute-name" />
+    <xsl:text>");</xsl:text>
+    <xsl:value-of select="$newline" />
+  </xsl:template>
+
+  <xsl:template name="users">
+    <xsl:for-each select="//*[contains(@f, 'user')][1]">
 <xsl:text>
+String userMenuPath = "</xsl:text><xsl:call-template name="ref" /><xsl:text>";
+
+populateListForUsers(){
+  String getNonDeletedUsersQuery = "SELECT userid, fname || ' ' || lname "+
+                                   "  FROM user "+
+                                   " WHERE userdeleted is null;";
+
+  fetchAll(getNonDeletedUsersQuery, new FetchCallback() {
+    onFetch(result) {
+      populateDropDown(userMenuPath, result, true);
+    }
+  });
+}
+
+String username = "";
+
+selectUser () {
+  String userVocabId  = getFieldValue(userMenuPath);
+  String userQ        = "SELECT userid,fname,lname,email FROM user " +
+                        "WHERE  userid='" + userVocabId + "';";
+  FetchCallback callback = new FetchCallback() {
+    onFetch(result) {
+      user = new User(
+            result.get(0),
+            result.get(1),
+            result.get(2),
+            result.get(3)
+      );
+      setUser(user);
+      username = result.get(1) + " " + result.get(2);
+    }
+  };
+
+  fetchOne(userQ, callback);
+}
+
+onEvent(userMenuPath, "show",  "populateListForUsers()");
+onEvent(userMenuPath, "click", "selectUser()");
 </xsl:text>
+    </xsl:for-each>
   </xsl:template>
 
 <!--

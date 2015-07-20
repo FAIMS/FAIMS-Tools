@@ -3,9 +3,8 @@
   <xsl:output method="xml" indent="yes"/>
 
   <xsl:variable name="doWarn"           select="not(/module/@suppressWarnings = 'true')" />
-  <xsl:variable name="propertySelector" select="./*//*[not(contains(ancestor::*[last()-1][@f], 'onlyui')) and not(contains(ancestor::*[last()-2][@f], 'onlyui')) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(contains(@f, 'onlyui'))]" />
   <xsl:key name="kDropdownOpt" match="*[@t='dropdown']/opts/opt" use="concat(name(ancestor::*[last()-1]), name(ancestor::*[last()-2]), name(ancestor::*[last()-3]), text())"/>
-  <xsl:key name="kPropertyName" match="./*//*[not(contains(ancestor::*[last()-1][@f], 'onlyui')) and not(contains(ancestor::*[last()-2][@f], 'onlyui')) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(contains(@f, 'onlyui'))]" use="concat(name(ancestor::*[last()-1]), name(.))"/>
+  <xsl:key name="kPropertyName" match="./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')]" use="concat(name(ancestor::*[last()-1]), name(.))"/>
 
   <xsl:template match="/module">
     <dataSchema>
@@ -16,7 +15,7 @@
 
   <!-- ArchaeologicalElement -->
   <xsl:template name="arch-el">
-    <xsl:for-each select="/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels')]">
+    <xsl:for-each select="/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]">
       <ArchaeologicalElement name="{name(.)}">
         <xsl:call-template name="desc" />
 
@@ -41,7 +40,7 @@
 
   <!-- property -->
   <xsl:template name="properties">
-    <xsl:for-each select="./*//*[not(contains(ancestor::*[last()-1][@f], 'onlyui')) and not(contains(ancestor::*[last()-2][@f], 'onlyui')) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(contains(@f, 'onlyui'))]">
+    <xsl:for-each select="./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')]">
       <xsl:variable name="faims-attribute-name">
         <xsl:call-template name="string-replace-all">
           <xsl:with-param name="text" select="name(.)" />

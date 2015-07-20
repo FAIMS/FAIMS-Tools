@@ -623,10 +623,17 @@
       </xsl:call-template>
     </xsl:variable>
     <xsl:variable name="v12">
-      <xsl:value-of select="normalize-space($v11)" />
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text"    select="$v11" />
+        <xsl:with-param name="replace" select="'user'" />
+        <xsl:with-param name="by"      select="''" />
+      </xsl:call-template>
     </xsl:variable>
-    <xsl:if test="$doWarn and $v12 != ''">
-      <xsl:comment>WARNING: Unexpected flag(s) "<xsl:value-of select="$v12" />"</xsl:comment>
+    <xsl:variable name="v13">
+      <xsl:value-of select="normalize-space($v12)" />
+    </xsl:variable>
+    <xsl:if test="$doWarn and $v13 != ''">
+      <xsl:comment>WARNING: Unexpected flag(s) "<xsl:value-of select="$v13" />"</xsl:comment>
     </xsl:if>
   </xsl:template>
 

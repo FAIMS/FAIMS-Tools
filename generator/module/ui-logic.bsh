@@ -129,12 +129,71 @@ saveTabGroup(String tabGroup, String uuidVar, String callback) {
     }
   };
 
-  keepTabGroupChanges(tabGroup);
   saveTabGroup(tabGroup, id, geometry, attributes, saveCallback, enableAutosave);
 }
 
-makeVocab("List", "Control/Records/Results", "Results");
+
+String userMenuPath = "User/User/Select_User";
+
+populateListForUsers(){
+  String getNonDeletedUsersQuery = "SELECT userid, fname || ' ' || lname "+
+                                   "  FROM user "+
+                                   " WHERE userdeleted is null;";
+
+  fetchAll(getNonDeletedUsersQuery, new FetchCallback() {
+    onFetch(result) {
+      populateDropDown(userMenuPath, result, true);
+    }
+  });
+}
+
+String username = "";
+
+selectUser () {
+  String userVocabId  = getFieldValue(userMenuPath);
+  String userQ        = "SELECT userid,fname,lname,email FROM user " +
+                        "WHERE  userid='" + userVocabId + "';";
+  FetchCallback callback = new FetchCallback() {
+    onFetch(result) {
+      user = new User(
+            result.get(0),
+            result.get(1),
+            result.get(2),
+            result.get(3)
+      );
+      setUser(user);
+      username = result.get(1) + " " + result.get(2);
+    }
+  };
+
+  fetchOne(userQ, callback);
+}
+
+onEvent(userMenuPath, "show",  "populateListForUsers()");
+onEvent(userMenuPath, "click", "selectUser()");
+
 makeVocab("DropDown", "Burial_Mound/General/Type", "Type");
+makeVocab("DropDown", "Burial_Mound/General/Site_Significance", "Site Significance");
+makeVocab("DropDown", "Burial_Mound/General/Source", "Source");
+makeVocab("CheckBoxGroup", "Burial_Mound/General/Exists_in_Legacy", "Exists in Legacy");
+makeVocab("HierarchicalDropDown", "Burial_Mound/General/Surrounding_Landuse", "Surrounding Landuse");
+makeVocab("HierarchicalDropDown", "Burial_Mound/General/Surface_Landuse", "Surface Landuse");
+makeVocab("DropDown", "Burial_Mound/General/Visibility", "Visibility");
+makeVocab("PictureGallery", "Burial_Mound/Dimensions/Profile", "Profile");
+makeVocab("PictureGallery", "Burial_Mound/Dimensions/Plan", "Plan");
+makeVocab("RadioGroup", "Burial_Mound/Material/Stone_Feature_Present_And_Visible", "Stone Feature Present And Visible");
+makeVocab("DropDown", "Burial_Mound/Material/Surface_Material_Density", "Surface Material Density");
+makeVocab("RadioGroup", "Burial_Mound/Material/Sample_Collected", "Sample Collected");
+makeVocab("DropDown", "Burial_Mound/CRM/Disturbance_Kind", "Disturbance Kind");
+makeVocab("CheckBoxGroup", "Burial_Mound/CRM/Disturbance_Factors", "Disturbance Factors");
+makeVocab("HierarchicalDropDown", "Burial_Mound/CRM/Principal_Factors", "Principal Factors");
+makeVocab("CheckBoxGroup", "Burial_Mound/CRM/Age_of_Damage", "Age of Damage");
+makeVocab("CheckBoxGroup", "Burial_Mound/CRM/RT_Kind", "RT Kind");
+makeVocab("CheckBoxGroup", "Burial_Mound/CRM/RT_Method", "RT Method");
+makeVocab("PictureGallery", "Burial_Mound/CRM/RT_Frequency", "RT Frequency");
+makeVocab("DropDown", "Burial_Mound/CRM/Volume_of_Soil_Removed_via_RT", "Volume of Soil Removed via RT");
+makeVocab("DropDown", "Burial_Mound/CRM/Affect", "Affect");
+makeVocab("DropDown", "Burial_Mound/CRM/Impact", "Impact");
 
 uuidBurialMound = null;
 
@@ -145,5 +204,11 @@ onShowBurialMound () {
 
 onEvent("Burial_Mound", "show", "onShowBurialMound()");
 
-onEvent("Control/Main/Take_Feature", "delayclick", "newTab(\"Burial_Mound\", true)");
+onEvent("User/User/Login", "click", "newTab(\"Control\", true)");
+onEvent("Control/Main/Take_Feature", "click", "newTab(\"Burial_Mound\", true)");
 
+onEvent("Burial_Mound/General/Button_General_Photo", "click", "attachPictureTo(\"Burial_Mound/General/General_Photo\")");
+onEvent("Burial_Mound/Dimensions/Button_Sketch_Photo", "click", "attachPictureTo(\"Burial_Mound/Dimensions/Sketch_Photo\")");
+onEvent("Burial_Mound/Material/Button_Material_Photo", "click", "attachPictureTo(\"Burial_Mound/Material/Material_Photo\")");
+onEvent("Burial_Mound/CRM/Button_CRM_Photo", "click", "attachPictureTo(\"Burial_Mound/CRM/CRM_Photo\")");
+onEvent("Burial_Mound/Dimensions/Button_Attach_A_Sketch", "click", "attachFileTo(\"Burial_Mound/Dimensions/Attach_A_Sketch\")");
