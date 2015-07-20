@@ -9,7 +9,7 @@
         <!--WARNING: <desc> tag not given-->
       </description>
     </property>
-    <property name="Type" isIdentifier="true" type="vocab">
+    <property name="Type" type="vocab">
       <description>
         <!--WARNING: <desc> tag not given-->
       </description>
@@ -188,7 +188,7 @@
       <description>Take 1 general overview shot that includes the complete feature profile, and a scale. Include direction in the Annotation (from which direction was the image taken)</description>
     </property>
     <property name="Profile" type="vocab">
-      <!--WARNING: A set of >opts< tags are expected but not present-->
+      <!--WARNING: A set of <opts> tags are expected but not present-->
       <description>
         <!--WARNING: <desc> tag not given-->
       </description>
@@ -416,7 +416,7 @@
       </lookup>
     </property>
     <property name="RT Frequency" type="vocab">
-      <!--WARNING: A set of >opts< tags are expected but not present-->
+      <!--WARNING: A set of <opts> tags are expected but not present-->
       <description>
         <!--WARNING: <desc> tag not given-->
       </description>

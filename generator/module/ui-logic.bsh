@@ -1,4 +1,74 @@
 
+/* `ref`  is a reference/path to a field
+ * `name` is a human-readable name for that field
+ * `cond` is a String containing a boolean expression that evaluates to true if
+ *        and only if the the field pair returned by this function should be
+ *        validated.
+ *
+ *  Returns a field pair (really just an ArrayList).
+ */
+fieldPair(String ref, String name, String cond) {
+  List fp = new ArrayList();
+  fp.add(ref);
+  fp.add(name);
+  fp.add(cond);
+  return fp;
+}
+
+fieldPair(String ref, String name) {
+  String t = "true";
+  return fieldPair(ref, name, t);
+}
+
+/* Returns true if field specified by `ref` is valid. False otherwise.
+ */
+isValidField(String ref) {
+  return !isNull(getFieldValue(ref));
+}
+/* `format` can either be HTML or PLAINTEXT
+ */
+validateFields(List fields, String format) {
+  Integer numInvalid = 0;
+
+  /* Build validation message string (and count how many invalid fields exist) */
+  String out = "Please fill out the following fields:\n";
+  for(f : fields) {
+    String ref  = f.get(0); // Reference to field
+    String name = f.get(1); // Human-readable name
+    String cond = f.get(2); // Validation condition
+
+    // Only validate a field whose validation condition evaluates to `true`
+    Boolean doValidateField = (Boolean) eval(cond);
+    if (!doValidateField)
+      continue;
+
+    // Add any invalid fields to the output and tally them
+    if (!isValidField(ref)) {
+      out += "- " + name + "\n";
+      numInvalid++;
+    }
+  }
+  // All the fields are valid; just overwrite `out` with a cheery message
+  if (numInvalid == 0)
+    out = "All fields contain valid data!";
+
+  /* Format the output as dictated by `format` */
+  if (format == "HTML") {
+    out = out.replace("\n", "<br>");
+  } else if (format == "PLAINTEXT") {
+    ;
+  }
+
+  return out;
+}
+
+validateContext() {
+  List f= new ArrayList(); // Fields to be validated
+
+  String validationMessage = validateFields(f, "PLAINTEXT");
+  showWarning("Validation Results", validationMessage);
+}
+
 /** Wrapper for to make a vocab without an exlusion list **/
 makeVocab(String type, String path, String attrib) {
   makeVocab(type, path, attrib, null);
@@ -195,6 +265,14 @@ makeVocab("DropDown", "Burial_Mound/CRM/Volume_of_Soil_Removed_via_RT", "Volume 
 makeVocab("DropDown", "Burial_Mound/CRM/Affect", "Affect");
 makeVocab("DropDown", "Burial_Mound/CRM/Impact", "Impact");
 
+validateBurialMound() {
+  List fields = new ArrayList(); // Fields to be validated
+
+  f.add(fieldPair("Burial_Mound/General/Object_ID", "{Object_ID}"));
+
+  String validationMessage = validateFields(fields, "PLAINTEXT");
+  showWarning("Validation Results", validationMessage);
+}
 uuidBurialMound = null;
 
 onShowBurialMound () {
@@ -212,9 +290,19 @@ onClickControlTakeFeature () {
   // TODO: Add some things which should happen when this element is clicked
   newTab("Burial_Mound", true);
 }
+onClickControlResults () {
+  // TODO: Add some things which should happen when this element is clicked
+  newTab("Burial_Mound", true);
+}
+onClickBurialMoundCreateShapefile () {
+  // TODO: Add some things which should happen when this element is clicked
+  newTab("Control/Map", true);
+}
 
 onEvent("User/User/Login", "click", "onClickUserLogin()");
 onEvent("Control/Main/Take_Feature", "click", "onClickControlTakeFeature()");
+onEvent("Control/Records/Results", "click", "onClickControlResults()");
+onEvent("Burial_Mound/General/Create_Shapefile", "click", "onClickBurialMoundCreateShapefile()");
 
 onEvent("Burial_Mound/General/Button_General_Photo", "click", "attachPictureTo(\"Burial_Mound/General/General_Photo\")");
 onEvent("Burial_Mound/Dimensions/Button_Sketch_Photo", "click", "attachPictureTo(\"Burial_Mound/Dimensions/Sketch_Photo\")");

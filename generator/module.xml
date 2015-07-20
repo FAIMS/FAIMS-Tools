@@ -19,7 +19,7 @@
       <Search_Term/>
       <Search t="button"/>
     </cols>
-    <Results t="list"/>
+    <Results t="list" l="Burial_Mound"/>
   </Records>
   <Map>
     <Map t="map"/>
@@ -28,21 +28,10 @@
 
 <Burial_Mound>
   <General>
-    <Object_ID d="decimal" f="id">
-      <!--<str>-->
-        <!--<pos>2</pos>-->
-        <!--<fmt><![CDATA[ {{ if $1 then "( $1 )" }} ]]></fmt>-->
-        <!--<app><![CDATA[ & ]]></app>-->
-      <!--</str>-->
-    </Object_ID>
+    <Object_ID d="decimal" f="id notnull"/>
     <Timestamp f="onlyui"/>
     <Author f="onlyui"/>
-    <Type t="dropdown" f="id">
-      <!--<str>-->
-        <!--<pos>1</pos>-->
-        <!--<fmt><![CDATA[ {{ if $1 then "( $1 )" }} ]]></fmt>-->
-        <!--<app><![CDATA[ & ]]></app>-->
-      <!--</str>-->
+    <Type t="dropdown">
       <opts>
         <opt>Burial mound</opt>
         <opt>Surface concentration</opt>
@@ -148,7 +137,7 @@
       Elevation (MASL)
     </Elevation>
     <General_Notes/>
-    <Create_Shapefile t="button"/>
+    <Create_Shapefile t="button" l="Control/Map"/>
     <General_Photo t="camera">
       <desc>Take 1 general overview shot that includes the complete feature profile, and a scale. Include direction in the Annotation (from which direction was the image taken)</desc>
     </General_Photo>

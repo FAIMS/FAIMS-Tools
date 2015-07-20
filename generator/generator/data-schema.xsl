@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-  <xsl:output method="xml" indent="yes"/>
+  <xsl:output method="xml" indent="yes" cdata-section-elements="formatString appendCharacterString"/>
 
   <xsl:variable name="doWarn"           select="not(/module/@suppressWarnings = 'true')" />
   <xsl:key name="kDropdownOpt" match="*[@t='dropdown']/opts/opt" use="concat(name(ancestor::*[last()-1]), name(ancestor::*[last()-2]), name(ancestor::*[last()-3]), text())"/>
-  <xsl:key name="kPropertyName" match="./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')]" use="concat(name(ancestor::*[last()-1]), name(.))"/>
+  <xsl:key name="kPropertyName" match="./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(name() = 'str') and not(name() = 'pos') and not(name() = 'fmt') and not(name() = 'app')]" use="concat(name(ancestor::*[last()-1]), name(.))"/>
 
   <xsl:template match="/module">
     <dataSchema>
@@ -17,6 +17,9 @@
   <xsl:template name="arch-el">
     <xsl:for-each select="/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]">
       <ArchaeologicalElement name="{name(.)}">
+        <xsl:if test="not(.//*[contains(@f, ' id') or contains(@f, 'id ') or normalize-space(@f) = 'id'])">
+          <xsl:comment>ERROR: Identifier not given</xsl:comment>
+        </xsl:if>
         <xsl:call-template name="desc" />
 
         <!-- Parse the properties -->
@@ -40,7 +43,9 @@
 
   <!-- property -->
   <xsl:template name="properties">
-    <xsl:for-each select="./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')]">
+    <xsl:for-each select="./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(name() = 'str') and not(name() = 'pos') and not(name() = 'fmt') and not(name() = 'app')]">
+      <xsl:sort select="concat(str/pos/text(), substring('not-found', 1 div not(str/pos/text())))" />
+
       <xsl:variable name="faims-attribute-name">
         <xsl:call-template name="string-replace-all">
           <xsl:with-param name="text" select="name(.)" />
@@ -80,9 +85,22 @@
           <xsl:comment>ERROR: This view's name is a duplicate of one or more other views' in this tab group</xsl:comment>
         </xsl:if>
         <xsl:call-template name="desc" />
+        <xsl:call-template name="faims-strings" />
         <xsl:apply-templates select="opts"/>
       </property>
     </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="faims-strings">
+    <xsl:if test=".//str and not(normalize-space(@f) = 'id') and not(contains(@f, ' id')) and not(contains(@f, 'id '))">
+      <xsl:comment>WARNING: Property has &lt;str&gt; tags but is not flagged as an identifier</xsl:comment>
+    </xsl:if>
+    <xsl:if test=".//fmt">
+      <formatString><xsl:value-of select=".//fmt/text()"/></formatString>
+    </xsl:if>
+    <xsl:if test=".//app">
+      <appendCharacterString><xsl:value-of select=".//app/text()"/></appendCharacterString>
+    </xsl:if>
   </xsl:template>
 
   <!-- dropdown/radio button/picture gallery options -->

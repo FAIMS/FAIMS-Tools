@@ -225,7 +225,7 @@
       <label>{Burial_Mound}<!--WARNING: Label not given; automatically generated from element name.--></label>
       <group ref="General">
         <label>{General}<!--WARNING: Label not given; automatically generated from element name.--></label>
-        <input faims_attribute_type="measure" ref="Object_ID" faims_attribute_name="Object ID">
+        <input faims_attribute_type="measure" ref="Object_ID" faims_attribute_name="Object ID" faims_style_class="required">
           <label>{Object_ID}<!--WARNING: Label not given; automatically generated from element name.--></label>
           <!--WARNING: No type t was given for this view; assuming it is an input.-->
         </input>

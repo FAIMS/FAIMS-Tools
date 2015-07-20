@@ -1,11 +1,17 @@
 TODO Warnings should be generated separately to the xml files
-TODO formatString, appendCharacterString <str><pos><fmt><app>
-       - Warn if these are found in an element which isn't an id
-TODO ?blank-checking validation ("required") flag
-TODO Warn if checkbox, dropdown, picture, or radio doesn't contain <opts>
+TODO ?blank-checking validation ("notnull") flag
+.     - ui-schema.xsl
+.        - parse-flags needs to accept notnull
+.     - validation.xsl
+      - ui-logic.xsl
+        - Add validation button to navigation drawer
+.     - ui-styling.xsl
+.       - notnull selector
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema
+TODO GPS diagnostics??
+TODO Search?
 
 Quick Start
   1. Modify the example module.xml. If you see something there which you don't
@@ -18,7 +24,9 @@ Attributes
   c                  Alias for faims_style_class
   f                  Flags (See 'Flags')
   l                  Link to tab or tab group in the format Tabgroup/Tab/
-  p                  Equivalent to pictureURL attribute
+  p                  In <opt> tags, equivalent to pictureURL attribute. In <str>
+                     tags, provides the position (ordering) of identifiers in a
+                     fortmatted string.
   suppressWarnings   Prevents warnings from being shown when equal to "true" and
                      present in the <module> tag. Does not suppress errors.
   t                  Type of GUI element (See 'Types'). If this attribute is
@@ -45,6 +53,8 @@ Flags
   onlyui          Only allows code to be generated for the UI schema.
   readonly        Equivalent to faims_read_only="true".
   user            Used to indicate that a menu contains a list of users.
+  notnull         Adds client- and server-side validation specifying that the
+                  field should not be left blank.
 
 Types
   Types of GUI element:
@@ -73,6 +83,12 @@ Naming Conventions and Reserved Element Names
     - <opts>     Options for, say, a dropdown menu
     - <rels>     Intended to be a direct child of <module> and hold
                  <RelationshipElement> tags
+    - <str>      Contains <formatString>-related data.
+    - <pos>      When the child of a <str>, gives the position (order) of an
+                 identifier in a formatted string
+    - <fmt>      When the child of a <str>, contains <formatString> data.
+    - <app>      When the child of a <str>, contains <appendCharacterString>
+                 data.
   User-defined elements should start with an upper case letter and use
   underscores as separators:
     - <My_User_Defined_Element t="dropdown" />

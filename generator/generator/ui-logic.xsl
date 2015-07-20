@@ -10,6 +10,76 @@
   <xsl:template match="/">
 
 <xsl:text>
+/* `ref`  is a reference/path to a field
+ * `name` is a human-readable name for that field
+ * `cond` is a String containing a boolean expression that evaluates to true if
+ *        and only if the the field pair returned by this function should be
+ *        validated.
+ *
+ *  Returns a field pair (really just an ArrayList).
+ */
+fieldPair(String ref, String name, String cond) {
+  List fp = new ArrayList();
+  fp.add(ref);
+  fp.add(name);
+  fp.add(cond);
+  return fp;
+}
+
+fieldPair(String ref, String name) {
+  String t = "true";
+  return fieldPair(ref, name, t);
+}
+
+/* Returns true if field specified by `ref` is valid. False otherwise.
+ */
+isValidField(String ref) {
+  return !isNull(getFieldValue(ref));
+}
+/* `format` can either be HTML or PLAINTEXT
+ */
+validateFields(List fields, String format) {
+  Integer numInvalid = 0;
+
+  /* Build validation message string (and count how many invalid fields exist) */
+  String out = "Please fill out the following fields:\n";
+  for(f : fields) {
+    String ref  = f.get(0); // Reference to field
+    String name = f.get(1); // Human-readable name
+    String cond = f.get(2); // Validation condition
+
+    // Only validate a field whose validation condition evaluates to `true`
+    Boolean doValidateField = (Boolean) eval(cond);
+    if (!doValidateField)
+      continue;
+
+    // Add any invalid fields to the output and tally them
+    if (!isValidField(ref)) {
+      out += "- " + name + "\n";
+      numInvalid++;
+    }
+  }
+  // All the fields are valid; just overwrite `out` with a cheery message
+  if (numInvalid == 0)
+    out = "All fields contain valid data!";
+
+  /* Format the output as dictated by `format` */
+  if (format == "HTML") {
+    out = out.replace("\n", "&lt;br&gt;");
+  } else if (format == "PLAINTEXT") {
+    ;
+  }
+
+  return out;
+}
+
+validateContext() {
+  List f= new ArrayList(); // Fields to be validated
+
+  String validationMessage = validateFields(f, "PLAINTEXT");
+  showWarning("Validation Results", validationMessage);
+}
+
 /** Wrapper for to make a vocab without an exlusion list **/
 makeVocab(String type, String path, String attrib) {
   makeVocab(type, path, attrib, null);
@@ -212,6 +282,37 @@ setUser(user);
           <xsl:call-template name="complete-makevocab" />
         </xsl:when>
       </xsl:choose>
+    </xsl:for-each>
+
+    <xsl:value-of select="$newline" />
+
+    <!-- Validation -->
+    <xsl:for-each select="/module/*[.//*[contains(@f, 'notnull')]]">
+      <xsl:text>validate</xsl:text>
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+      <xsl:text>() {</xsl:text>
+      <xsl:value-of select="$newline" />
+      <xsl:text>  List fields = new ArrayList(); // Fields to be validated</xsl:text>
+      <xsl:value-of select="$newline" />
+      <xsl:value-of select="$newline" />
+      <xsl:for-each select=".//*[contains(@f, 'notnull')]">
+        <xsl:text>  f.add(fieldPair("</xsl:text>
+        <xsl:call-template name="ref" />
+        <xsl:text>", "</xsl:text>
+        <xsl:call-template name="label" />
+        <xsl:text>"));</xsl:text>
+        <xsl:value-of select="$newline" />
+      </xsl:for-each>
+      <xsl:value-of select="$newline" />
+      <xsl:text>  String validationMessage = validateFields(fields, "PLAINTEXT");</xsl:text>
+      <xsl:value-of select="$newline" />
+      <xsl:text>  showWarning("Validation Results", validationMessage);</xsl:text>
+      <xsl:value-of select="$newline" />
+      <xsl:text>}</xsl:text>
     </xsl:for-each>
 
     <xsl:value-of select="$newline" />
@@ -474,6 +575,43 @@ onEvent(userMenuPath, "click", "selectUser()");
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$text" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <!-- WARNING:  This template assumes $string contains at most 80
+       non-alphanumeric characters
+  -->
+  <xsl:template name="string-to-arch16n-key">
+    <xsl:param name="string" />
+    <xsl:value-of select="
+      translate(
+        $string,
+        translate(
+          $string,
+          'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+          ''
+        ),
+        '________________________________________________________________________________'
+      )
+    " />
+  </xsl:template>
+
+  <xsl:template name="label">
+    <xsl:choose>
+      <xsl:when test="normalize-space(text())">
+        <xsl:text>{</xsl:text>
+        <xsl:call-template name="string-to-arch16n-key">
+          <xsl:with-param name="string" select="normalize-space(text())" />
+        </xsl:call-template>
+        <xsl:text>}</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>{</xsl:text>
+        <xsl:call-template name="string-to-arch16n-key">
+          <xsl:with-param name="string" select="name()" />
+        </xsl:call-template>
+        <xsl:text>}</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
