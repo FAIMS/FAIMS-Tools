@@ -121,7 +121,7 @@ saveTabGroup(String tabGroup, String uuidVar, String callback) {
   List    attributes     = null;
   SaveCallback saveCallback  = new SaveCallback() {
     onSave(uuid, newRecord) {
-      execute(uuidVar + " = uuid;");
+      eval(uuidVar + " = uuid;");
       execute(callback);
     }
     onError(message) {
@@ -204,8 +204,17 @@ onShowBurialMound () {
 
 onEvent("Burial_Mound", "show", "onShowBurialMound()");
 
-onEvent("User/User/Login", "click", "newTab(\"Control\", true)");
-onEvent("Control/Main/Take_Feature", "click", "newTab(\"Burial_Mound\", true)");
+onClickUserLogin () {
+  // TODO: Add some things which should happen when this element is clicked
+  newTab("Control", true);
+}
+onClickControlTakeFeature () {
+  // TODO: Add some things which should happen when this element is clicked
+  newTab("Burial_Mound", true);
+}
+
+onEvent("User/User/Login", "click", "onClickUserLogin()");
+onEvent("Control/Main/Take_Feature", "click", "onClickControlTakeFeature()");
 
 onEvent("Burial_Mound/General/Button_General_Photo", "click", "attachPictureTo(\"Burial_Mound/General/General_Photo\")");
 onEvent("Burial_Mound/Dimensions/Button_Sketch_Photo", "click", "attachPictureTo(\"Burial_Mound/Dimensions/Sketch_Photo\")");

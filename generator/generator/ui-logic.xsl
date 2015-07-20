@@ -261,10 +261,43 @@ setUser(user);
 
     <!-- Triggers/buttons which link to a tab or tabgroup -->
     <xsl:for-each select="//*[@l]">
+      <xsl:text>onClick</xsl:text>
+        <xsl:call-template name="string-replace-all">
+          <xsl:with-param name="text" select="name(ancestor::*[last()-1])" />
+          <xsl:with-param name="replace" select="'_'" />
+          <xsl:with-param name="by" select="''" />
+        </xsl:call-template>
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+<xsl:text> () {
+  // TODO: Add some things which should happen when this element is clicked
+</xsl:text>
+      <xsl:text>  newTab("</xsl:text>
+      <xsl:value-of select="@l"/>
+      <xsl:text>", true);</xsl:text>
+      <xsl:value-of select="$newline" />
+      <xsl:text>}</xsl:text>
+      <xsl:value-of select="$newline" />
+    </xsl:for-each>
+    <xsl:value-of select="$newline" />
+
+    <xsl:for-each select="//*[@l]">
       <xsl:variable name="show-tab-string">
-        <xsl:text>"newTab(\"</xsl:text>
-        <xsl:value-of select="@l"/>
-        <xsl:text>\", true)"</xsl:text>
+        <xsl:text>"onClick</xsl:text>
+        <xsl:call-template name="string-replace-all">
+          <xsl:with-param name="text" select="name(ancestor::*[last()-1])" />
+          <xsl:with-param name="replace" select="'_'" />
+          <xsl:with-param name="by" select="''" />
+        </xsl:call-template>
+        <xsl:call-template name="string-replace-all">
+          <xsl:with-param name="text" select="name()" />
+          <xsl:with-param name="replace" select="'_'" />
+          <xsl:with-param name="by" select="''" />
+        </xsl:call-template>
+        <xsl:text>()"</xsl:text>
       </xsl:variable>
 
       <xsl:variable name="button-path">
@@ -282,7 +315,6 @@ setUser(user);
       <xsl:text>);</xsl:text>
       <xsl:value-of select="$newline" />
     </xsl:for-each>
-
     <xsl:value-of select="$newline" />
 
     <!-- onEvent calls for audio, camera, file and video GUI elements -->

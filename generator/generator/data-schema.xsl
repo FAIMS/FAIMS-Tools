@@ -56,13 +56,6 @@
           or not(@t)">
           <xsl:attribute name="type">measure</xsl:attribute>
         </xsl:if>
-        <xsl:if test="normalize-space(@t) = 'checkbox'
-          or normalize-space(@t) = 'dropdown'
-          or normalize-space(@t) = 'picture'
-          or normalize-space(@t) = 'radio'
-          or normalize-space(@t) = 'list'">
-          <xsl:attribute name="type">vocab</xsl:attribute>
-        </xsl:if>
         <xsl:if test="normalize-space(@t) = 'camera'
           or normalize-space(@t) = 'audio'
           or normalize-space(@t) = 'video'
@@ -71,6 +64,16 @@
           <xsl:attribute name="file">true</xsl:attribute>
           <xsl:if test="not(contains(@f, 'nothumb'))">
             <xsl:attribute name="thumbnail">true</xsl:attribute>
+          </xsl:if>
+        </xsl:if>
+        <xsl:if test="normalize-space(@t) = 'checkbox'
+          or normalize-space(@t) = 'dropdown'
+          or normalize-space(@t) = 'picture'
+          or normalize-space(@t) = 'radio'
+          or normalize-space(@t) = 'list'">
+          <xsl:attribute name="type">vocab</xsl:attribute>
+          <xsl:if test="not(.//opts)">
+            <xsl:comment>WARNING: A set of &lt;opts&gt; tags are expected but not present</xsl:comment>
           </xsl:if>
         </xsl:if>
         <xsl:if test="generate-id() = generate-id(key('kPropertyName', concat(name(ancestor::*[last()-1]), name(.)))[2])">

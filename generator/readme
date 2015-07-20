@@ -115,16 +115,18 @@ Labels
         Droopy Soup
         <desc>Similar to drippy soup, but not quite...</desc>
       </My_Input>
-  has the label "Droopy Soupy". Note that following and preceding whitespace is
+  has the label "Droopy Soup". Note that following and preceding whitespace is
   stripped.
 
   If a label is not provided, it is inferred from the element's name. More
   specifically, underscores in the element's name are replaced with whitespace,
   which becomes the element's label. Therefore, the element
-      <Droopy_Soup t="input" />
+      <Droopy_Soup t="input">
+        <desc>Similar to drippy soup, but not quite...</desc>
+      </Droopy_Soup>
   has the same label as in the above example.
 
-  You are encouraged to use this feature, as it encourages consistency between
+  You are recommended to use this feature, as it encourages consistency between
   the label, which the user sees, and the view's reference, which the programmer
   sees. Note that it merely "encourages" consistency as the programmer can
   change the corresponding, generated, arch16n (english.0.properties) entry.
