@@ -9,77 +9,159 @@
 
   <xsl:template match="/">
 
-<xsl:text>
-/* `ref`  is a reference/path to a field
- * `name` is a human-readable name for that field
- * `cond` is a String containing a boolean expression that evaluates to true if
- *        and only if the the field pair returned by this function should be
- *        validated.
- *
- *  Returns a field pair (really just an ArrayList).
- */
-fieldPair(String ref, String name, String cond) {
-  List fp = new ArrayList();
-  fp.add(ref);
-  fp.add(name);
-  fp.add(cond);
-  return fp;
+<xsl:text>import android.util.Log;
+
+Object dialog;
+
+setFileSyncEnabled(true);
+setSyncDelay(5.0f);
+setSyncEnabled(true);
+setSyncMaxInterval(600.0f);
+setSyncMinInterval(5.0f);
+
+newTab(String tab, Boolean resolveTabGroups) {
+  if (!resolveTabGroups) {
+    return newTab(tab);
+  }
+
+  tab = tab.replaceAll("/$", "");
+  tab = tab.replaceAll("^/", "");
+  if (tab.matches("/")) {
+    newTab(tab);
+  } else {
+    newTabGroup(tab);
+  }
 }
 
-fieldPair(String ref, String name) {
-  String t = "true";
-  return fieldPair(ref, name, t);
-}
+/******************************************************************************/
+/*                                 ACTION BAR                                 */
+/******************************************************************************/
+addActionBarItem("clean_synced_files", new ActionButtonCallback() {
+  actionOnLabel() {
+    "{Clean_Synced_Files}";
+  }
+  actionOn() {
+    cleanSyncedFiles();
+  }
+});
 
-/* Returns true if field specified by `ref` is valid. False otherwise.
- */
-isValidField(String ref) {
-  return !isNull(getFieldValue(ref));
-}
-/* `format` can either be HTML or PLAINTEXT
- */
-validateFields(List fields, String format) {
-  Integer numInvalid = 0;
+addActionBarItem("sync", new ToggleActionButtonCallback() {
+  actionOnLabel() {
+    "{Disable_Sync}";
+  }
+  actionOn() {
+    setSyncEnabled(false);
+    setFileSyncEnabled(false);
+    showToast("{Sync_Disabled}");
+  }
+  isActionOff() {
+    isSyncEnabled();
+  }
+  actionOffLabel() {
+    "{Enable_Sync}";
+  }
+  actionOff() {
+    setSyncEnabled(true);
+    setFileSyncEnabled(true);
+    showToast("{Sync_Enabled}");
+  }
+});
 
-  /* Build validation message string (and count how many invalid fields exist) */
-  String out = "Please fill out the following fields:\n";
-  for(f : fields) {
-    String ref  = f.get(0); // Reference to field
-    String name = f.get(1); // Human-readable name
-    String cond = f.get(2); // Validation condition
-
-    // Only validate a field whose validation condition evaluates to `true`
-    Boolean doValidateField = (Boolean) eval(cond);
-    if (!doValidateField)
-      continue;
-
-    // Add any invalid fields to the output and tally them
-    if (!isValidField(ref)) {
-      out += "- " + name + "\n";
-      numInvalid++;
+addActionBarItem("internal_gps", new ToggleActionButtonCallback() {
+  actionOnLabel() {
+    "{Disable_Internal_GPS}";
+  }
+  actionOn() {
+    stopGPS();
+    showToast("{Internal_GPS_Disabled}");
+    updateGPSDiagnostics();
+  }
+  isActionOff() {
+    isInternalGPSOn();
+  }
+  actionOffLabel() {
+    "{Enable_Internal_GPS}";
+  }
+  actionOff() {
+    if(isExternalGPSOn()) {
+      stopGPS();
     }
+    startInternalGPS();
+    showToast("{Internal_GPS_Enabled}");
+    updateGPSDiagnostics();
   }
-  // All the fields are valid; just overwrite `out` with a cheery message
-  if (numInvalid == 0)
-    out = "All fields contain valid data!";
+});
 
-  /* Format the output as dictated by `format` */
-  if (format == "HTML") {
-    out = out.replace("\n", "&lt;br&gt;");
-  } else if (format == "PLAINTEXT") {
-    ;
+addActionBarItem("external_gps", new ToggleActionButtonCallback() {
+  actionOnLabel() {
+    "{Disable_External_GPS}";
   }
+  actionOn() {
+    stopGPS();
+    if (isBluetoothConnected()) {
+      showToast("{External_GPS_Disabled}");
+    } else {
+      showToast("{Please_Enable_Bluetooth}");
+    }
+    updateGPSDiagnostics();
+  }
+  isActionOff() {
+    isExternalGPSOn();
+  }
+  actionOffLabel() {
+    "{Enable_External_GPS}";
+  }
+  actionOff() {
+    if(isInternalGPSOn()) {
+      stopGPS();
+    }
+    startExternalGPS();
+    if(isBluetoothConnected()) {
+      showToast("{External_GPS_Enabled}");
+    } else {
+      showToast("{Please_Enable_Bluetooth}");
+      this.actionOn();
+    }
+    updateGPSDiagnostics();
+  }
+});
 
-  return out;
-}
+</xsl:text>
 
-validateContext() {
-  List f= new ArrayList(); // Fields to be validated
+    <!-- User login stuff -->
+<xsl:text>
+/******************************************************************************/
+/*                                 USER LOGIN                                 */
+/******************************************************************************/
+</xsl:text>
+    <xsl:choose>
+      <xsl:when test="count(//*[contains(@f, 'user')]) = 0">
+<xsl:text>
+// WARNING: This module is missing a login menu
+String userId    = "1";
+String nameFirst = "";
+String nameLast  = "";
+String email     = "";
+User   user      = new User(userId, nameFirst, nameLast, email);
+setUser(user);
+</xsl:text>
+      </xsl:when>
+      <xsl:when test="count(//*[contains(@f, 'user')]) = 1">
+        <xsl:call-template name="users"/>
+      </xsl:when>
+      <xsl:when test="count(//*[contains(@f, 'user')]) &gt; 1">
+        <xsl:text>//WARNING: This module has more than one login menu</xsl:text>
+        <xsl:value-of select="$newline" />
+        <xsl:call-template name="users"/>
+      </xsl:when>
+    </xsl:choose>
+    <xsl:value-of select="$newline" />
 
-  String validationMessage = validateFields(f, "PLAINTEXT");
-  showWarning("Validation Results", validationMessage);
-}
-
+    <!-- makeVocab stuff -->
+<xsl:text>
+/******************************************************************************/
+/*                              MENU POPULATION                               */
+/******************************************************************************/
 /** Wrapper for to make a vocab without an exlusion list **/
 makeVocab(String type, String path, String attrib) {
   makeVocab(type, path, attrib, null);
@@ -171,76 +253,8 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
       }
     });
 }
-
-newTab(String tab, Boolean resolveTabGroups) {
-  if (!resolveTabGroups) {
-    return newTab(tab);
-  }
-
-  tab = tab.replaceAll("/$", "");
-  tab = tab.replaceAll("^/", "");
-  if (tab.matches("/")) {
-    newTab(tab);
-  } else {
-    newTabGroup(tab);
-  }
-}
-
-saveTabGroup(String tabGroup) {
-  String uuidVar = "uuid" + tabGroup.replaceAll("_", "");
-  saveTabGroup(tabGroup, uuidVar);
-}
-
-saveTabGroup(String tabGroup, String uuidVar) {
-  saveTabGroup(tabGroup, uuidVar, "");
-}
-
-saveTabGroup(String tabGroup, String uuidVar, String callback) {
-  Boolean enableAutosave = true;
-  String  id             = eval(uuidVar);
-  List    geometry       = null;
-  List    attributes     = null;
-  SaveCallback saveCallback  = new SaveCallback() {
-    onSave(uuid, newRecord) {
-      eval(uuidVar + " = uuid;");
-      execute(callback);
-    }
-    onError(message) {
-      showToast(message);
-    }
-  };
-
-  saveTabGroup(tabGroup, id, geometry, attributes, saveCallback, enableAutosave);
-}
-
 </xsl:text>
-
-    <!-- User login stuff -->
-    <xsl:choose>
-      <xsl:when test="count(//*[contains(@f, 'user')]) = 0">
-<xsl:text>
-// WARNING: This module is missing a login menu
-String userId    = "1";
-String nameFirst = "";
-String nameLast  = "";
-String email     = "";
-User   user      = new User(userId, nameFirst, nameLast, email);
-setUser(user);
-</xsl:text>
-      </xsl:when>
-      <xsl:when test="count(//*[contains(@f, 'user')]) = 1">
-        <xsl:call-template name="users"/>
-      </xsl:when>
-      <xsl:when test="count(//*[contains(@f, 'user')]) &gt; 1">
-        <xsl:text>//WARNING: This module has more than one login menu</xsl:text>
-        <xsl:value-of select="$newline" />
-        <xsl:call-template name="users"/>
-      </xsl:when>
-    </xsl:choose>
-    <xsl:value-of select="$newline" />
-
-    <!-- makeVocab stuff -->
-    <xsl:for-each select="//*[@t and not(ancestor-or-self::*[contains(@f, 'onlyui')]) and not(contains(@f, 'user'))]">
+    <xsl:for-each select="//*[@t and not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')]) and not(contains(@f, 'user'))]">
       <xsl:variable name="is-hierarchical">
         <xsl:call-template name="is-hierarchical"/>
       </xsl:variable>
@@ -287,6 +301,74 @@ setUser(user);
     <xsl:value-of select="$newline" />
 
     <!-- Validation -->
+<xsl:text>
+/******************************************************************************/
+/*                                 VALIDATION                                 */
+/******************************************************************************/
+/* `ref`  is a reference/path to a field
+ * `name` is a human-readable name for that field
+ * `cond` is a String containing a boolean expression that evaluates to true if
+ *        and only if the the field pair returned by this function should be
+ *        validated.
+ *
+ *  Returns a field pair (really just an ArrayList).
+ */
+fieldPair(String ref, String name, String cond) {
+  List fp = new ArrayList();
+  fp.add(ref);
+  fp.add(name);
+  fp.add(cond);
+  return fp;
+}
+
+fieldPair(String ref, String name) {
+  String t = "true";
+  return fieldPair(ref, name, t);
+}
+
+/* Returns true if field specified by `ref` is valid. False otherwise.
+ */
+isValidField(String ref) {
+  return !isNull(getFieldValue(ref));
+}
+/* `format` can either be HTML or PLAINTEXT
+ */
+validateFields(List fields, String format) {
+  Integer numInvalid = 0;
+
+  /* Build validation message string (and count how many invalid fields exist) */
+  String out = "Please fill out the following fields:\n";
+  for(f : fields) {
+    String ref  = f.get(0); // Reference to field
+    String name = f.get(1); // Human-readable name
+    String cond = f.get(2); // Validation condition
+
+    // Only validate a field whose validation condition evaluates to `true`
+    Boolean doValidateField = (Boolean) eval(cond);
+    if (!doValidateField)
+      continue;
+
+    // Add any invalid fields to the output and tally them
+    if (!isValidField(ref)) {
+      out += "- " + name + "\n";
+      numInvalid++;
+    }
+  }
+  // All the fields are valid; just overwrite `out` with a cheery message
+  if (numInvalid == 0)
+    out = "All fields contain valid data!";
+
+  /* Format the output as dictated by `format` */
+  if (format == "HTML") {
+    out = out.replace("\n", "&lt;br&gt;");
+  } else if (format == "PLAINTEXT") {
+    ;
+  }
+
+  return out;
+}
+
+</xsl:text>
     <xsl:for-each select="/module/*[.//*[contains(@f, 'notnull')]]">
       <xsl:text>validate</xsl:text>
       <xsl:call-template name="string-replace-all">
@@ -318,18 +400,44 @@ setUser(user);
     <xsl:value-of select="$newline" />
 
     <!-- Autosaving -->
-    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui')])]">
-      <xsl:text>uuid</xsl:text>
-      <xsl:call-template name="string-replace-all">
-        <xsl:with-param name="text" select="name()" />
-        <xsl:with-param name="replace" select="'_'" />
-        <xsl:with-param name="by" select="''" />
-      </xsl:call-template>
-      <xsl:text> = null;</xsl:text>
-      <xsl:value-of select="$newline" />
-    </xsl:for-each>
-    <xsl:value-of select="$newline" />
-    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui')])]">
+<xsl:text>
+/******************************************************************************/
+/*                                 AUTOSAVING                                 */
+/******************************************************************************/
+Map tabgroupToUuid = new HashMap();
+
+getUuid(String tabgroup) {
+  tabgroupToUuid.get(tabgroup);
+}
+
+setUuid(String tabgroup, String uuid) {
+  tabgroupToUuid.put(tabgroup, uuid);
+}
+
+saveTabGroup(String tabGroup) {
+  saveTabGroup(tabGroup, "");
+}
+
+saveTabGroup(String tabGroup, String callback) {
+  Boolean enableAutosave = true;
+  String  id             = getUuid(tabGroup);
+  List    geometry       = null;
+  List    attributes     = null;
+  SaveCallback saveCallback  = new SaveCallback() {
+    onSave(uuid, newRecord) {
+      setUuid(tabGroup, uuid);
+      execute(callback);
+    }
+    onError(message) {
+      showToast(message);
+    }
+  };
+
+  saveTabGroup(tabGroup, id, geometry, attributes, saveCallback, enableAutosave);
+}
+
+</xsl:text>
+    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')])]">
       <xsl:text>onShow</xsl:text>
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text" select="name()" />
@@ -345,7 +453,7 @@ setUser(user);
       <xsl:value-of select="$newline" />
     </xsl:for-each>
     <xsl:value-of select="$newline" />
-    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui')])]">
+    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')])]">
       <xsl:text>onEvent("</xsl:text>
       <xsl:value-of select="name()"/>
       <xsl:text>", "show", "onShow</xsl:text>
@@ -419,6 +527,11 @@ setUser(user);
     <xsl:value-of select="$newline" />
 
     <!-- onEvent calls for audio, camera, file and video GUI elements -->
+<xsl:text>
+/******************************************************************************/
+/*                   AUDIO, CAMERA, FILE AND VIDEO BINDINGS                   */
+/******************************************************************************/
+</xsl:text>
     <xsl:for-each select="//*[normalize-space(@t) = 'audio']">
       <xsl:text>onEvent("</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-1])"/>
@@ -468,6 +581,310 @@ setUser(user);
       <xsl:value-of select="$newline" />
     </xsl:for-each>
 
+    <!-- Navigation Drawer -->
+<xsl:text>
+/******************************************************************************/
+/*                             NAVIGATION DRAWER                              */
+/******************************************************************************/
+removeNavigationButtons() {
+  removeNavigationButton("new");
+  removeNavigationButton("duplicate");
+  removeNavigationButton("delete");
+}
+
+addNavigationButtons(String tabgroup) {
+  removeNavigationButtons();
+  addNavigationButton("new", new ActionButtonCallback() {
+    actionOnLabel() {
+      "{New}";
+    }
+    actionOn() {
+      if(!isNull(getUuid(tabgroup))) {
+          newRecord(tabgroup);
+          showToast("{New_record_created}");
+      } else {
+          showAlert("{Warning}", "{Any_unsaved_changes_will_be_lost}", "newRecord(\""+tabgroup+"\")", "");
+      }
+    }
+  }, "success");
+  addNavigationButton("duplicate", new ActionButtonCallback() {
+    actionOnLabel() {
+      "{Duplicate}";
+    }
+    actionOn() {
+      if(!isNull(getUuid(tabgroup))) {
+          duplicateRecord(tabgroup);
+      } else {
+          showWarning("{Warning}", "{This_record_is_unsaved_and_cannot_be_duplicated}");
+      }
+    }
+  }, "primary");
+  addNavigationButton("delete", new ActionButtonCallback() {
+    actionOnLabel() {
+      "{Delete}";
+    }
+    actionOn() {
+      deleteRecord(tabgroup);
+    }
+  }, "danger");
+}
+
+// Makes a new record of the given tabgroup
+newRecord(String tabgroup) {
+  cancelTabGroup(tabgroup, false);
+
+  String newTabGroupFunction = "new" + tabgroup.replaceAll("_", "") + "()"; // Typical value: "newTabgroup()"
+  eval(newTabGroupFunction);
+
+  Log.d("newRecord", tabgroup);
+}
+
+// Deletes the current record of the given tabgroup
+deleteRecord(String tabgroup) {
+  String deleteTabGroupFunction = "delete" + tabgroup.replaceAll("_", "") + "()"; // Typical value: "deleteTabgroup()"
+  eval(deleteTabGroupFunction);
+
+  Log.d("deleteRecord", tabgroup);
+}
+
+// Duplicates the current record of the given tabgroup
+duplicateRecord(String tabgroup) {
+  dialog = showBusy("Duplicating", "Please wait...");
+
+  String duplicateTabGroupFunction = "duplicate" + tabgroup.replaceAll("_", "") + "()"; // Typical value: "duplicateTabgroup()"
+  eval(duplicateTabGroupFunction);
+
+  Log.d("duplicateRecord", tabgroup);
+}
+
+// generic fetch saved attributes query
+getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
+  if (attributesToDupe.equals("")) {
+    attributesToDupe = "''";
+  }
+  String duplicateQuery = "SELECT attributename, freetext, vocabid, measure, certainty " +
+                          "  FROM latestnondeletedaentvalue JOIN attributekey USING (attributeid) " +
+                          " WHERE attributename IN ('', "+attributesToDupe+") " +
+                          "   AND uuid = '"+originalRecordID+"'; ";
+  return duplicateQuery;
+}
+
+// generic get extra attributes
+getExtraAttributes(fetchedAttributes) {
+  List extraAttributes = createAttributeList();
+  Log.d("PAZC Module", "Duplicating fetched attributes: " + fetchedAttributes.toString());
+  for (savedAttribute : fetchedAttributes) {
+    extraAttributes.add(createEntityAttribute(savedAttribute.get(0), savedAttribute.get(1), savedAttribute.get(2), savedAttribute.get(3), savedAttribute.get(4)));
+  }
+  return extraAttributes;
+}
+
+</xsl:text>
+    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')])]">
+      <xsl:call-template name="tabgroup-new" />
+      <xsl:call-template name="tabgroup-duplicate" />
+      <xsl:call-template name="tabgroup-delete" />
+      <xsl:call-template name="tabgroup-really-delete" />
+    </xsl:for-each>
+<xsl:text>
+doNotDelete(){
+  showToast("{Delete_Cancelled}");
+}
+</xsl:text>
+    <xsl:for-each select="/module/*[ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')]]">
+      <xsl:text>onEvent("</xsl:text>
+      <xsl:value-of select="name()"/>
+      <xsl:text>", "show", "removeNavigationButtons()");</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:for-each>
+    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')])]">
+      <xsl:text>onEvent("</xsl:text>
+      <xsl:value-of select="name()"/>
+      <xsl:text>", "show", "addNavigationButtons(\"</xsl:text>
+      <xsl:value-of select="name()"/>
+      <xsl:text>\")");</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:for-each>
+
+  </xsl:template>
+
+  <xsl:template name="tabgroup-new">
+    <xsl:variable name="camelcase-tabgroup">
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+    </xsl:variable>
+
+    <xsl:text>new</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>(){</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String tabgroup = "</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>";</xsl:text>
+<xsl:text>
+  setUuid(tabgroup, null);
+  newTabGroup(tabgroup);
+}
+</xsl:text>
+    <xsl:value-of select="$newline"/>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-duplicate">
+    <xsl:variable name="camelcase-tabgroup">
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+    </xsl:variable>
+
+    <xsl:text>duplicate</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>(){</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String tabgroup = "</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>";</xsl:text>
+    <xsl:call-template name="tabgroup-duplicate-exclusions-1" />
+<xsl:text>
+
+  saveCallback = new SaveCallback() {
+    onSave(uuid, newRecord) {
+      setUuid(tabgroup, uuid);
+
+      Boolean enable_autosave = true;
+      showToast("{Duplicated_record}");
+      dialog.dismiss();
+      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
+        onSave(autosaveUuid, autosaveNewRecord) {
+          setUuid(tabgroup, autosaveUuid);
+        }
+      }, enable_autosave);
+    }
+  };
+
+  String extraDupeAttributes = "";
+  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
+    onFetch(result) {
+      excludeAttributes = new ArrayList();
+</xsl:text>
+    <xsl:call-template name="tabgroup-duplicate-exclusions-2" />
+<xsl:text>
+      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
+    }
+  });
+}
+</xsl:text>
+    <xsl:value-of select="$newline"/>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-duplicate-exclusions-1">
+    <xsl:for-each select=".//*[@t and not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')]) and not(contains(@f, 'user'))]">
+      <xsl:choose>
+        <xsl:when test="normalize-space(@t) = 'audio'">
+          <xsl:text>  populateFileList("</xsl:text>
+          <xsl:call-template name="ref" />
+          <xsl:text>", new ArrayList());</xsl:text>
+          <xsl:value-of select="$newline" />
+        </xsl:when>
+        <xsl:when test="normalize-space(@t) = 'camera'">
+          <xsl:text>  populateCameraPictureGallery("</xsl:text>
+          <xsl:call-template name="ref" />
+          <xsl:text>", new ArrayList());</xsl:text>
+          <xsl:value-of select="$newline" />
+        </xsl:when>
+        <xsl:when test="normalize-space(@t) = 'file'">
+          <xsl:text>  populateFileList("</xsl:text>
+          <xsl:call-template name="ref" />
+          <xsl:text>", new ArrayList());</xsl:text>
+          <xsl:value-of select="$newline" />
+        </xsl:when>
+        <xsl:when test="normalize-space(@t) = 'video'">
+          <xsl:text>  populateVideoGallery("</xsl:text>
+          <xsl:call-template name="ref" />
+          <xsl:text>", new ArrayList());</xsl:text>
+          <xsl:value-of select="$newline" />
+        </xsl:when>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-duplicate-exclusions-2">
+    <xsl:for-each select=".//*[
+      (
+        normalize-space(@t) = 'audio' or
+        normalize-space(@t) = 'camera' or
+        normalize-space(@t) = 'file' or
+        normalize-space(@t) = 'video'
+      ) and
+      not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')]) and not(contains(@f, 'user'))]">
+
+      <xsl:text>      excludeAttributes.add("</xsl:text>
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name(.)" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="' '" />
+      </xsl:call-template>
+      <xsl:text>");</xsl:text>
+      <xsl:value-of select="$newline" />
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-delete">
+    <xsl:variable name="camelcase-tabgroup">
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+    </xsl:variable>
+
+    <xsl:text>delete</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup" />
+    <xsl:text>(){</xsl:text>
+    <xsl:value-of select="$newline" />
+    <xsl:text>  String tabgroup = "</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$newline"/>
+<xsl:text>
+  if (!isNull(getUuid(tabgroup))) {
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDelete</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup" />
+<xsl:text>()", "doNotDelete()");
+  } else {
+    cancelTabGroup(tabgroup, true);
+  }
+}
+</xsl:text>
+    <xsl:value-of select="$newline"/>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-really-delete">
+    <xsl:variable name="camelcase-tabgroup">
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+    </xsl:variable>
+
+    <xsl:text>reallyDelete</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup" />
+    <xsl:text>(){</xsl:text>
+    <xsl:value-of select="$newline" />
+    <xsl:text>  String tabgroup = "</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>";</xsl:text>
+<xsl:text>
+  deleteArchEnt(getUuid(tabgroup));
+  cancelTabGroup(tabgroup, false);
+}
+</xsl:text>
+    <xsl:value-of select="$newline"/>
   </xsl:template>
 
   <xsl:template name="is-hierarchical">
@@ -540,7 +957,7 @@ selectUser () {
 }
 
 onEvent(userMenuPath, "show",  "populateListForUsers()");
-onEvent(userMenuPath, "click", "selectUser()");
+onEvent(userMenuPath, "select", "selectUser()");
 </xsl:text>
     </xsl:for-each>
   </xsl:template>

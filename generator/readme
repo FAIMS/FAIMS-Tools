@@ -12,6 +12,9 @@ TODO Add "View Attached Files" button?
        - addition to ui schema
 TODO GPS diagnostics??
 TODO Search?
+TODO Automate regression tests
+TODO Autonumbering
+TODO CSV to dataschema
 
 Quick Start
   1. Modify the example module.xml. If you see something there which you don't

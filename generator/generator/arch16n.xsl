@@ -4,9 +4,6 @@
 
   <xsl:template match="/">
     <xsl:for-each select="//*[not(name() = 'desc') and not(name() = 'opts') and not (name() = 'module') and not(name() = 'rels') and not(name() = 'col') and not(name() = 'cols') and not(name() = 'module') and not(name() = 'rels') and not(contains(@f, 'nolabel'))]">
-      <xsl:sort select="normalize-space(text())" />
-
-
         <xsl:variable name="arch16n-key">
           <xsl:choose>
             <xsl:when test="normalize-space(text())">
@@ -73,6 +70,33 @@
         </xsl:if>
 
     </xsl:for-each>
+    <!-- These are some entries mentioned in the staticly (as opposed to
+         dynamically) generated portion of the UI schema -->
+<xsl:text>Any_unsaved_changes_will_be_lost=Any unsaved changes will be lost
+Clean_Synced_Files=Clean synced files
+Confirm_Deletion=Confirm Deletion
+Delete=Delete
+Delete_Cancelled=Delete cancelled
+Disable_External_GPS=Disable External GPS
+Disable_Internal_GPS=Disable Internal GPS
+Disable_Sync=Disable Sync
+Duplicate=Duplicate
+Duplicated_record=Duplicated record
+Enable_External_GPS=Enable External GPS
+Enable_Internal_GPS=Enable Internal GPS
+Enable_Sync=Enable Sync
+External_GPS_Disabled=External GPS disabled
+External_GPS_Enabled=External GPS enabled
+Internal_GPS_Disabled=Internal GPS disabled
+Internal_GPS_Enabled=Internal GPS enabled
+New=New
+New_record_created=New record created
+Please_Enable_Bluetooth=Please enable bluetooth
+Press_OK_to_Delete_this_Record=Press OK to delete this record
+Sync_Disabled=Sync disabled
+Sync_Enabled=Sync enabled
+This_record_is_unsaved_and_cannot_be_duplicated=This record is unsaved and cannot be duplicated
+Warning=Warning</xsl:text>
   </xsl:template>
 
   <!-- WARNING:  This template assumes $string contains at most 80
