@@ -345,11 +345,11 @@ validateFields(List fields, String format) {
 }
 
 validateBurialMound() {
-  List fields = new ArrayList(); // Fields to be validated
+  List f = new ArrayList(); // Fields to be validated
 
   f.add(fieldPair("Burial_Mound/General/Object_ID", "{Object_ID}"));
 
-  String validationMessage = validateFields(fields, "PLAINTEXT");
+  String validationMessage = validateFields(f, "PLAINTEXT");
   showWarning("Validation Results", validationMessage);
 }
 
@@ -434,10 +434,12 @@ removeNavigationButtons() {
   removeNavigationButton("new");
   removeNavigationButton("duplicate");
   removeNavigationButton("delete");
+  removeNavigationButton("validate");
 }
 
 addNavigationButtons(String tabgroup) {
   removeNavigationButtons();
+
   addNavigationButton("new", new ActionButtonCallback() {
     actionOnLabel() {
       "{New}";
@@ -471,6 +473,15 @@ addNavigationButtons(String tabgroup) {
       deleteRecord(tabgroup);
     }
   }, "danger");
+  addNavigationButton("validate", new ActionButtonCallback() {
+    actionOnLabel() {
+      "{Validate}";
+    }
+    actionOn() {
+      String validationFunction = "validate" + tabgroup.replaceAll("_", "") + "()";
+      eval(validationFunction);
+    }
+  }, "default");
 }
 
 // Makes a new record of the given tabgroup

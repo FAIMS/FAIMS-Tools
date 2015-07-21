@@ -378,7 +378,7 @@ validateFields(List fields, String format) {
       </xsl:call-template>
       <xsl:text>() {</xsl:text>
       <xsl:value-of select="$newline" />
-      <xsl:text>  List fields = new ArrayList(); // Fields to be validated</xsl:text>
+      <xsl:text>  List f = new ArrayList(); // Fields to be validated</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:value-of select="$newline" />
       <xsl:for-each select=".//*[contains(@f, 'notnull')]">
@@ -390,7 +390,7 @@ validateFields(List fields, String format) {
         <xsl:value-of select="$newline" />
       </xsl:for-each>
       <xsl:value-of select="$newline" />
-      <xsl:text>  String validationMessage = validateFields(fields, "PLAINTEXT");</xsl:text>
+      <xsl:text>  String validationMessage = validateFields(f, "PLAINTEXT");</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:text>  showWarning("Validation Results", validationMessage);</xsl:text>
       <xsl:value-of select="$newline" />
@@ -590,10 +590,12 @@ removeNavigationButtons() {
   removeNavigationButton("new");
   removeNavigationButton("duplicate");
   removeNavigationButton("delete");
+  removeNavigationButton("validate");
 }
 
 addNavigationButtons(String tabgroup) {
   removeNavigationButtons();
+
   addNavigationButton("new", new ActionButtonCallback() {
     actionOnLabel() {
       "{New}";
@@ -627,6 +629,15 @@ addNavigationButtons(String tabgroup) {
       deleteRecord(tabgroup);
     }
   }, "danger");
+  addNavigationButton("validate", new ActionButtonCallback() {
+    actionOnLabel() {
+      "{Validate}";
+    }
+    actionOn() {
+      String validationFunction = "validate" + tabgroup.replaceAll("_", "") + "()";
+      eval(validationFunction);
+    }
+  }, "default");
 }
 
 // Makes a new record of the given tabgroup

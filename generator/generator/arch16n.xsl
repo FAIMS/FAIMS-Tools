@@ -96,6 +96,7 @@ Press_OK_to_Delete_this_Record=Press OK to delete this record
 Sync_Disabled=Sync disabled
 Sync_Enabled=Sync enabled
 This_record_is_unsaved_and_cannot_be_duplicated=This record is unsaved and cannot be duplicated
+Validate=Validate
 Warning=Warning</xsl:text>
   </xsl:template>
 
