@@ -43,7 +43,7 @@
 
   <!-- property -->
   <xsl:template name="properties">
-    <xsl:for-each select="./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(name() = 'str') and not(name() = 'pos') and not(name() = 'fmt') and not(name() = 'app')]">
+    <xsl:for-each select="./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gps') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(name() = 'str') and not(name() = 'pos') and not(name() = 'fmt') and not(name() = 'app')]">
       <xsl:sort select="concat(str/pos/text(), substring('not-found', 1 div not(str/pos/text())))" />
 
       <xsl:variable name="faims-attribute-name">

@@ -2,11 +2,12 @@ TODO Warnings should be generated separately to the xml files
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema
-TODO GPS diagnostics??
+TODO Child relationships
 TODO Search?
 TODO Automate regression tests
 TODO Autonumbering
 TODO CSV to dataschema
+TODO make c attribute work properly with notnull flag's styling
 
 Quick Start
   1. Modify the example module.xml. If you see something there which you don't
@@ -59,6 +60,7 @@ Types
   - checkbox     <select>
   - dropdown     <select1>
   - file         <select type="file" faims_sync=true>
+  - gps          <input faims_read_only="true">
   - group        <group>
   - input        <input>
   - list         <select1 appearance="compact">

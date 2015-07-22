@@ -128,6 +128,79 @@ addActionBarItem("external_gps", new ToggleActionButtonCallback() {
 
 </xsl:text>
 
+    <!-- GPS -->
+<xsl:text>
+/******************************************************************************/
+/*                                    GPS                                     */
+/******************************************************************************/
+updateGPSDiagnostics() {
+  String diagnosticsRef = "</xsl:text>
+  <xsl:call-template name="gps-diag-ref" />
+  <xsl:text>";</xsl:text>
+  <xsl:text>
+  if (diagnosticsRef.equals("")) {
+    return;
+  }
+
+  String status         = "";
+  String previousStatus = getFieldValue(diagnosticsRef);
+  String notInitialised = "{GPS_is_not_initialised}";
+
+  // Check if GPS is initialised or was previously initialised.
+  if (!isExternalGPSOn() &amp;&amp; !isInternalGPSOn()) {
+    if (!isNull(previousStatus) &amp;&amp; !previousStatus.equals(notInitialised)) { // previous gps status is some last valid coordinate.
+      // This is hackish. Arch16n substitution happens only at display-time, but the following if clause requires substitution to have happened at run-time
+      String error = "";
+      error = "{GPS_is_no_longer_initialised}. {Previous_status}:";
+      setFieldValue(diagnosticsRef, error);   // Arch16n entry is substituted after this
+      error = getFieldValue(diagnosticsRef);
+
+      // check that error message wasn't previously appended to the previous status message.
+      if (previousStatus.length()    >= error.length() &amp;&amp;
+          previousStatus.subSequence(0, error.length()).equals(error)) {
+        status = previousStatus;
+      } else {
+        status = error + "\n" + previousStatus;
+      }
+    } else {
+      status = notInitialised;
+    }
+  } else {
+    status += "{Internal_GPS}: ";
+    if (isInternalGPSOn())
+    {
+      status += "{on}";
+    } else {
+      status += "{off}";
+    }
+    status += "\nExternal GPS: ";
+    if (isExternalGPSOn())
+    {
+      if (isBluetoothConnected()) {
+        status += "{on_and_bluetooth_connected}";
+      } else {
+        status += "{on_and_bluetooth_disconnected}";
+      }
+    } else {
+      status += "{off}";
+    }
+    Object position = getGPSPosition();
+    if (position != null) {
+      Object projPosition = getGPSPositionProjected();
+      status += "\n{Latitude}: " + position.getLatitude();
+      status += "   {Longitude}: " + position.getLongitude();
+      status += "\n{Northing}: " + projPosition.getLatitude();
+      status += "   {Easting}: " + projPosition.getLongitude();
+      status += "\n{Accuracy}: " + getGPSEstimatedAccuracy();
+    } else {
+      status += "\n{Position}: {no_GPS_position_could_be_found}";
+    }
+  }
+  setFieldValue(diagnosticsRef, status);
+}
+</xsl:text>
+
+
     <!-- User login stuff -->
 <xsl:text>
 /******************************************************************************/
@@ -1042,6 +1115,12 @@ onEvent(userMenuPath, "select", "selectUser()");
         <xsl:text>}</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="gps-diag-ref">
+    <xsl:for-each select="//*[normalize-space(@t) = 'gps'][1]">
+      <xsl:call-template name="ref" />
+    </xsl:for-each>
   </xsl:template>
 
 </xsl:stylesheet>

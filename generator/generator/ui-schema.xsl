@@ -338,6 +338,12 @@
           <label>{Button_<xsl:value-of select="name()"/>}</label>
         </trigger>
       </xsl:when>
+      <xsl:when test="normalize-space(@t)='gps'">
+        <xsl:element name="input">
+          <xsl:attribute name="faims_read_only">true</xsl:attribute>
+          <xsl:call-template name="body-expand-view-standard-nodes" />
+        </xsl:element>
+      </xsl:when>
       <xsl:when test="normalize-space(@t)='group'">
         <xsl:element name="{normalize-space(@t)}">
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -453,6 +459,7 @@
       normalize-space(@t) != 'button' and
       normalize-space(@t) != 'map' and
       normalize-space(@t) != 'webview' and
+      normalize-space(@t) != 'gps' and
       not(ancestor-or-self::*[contains(@f, 'onlyui')])">
       <xsl:attribute name="faims_attribute_name">
         <xsl:call-template name="string-replace-all">

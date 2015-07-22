@@ -182,7 +182,7 @@
         <input ref="Object_Starting_ID">
           <label>{Object_Starting_ID}</label>
         </input>
-        <input ref="GPS_Diagnostics">
+        <input faims_read_only="true" ref="GPS_Diagnostics">
           <label>{GPS_Diagnostics}</label>
         </input>
       </group>

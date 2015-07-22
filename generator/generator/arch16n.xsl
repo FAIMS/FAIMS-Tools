@@ -72,27 +72,42 @@
     </xsl:for-each>
     <!-- These are some entries mentioned in the staticly (as opposed to
          dynamically) generated portion of the UI schema -->
-<xsl:text>Any_unsaved_changes_will_be_lost=Any unsaved changes will be lost
+<xsl:text>Accuracy=Accuracy
+Any_unsaved_changes_will_be_lost=Any unsaved changes will be lost
 Clean_Synced_Files=Clean synced files
 Confirm_Deletion=Confirm Deletion
-Delete=Delete
 Delete_Cancelled=Delete cancelled
+Delete=Delete
 Disable_External_GPS=Disable External GPS
 Disable_Internal_GPS=Disable Internal GPS
 Disable_Sync=Disable Sync
-Duplicate=Duplicate
 Duplicated_record=Duplicated record
+Duplicate=Duplicate
+Easting=Easting
 Enable_External_GPS=Enable External GPS
 Enable_Internal_GPS=Enable Internal GPS
 Enable_Sync=Enable Sync
 External_GPS_Disabled=External GPS disabled
 External_GPS_Enabled=External GPS enabled
+GPS_is_no_longer_initialised=GPS is no longer initialised
+GPS_is_not_initialised=GPS is not initialised
 Internal_GPS_Disabled=Internal GPS disabled
 Internal_GPS_Enabled=Internal GPS enabled
+Internal_GPS=Internal GPS
+Latitude=Latitude
+Longitude=Longitude
 New=New
 New_record_created=New record created
+Northing=Northing
 Please_Enable_Bluetooth=Please enable bluetooth
+no_GPS_position_could_be_found=no GPS position could be found
+off=off
+on=on
+on_and_bluetooth_connected=on and bluetooth connected
+on_and_bluetooth_disconnected=on and bluetooth disconnected
+Position=Position
 Press_OK_to_Delete_this_Record=Press OK to delete this record
+Previous_status=Previous status
 Sync_Disabled=Sync disabled
 Sync_Enabled=Sync enabled
 This_record_is_unsaved_and_cannot_be_duplicated=This record is unsaved and cannot be duplicated

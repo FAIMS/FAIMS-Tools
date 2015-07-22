@@ -12,7 +12,7 @@
   <Main>
     <Take_Feature t="button" l="Burial_Mound"/>
     <Object_Starting_ID/>
-    <GPS_Diagnostics/>
+    <GPS_Diagnostics t="gps"/>
   </Main>
   <Records>
     <cols>
