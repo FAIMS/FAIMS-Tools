@@ -722,9 +722,10 @@ onEvent("Burial_Mound", "show", "addNavigationButtons(\"Burial_Mound\")");
 /******************************************************************************/
 /*                                   SEARCH                                   */
 /******************************************************************************/
+onEvent("Control/Search"               , "show"  , "search();");
 onEvent("Control/Search/Entity_List"   , "click" , "loadEntity();");
-onEvent("Control/Search/Search_Term"   , "click" , "clearSearch()");
 onEvent("Control/Search/Search_Button" , "click" , "search()");
+onEvent("Control/Search/Search_Term"   , "click" , "clearSearch()");
 onEvent("Control/Search/Entity_Types"  , "click" , "search()");
 
 entityTypes = new ArrayList();

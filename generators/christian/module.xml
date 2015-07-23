@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<module suppressWarnings="true">
+<module suppressWarnings="false">
 
 <User f="onlyui">
   <User>
@@ -37,7 +37,7 @@
 
 <Burial_Mound>
   <General>
-    <Object_ID d="decimal" f="id notnull"/>
+    <Object_ID c="chocolatemlik" d="decimal" f="id notnull"/>
     <Timestamp f="onlyui"/>
     <Author f="onlyui"/>
     <Type t="dropdown">

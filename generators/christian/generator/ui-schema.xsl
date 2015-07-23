@@ -527,7 +527,8 @@
 
   <xsl:template name="body-expand-view-standard-nodes">
     <xsl:attribute name="ref"><xsl:value-of select="name()"/></xsl:attribute>
-    <xsl:if test="@c">
+    <xsl:attribute name="faims_style_class"><xsl:value-of select="@c"/></xsl:attribute>
+    <xsl:if test="@c and not(contains(@f, 'notnull'))">
       <xsl:attribute name="faims_style_class"><xsl:value-of select="@c"/></xsl:attribute>
     </xsl:if>
     <xsl:if test="normalize-space(@t) != 'group' and
@@ -547,6 +548,9 @@
     <xsl:call-template name="parse-flags">
       <xsl:with-param name="flags" select="@f" />
     </xsl:call-template>
+    <xsl:if test="$doWarn and @c and contains(@f, 'notnull')">
+      <xsl:comment>WARNING: Style in c attribute not applied; styling conflicts exist due to "notnull" flag</xsl:comment>
+    </xsl:if>
     <xsl:call-template name="label" />
   </xsl:template>
 
