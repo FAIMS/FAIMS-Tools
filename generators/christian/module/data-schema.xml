@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
 <dataSchema>
-  <ArchaeologicalElement name="Burial_Mound">
+  <ArchaeologicalElement name="Test">
+    <description/>
+    <property name="Test" isIdentifier="true" type="measure">
+      <!--ERROR: This view's name is a duplicate of one or more other views' in this tab group-->
+      <description/>
+    </property>
+  </ArchaeologicalElement>
+  <ArchaeologicalElement name="Burial Mound">
     <description/>
     <property name="Object ID" isIdentifier="true" type="measure">
       <description/>

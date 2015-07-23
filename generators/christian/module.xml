@@ -17,17 +17,23 @@
   <search>
     Records
   </search>
-  <Records>
-    <cols>
-      <Search_Term/>
-      <Search t="button"/>
-    </cols>
-    <Results t="list" l="Burial_Mound"/>
-  </Records>
+  <!--<Records>-->
+    <!--<cols>-->
+      <!--<Search_Term/>-->
+      <!--<Search t="button"/>-->
+    <!--</cols>-->
+    <!--<Results t="list" l="Burial_Mound"/>-->
+  <!--</Records>-->
   <Map>
     <Map t="map"/>
   </Map>
 </Control>
+
+<Test>
+  <Test>
+    <Test f="id"/>
+  </Test>
+</Test>
 
 <Burial_Mound>
   <General>

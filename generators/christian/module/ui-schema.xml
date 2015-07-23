@@ -31,7 +31,7 @@
             <Search>
               <Colgroup_0>
                 <Col_0>
-                  <Search/>
+                  <Search_Term/>
                 </Col_0>
                 <Col_1>
                   <Search_Button/>
@@ -40,29 +40,15 @@
               <Entity_Types/>
               <Entity_List/>
             </Search>
-            <!--WARNING:  __                                                       -->
-            <!--WARNING: /  \        ____________________________________________  -->
-            <!--WARNING: |  |       /                                            \ -->
-            <!--WARNING: @  @       | It looks like you are implmenting a search | -->
-            <!--WARNING: || ||   ___| feature. Would you like help? (You can use | -->
-            <!--WARNING: || ||  /   | the built-in search tag here to add a tab  | -->
-            <!--WARNING: |\_/|      | which searches all arch-ents.)             | -->
-            <!--WARNING: \___/      \____________________________________________/ -->
-            <Records>
-              <Colgroup_0>
-                <Col_0>
-                  <Search_Term/>
-                </Col_0>
-                <Col_1>
-                  <Search/>
-                </Col_1>
-              </Colgroup_0>
-              <Results/>
-            </Records>
             <Map>
               <Map/>
             </Map>
           </Control>
+          <Test>
+            <Test>
+              <Test/>
+            </Test>
+          </Test>
           <Burial_Mound>
             <General>
               <Object_ID/>
@@ -212,7 +198,7 @@
           <label/>
           <group faims_style="even" ref="Col_0">
             <label/>
-            <input ref="Search">
+            <input ref="Search_Term">
               <label>{Search_Term}</label>
             </input>
           </group>
@@ -238,31 +224,6 @@
           </item>
         </select1>
       </group>
-      <group ref="Records">
-        <label>{Records}</label>
-        <group ref="Colgroup_0" faims_style="orientation">
-          <label/>
-          <group ref="Col_0" faims_style="even">
-            <label/>
-            <input ref="Search_Term">
-              <label>{Search_Term}</label>
-            </input>
-          </group>
-          <group ref="Col_1" faims_style="even">
-            <label/>
-            <trigger ref="Search">
-              <label>{Search}</label>
-            </trigger>
-          </group>
-        </group>
-        <select1 appearance="compact" ref="Results">
-          <label>{Results}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-      </group>
       <group ref="Map" faims_scrollable="false">
         <label>{Map}</label>
         <input faims_map="true" ref="Map">
@@ -270,7 +231,16 @@
         </input>
       </group>
     </group>
-    <group ref="Burial_Mound" faims_archent_type="Burial_Mound">
+    <group ref="Test" faims_archent_type="Test">
+      <label>{Test}</label>
+      <group ref="Test">
+        <label>{Test}</label>
+        <input faims_attribute_type="measure" ref="Test" faims_attribute_name="Test">
+          <label>{Test}</label>
+        </input>
+      </group>
+    </group>
+    <group ref="Burial_Mound" faims_archent_type="Burial Mound">
       <label>{Burial_Mound}</label>
       <group ref="General">
         <label>{General}</label>

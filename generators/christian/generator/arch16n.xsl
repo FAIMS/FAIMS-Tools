@@ -74,6 +74,7 @@
          dynamically) generated portion of the UI schema -->
       <xsl:text>
 Accuracy=Accuracy
+All=All
 Any_unsaved_changes_will_be_lost=Any unsaved changes will be lost
 Clean_Synced_Files=Clean synced files
 Confirm_Deletion=Confirm Deletion

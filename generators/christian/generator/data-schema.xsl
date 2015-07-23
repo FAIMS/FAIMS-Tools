@@ -16,7 +16,14 @@
   <!-- ArchaeologicalElement -->
   <xsl:template name="arch-el">
     <xsl:for-each select="/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gps') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]">
-      <ArchaeologicalElement name="{name(.)}">
+      <xsl:variable name="faims-archent-name">
+        <xsl:call-template name="string-replace-all">
+          <xsl:with-param name="text" select="name()" />
+          <xsl:with-param name="replace" select="'_'" />
+          <xsl:with-param name="by" select="' '" />
+        </xsl:call-template>
+      </xsl:variable>
+      <ArchaeologicalElement name="{$faims-archent-name}">
         <xsl:if test="not(.//*[contains(@f, ' id') or contains(@f, 'id ') or normalize-space(@f) = 'id'])">
           <xsl:comment>ERROR: Identifier not given</xsl:comment>
         </xsl:if>
