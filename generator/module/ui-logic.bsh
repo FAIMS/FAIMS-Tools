@@ -132,16 +132,14 @@ updateGPSDiagnostics() {
   // Check if GPS is initialised or was previously initialised.
   if (!isExternalGPSOn() && !isInternalGPSOn()) {
     if (!isNull(previousStatus) && !previousStatus.equals(notInitialised)) { // previous gps status is some last valid coordinate.
+      // This is hackish. Arch16n substitution happens only at display-time, but the following if clause requires substitution to have happened at run-time
       String error = "";
       error = "{GPS_is_no_longer_initialised}. {Previous_status}:";
-      setFieldValue(diagnosticsRef, error);  // This is hackish. Arch16n substitution happens only on display, but the following if clause requires substitution to have happened
+      setFieldValue(diagnosticsRef, error);   // Arch16n entry is substituted after this
       error = getFieldValue(diagnosticsRef);
 
       // check that error message wasn't previously appended to the previous status message.
-      showWarning("", "" + previousStatus.length());
-      showWarning("", "" +          error.length());
-      showWarning("", "" + previousStatus.subSequence(0, error.length()));
-      if (previousStatus.length() >= error.length() &&
+      if (previousStatus.length()    >= error.length() &&
           previousStatus.subSequence(0, error.length()).equals(error)) {
         status = previousStatus;
       } else {

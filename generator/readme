@@ -80,6 +80,7 @@ Naming Conventions and Reserved Element Names
     - <opts>     Options for, say, a dropdown menu
     - <rels>     Intended to be a direct child of <module> and hold
                  <RelationshipElement> tags
+    - <search>   A tab for searching all records. Its text is used as a label.
     - <str>      Contains <formatString>-related data.
     - <pos>      When the child of a <str>, gives the position (order) of an
                  identifier in a formatted string

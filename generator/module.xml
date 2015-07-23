@@ -14,6 +14,9 @@
     <Object_Starting_ID/>
     <GPS_Diagnostics t="gps"/>
   </Main>
+  <search>
+    Records
+  </search>
   <Records>
     <cols>
       <Search_Term/>

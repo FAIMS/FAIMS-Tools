@@ -4,7 +4,7 @@
 
   <xsl:variable name="doWarn"           select="not(/module/@suppressWarnings = 'true')" />
   <xsl:key name="kDropdownOpt" match="*[@t='dropdown']/opts/opt" use="concat(name(ancestor::*[last()-1]), name(ancestor::*[last()-2]), name(ancestor::*[last()-3]), text())"/>
-  <xsl:key name="kPropertyName" match="./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(name() = 'str') and not(name() = 'pos') and not(name() = 'fmt') and not(name() = 'app')]" use="concat(name(ancestor::*[last()-1]), name(.))"/>
+  <xsl:key name="kPropertyName" match="./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gps') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(name() = 'str') and not(name() = 'pos') and not(name() = 'fmt') and not(name() = 'app')]" use="concat(name(ancestor::*[last()-1]), name(.))"/>
 
   <xsl:template match="/module">
     <dataSchema>
@@ -15,7 +15,7 @@
 
   <!-- ArchaeologicalElement -->
   <xsl:template name="arch-el">
-    <xsl:for-each select="/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]">
+    <xsl:for-each select="/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gps') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]">
       <ArchaeologicalElement name="{name(.)}">
         <xsl:if test="not(.//*[contains(@f, ' id') or contains(@f, 'id ') or normalize-space(@f) = 'id'])">
           <xsl:comment>ERROR: Identifier not given</xsl:comment>
@@ -77,7 +77,7 @@
           or normalize-space(@t) = 'radio'
           or normalize-space(@t) = 'list'">
           <xsl:attribute name="type">vocab</xsl:attribute>
-          <xsl:if test="not(.//opts)">
+          <xsl:if test="$doWarn and not(.//opts)">
             <xsl:comment>WARNING: A set of &lt;opts&gt; tags are expected but not present</xsl:comment>
           </xsl:if>
         </xsl:if>

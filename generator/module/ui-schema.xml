@@ -28,6 +28,33 @@
               <Object_Starting_ID/>
               <GPS_Diagnostics/>
             </Main>
+            <Search>
+              <Colgroup_0>
+                <Col_0>
+                  <Search/>
+                </Col_0>
+                <Col_1>
+                  <Search_Button/>
+                </Col_1>
+              </Colgroup_0>
+              <Colgroup_1>
+                <Col_0>
+                  <Entity_Types/>
+                </Col_0>
+                <Col_1>
+                  <Area_Code/>
+                </Col_1>
+              </Colgroup_1>
+              <Entity_List/>
+            </Search>
+            <!--WARNING:  __                                                       -->
+            <!--WARNING: /  \        ____________________________________________  -->
+            <!--WARNING: |  |       /                                            \ -->
+            <!--WARNING: @  @       | It looks like you are implmenting a search | -->
+            <!--WARNING: || ||   ___| feature. Would you like help? (You can use | -->
+            <!--WARNING: || ||  /   | the built-in search tag here to add a tab  | -->
+            <!--WARNING: |\_/|      | which searches all arch-ents.)             | -->
+            <!--WARNING: \___/      \____________________________________________/ -->
             <Records>
               <Colgroup_0>
                 <Col_0>

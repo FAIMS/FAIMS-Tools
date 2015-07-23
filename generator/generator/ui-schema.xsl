@@ -9,6 +9,7 @@
   <xsl:output method="xml" indent="yes"/>
 
   <xsl:variable name="smallcase" select="'abcdefghijklmnopqrstuvwxyz'" />
+  <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
   <xsl:variable name="doWarn"    select="not(/module/@suppressWarnings = 'true')" />
 
   <xsl:template match="/">
@@ -67,11 +68,42 @@
       <xsl:element name="{name(.)}">
         <xsl:for-each select="*">                                      <!-- Iterate over tab nodes -->
           <xsl:if test="not(translate(name(.), $smallcase, '') = '')"> <!-- Skip nodes with "reserved" names (i.e. all lower case letters -->
+            <xsl:if test="contains(translate(name(), $uppercase, $smallcase), 'search') or contains(translate(name(), $uppercase, $smallcase), 'records')">
+              <xsl:comment>WARNING:  __                                                       </xsl:comment>
+              <xsl:comment>WARNING: /  \        ____________________________________________  </xsl:comment>
+              <xsl:comment>WARNING: |  |       /                                            \ </xsl:comment>
+              <xsl:comment>WARNING: @  @       | It looks like you are implmenting a search | </xsl:comment>
+              <xsl:comment>WARNING: || ||   ___| feature. Would you like help? (You can use | </xsl:comment>
+              <xsl:comment>WARNING: || ||  /   | the built-in search tag here to add a tab  | </xsl:comment>
+              <xsl:comment>WARNING: |\_/|      | which searches all arch-ents.)             | </xsl:comment>
+              <xsl:comment>WARNING: \___/      \____________________________________________/ </xsl:comment>
+            </xsl:if>
             <xsl:element name="{name(.)}">
               <xsl:for-each select="*">                         <!-- Iterate over GUI elements -->
                 <xsl:call-template name="model-expand-cols-or-view"/>
               </xsl:for-each>
             </xsl:element>
+          </xsl:if>
+          <xsl:if test="name() = 'search'">
+            <Search>
+              <Colgroup_0>
+                <Col_0>
+                  <Search/>
+                </Col_0>
+                <Col_1>
+                  <Search_Button/>
+                </Col_1>
+              </Colgroup_0>
+              <Colgroup_1>
+                <Col_0>
+                  <Entity_Types/>
+                </Col_0>
+                <Col_1>
+                  <Area_Code/>
+                </Col_1>
+              </Colgroup_1>
+              <Entity_List/>
+            </Search>
           </xsl:if>
         </xsl:for-each>
       </xsl:element>
