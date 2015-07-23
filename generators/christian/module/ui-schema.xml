@@ -63,6 +63,17 @@
               <Surrounding_Landuse/>
               <Surface_Landuse/>
               <Visibility/>
+              <Colgroup_GPS>
+                <Col_0>
+                  <Latitude/>
+                  <Northing/>
+                </Col_0>
+                <Col_1>
+                  <Longitude/>
+                  <Easting/>
+                </Col_1>
+              </Colgroup_GPS>
+              <Take_From_GPS/>
               <Colgroup_0>
                 <Col_0>
                   <Lat/>
@@ -86,6 +97,7 @@
               <Button_General_Photo/>
             </General>
             <Dimensions>
+              <Latitude/>
               <Profile/>
               <Plan/>
               <Colgroup_0>
@@ -213,15 +225,15 @@
         <select1 ref="Entity_Types">
           <label>{Entity_Types}</label>
           <item>
-            <label>placeholder</label>
-            <value>placeholder</value>
+            <label>Options not loaded</label>
+            <value>Options not loaded</value>
           </item>
         </select1>
         <select1 appearance="compact" ref="Entity_List">
           <label>{Entity_List}</label>
           <item>
-            <label>placeholder</label>
-            <value>placeholder</value>
+            <label>Options not loaded</label>
+            <value>Options not loaded</value>
           </item>
         </select1>
       </group>
@@ -316,6 +328,32 @@
             <value>0</value>
           </item>
         </select1>
+        <group ref="Colgroup_GPS" faims_style="orientation">
+          <label/>
+          <group ref="Col_0" faims_style="even">
+            <label/>
+            <input ref="Latitude" faims_attribute_name="Latitude" faims_attribute_type="measure" faims_read_only="true">
+              <label>{Latitude}</label>
+            </input>
+            <input ref="Northing" faims_attribute_name="Northing" faims_attribute_type="measure" faims_read_only="true">
+              <!--ERROR: View name is duplicated such that this UI schema is invalid.-->
+              <label>{Northing}</label>
+            </input>
+          </group>
+          <group ref="Col_1" faims_style="even">
+            <label/>
+            <input ref="Longitude" faims_attribute_name="Longitude" faims_attribute_type="measure" faims_read_only="true">
+              <label>{Longitude}</label>
+            </input>
+            <input ref="Easting" faims_attribute_name="Easting" faims_attribute_type="measure" faims_read_only="true">
+              <!--ERROR: View name is duplicated such that this UI schema is invalid.-->
+              <label>{Easting}</label>
+            </input>
+          </group>
+        </group>
+        <trigger ref="Take_From_GPS">
+          <label>{Take_From_GPS}</label>
+        </trigger>
         <group ref="Colgroup_0" faims_style="orientation">
           <label/>
           <group ref="Col_0" faims_style="even">
@@ -374,6 +412,10 @@
       </group>
       <group ref="Dimensions">
         <label>{Dimensions}<!--WARNING: Label not given; automatically generated from element name.--></label>
+        <input faims_attribute_type="measure" ref="Latitude" faims_style_class="" faims_attribute_name="Latitude">
+          <label>{Latitude}<!--WARNING: Label not given; automatically generated from element name.--></label>
+          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+        </input>
         <select1 type="image" faims_attribute_type="vocab" ref="Profile" faims_style_class="" faims_attribute_name="Profile">
           <label>{Profile}<!--WARNING: Label not given; automatically generated from element name.--></label>
           <item>

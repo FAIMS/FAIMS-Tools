@@ -198,6 +198,11 @@
     <property name="General Photo" type="file" file="true" thumbnail="true">
       <description>Take 1 general overview shot that includes the complete feature profile, and a scale. Include direction in the Annotation (from which direction was the image taken)</description>
     </property>
+    <property name="Latitude" type="measure">
+      <description>
+        <!--WARNING: <desc> tag not given-->
+      </description>
+    </property>
     <property name="Profile" type="vocab">
       <!--WARNING: A set of <opts> tags are expected but not present-->
       <description>
@@ -503,6 +508,18 @@
       <description>
         <!--WARNING: <desc> tag not given-->
       </description>
+    </property>
+    <property name="Latitude" type="measure">
+      <description/>
+    </property>
+    <property name="Longitude" type="measure">
+      <description/>
+    </property>
+    <property name="Northing" type="measure">
+      <description/>
+    </property>
+    <property name="Easting" type="measure">
+      <description/>
     </property>
   </ArchaeologicalElement>
 </dataSchema>

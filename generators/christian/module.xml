@@ -12,7 +12,7 @@
   <Main>
     <Take_Feature t="button" l="Burial_Mound"/>
     <Object_Starting_ID/>
-    <GPS_Diagnostics t="gps"/>
+    <GPS_Diagnostics t="gpsdiag"/>
   </Main>
   <search>
     Records
@@ -134,6 +134,7 @@
         <opt>80-100%</opt>
       </opts>
     </Visibility>
+    <gps/>
     <cols>
       <Lat/>
       <Long/>

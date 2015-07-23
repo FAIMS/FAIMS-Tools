@@ -118,10 +118,15 @@ Warning=Warning</xsl:text>
     <!-- These are mentioned in the (semi-)statically generated portion of the
          UI schema -->
      <xsl:text>
+Easting=Easting
 Entity_List=Entity List
 Entity_Types=Entity Types
+Latitude=Latitude
+Longitude=Longitude
+Northing=Northing
 Search=Search
-Search_Term=Search Term</xsl:text>
+Search_Term=Search Term
+Take_From_GPS=Take From GPS</xsl:text>
   </xsl:template>
 
   <!-- WARNING:  This template assumes $string contains at most 80

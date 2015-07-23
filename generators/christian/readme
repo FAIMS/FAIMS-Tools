@@ -2,9 +2,15 @@ TODO Warnings should be generated separately to the xml files
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema
-TODO Automate regression tests
-TODO Autonumbering
 TODO Long/lat + "take gps" button
+     - UI logic
+.    - UI schema
+     - Data
+	   - Add error about duplicates
+		   count(..//Northing) &gt;= 1
+.    - Arch16n
+TODO Autonumbering
+TODO Automate regression tests
 TODO Child relationships
 TODO CSV to dataschema
 
@@ -59,7 +65,7 @@ Types
   - checkbox     <select>
   - dropdown     <select1>
   - file         <select type="file" faims_sync=true>
-  - gps          <input faims_read_only="true">
+  - gpsdiag      <input faims_read_only="true">
   - group        <group>
   - input        <input>
   - list         <select1 appearance="compact">
@@ -79,6 +85,8 @@ Naming Conventions and Reserved Element Names
     - <opts>     Options for, say, a dropdown menu
     - <rels>     Intended to be a direct child of <module> and hold
                  <RelationshipElement> tags
+    - <gps>      A set of fields including Latitude, Longitude, Northing,
+                 Easting and a "Take From GPS" button.
     - <search>   A tab for searching all records. Its text is used as a label.
     - <str>      Contains <formatString>-related data.
     - <pos>      When the child of a <str>, gives the position (order) of an
@@ -181,6 +189,17 @@ Known Issues
       </module>
   Moreover, the programmer will not be warned about this and should expect un-
   expected behaviour.
+
+  Concerning the naming conventions used: one may notice that the distinction
+  between a type (i.e. t attribute) and a reserved element can be a bit
+  arbitrary---Even inconsistent, perhaps. For example, somewhat confusingly,
+  t="gpsdiag" is used to denote that a view is for GPS diagnostics, but <gps>
+  is used to denote a set of fields showing coordinates. The decision could have
+  been made to have, say, a t="gpsdiag" type for the former purpose and a
+  t="gps" flag for the latter. The rule of thumb which prevented this choice is
+  that the programmer should only be given freedom in choosing the element's
+  name if that name will have an influence on node names (and ref attributes)
+  and properties in the UI and/or data schemas, respectively.
 
 Grammar
   The empty string is denoted by a period (.), comments begin with hash symbols
