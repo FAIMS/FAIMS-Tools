@@ -1,0 +1,64 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100" height="100" 
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+     <style>
+@font-face {
+    font-family: 'Roboto';
+    src: url('/usr/share/fonts/truetype/roboto/Roboto.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+</style> 
+<rect x="0" y="0" width="100" height="100" 
+        fill="white" stroke-width="0"/>
+
+fill white
+stroke gray
+
+<rect x="10" y="20" width="10" height="10" style="fill:white;stroke-width:1;stroke:black" />
+<rect x="10" y="40" width="10" height="10" style="fill:white;stroke-width:1;stroke:black" />
+<rect x="10" y="60" width="10" height="10" style="fill:white;stroke-width:1;stroke:black" />
+<rect x="10" y="80" width="10" height="10" style="fill:white;stroke-width:1;stroke:black" />
+
+<text x="25" y="28" font-family="Roboto" font-size="8" fill="gray"> Checkbox </text>
+<text x="25" y="48" font-family="Roboto" font-size="8" fill="gray"> Checkbox </text>
+<text x="25" y="68" font-family="Roboto" font-size="8" fill="gray"> Checkbox </text>
+<text x="25" y="88" font-family="Roboto" font-size="8" fill="gray"> Checkbox </text>
+
+
+
+polyline 10,40  10,55   25,55   25,40   10,40
+polyline 10,80  10,95   25,95   25,80   10,80
+polyline 10,120 10,135  25,135  25,120  10,120
+polyline 10,160 10,175  25,175  25,160  10,160
+
+fill gray
+stroke gray
+stroke-width 0
+stroke-opacity 0
+
+
+font-size 12
+text 35,53 "Checkbox"
+text 35,93 "Checkbox"
+text 35,133 "Checkbox"
+text 35,173 "Checkbox"
+
+
+
+
+<g transform='translate(70,20) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>
+<g transform='translate(70,40) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>
+<g transform='translate(70,60) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>
+<g transform='translate(70,80) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>
+<g transform='translate(85,0) scale(.6)'><path  width='20' height='20' x='60' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>
+<text x="5" y="12" font-family="Roboto" font-size="10pt" fill="red"> checkbox 3 Required </text>
+stroke red
+fill red
+stroke-width 0
+stroke-opacity 0
+font-size 16
+</svg>

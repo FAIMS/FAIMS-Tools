@@ -2,12 +2,17 @@
 
 require 'sqlite3'
 require 'antlr3'
+require 'benchmark'
+
 require_relative 'string_formatter'
 
 def spatialite_library
   return 'libspatialite.dylib' if (/darwin/ =~ RUBY_PLATFORM) != nil
   return 'libspatialite.so'
 end
+
+puts "What the fuck"
+
 
 db_file = ARGV.shift
 sql_file = ARGV.shift
@@ -33,10 +38,11 @@ db.create_function('format', -1) do |func, *args|
   end
 end
 
+puts "foo"
 
 File.open(sql_file, 'r') do |file|
   sql = ""
-  file.readlines.each do |line|
+  time = Benchmark.measure file.readlines.each do |line|
     sql += line.gsub(/--.*/, '')
     if line =~ /;/
       begin
@@ -58,5 +64,8 @@ File.open(sql_file, 'r') do |file|
       end
     end
   end
+  
+  puts sql
+  puts time
 end
 

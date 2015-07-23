@@ -1,0 +1,60 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="200" height="85" 
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+     <style>
+@font-face {
+    font-family: 'Roboto';
+    src: url('/usr/share/fonts/truetype/roboto/Roboto.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+</style> 
+<rect x="0" y="0" width="200" height="85" 
+        fill="white" stroke-width="0"/>
+
+<rect x="5" y="35" width="40" height="42" style="fill:white;stroke-width:1;stroke:black"/>
+<rect x="55" y="35" width="40" height="42" style="fill:white;stroke-width:1;stroke:black"/>
+<rect x="105" y="35" width="40" height="42" style="fill:white;stroke-width:1;stroke:black"/>
+<rect x="155" y="35" width="40" height="42" style="fill:white;stroke-width:1;stroke:black"/>
+
+<text x="10" y="30"  font-family="Roboto" font-size="8" fill="black" > Picture 1 </text>
+<text x="60" y="30"  font-family="Roboto" font-size="8" fill="black" > Picture 2 </text>
+<text x="110" y="30"  font-family="Roboto" font-size="8" fill="black" > Picture 3 </text>
+<text x="160" y="30"  font-family="Roboto" font-size="8" fill="black" > Picture 4 </text>
+
+
+
+fill white
+
+stroke-width 2
+stroke-opacity 1
+
+polyline -40,55  75,55   75,160  -40,160
+polyline 85,55   190,55   190,160   85,160   85,55
+polyline 200,55  305,55  305,160  200,160  200,55
+polyline 315,55  460,55  460,160  315,160  315,55
+
+
+font-size 14
+fill black
+stroke-opacity 0
+
+text -25, 50 "Picture 1"
+text 110, 50 "Picture 2"
+text 225, 50 "Picture 3"
+text 340, 50 "Picture 4"
+
+
+
+<text x="5" y="12" font-family="Roboto" font-size="10pt" fill="black"> pictureGallery 2 Label </text>
+stroke black
+fill black
+stroke-width 0
+stroke-opacity 0
+font-size 16
+<g transform='translate(176,0) scale(.5)'><path  width='20' height='20' x='160' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>
+<g transform='translate(188,0) scale(.5)'><path  width='20' height='20' x='160' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>
+</svg>

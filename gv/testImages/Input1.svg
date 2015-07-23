@@ -1,0 +1,29 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="50" height="40" 
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+     <style>
+@font-face {
+    font-family: 'Roboto';
+    src: url('/usr/share/fonts/truetype/roboto/Roboto.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+</style> 
+<rect x="0" y="0" width="50" height="40" 
+        fill="white" stroke-width="0"/>
+
+<path d="M 5 30 L 5 35 L 45 35 L 45 30" stroke="black" fill="white" stroke-width="1"/>
+
+<text x="5" y="12" font-family="Roboto" font-size="10pt" fill="black"> Input 1 Label </text>
+stroke black
+fill black
+stroke-width 0
+stroke-opacity 0
+font-size 16
+<g transform='translate(14,0) scale(.5)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>
+<g transform='translate(26,0) scale(.5)'><path  width='20' height='20' x='10' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>
+<g transform='translate(38,0) scale(.5)'><path  width='20' height='20' x='10' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>
+</svg>
