@@ -5,7 +5,6 @@
       <!--WARNING: <desc> tag not given-->
     </description>
     <property name="Test" isIdentifier="true" type="measure">
-      <!--ERROR: This view's name is a duplicate of one or more other views' in this tab group-->
       <description>
         <!--WARNING: <desc> tag not given-->
       </description>
