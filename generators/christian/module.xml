@@ -17,13 +17,6 @@
   <search>
     Records
   </search>
-  <!--<Records>-->
-    <!--<cols>-->
-      <!--<Search_Term/>-->
-      <!--<Search t="button"/>-->
-    <!--</cols>-->
-    <!--<Results t="list" l="Burial_Mound"/>-->
-  <!--</Records>-->
   <Map>
     <Map t="map"/>
   </Map>
@@ -37,7 +30,7 @@
 
 <Burial_Mound>
   <General>
-    <Object_ID c="chocolatemlik" d="decimal" f="id notnull"/>
+    <Object_ID d="decimal" f="id notnull"/>
     <Timestamp f="onlyui"/>
     <Author f="onlyui"/>
     <Type t="dropdown">
@@ -135,14 +128,6 @@
       </opts>
     </Visibility>
     <gps/>
-    <cols>
-      <Lat/>
-      <Long/>
-    </cols>
-    <cols>
-      <Easting/>
-      <Northing/>
-    </cols>
     <Elevation d="decimal">
       Elevation (MASL)
     </Elevation>

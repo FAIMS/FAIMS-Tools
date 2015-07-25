@@ -14,7 +14,6 @@ TODO Autonumbering
            - ui schema
                - Parse flags
 TODO Automate regression tests
-TODO t="gpsdiag" should really be <gpsdiag/>
 TODO Child relationships
 TODO CSV to dataschema
 

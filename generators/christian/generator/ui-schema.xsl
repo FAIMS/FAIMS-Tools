@@ -632,9 +632,9 @@
               <xsl:with-param name="string" select="name()" />
             </xsl:call-template>
             <xsl:text>}</xsl:text>
-            <xsl:if test="$doWarn">
-              <xsl:comment>WARNING: Label not given; automatically generated from element name.</xsl:comment>
-            </xsl:if>
+            <!--<xsl:if test="$doWarn">-->
+              <!--<xsl:comment>WARNING: Label not given; automatically generated from element name.</xsl:comment>-->
+            <!--</xsl:if>-->
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>

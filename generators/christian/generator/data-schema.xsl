@@ -41,9 +41,9 @@
   </xsl:template>
   <xsl:template name="desc">
     <description>
-      <xsl:if test="$doWarn and not(desc)">
-        <xsl:comment>WARNING: &lt;desc&gt; tag not given</xsl:comment>
-      </xsl:if>
+      <!--<xsl:if test="$doWarn and not(desc)">-->
+        <!--<xsl:comment>WARNING: &lt;desc&gt; tag not given</xsl:comment>-->
+      <!--</xsl:if>-->
       <xsl:apply-templates select="desc"/>
     </description>
   </xsl:template>
