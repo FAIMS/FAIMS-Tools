@@ -557,7 +557,7 @@
           <label>{Button_<xsl:value-of select="name()"/>}</label>
         </trigger>
       </xsl:when>
-      <xsl:when test="normalize-space(@t)='webview'">
+      <xsl:when test="normalize-space(@t) = 'webview' or normalize-space(@t) = 'web'">
         <xsl:element name="input">
           <xsl:attribute name="faims_web">true</xsl:attribute>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -594,6 +594,7 @@
     <xsl:if test="normalize-space(@t) != 'group' and
       normalize-space(@t) != 'button' and
       normalize-space(@t) != 'map' and
+      normalize-space(@t) != 'web' and
       normalize-space(@t) != 'webview' and
       normalize-space(@t) != 'gpsdiag' and
       not(ancestor-or-self::*[contains(@f, 'onlyui')])">

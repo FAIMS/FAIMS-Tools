@@ -2,11 +2,19 @@ TODO Warnings should be generated separately to the xml files
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema
-TODO ERROR if tab group has no identifier
 TODO Consider replacing the l and p attributes with a single l attrib
 TODO Consider replacing the b and f attributes with a single f attrib
 TODO Autonumbering
+       - autonum element
+           - UI Logic
+           - UI schema
+           - arch16n
+       - autonum flag
+           - UI logic
+           - ui schema
+               - Parse flags
 TODO Automate regression tests
+TODO t="gpsdiag" should really be <gpsdiag/>
 TODO Child relationships
 TODO CSV to dataschema
 
@@ -69,7 +77,7 @@ Types
   - picture      <select1 type="image">
   - radio        <select1 appearance="full">
   - video        <select type="file" faims_sync=true>
-  - webview      <input faims_web="true">
+  - web[view]    <input faims_web="true">
 
 Reserved Element Names and Recommended Naming Conventions
   "Reserved" elements only contain lower case letters:
