@@ -871,7 +871,113 @@ loadEntityFrom(String entityID) {
       <xsl:call-template name="load-entity-functions" />
     </xsl:if>
 
+    <!-- Take From GPS Button -->
+    <xsl:for-each select="/module/*">
+    </xsl:for-each>
+    <xsl:if test="/module/*/*/gps">
+      <xsl:text>
+/******************************************************************************/
+/*                          TAKE FROM GPS BUTTON(S)                           */
+/******************************************************************************/
+</xsl:text>
+<xsl:call-template name="take-from-gps-bindings"/>
+<xsl:text>
+/* Takes the current point using gps. */
+takePoint(String tabgroup) {
+  String archEntType = tabgroup.replaceAll("_", " ");
+  String currentUuid = getUuid(tabgroup);
+  if (isNull(currentUuid)){
+    showToast("Please enter data first and let a save occur.");
+  }
+
+  Object position = getGPSPosition();
+  if (position == null) {
+    showToast("{GPS_Not_Initialised}");
+    return;
+  }
+
+  Object projPosition = getGPSPositionProjected();
+  Double latitude     = position.getLatitude();
+  Double longitude    = position.getLongitude();
+  Double northing     = projPosition.getLatitude();
+  Double easting      = projPosition.getLongitude();
+
+  samplePoint = new Point(new MapPos(easting, northing), null, (PointStyle) null, null);
+  ArrayList geolist = new ArrayList();
+  geolist.add(samplePoint);
+
+  attributes = createAttributeList();
+  attributes.add(createEntityAttribute("Latitude", "Accuracy: "+getGPSEstimatedAccuracy(), null, null, null));
+
+  saveArchEnt(currentUuid, archEntType, geolist, attributes, new SaveCallback() {
+    onSave(uuid, newRecord) {
+      print("[takePoint()] Added geometry: " + geolist);
+      fillInGPS(tabgroup);
+    }
+  });
+}
+
+/* Sets the value of GPS views for the given tab path. */
+fillInGPS(String tabgroup) {
+</xsl:text>
+    <xsl:call-template name="take-from-gps-mappings"/>
+<xsl:text>
+  String currentUuid = getUuid(tabgroup);
+  if (isNull(currentUuid)) {
+    return;
+  }
+
+  String query = "SELECT x(transform(geospatialcolumn,                4326)) as longtiude, " +
+                 "       y(transform(geospatialcolumn,                4326)) as latitude, " +
+                 "       x(transform(geospatialcolumn, "+getModuleSrid()+")) as easting, " +
+                 "       y(transform(geospatialcolumn, "+getModuleSrid()+")) as northing " +
+                 "  FROM latestnondeletedarchent, vocabulary " +
+                 " WHERE uuid = '" + currentUuid + "';";
+
+  fetchOne(query, new FetchCallback() {
+    onFetch(result) {
+      print("[fillInGPS()] Fetched DB transformed geometry: " + result);
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Latitude"  , result.get(0));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Longitude" , result.get(1));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Northing"  , result.get(2));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Easting"   , result.get(3));
+    }
+  });
+}
+</xsl:text>
+    </xsl:if>
+
   </xsl:template>
+
+  <xsl:template name="take-from-gps-bindings">
+    <xsl:for-each select="/module//gps">
+      <xsl:text>onEvent("</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])"/>
+      <xsl:text>/</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-2])"/>
+      <xsl:text>Take_From_GPS</xsl:text>
+      <xsl:text>", "click", "takePoint(\"</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])"/>
+      <xsl:text>\")");</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="take-from-gps-mappings">
+    <xsl:text>  Map tabgroupToTabRef = new HashMap();</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:for-each select="/module//gps">
+      <xsl:text>  tabgroupToTabRef.put("</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])"/>
+      <xsl:text>", "</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])"/>
+      <xsl:text>/</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-2])"/>
+      <xsl:text>/");</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:for-each>
+  </xsl:template>
+
   <xsl:template name="load-entity-functions">
     <xsl:for-each select="/module/*[not(contains(@f, 'onlyui'))]">
       <xsl:text>load</xsl:text>

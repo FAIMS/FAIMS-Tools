@@ -97,7 +97,6 @@
               <Button_General_Photo/>
             </General>
             <Dimensions>
-              <Latitude/>
               <Profile/>
               <Plan/>
               <Colgroup_0>
@@ -412,10 +411,6 @@
       </group>
       <group ref="Dimensions">
         <label>{Dimensions}<!--WARNING: Label not given; automatically generated from element name.--></label>
-        <input faims_attribute_type="measure" ref="Latitude" faims_style_class="" faims_attribute_name="Latitude">
-          <label>{Latitude}<!--WARNING: Label not given; automatically generated from element name.--></label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
-        </input>
         <select1 type="image" faims_attribute_type="vocab" ref="Profile" faims_style_class="" faims_attribute_name="Profile">
           <label>{Profile}<!--WARNING: Label not given; automatically generated from element name.--></label>
           <item>

@@ -99,15 +99,27 @@
 
     <xsl:if test="./*/gps">
       <property name="Latitude" type="measure">
+        <xsl:if test="count(.//Latitude) &gt;= 1 or count(.//gps) &gt;= 2">
+          <xsl:comment>ERROR: This view's name is a duplicate of one or more other views' in this tab group</xsl:comment>
+        </xsl:if>
         <description/>
       </property>
       <property name="Longitude" type="measure">
+        <xsl:if test="count(.//Longitude) &gt;= 1 or count(.//gps) &gt;= 2">
+          <xsl:comment>ERROR: This view's name is a duplicate of one or more other views' in this tab group</xsl:comment>
+        </xsl:if>
         <description/>
       </property>
       <property name="Northing" type="measure">
+        <xsl:if test="count(.//Northing) &gt;= 1 or count(.//gps) &gt;= 2">
+          <xsl:comment>ERROR: This view's name is a duplicate of one or more other views' in this tab group</xsl:comment>
+        </xsl:if>
         <description/>
       </property>
       <property name="Easting" type="measure">
+        <xsl:if test="count(.//Easting) &gt;= 1 or count(.//gps) &gt;= 2">
+          <xsl:comment>ERROR: This view's name is a duplicate of one or more other views' in this tab group</xsl:comment>
+        </xsl:if>
         <description/>
       </property>
     </xsl:if>

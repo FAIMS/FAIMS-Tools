@@ -93,6 +93,7 @@ External_GPS_Disabled=External GPS disabled
 External_GPS_Enabled=External GPS enabled
 GPS_is_no_longer_initialised=GPS is no longer initialised
 GPS_is_not_initialised=GPS is not initialised
+GPS_Not_Initialised=GPS Not Initialised
 Internal_GPS_Disabled=Internal GPS disabled
 Internal_GPS_Enabled=Internal GPS enabled
 Internal_GPS=Internal GPS
