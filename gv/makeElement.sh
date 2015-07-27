@@ -2,7 +2,7 @@
 set -euo pipefail
 
 
-#Takes as arguments: Name, Label, type, numColumns, HasAnnotation, HasCertainty, HasInfo, Required, Path
+#Takes as arguments: Name, Label, type, numColumns, HasAnnotation, HasCertainty, HasInfo, Required, ReadOnly, Path
 
 #. - input        <input>
 #. - dropdown     <select1>
