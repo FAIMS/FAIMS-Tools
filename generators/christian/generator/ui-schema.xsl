@@ -68,15 +68,17 @@
       <xsl:element name="{name(.)}">
         <xsl:for-each select="*">                                      <!-- Iterate over tab nodes -->
           <xsl:if test="not(translate(name(.), $smallcase, '') = '')"> <!-- Skip nodes with "reserved" names (i.e. all lower case letters -->
-            <xsl:if test="contains(translate(name(), $uppercase, $smallcase), 'search') or contains(translate(name(), $uppercase, $smallcase), 'records')">
-              <xsl:comment>WARNING:  __                                                       </xsl:comment>
-              <xsl:comment>WARNING: /  \        ____________________________________________  </xsl:comment>
-              <xsl:comment>WARNING: |  |       /                                            \ </xsl:comment>
-              <xsl:comment>WARNING: @  @       | It looks like you are implmenting a search | </xsl:comment>
-              <xsl:comment>WARNING: || ||   ___| feature. Would you like help? (You can use | </xsl:comment>
-              <xsl:comment>WARNING: || ||  /   | the built-in search tag here to add a tab  | </xsl:comment>
-              <xsl:comment>WARNING: |\_/|      | which searches all arch-ents.)             | </xsl:comment>
-              <xsl:comment>WARNING: \___/      \____________________________________________/ </xsl:comment>
+            <xsl:if test="
+              contains(translate(name(), $uppercase, $smallcase), 'search') or
+              contains(translate(name(), $uppercase, $smallcase), 'records')">
+              <xsl:comment>WARNING:  __                                                        </xsl:comment>
+              <xsl:comment>WARNING: /  \        _____________________________________________  </xsl:comment>
+              <xsl:comment>WARNING: |  |       /                                             \ </xsl:comment>
+              <xsl:comment>WARNING: @  @       | It looks like you are implementing a search | </xsl:comment>
+              <xsl:comment>WARNING: || ||   ___| feature. Would you like help? (You can use  | </xsl:comment>
+              <xsl:comment>WARNING: || ||  /   | the built-in "search" tag here to add a tab | </xsl:comment>
+              <xsl:comment>WARNING: |\_/|      | which searches all arch-ents.)              | </xsl:comment>
+              <xsl:comment>WARNING: \___/      \_____________________________________________/ </xsl:comment>
             </xsl:if>
             <xsl:element name="{name(.)}">
               <xsl:for-each select="*">                         <!-- Iterate over GUI elements -->
@@ -88,20 +90,15 @@
             <Search>
               <Colgroup_0>
                 <Col_0>
-                  <Search/>
+                  <Search_Term/>
                 </Col_0>
                 <Col_1>
                   <Search_Button/>
                 </Col_1>
               </Colgroup_0>
-              <Colgroup_1>
-                <Col_0>
-                  <Entity_Types/>
-                </Col_0>
-                <Col_1>
-                  <Area_Code/>
-                </Col_1>
-              </Colgroup_1>
+              <xsl:if test="count(/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
+                <Entity_Types/>
+              </xsl:if>
               <Entity_List/>
             </Search>
           </xsl:if>
@@ -127,7 +124,13 @@
       <xsl:element name="group">
         <xsl:attribute name="ref"><xsl:value-of select="name()"/></xsl:attribute>
         <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
-          <xsl:attribute name="faims_archent_type"><xsl:value-of select="name()"/></xsl:attribute>
+          <xsl:attribute name="faims_archent_type">
+            <xsl:call-template name="string-replace-all">
+              <xsl:with-param name="text" select="name()" />
+              <xsl:with-param name="replace" select="'_'" />
+              <xsl:with-param name="by" select="' '" />
+            </xsl:call-template>
+          </xsl:attribute>
         </xsl:if>
         <xsl:call-template name="label" />
         <xsl:for-each select="*">                                      <!-- Iterate over tab nodes -->
@@ -146,6 +149,48 @@
               </xsl:for-each>
             </xsl:element>
           </xsl:if>
+          <xsl:if test="name() = 'search'">
+            <group ref="Search" faims_scrollable="false">
+              <xsl:if test="../Search">
+                <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
+              </xsl:if>
+              <xsl:if test="count(//search) &gt; 1">
+                <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
+              </xsl:if>
+              <xsl:call-template name="label"/>
+              <group faims_style="orientation" ref="Colgroup_0">
+                <label/>
+                <group faims_style="even" ref="Col_0">
+                  <label/>
+                  <input ref="Search_Term">
+                    <label>{Search_Term}</label>
+                  </input>
+                </group>
+                <group faims_style="large" ref="Col_1">
+                  <label/>
+                  <trigger ref="Search_Button">
+                    <label>{Search}</label>
+                  </trigger>
+                </group>
+              </group>
+              <xsl:if test="count(/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
+                <select1 ref="Entity_Types">
+                  <label>{Entity_Types}</label>
+                  <item>
+                    <label>Options not loaded</label>
+                    <value>Options not loaded</value>
+                  </item>
+                </select1>
+              </xsl:if>
+              <select1 appearance="compact" ref="Entity_List">
+                <label>{Entity_List}</label>
+                <item>
+                  <label>Options not loaded</label>
+                  <value>Options not loaded</value>
+                </item>
+              </select1>
+            </group>
+          </xsl:if>
         </xsl:for-each>
       </xsl:element>
     </xsl:for-each>
@@ -153,6 +198,9 @@
 
   <xsl:template name="model-expand-cols-or-view">
     <xsl:choose>
+      <xsl:when test="name(.) = 'gps'">
+        <xsl:call-template name="model-expand-gps" />
+      </xsl:when>
       <xsl:when test="name(.) = 'cols'">
         <xsl:call-template name="model-expand-cols" />
       </xsl:when>
@@ -170,6 +218,20 @@
       or normalize-space(@t) = 'video'">
       <xsl:element name="Button_{name(.)}"/>
     </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="model-expand-gps">
+    <Colgroup_GPS>
+      <Col_0>
+        <Latitude/>
+        <Northing/>
+      </Col_0>
+      <Col_1>
+        <Longitude/>
+        <Easting/>
+      </Col_1>
+    </Colgroup_GPS>
+    <Take_From_GPS/>
   </xsl:template>
 
   <xsl:template name="model-expand-cols">
@@ -214,7 +276,6 @@
 
   <xsl:template name="bind-expand-cols">
     <xsl:for-each select=".//*[@b]">
-      <!--<xsl:comment><xsl:value-of select="name()"/></xsl:comment>-->
       <xsl:element name="bind">
         <xsl:attribute name="type">
           <xsl:value-of select="normalize-space(@b)"/>
@@ -236,6 +297,9 @@
 
   <xsl:template name="body-expand-cols-or-view">
     <xsl:choose>
+      <xsl:when test="name(.) = 'gps'">
+        <xsl:call-template name="body-expand-gps" />
+      </xsl:when>
       <xsl:when test="name(.) = 'cols'">
         <xsl:call-template name="body-expand-cols" />
       </xsl:when>
@@ -243,6 +307,45 @@
         <xsl:call-template name="body-expand-view" />
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="body-expand-gps">
+    <group ref="Colgroup_GPS" faims_style="orientation">
+      <label/>
+      <group ref="Col_0" faims_style="even">
+        <label/>
+        <input ref="Latitude" faims_attribute_name="Latitude" faims_attribute_type="measure" faims_read_only="true">
+          <xsl:if test="count(..//Latitude) &gt;= 1">
+            <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
+          </xsl:if>
+          <label>{Latitude}</label>
+        </input>
+        <input ref="Northing" faims_attribute_name="Northing" faims_attribute_type="measure" faims_read_only="true">
+          <xsl:if test="count(..//Northing) &gt;= 1">
+            <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
+          </xsl:if>
+          <label>{Northing}</label>
+        </input>
+      </group>
+      <group ref="Col_1" faims_style="even">
+        <label/>
+        <input ref="Longitude" faims_attribute_name="Longitude" faims_attribute_type="measure" faims_read_only="true">
+          <xsl:if test="count(..//Longitude) &gt;= 1">
+            <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
+          </xsl:if>
+          <label>{Longitude}</label>
+        </input>
+        <input ref="Easting" faims_attribute_name="Easting" faims_attribute_type="measure" faims_read_only="true">
+          <xsl:if test="count(..//Easting) &gt;= 1">
+            <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
+          </xsl:if>
+          <label>{Easting}</label>
+        </input>
+      </group>
+    </group>
+    <trigger ref="Take_From_GPS">
+      <label>{Take_From_GPS}</label>
+    </trigger>
   </xsl:template>
 
   <xsl:template name="body-expand-cols">
@@ -289,8 +392,8 @@
         </xsl:element>
         <trigger ref="Button_{name()}">
           <xsl:variable name="nodeName">Button_<xsl:value-of select="name()"/></xsl:variable>
-          <xsl:if test="$doWarn and ../*[name() = $nodeName]">
-            <xsl:comment>WARNING: View name is duplicated such that this UI schema is invalid.</xsl:comment>
+          <xsl:if test="../*[name() = $nodeName]">
+            <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
           </xsl:if>
           <label>{Button_<xsl:value-of select="name()"/>}</label>
         </trigger>
@@ -317,8 +420,8 @@
         </xsl:element>
         <trigger ref="Button_{name()}">
           <xsl:variable name="nodeName">Button_<xsl:value-of select="name()"/></xsl:variable>
-          <xsl:if test="$doWarn and ../*[name() = $nodeName]">
-            <xsl:comment>WARNING: View name is duplicated such that this UI schema is invalid.</xsl:comment>
+          <xsl:if test="../*[name() = $nodeName]">
+            <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
           </xsl:if>
           <label>{Button_<xsl:value-of select="name()"/>}</label>
         </trigger>
@@ -364,13 +467,13 @@
         </xsl:element>
         <trigger ref="Button_{name()}">
           <xsl:variable name="nodeName">Button_<xsl:value-of select="name()"/></xsl:variable>
-          <xsl:if test="$doWarn and ../*[name() = $nodeName]">
-            <xsl:comment>WARNING: View name is duplicated such that this UI schema is invalid.</xsl:comment>
+          <xsl:if test="../*[name() = $nodeName]">
+            <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
           </xsl:if>
           <label>{Button_<xsl:value-of select="name()"/>}</label>
         </trigger>
       </xsl:when>
-      <xsl:when test="normalize-space(@t)='gps'">
+      <xsl:when test="normalize-space(@t)='gpsdiag'">
         <xsl:element name="input">
           <xsl:attribute name="faims_read_only">true</xsl:attribute>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -484,14 +587,15 @@
 
   <xsl:template name="body-expand-view-standard-nodes">
     <xsl:attribute name="ref"><xsl:value-of select="name()"/></xsl:attribute>
-    <xsl:if test="@c">
+    <xsl:attribute name="faims_style_class"><xsl:value-of select="@c"/></xsl:attribute>
+    <xsl:if test="@c and not(contains(@f, 'notnull'))">
       <xsl:attribute name="faims_style_class"><xsl:value-of select="@c"/></xsl:attribute>
     </xsl:if>
     <xsl:if test="normalize-space(@t) != 'group' and
       normalize-space(@t) != 'button' and
       normalize-space(@t) != 'map' and
       normalize-space(@t) != 'webview' and
-      normalize-space(@t) != 'gps' and
+      normalize-space(@t) != 'gpsdiag' and
       not(ancestor-or-self::*[contains(@f, 'onlyui')])">
       <xsl:attribute name="faims_attribute_name">
         <xsl:call-template name="string-replace-all">
@@ -504,6 +608,9 @@
     <xsl:call-template name="parse-flags">
       <xsl:with-param name="flags" select="@f" />
     </xsl:call-template>
+    <xsl:if test="$doWarn and @c and contains(@f, 'notnull')">
+      <xsl:comment>WARNING: Style in c attribute not applied; styling conflicts exist due to "notnull" flag</xsl:comment>
+    </xsl:if>
     <xsl:call-template name="label" />
   </xsl:template>
 

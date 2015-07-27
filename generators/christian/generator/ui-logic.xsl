@@ -756,7 +756,7 @@ getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
 // generic get extra attributes
 getExtraAttributes(fetchedAttributes) {
   List extraAttributes = createAttributeList();
-  Log.d("PAZC Module", "Duplicating fetched attributes: " + fetchedAttributes.toString());
+  Log.d("Module", "Duplicating fetched attributes: " + fetchedAttributes.toString());
   for (savedAttribute : fetchedAttributes) {
     extraAttributes.add(createEntityAttribute(savedAttribute.get(0), savedAttribute.get(1), savedAttribute.get(2), savedAttribute.get(3), savedAttribute.get(4)));
   }
@@ -790,6 +790,106 @@ doNotDelete(){
       <xsl:value-of select="$newline"/>
     </xsl:for-each>
 
+    <!-- Search -->
+    <xsl:if test="/module/*/search">
+      <xsl:if test="count(/module/*/search) &gt; 1">
+        <xsl:text>// WARNING: More than one search tab found. Settting bindings for only the first.</xsl:text>
+      </xsl:if>
+      <xsl:text>
+/******************************************************************************/
+/*                                   SEARCH                                   */
+/******************************************************************************/
+onEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search"               , "show"  , "search();");
+onEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Entity_List"   , "click" , "loadEntity();");
+onEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Search_Button" , "click" , "search()");
+onEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Search_Term"   , "click" , "clearSearch()");
+</xsl:text>
+      <xsl:call-template name="search-entities" />
+      <xsl:text>
+clearSearch(){
+  setFieldValue("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Search_Term","");
+}
+
+search(){
+  String tabgroup = "</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>";
+  String refEntityList  = tabgroup + "/Search/Entity_List";
+  String refSearchTerm  = tabgroup + "/Search/Search_Term";
+  String refEntityTypes = tabgroup + "/Search/Entity_Types";
+
+</xsl:text>
+<xsl:if test="count(/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &lt; 2">
+  <xsl:text>  String type = "All";</xsl:text>
+</xsl:if>
+<xsl:if test="count(/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
+  <xsl:text>  String type = getFieldValue(refEntityTypes);</xsl:text>
+</xsl:if>
+<xsl:text>
+  String term = getFieldValue(refSearchTerm);
+  String searchQuery = "SELECT uuid, response "+
+                       "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
+                       " WHERE uuid in (SELECT uuid "+
+                       "                  FROM latestNonDeletedArchEntIdentifiers "+
+                       "                 WHERE attributename != 'Site Code' "+
+                       "                   AND measure LIKE '"+term+"'||'%'  "+
+                       "                   AND ( aenttypename LIKE '"+type+"' OR 'All' = '"+type+"' ) "+
+                       "                )  "+
+                       " ORDER BY response "+
+                       " LIMIT ? "+
+                       "OFFSET ? ";
+
+  populateCursorList(refEntityList, searchQuery, 25);
+  refreshTabgroupCSS(tabgroup);
+
+  Log.d("Boncuklu Module", "Search query: " + searchQuery);
+}
+
+loadEntity() {
+  loadEntityFrom(getListItemValue());
+}
+
+loadEntityFrom(String entityID) {
+  if (isNull(entityID)) {
+    Log.e("Module", "Cannot load an entity with a null ID.");
+    return;
+  }
+
+  String getEntTypeNameQ = "SELECT aenttypename " +
+                           "  FROM latestnondeletedarchent " +
+                           "  JOIN aenttype " +
+                           " USING (aenttypeid) " +
+                           " WHERE uuid = '" + entityID + "'";
+  fetchAll(getEntTypeNameQ, new FetchCallback() {
+    onFetch(result) {
+      String archEntName = result.get(0).get(0);
+      String loadFunction = "load" + archEntName.replaceAll(" ", "") + "From(entityID)"; // Typical value: loadContextFrom(entityID)
+      eval(loadFunction);
+    }
+  });
+}
+</xsl:text>
+      <xsl:value-of select="$newline"/>
+      <xsl:call-template name="load-entity-functions" />
+    </xsl:if>
+
+  </xsl:template>
+  <xsl:template name="load-entity-functions">
+    <xsl:for-each select="/module/*[not(contains(@f, 'onlyui'))]">
+      <xsl:text>load</xsl:text>
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+      <xsl:text>From(String uuid) {
+  String tabgroup = "</xsl:text><xsl:value-of select="name()"/><xsl:text>";
+  setUuid(tabgroup, null);
+  if (isNull(uuid)) return;
+
+  showTabGroup(tabgroup, uuid);
+}</xsl:text>
+      <xsl:value-of select="$newline"/>
+      <xsl:value-of select="$newline"/>
+    </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="tabgroup-new">
@@ -1117,8 +1217,34 @@ onEvent(userMenuPath, "select", "selectUser()");
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template name="search-entities">
+    <xsl:if test="count(/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
+      <xsl:text>onEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Entity_Types"  , "click" , "search()");</xsl:text>
+      <xsl:value-of select="$newline" />
+      <xsl:value-of select="$newline" />
+      <xsl:text>entityTypes = new ArrayList();</xsl:text>
+      <xsl:value-of select="$newline" />
+      <xsl:text>entityTypes.add(new NameValuePair("{All}", "All"));</xsl:text>
+      <xsl:value-of select="$newline" />
+      <xsl:for-each select="/module/*[not(contains(@f, 'onlyui'))]">
+        <xsl:text>entityTypes.add(new NameValuePair("{</xsl:text>
+        <xsl:value-of select="name()"/>
+        <xsl:text>}", "</xsl:text>
+        <xsl:call-template name="string-replace-all">
+          <xsl:with-param name="text" select="name()" />
+          <xsl:with-param name="replace" select="'_'" />
+          <xsl:with-param name="by" select="' '" />
+        </xsl:call-template>
+        <xsl:text>"));</xsl:text>
+        <xsl:value-of select="$newline" />
+      </xsl:for-each>
+      <xsl:text>populateDropDown("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Entity_Types", entityTypes);</xsl:text>
+      <xsl:value-of select="$newline" />
+    </xsl:if>
+  </xsl:template>
+
   <xsl:template name="gps-diag-ref">
-    <xsl:for-each select="//*[normalize-space(@t) = 'gps'][1]">
+    <xsl:for-each select="//*[normalize-space(@t) = 'gpsdiag'][1]">
       <xsl:call-template name="ref" />
     </xsl:for-each>
   </xsl:template>

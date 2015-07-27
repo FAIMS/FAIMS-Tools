@@ -2,12 +2,17 @@ TODO Warnings should be generated separately to the xml files
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema
-TODO Child relationships
-TODO Search?
-TODO Automate regression tests
+TODO Long/lat + "take gps" button
+     - UI logic
+.    - UI schema
+     - Data
+	   - Add error about duplicates
+		   count(..//Northing) &gt;= 1
+.    - Arch16n
 TODO Autonumbering
+TODO Automate regression tests
+TODO Child relationships
 TODO CSV to dataschema
-TODO make c attribute work properly with notnull flag's styling
 
 Quick Start
   1. Modify the example module.xml. If you see something there which you don't
@@ -60,7 +65,7 @@ Types
   - checkbox     <select>
   - dropdown     <select1>
   - file         <select type="file" faims_sync=true>
-  - gps          <input faims_read_only="true">
+  - gpsdiag      <input faims_read_only="true">
   - group        <group>
   - input        <input>
   - list         <select1 appearance="compact">
@@ -80,6 +85,8 @@ Naming Conventions and Reserved Element Names
     - <opts>     Options for, say, a dropdown menu
     - <rels>     Intended to be a direct child of <module> and hold
                  <RelationshipElement> tags
+    - <gps>      A set of fields including Latitude, Longitude, Northing,
+                 Easting and a "Take From GPS" button.
     - <search>   A tab for searching all records. Its text is used as a label.
     - <str>      Contains <formatString>-related data.
     - <pos>      When the child of a <str>, gives the position (order) of an
@@ -132,18 +139,21 @@ Labels
   has the label "Droopy Soup". Note that following and preceding whitespace is
   stripped.
 
-  If a label is not provided, it is inferred from the element's name. More
+  If a label is not provided, it is "inferred" from the element's name. More
   specifically, underscores in the element's name are replaced with whitespace,
   which becomes the element's label. Therefore, the element
       <Droopy_Soup t="input">
         <desc>Similar to drippy soup, but not quite...</desc>
       </Droopy_Soup>
-  has the same label as in the above example.
+  has the same label as in the above example. Therefore, the user will see
+  exactly the same thing in both cases. However, their representations in the
+  data and UI schemas, and the arch16n file will be different.
 
-  You are recommended to use this feature, as it encourages consistency between
-  the label, which the user sees, and the view's reference, which the programmer
-  sees. Note that it merely "encourages" consistency as the programmer can
-  change the corresponding, generated, arch16n (english.0.properties) entry.
+  You are recommended to use this "inference" feature, as it encourages
+  consistency between the label, which the user sees, and the view's reference,
+  which the programmer sees. Note that it merely "encourages" consistency as the
+  programmer can change the corresponding, generated, arch16n
+  (english.0.properties) entry.
 
 Generation of The arch16n File
   Labels and menu options (e.g. from checkboxes and dropdowns) have arch16n
@@ -155,9 +165,9 @@ Generation of The arch16n File
   The created arch16n entries are used in the generated UI and data schemas.
 
   It should be carefully noted that replacing characters as described above can
-  cause naming conflicts. For example, if the module contains the labels "I'm
-  cool!" and "I'm cool?", the generated arch16n file will contain the following
-  lines:
+  cause naming conflicts. For example, if the module.xml file contains the
+  labels "I'm cool!" and "I'm cool?", the generated arch16n file will contain
+  the following lines:
       I_m_cool_=I'm cool!
       I_m_cool_=I'm cool?
   Moreover, the programmer is not warned if such a conflict exists, as, in
@@ -179,6 +189,17 @@ Known Issues
       </module>
   Moreover, the programmer will not be warned about this and should expect un-
   expected behaviour.
+
+  Concerning the naming conventions used: one may notice that the distinction
+  between a type (i.e. t attribute) and a reserved element can be a bit
+  arbitrary---Even inconsistent, perhaps. For example, somewhat confusingly,
+  t="gpsdiag" is used to denote that a view is for GPS diagnostics, but <gps>
+  is used to denote a set of fields showing coordinates. The decision could have
+  been made to have, say, a t="gpsdiag" type for the former purpose and a
+  t="gps" flag for the latter. The rule of thumb which prevented this choice is
+  that the programmer should only be given freedom in choosing the element's
+  name if that name will have an influence on node names (and ref attributes)
+  and properties in the UI and/or data schemas, respectively.
 
 Grammar
   The empty string is denoted by a period (.), comments begin with hash symbols

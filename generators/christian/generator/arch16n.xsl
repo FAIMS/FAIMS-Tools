@@ -72,7 +72,9 @@
     </xsl:for-each>
     <!-- These are some entries mentioned in the staticly (as opposed to
          dynamically) generated portion of the UI schema -->
-<xsl:text>Accuracy=Accuracy
+      <xsl:text>
+Accuracy=Accuracy
+All=All
 Any_unsaved_changes_will_be_lost=Any unsaved changes will be lost
 Clean_Synced_Files=Clean synced files
 Confirm_Deletion=Confirm Deletion
@@ -113,6 +115,18 @@ Sync_Enabled=Sync enabled
 This_record_is_unsaved_and_cannot_be_duplicated=This record is unsaved and cannot be duplicated
 Validate=Validate
 Warning=Warning</xsl:text>
+    <!-- These are mentioned in the (semi-)statically generated portion of the
+         UI schema -->
+     <xsl:text>
+Easting=Easting
+Entity_List=Entity List
+Entity_Types=Entity Types
+Latitude=Latitude
+Longitude=Longitude
+Northing=Northing
+Search=Search
+Search_Term=Search Term
+Take_From_GPS=Take From GPS</xsl:text>
   </xsl:template>
 
   <!-- WARNING:  This template assumes $string contains at most 80

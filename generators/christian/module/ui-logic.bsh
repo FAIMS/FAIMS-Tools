@@ -454,11 +454,16 @@ saveTabGroup(String tabGroup, String callback) {
   saveTabGroup(tabGroup, id, geometry, attributes, saveCallback, enableAutosave);
 }
 
+onShowTest () {
+  // TODO: Add some things which should happen when this tab group is shown
+  saveTabGroup("Test");
+}
 onShowBurialMound () {
   // TODO: Add some things which should happen when this tab group is shown
   saveTabGroup("Burial_Mound");
 }
 
+onEvent("Test", "show", "onShowTest()");
 onEvent("Burial_Mound", "show", "onShowBurialMound()");
 
 onClickUserLogin () {
@@ -469,10 +474,6 @@ onClickControlTakeFeature () {
   // TODO: Add some things which should happen when this element is clicked
   newTab("Burial_Mound", true);
 }
-onClickControlResults () {
-  // TODO: Add some things which should happen when this element is clicked
-  newTab("Burial_Mound", true);
-}
 onClickBurialMoundCreateShapefile () {
   // TODO: Add some things which should happen when this element is clicked
   newTab("Control/Map", true);
@@ -480,7 +481,6 @@ onClickBurialMoundCreateShapefile () {
 
 onEvent("User/User/Login", "click", "onClickUserLogin()");
 onEvent("Control/Main/Take_Feature", "click", "onClickControlTakeFeature()");
-onEvent("Control/Records/Results", "click", "onClickControlResults()");
 onEvent("Burial_Mound/General/Create_Shapefile", "click", "onClickBurialMoundCreateShapefile()");
 
 
@@ -593,11 +593,61 @@ getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
 // generic get extra attributes
 getExtraAttributes(fetchedAttributes) {
   List extraAttributes = createAttributeList();
-  Log.d("PAZC Module", "Duplicating fetched attributes: " + fetchedAttributes.toString());
+  Log.d("Module", "Duplicating fetched attributes: " + fetchedAttributes.toString());
   for (savedAttribute : fetchedAttributes) {
     extraAttributes.add(createEntityAttribute(savedAttribute.get(0), savedAttribute.get(1), savedAttribute.get(2), savedAttribute.get(3), savedAttribute.get(4)));
   }
   return extraAttributes;
+}
+
+newTest(){
+  String tabgroup = "Test";
+  setUuid(tabgroup, null);
+  newTabGroup(tabgroup);
+}
+
+duplicateTest(){
+  String tabgroup = "Test";
+
+  saveCallback = new SaveCallback() {
+    onSave(uuid, newRecord) {
+      setUuid(tabgroup, uuid);
+
+      Boolean enable_autosave = true;
+      showToast("{Duplicated_record}");
+      dialog.dismiss();
+      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
+        onSave(autosaveUuid, autosaveNewRecord) {
+          setUuid(tabgroup, autosaveUuid);
+        }
+      }, enable_autosave);
+    }
+  };
+
+  String extraDupeAttributes = "";
+  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
+    onFetch(result) {
+      excludeAttributes = new ArrayList();
+
+      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
+    }
+  });
+}
+
+deleteTest(){
+  String tabgroup = "Test";
+
+  if (!isNull(getUuid(tabgroup))) {
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteTest()", "doNotDelete()");
+  } else {
+    cancelTabGroup(tabgroup, true);
+  }
+}
+
+reallyDeleteTest(){
+  String tabgroup = "Test";
+  deleteArchEnt(getUuid(tabgroup));
+  cancelTabGroup(tabgroup, false);
 }
 
 newBurialMound(){
@@ -666,4 +716,91 @@ doNotDelete(){
 }
 onEvent("User", "show", "removeNavigationButtons()");
 onEvent("Control", "show", "removeNavigationButtons()");
+onEvent("Test", "show", "addNavigationButtons(\"Test\")");
 onEvent("Burial_Mound", "show", "addNavigationButtons(\"Burial_Mound\")");
+
+/******************************************************************************/
+/*                                   SEARCH                                   */
+/******************************************************************************/
+onEvent("Control/Search"               , "show"  , "search();");
+onEvent("Control/Search/Entity_List"   , "click" , "loadEntity();");
+onEvent("Control/Search/Search_Button" , "click" , "search()");
+onEvent("Control/Search/Search_Term"   , "click" , "clearSearch()");
+onEvent("Control/Search/Entity_Types"  , "click" , "search()");
+
+entityTypes = new ArrayList();
+entityTypes.add(new NameValuePair("{All}", "All"));
+entityTypes.add(new NameValuePair("{Test}", "Test"));
+entityTypes.add(new NameValuePair("{Burial_Mound}", "Burial Mound"));
+populateDropDown("Control/Search/Entity_Types", entityTypes);
+
+clearSearch(){
+  setFieldValue("Control/Search/Search_Term","");
+}
+
+search(){
+  String tabgroup = "Control";
+  String refEntityList  = tabgroup + "/Search/Entity_List";
+  String refSearchTerm  = tabgroup + "/Search/Search_Term";
+  String refEntityTypes = tabgroup + "/Search/Entity_Types";
+
+  String type = getFieldValue(refEntityTypes);
+  String term = getFieldValue(refSearchTerm);
+  String searchQuery = "SELECT uuid, response "+
+                       "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
+                       " WHERE uuid in (SELECT uuid "+
+                       "                  FROM latestNonDeletedArchEntIdentifiers "+
+                       "                 WHERE attributename != 'Site Code' "+
+                       "                   AND measure LIKE '"+term+"'||'%'  "+
+                       "                   AND ( aenttypename LIKE '"+type+"' OR 'All' = '"+type+"' ) "+
+                       "                )  "+
+                       " ORDER BY response "+
+                       " LIMIT ? "+
+                       "OFFSET ? ";
+
+  populateCursorList(refEntityList, searchQuery, 25);
+  refreshTabgroupCSS(tabgroup);
+
+  Log.d("Boncuklu Module", "Search query: " + searchQuery);
+}
+
+loadEntity() {
+  loadEntityFrom(getListItemValue());
+}
+
+loadEntityFrom(String entityID) {
+  if (isNull(entityID)) {
+    Log.e("Module", "Cannot load an entity with a null ID.");
+    return;
+  }
+
+  String getEntTypeNameQ = "SELECT aenttypename " +
+                           "  FROM latestnondeletedarchent " +
+                           "  JOIN aenttype " +
+                           " USING (aenttypeid) " +
+                           " WHERE uuid = '" + entityID + "'";
+  fetchAll(getEntTypeNameQ, new FetchCallback() {
+    onFetch(result) {
+      String archEntName = result.get(0).get(0);
+      String loadFunction = "load" + archEntName.replaceAll(" ", "") + "From(entityID)"; // Typical value: loadContextFrom(entityID)
+      eval(loadFunction);
+    }
+  });
+}
+
+loadTestFrom(String uuid) {
+  String tabgroup = "Test";
+  setUuid(tabgroup, null);
+  if (isNull(uuid)) return;
+
+  showTabGroup(tabgroup, uuid);
+}
+
+loadBurialMoundFrom(String uuid) {
+  String tabgroup = "Burial_Mound";
+  setUuid(tabgroup, null);
+  if (isNull(uuid)) return;
+
+  showTabGroup(tabgroup, uuid);
+}
+
