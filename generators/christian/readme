@@ -2,7 +2,6 @@ TODO Warnings should be generated separately to the xml files
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema
-TODO Delete doesn't seem to work
 TODO timestamp, author
      - SELECT createdat, createdby FROM createdmodifiedatby WHERE uuid = ?
      - readonly, onlyui, parseflags
