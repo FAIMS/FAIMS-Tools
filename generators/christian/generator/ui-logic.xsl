@@ -906,8 +906,6 @@ loadEntityFrom(String entityID) {
     </xsl:if>
 
     <!-- Take From GPS Button -->
-    <xsl:for-each select="/module/*">
-    </xsl:for-each>
     <xsl:if test="/module/*/*/gps">
       <xsl:text>
 /******************************************************************************/
@@ -1145,7 +1143,7 @@ loadStartingId(String ref) {
       </xsl:call-template>
       <xsl:text>From(String uuid) {
   String tabgroup = "</xsl:text><xsl:value-of select="name()"/><xsl:text>";
-  setUuid(tabgroup, null);
+  setUuid(tabgroup, uuid);
   if (isNull(uuid)) return;
 
   showTabGroup(tabgroup, uuid);
@@ -1355,12 +1353,12 @@ loadStartingId(String ref) {
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$newline"/>
 <xsl:text>
-  if (!isNull(getUuid(tabgroup))) {
+  if (isNull(getUuid(tabgroup))) {
+    cancelTabGroup(tabgroup, true);
+  } else {
     showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDelete</xsl:text>
     <xsl:value-of select="$camelcase-tabgroup" />
-<xsl:text>()", "doNotDelete()");
-  } else {
-    cancelTabGroup(tabgroup, true);
+    <xsl:text>()", "doNotDelete()");
   }
 }
 </xsl:text>

@@ -5,9 +5,8 @@
                 xmlns:h  ="http://www.w3.org/1999/xhtml"
                 xmlns:jr ="http://openrosa.org/javarosa"
                 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                xmlns:saxon="http://saxon.sf.net/"
                 version="1.0">
-  <xsl:output method="xml" saxon:indent-spaces="2" indent="yes"/>
+  <xsl:output method="xml" indent="yes"/>
 
   <xsl:variable name="smallcase" select="'abcdefghijklmnopqrstuvwxyz'" />
   <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />

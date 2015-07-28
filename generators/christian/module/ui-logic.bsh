@@ -677,10 +677,10 @@ duplicateBurialMound(){
 deleteBurialMound(){
   String tabgroup = "Burial_Mound";
 
-  if (!isNull(getUuid(tabgroup))) {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteBurialMound()", "doNotDelete()");
-  } else {
+  if (isNull(getUuid(tabgroup))) {
     cancelTabGroup(tabgroup, true);
+  } else {
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteBurialMound()", "doNotDelete()");
   }
 }
 
@@ -762,7 +762,7 @@ loadEntityFrom(String entityID) {
 
 loadBurialMoundFrom(String uuid) {
   String tabgroup = "Burial_Mound";
-  setUuid(tabgroup, null);
+  setUuid(tabgroup, uuid);
   if (isNull(uuid)) return;
 
   showTabGroup(tabgroup, uuid);

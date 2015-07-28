@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:saxon="http://saxon.sf.net/" version="1.0">
-  <xsl:output method="xml" indent="yes" saxon:indent-spaces="2" cdata-section-elements="formatString appendCharacterString"/>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+  <xsl:output method="xml" indent="yes" cdata-section-elements="formatString appendCharacterString"/>
 
   <xsl:variable name="doWarn"           select="not(/module/@suppressWarnings = 'true')" />
   <xsl:key name="kDropdownOpt" match="*[@t='dropdown']/opts/opt" use="concat(name(ancestor::*[last()-1]), name(ancestor::*[last()-2]), name(ancestor::*[last()-3]), text())"/>

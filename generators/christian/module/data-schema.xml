@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dataSchema xmlns:saxon="http://saxon.sf.net/">
+<?xml version="1.0"?>
+<dataSchema>
   <ArchaeologicalElement name="Burial Mound">
     <description/>
     <property name="Object ID" isIdentifier="true" type="measure">
@@ -9,43 +9,32 @@
       <description/>
       <lookup>
         <term>{Burial_mound}
-<description/>
-        </term>
+<description/></term>
         <term>{Surface_concentration}
-<description/>
-        </term>
+<description/></term>
         <term>{Special_find}
-<description/>
-        </term>
+<description/></term>
         <term>{Standing_masonry}
-<description/>
-        </term>
+<description/></term>
         <term>{Earthwork}
-<description/>
-        </term>
+<description/></term>
         <term>{Unknown}
-<description/>
-        </term>
+<description/></term>
         <term>{Other}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Site Significance" type="vocab">
       <description>Assess the site's potential for our research objectives or for excavation. Add details in Recommendation at the end of this module.</description>
       <lookup>
         <term>{None}
-<description/>
-        </term>
+<description/></term>
         <term>{Low}
-<description/>
-        </term>
+<description/></term>
         <term>{Medium}
-<description/>
-        </term>
+<description/></term>
         <term>{High}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Name" type="measure">
@@ -58,163 +47,91 @@
       <description/>
       <lookup>
         <term>{Survey}
-<description/>
-        </term>
+<description/></term>
         <term>{Remote_sensing}
-<description/>
-        </term>
+<description/></term>
         <term>{Informant}
-<description/>
-        </term>
+<description/></term>
         <term>{Legacy_verification}
-<description/>
-        </term>
+<description/></term>
         <term>{Bibliography}
-<description/>
-        </term>
+<description/></term>
         <term>{Other}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Exists in Legacy" type="vocab">
       <description/>
       <lookup>
         <term>{Topo}
-<description/>
-        </term>
+<description/></term>
         <term>{Satellite_Image}
-<description/>
-        </term>
+<description/></term>
         <term>{Other}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Surrounding Landuse" type="vocab">
       <description/>
       <lookup>
         <term>{Annual_agriculture}
-<description/>
-          <term>{Ploughed}
-<description/>
-          </term>
-          <term>{Harrowed}
-<description/>
-          </term>
-          <term>{Seedlings}
-<description/>
-          </term>
-          <term>{Mature_crop}
-<description/>
-          </term>
-          <term>{Harvested}
-<description/>
-          </term>
-        </term>
+<description/><term>{Ploughed}
+<description/></term><term>{Harrowed}
+<description/></term><term>{Seedlings}
+<description/></term><term>{Mature_crop}
+<description/></term><term>{Harvested}
+<description/></term></term>
         <term>{Perennial}
-<description/>
-          <term>{Orchard}
-<description/>
-          </term>
-          <term>{Lavender}
-<description/>
-          </term>
-          <term>{Vineyard}
-<description/>
-          </term>
-        </term>
+<description/><term>{Orchard}
+<description/></term><term>{Lavender}
+<description/></term><term>{Vineyard}
+<description/></term></term>
         <term>{Other}
-<description/>
-          <term>{Meadow}
-<description/>
-          </term>
-          <term>{Beach}
-<description/>
-          </term>
-          <term>{Scrub}
-<description/>
-          </term>
-          <term>{Forest}
-<description/>
-          </term>
-          <term>{Other}
-<description/>
-          </term>
-        </term>
+<description/><term>{Meadow}
+<description/></term><term>{Beach}
+<description/></term><term>{Scrub}
+<description/></term><term>{Forest}
+<description/></term><term>{Other}
+<description/></term></term>
       </lookup>
     </property>
     <property name="Surface Landuse" type="vocab">
       <description/>
       <lookup>
         <term>{Annual_agriculture}
-<description/>
-          <term>{Ploughed}
-<description/>
-          </term>
-          <term>{Harrowed}
-<description/>
-          </term>
-          <term>{Seedlings}
-<description/>
-          </term>
-          <term>{Mature_crop}
-<description/>
-          </term>
-          <term>{Harvested}
-<description/>
-          </term>
-        </term>
+<description/><term>{Ploughed}
+<description/></term><term>{Harrowed}
+<description/></term><term>{Seedlings}
+<description/></term><term>{Mature_crop}
+<description/></term><term>{Harvested}
+<description/></term></term>
         <term>{Perennial}
-<description/>
-          <term>{Orchard}
-<description/>
-          </term>
-          <term>{Lavender}
-<description/>
-          </term>
-          <term>{Vineyard}
-<description/>
-          </term>
-        </term>
+<description/><term>{Orchard}
+<description/></term><term>{Lavender}
+<description/></term><term>{Vineyard}
+<description/></term></term>
         <term>{Other}
-<description/>
-          <term>{Meadow}
-<description/>
-          </term>
-          <term>{Beach}
-<description/>
-          </term>
-          <term>{Scrub}
-<description/>
-          </term>
-          <term>{Forest}
-<description/>
-          </term>
-          <term>{Other}
-<description/>
-          </term>
-        </term>
+<description/><term>{Meadow}
+<description/></term><term>{Beach}
+<description/></term><term>{Scrub}
+<description/></term><term>{Forest}
+<description/></term><term>{Other}
+<description/></term></term>
       </lookup>
     </property>
     <property name="Visibility" type="vocab">
       <description/>
       <lookup>
         <term>{0_20_}
-<description/>
-        </term>
+<description/></term>
         <term>{20_40_}
-<description/>
-        </term>
+<description/></term>
         <term>{40_60_}
-<description/>
-        </term>
+<description/></term>
         <term>{60_80_}
-<description/>
-        </term>
+<description/></term>
         <term>{80_100_}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Elevation" type="measure">
@@ -226,20 +143,19 @@
     <property name="General Photo" type="file" file="true" thumbnail="true">
       <description>Take 1 general overview shot that includes the complete feature profile, and a scale. Include direction in the Annotation (from which direction was the image taken)</description>
     </property>
-    <property name="Profile" type="vocab"><!--WARNING: A set of <opts> tags are expected but not present--><description/>
+    <property name="Profile" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
     </property>
     <property name="Plan" type="vocab">
       <description/>
       <lookup>
         <term>{Circular}
-<description/>
-        </term>
+<description/></term>
         <term>{Elipsoid}
-<description/>
-        </term>
+<description/></term>
         <term>{Uneven}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Length Max" type="measure">
@@ -282,11 +198,9 @@
       <description/>
       <lookup>
         <term>{Yes}
-<description/>
-        </term>
+<description/></term>
         <term>{No}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Stone Feature Description" type="measure">
@@ -296,17 +210,13 @@
       <description/>
       <lookup>
         <term>{zero}
-<description/>
-        </term>
+<description/></term>
         <term>{scarce}
-<description/>
-        </term>
+<description/></term>
         <term>{medium}
-<description/>
-        </term>
+<description/></term>
         <term>{high}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Surface Material Description" type="measure">
@@ -316,11 +226,9 @@
       <description/>
       <lookup>
         <term>{Yes}
-<description/>
-        </term>
+<description/></term>
         <term>{No}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Material Photo" type="file" file="true" thumbnail="true">
@@ -330,101 +238,62 @@
       <description/>
       <lookup>
         <term>{undisturbed}
-<description/>
-        </term>
+<description/></term>
         <term>{surface_sediment_disturbed}
-<description/>
-        </term>
+<description/></term>
         <term>{subsurface_disturbed}
-<description/>
-        </term>
+<description/></term>
         <term>{totally_disturbed}
-<description/>
-        </term>
+<description/></term>
         <term>{unknown}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Disturbance Factors" type="vocab">
       <description/>
       <lookup>
         <term>{anthropic}
-<description/>
-        </term>
+<description/></term>
         <term>{animal_activity}
-<description/>
-        </term>
+<description/></term>
         <term>{post_depositional}
-<description/>
-        </term>
+<description/></term>
         <term>{topographic}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Principal Factors" type="vocab">
       <description>Select one factor that contributes to most visible damage</description>
       <lookup>
         <term>{Anthropic}
-<description/>
-          <term>{Agricultural}
-<description/>
-          </term>
-          <term>{Looting}
-<description/>
-          </term>
-          <term>{Development}
-<description/>
-          </term>
-        </term>
+<description/><term>{Agricultural}
+<description/></term><term>{Looting}
+<description/></term><term>{Development}
+<description/></term></term>
         <term>{Post_depositional}
-<description/>
-          <term>{Mound_geomorphology}
-<description/>
-          </term>
-          <term>{Erosion}
-<description/>
-          </term>
-          <term>{Wind_damage}
-<description/>
-          </term>
-          <term>{Water_damage}
-<description/>
-          </term>
-          <term>{Age}
-<description/>
-          </term>
-        </term>
+<description/><term>{Mound_geomorphology}
+<description/></term><term>{Erosion}
+<description/></term><term>{Wind_damage}
+<description/></term><term>{Water_damage}
+<description/></term><term>{Age}
+<description/></term></term>
         <term>{Topographic}
-<description/>
-          <term>{Aspect}
-<description/>
-          </term>
-          <term>{Slope}
-<description/>
-          </term>
-          <term>{Exposure}
-<description/>
-          </term>
-          <term>{Hydrology}
-<description/>
-          </term>
-        </term>
+<description/><term>{Aspect}
+<description/></term><term>{Slope}
+<description/></term><term>{Exposure}
+<description/></term><term>{Hydrology}
+<description/></term></term>
       </lookup>
     </property>
     <property name="Age of Damage" type="vocab">
       <description/>
       <lookup>
         <term>{Remote}
-<description/>
-        </term>
+<description/></term>
         <term>{Recent}
-<description/>
-        </term>
+<description/></term>
         <term>{Fresh}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Disturbance Description" type="measure">
@@ -434,28 +303,25 @@
       <description/>
       <lookup>
         <term>{Basic_pit}
-<description/>
-        </term>
+<description/></term>
         <term>{Trench}
-<description/>
-        </term>
+<description/></term>
         <term>{Tunnel}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="RT Method" type="vocab">
       <description/>
       <lookup>
         <term>{Manual}
-<description/>
-        </term>
+<description/></term>
         <term>{Mechanized}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
-    <property name="RT Frequency" type="vocab"><!--WARNING: A set of <opts> tags are expected but not present--><description/>
+    <property name="RT Frequency" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
     </property>
     <property name="RT Description" type="measure">
       <description/>
@@ -464,75 +330,55 @@
       <description/>
       <lookup>
         <term>{_10_}
-<description/>
-        </term>
+<description/></term>
         <term>{10_20_}
-<description/>
-        </term>
+<description/></term>
         <term>{20_30_}
-<description/>
-        </term>
+<description/></term>
         <term>{30_40_}
-<description/>
-        </term>
+<description/></term>
         <term>{40_40_}
-<description/>
-        </term>
+<description/></term>
         <term>{50_40_}
-<description/>
-        </term>
+<description/></term>
         <term>{60_40_}
-<description/>
-        </term>
+<description/></term>
         <term>{70_40_}
-<description/>
-        </term>
+<description/></term>
         <term>{80_40_}
-<description/>
-        </term>
+<description/></term>
         <term>{90_100_}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Affect" type="vocab">
       <description>1=0-20% of the entire feature is missing or disrupted, 5= 80-100% of the feature's surface is missing or disrupted</description>
       <lookup>
         <term>{1}
-<description/>
-        </term>
+<description/></term>
         <term>{2}
-<description/>
-        </term>
+<description/></term>
         <term>{3}
-<description/>
-        </term>
+<description/></term>
         <term>{4}
-<description/>
-        </term>
+<description/></term>
         <term>{5}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Impact" type="vocab">
       <description>1= context is nearly intact; 5 = original context of the feature is nearly all destroyed</description>
       <lookup>
         <term>{1}
-<description/>
-        </term>
+<description/></term>
         <term>{2}
-<description/>
-        </term>
+<description/></term>
         <term>{3}
-<description/>
-        </term>
+<description/></term>
         <term>{4}
-<description/>
-        </term>
+<description/></term>
         <term>{5}
-<description/>
-        </term>
+<description/></term>
       </lookup>
     </property>
     <property name="Comments and Recommendations" type="measure">
