@@ -757,9 +757,7 @@
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>{</xsl:text>
-            <xsl:call-template name="string-to-arch16n-line">
-              <xsl:with-param name="string" select="name()" />
-            </xsl:call-template>
+            <xsl:with-param name="string" select="name()" />
             <xsl:text>}</xsl:text>
             <!--<xsl:if test="$doWarn">-->
               <!--<xsl:comment>WARNING: Label not given; automatically generated from element name</xsl:comment>-->
