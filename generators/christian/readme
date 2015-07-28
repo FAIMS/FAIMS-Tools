@@ -2,6 +2,8 @@ TODO Warnings should be generated separately to the xml files
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema
+TODO Delete doesn't seem to work
+TODO TAKE FROM GPS: 909
 TODO timestamp, author
      - SELECT createdat, createdby FROM createdmodifiedatby WHERE uuid = ?
      - readonly, onlyui, parseflags
@@ -16,7 +18,8 @@ Quick Start
   1. Modify the example module.xml. If you see something there which you don't
      understand, check this file.
   2. Run `./generate.sh`
-  3. Collect your new shiny new module from the 'module' directory.
+  3. Collect your new shiny new module from the 'module' directory and your
+     shiny new wireframe from the 'wireframe' directory.
 
 Attributes
   b                  Binding (See 'Bindings')

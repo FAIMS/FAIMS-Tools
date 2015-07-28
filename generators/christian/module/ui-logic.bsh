@@ -616,7 +616,7 @@ newBurialMound(){
   String autoNumSource = "";
   autoNumSource = getFieldValue("Control/Main/Next_Object_ID");
   if (isNull(autoNumSource)) {
-    showWarning("{Alert}","{No_initial_ID_is_entered_please_enter_one}");
+    showWarning("{Alert}","{A_next_ID_has_not_been_entered_please_provide_one}");
     return;
   }
 
