@@ -25,8 +25,8 @@
 <Burial_Mound>
   <General>
     <Object_ID d="decimal" f="id notnull autonum"/>
-    <Timestamp f="onlyui"/>
-    <Author f="onlyui"/>
+    <timestamp/>
+    <author/>
     <Type t="dropdown">
       <opts>
         <opt>Burial mound</opt>

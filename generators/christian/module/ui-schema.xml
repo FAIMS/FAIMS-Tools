@@ -223,13 +223,11 @@
           <label>{Object_ID}</label>
           <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <input ref="Timestamp">
+        <input ref="Timestamp" faims_read_only="true">
           <label>{Timestamp}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <input ref="Author">
+        <input ref="Author" faims_read_only="true">
           <label>{Author}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
         <select1 faims_attribute_type="vocab" ref="Type" faims_attribute_name="Type">
           <label>{Type}</label>

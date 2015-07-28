@@ -29,9 +29,9 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Burial_Mound_General_Object_ID "Object ID" input 1 false false true true false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Timestamp "Timestamp" input 1 false false false false false wireframeImages/
+  ./makeElement.sh Burial_Mound_General_Timestamp "Timestamp" input 1 false false false false true wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Author "Author" input 1 false false false false false wireframeImages/
+  ./makeElement.sh Burial_Mound_General_Author "Author" input 1 false false false false true wireframeImages/
   
   ./makeElement.sh Burial_Mound_General_Type "Type" dropdown 1 false false true false false wireframeImages/
   

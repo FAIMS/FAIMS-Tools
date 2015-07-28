@@ -82,7 +82,7 @@
             </xsl:if>
             <xsl:element name="{name()}">
               <xsl:for-each select="*">                         <!-- Iterate over GUI elements -->
-                <xsl:call-template name="model-expand-cols-or-view"/>
+                <xsl:call-template name="model-expand-reserved-or-view"/>
               </xsl:for-each>
             </xsl:element>
           </xsl:if>
@@ -198,7 +198,7 @@
     </xsl:for-each>
   </xsl:template>
 
-  <xsl:template name="model-expand-cols-or-view">
+  <xsl:template name="model-expand-reserved-or-view">
     <xsl:choose>
       <xsl:when test="name() = 'author'">
         <xsl:call-template name="model-expand-author" />
@@ -212,6 +212,9 @@
       <xsl:when test="name() = 'gps'">
         <xsl:call-template name="model-expand-gps" />
       </xsl:when>
+      <xsl:when test="name() = 'timestamp'">
+        <xsl:call-template name="model-expand-timestamp" />
+      </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="model-expand-view" />
       </xsl:otherwise>
@@ -219,9 +222,11 @@
   </xsl:template>
 
   <xsl:template name="model-expand-author">
-    <input ref="Author" faims_read_only="true">
-      <xsl:call-template name="label" />
-    </input>
+    <Author/>
+  </xsl:template>
+
+  <xsl:template name="model-expand-timestamp">
+    <Timestamp/>
   </xsl:template>
 
   <xsl:template name="model-expand-autonum">
@@ -398,6 +403,9 @@
 
   <xsl:template name="body-expand-reserved-or-view">
     <xsl:choose>
+      <xsl:when test="name(.) = 'author'">
+        <xsl:call-template name="body-expand-author" />
+      </xsl:when>
       <xsl:when test="name(.) = 'autonum'">
         <xsl:call-template name="body-expand-autonum" />
       </xsl:when>
@@ -407,10 +415,25 @@
       <xsl:when test="name(.) = 'cols'">
         <xsl:call-template name="body-expand-cols" />
       </xsl:when>
+      <xsl:when test="name(.) = 'timestamp'">
+        <xsl:call-template name="body-expand-timestamp" />
+      </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="body-expand-view" />
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="body-expand-author">
+    <input ref="Author" faims_read_only="true">
+      <label>{Author}</label>
+    </input>
+  </xsl:template>
+
+  <xsl:template name="body-expand-timestamp">
+    <input ref="Timestamp" faims_read_only="true">
+      <label>{Timestamp}</label>
+    </input>
   </xsl:template>
 
   <xsl:template name="body-expand-autonum">
@@ -757,7 +780,7 @@
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>{</xsl:text>
-            <xsl:with-param name="string" select="name()" />
+            <xsl:value-of select="name()" />
             <xsl:text>}</xsl:text>
             <!--<xsl:if test="$doWarn">-->
               <!--<xsl:comment>WARNING: Label not given; automatically generated from element name</xsl:comment>-->

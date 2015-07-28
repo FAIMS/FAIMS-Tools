@@ -38,6 +38,7 @@
 <arch16n k="{Area_Min}"><![CDATA[Area Min]]></arch16n>
 <arch16n k="{Aspect}"><![CDATA[Aspect]]></arch16n>
 <arch16n k="{Attach_A_Sketch}"><![CDATA[Attach A Sketch]]></arch16n>
+<arch16n k="{author}"><![CDATA[author]]></arch16n>
 <arch16n k="{Author}"><![CDATA[Author]]></arch16n>
 <arch16n k="{Basic_pit}"><![CDATA[Basic pit]]></arch16n>
 <arch16n k="{Beach}"><![CDATA[Beach]]></arch16n>
@@ -191,6 +192,7 @@
 <arch16n k="{Take_Feature}"><![CDATA[Take Feature]]></arch16n>
 <arch16n k="{Take_From_GPS}"><![CDATA[Take From GPS]]></arch16n>
 <arch16n k="{This_record_is_unsaved_and_cannot_be_duplicated}"><![CDATA[This record is unsaved and cannot be duplicated]]></arch16n>
+<arch16n k="{timestamp}"><![CDATA[timestamp]]></arch16n>
 <arch16n k="{Timestamp}"><![CDATA[Timestamp]]></arch16n>
 <arch16n k="{topographic}"><![CDATA[topographic]]></arch16n>
 <arch16n k="{Topographic}"><![CDATA[Topographic]]></arch16n>

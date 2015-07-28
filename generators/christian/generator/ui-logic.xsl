@@ -494,18 +494,19 @@ setUuid(String tabgroup, String uuid) {
   tabgroupToUuid.put(tabgroup, uuid);
 }
 
-saveTabGroup(String tabGroup) {
-  saveTabGroup(tabGroup, "");
+saveTabGroup(String tabgroup) {
+  saveTabGroup(tabgroup, "");
 }
 
-saveTabGroup(String tabGroup, String callback) {
+saveTabGroup(String tabgroup, String callback) {
   Boolean enableAutosave = true;
-  String  id             = getUuid(tabGroup);
+  String  id             = getUuid(tabgroup);
   List    geometry       = null;
   List    attributes     = null;
   SaveCallback saveCallback  = new SaveCallback() {
     onSave(uuid, newRecord) {
-      setUuid(tabGroup, uuid);
+      setUuid(tabgroup, uuid);
+      populateAuthorAndTimestamp(tabgroup);
       execute(callback);
     }
     onError(message) {
@@ -513,7 +514,40 @@ saveTabGroup(String tabGroup, String callback) {
     }
   };
 
-  saveTabGroup(tabGroup, id, geometry, attributes, saveCallback, enableAutosave);
+  populateAuthorAndTimestamp(tabgroup);
+  saveTabGroup(tabgroup, id, geometry, attributes, saveCallback, enableAutosave);
+}
+
+populateAuthorAndTimestamp(String tabgroup) {
+  Map tabgroupToAuthor    = new HashMap();
+  Map tabgroupToTimestamp = new HashMap();
+
+</xsl:text>
+    <xsl:call-template name="populate-author" />
+    <xsl:call-template name="populate-timestamp" />
+<xsl:text>
+  String authorPath    = tabgroupToAuthor.get(tabgroup);
+  String timestampPath = tabgroupToTimestamp.get(tabgroup);
+  String uuid = getUuid(tabgroup);
+  if (isNull(uuid)) {
+    if (!isNull(authorPath))
+      setFieldValue(authorPath,    "Entity not yet saved");
+    if (!isNull(timestampPath))
+      setFieldValue(timestampPath, "Entity not yet saved");
+    return;
+  }
+
+  String q = "SELECT createdat, createdby " +
+             "  FROM createdmodifiedatby " +
+             " WHERE uuid = '" + uuid + "'";
+  FetchCallback callback = new FetchCallback() {
+    onFetch(result) {
+      setFieldValue(timestampPath, result.get(0));
+      setFieldValue(authorPath,    result.get(1));
+    }
+  };
+
+  fetchOne(q, callback);
 }
 
 </xsl:text>
@@ -1058,6 +1092,34 @@ loadStartingId(String ref) {
 
   </xsl:template>
 
+  <xsl:template name="populate-author">
+    <xsl:for-each select="//author">
+      <xsl:text>  tabgroupToAuthor.put("</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])" />
+      <xsl:text>", "</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])" />
+      <xsl:text>/</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-2])" />
+      <xsl:text>/Author</xsl:text>
+      <xsl:text>");</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="populate-timestamp">
+    <xsl:for-each select="//timestamp">
+      <xsl:text>  tabgroupToTimestamp.put("</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])" />
+      <xsl:text>", "</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])" />
+      <xsl:text>/</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-2])" />
+      <xsl:text>/Timestamp</xsl:text>
+      <xsl:text>");</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:for-each>
+  </xsl:template>
+
   <xsl:template name="incautonum">
     <xsl:text>incAutoNum(String destPath) {</xsl:text>
     <xsl:value-of select="$newline"/>
@@ -1256,6 +1318,7 @@ loadStartingId(String ref) {
   saveCallback = new SaveCallback() {
     onSave(uuid, newRecord) {
       setUuid(tabgroup, uuid);
+      populateAuthorAndTimestamp(tabgroup);
 
       Boolean enable_autosave = true;
       showToast("{Duplicated_record}");

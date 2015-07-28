@@ -88,10 +88,12 @@
     <!-- These are some entries mentioned in the staticly (as opposed to
          dynamically) generated portion of the UI schema -->
       <xsl:text>
+A_next_ID_has_not_been_entered_please_provide_one=A next ID has not been entered. Please provide one.
 Accuracy=Accuracy
 Alert=Alert
 All=All
 Any_unsaved_changes_will_be_lost=Any unsaved changes will be lost
+Author=Author
 Clean_Synced_Files=Clean synced files
 Confirm_Deletion=Confirm Deletion
 Delete=Delete
@@ -122,7 +124,6 @@ Longitude=Longitude
 Longitude=Longitude
 New=New
 New_record_created=New record created
-A_next_ID_has_not_been_entered_please_provide_one=A next ID has not been entered. Please provide one.
 Northing=Northing
 Northing=Northing
 Please_Enable_Bluetooth=Please enable bluetooth
@@ -135,13 +136,15 @@ Sync_Disabled=Sync disabled
 Sync_Enabled=Sync enabled
 Take_From_GPS=Take From GPS
 This_record_is_unsaved_and_cannot_be_duplicated=This record is unsaved and cannot be duplicated
+Timestamp=Timestamp
 Validate=Validate
 Warning=Warning
 no_GPS_position_could_be_found=no GPS position could be found
 off=off
 on=on
 on_and_bluetooth_connected=on and bluetooth connected
-on_and_bluetooth_disconnected=on and bluetooth disconnected</xsl:text>
+on_and_bluetooth_disconnected=on and bluetooth disconnected
+</xsl:text>
   </xsl:template>
 
   <!-- WARNING:  This template assumes $string contains at most 80
