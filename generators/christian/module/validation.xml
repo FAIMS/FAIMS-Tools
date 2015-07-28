@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ValidationSchema>
   <ArchaeologicalElement name="Burial_Mound">
     <property name="Object ID">
