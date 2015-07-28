@@ -5,6 +5,7 @@ proc1="xsltproc"    # Lord, forgive me
 proc2="saxonb-xslt"
 
 mkdir -p module
+mkdir -p wireframe
 
 $proc1 generator/arch16n.xsl     module.xml | sort | uniq >module/english.0.properties
 $proc1 generator/data-schema.xsl module.xml               >module/data-schema.xml
