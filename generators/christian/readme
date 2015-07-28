@@ -2,19 +2,14 @@ TODO Warnings should be generated separately to the xml files
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema
-TODO Consider replacing the l and p attributes with a single l attrib
-TODO Consider replacing the b and f attributes with a single f attrib
-TODO Autonumbering
-       - autonum element
-           - UI Logic
-           - UI schema
-           - arch16n
-       - autonum flag
-           - UI logic
-           - ui schema
-               - Parse flags
-TODO Automate regression tests
+TODO timestamp, author
+     - SELECT createdat, createdby FROM createdmodifiedatby WHERE uuid = ?
+     - readonly, onlyui, parseflags
+     - ui logic
+     - ui schema
+     - Print "unsaved"
 TODO Child relationships
+TODO Automate regression tests
 TODO CSV to dataschema
 
 Quick Start
@@ -97,6 +92,8 @@ Reserved Element Names and Recommended Naming Conventions
     - <fmt>      When the child of a <str>, contains <formatString> data.
     - <app>      When the child of a <str>, contains <appendCharacterString>
                  data.
+    - <author>
+    - <timestamp>
   User-defined elements should start with an upper case letter and use
   underscores as separators:
     - <My_User_Defined_Element t="dropdown" />

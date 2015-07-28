@@ -1,11 +1,5 @@
 <?xml version="1.0"?>
 <dataSchema>
-  <ArchaeologicalElement name="Test">
-    <description/>
-    <property name="Test" isIdentifier="true" type="measure">
-      <description/>
-    </property>
-  </ArchaeologicalElement>
   <ArchaeologicalElement name="Burial Mound">
     <description/>
     <property name="Object ID" isIdentifier="true" type="measure">

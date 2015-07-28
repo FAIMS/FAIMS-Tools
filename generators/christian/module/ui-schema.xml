@@ -25,7 +25,7 @@
           <Control>
             <Main>
               <Take_Feature/>
-              <Object_Starting_ID/>
+              <Next_Object_ID/>
               <GPS_Diagnostics/>
             </Main>
             <Search>
@@ -37,18 +37,12 @@
                   <Search_Button/>
                 </Col_1>
               </Colgroup_0>
-              <Entity_Types/>
               <Entity_List/>
             </Search>
             <Map>
               <Map/>
             </Map>
           </Control>
-          <Test>
-            <Test>
-              <Test/>
-            </Test>
-          </Test>
           <Burial_Mound>
             <General>
               <Object_ID/>
@@ -133,6 +127,8 @@
           </Burial_Mound>
         </faims>
       </instance>
+      <bind type="decimal" nodeset="/faims/Control/Main/Next_Object_ID"/>
+      <bind type="decimal" nodeset="/faims/Burial_Mound/General/Object_ID"/>
     </model>
   </h:head>
   <h:body>
@@ -161,14 +157,14 @@
       <label>{User}</label>
       <group ref="User">
         <label>{User}</label>
-        <select1 ref="Select_User" faims_style_class="">
+        <select1 ref="Select_User">
           <label>{Select_User}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <trigger ref="Login" faims_style_class="">
+        <trigger ref="Login">
           <label>{Login}</label>
         </trigger>
       </group>
@@ -177,14 +173,13 @@
       <label>{Control}</label>
       <group ref="Main">
         <label>{Main}</label>
-        <trigger ref="Take_Feature" faims_style_class="">
+        <trigger ref="Take_Feature">
           <label>{Take_Feature}</label>
         </trigger>
-        <input ref="Object_Starting_ID" faims_style_class="">
-          <label>{Object_Starting_ID}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+        <input ref="Next_Object_ID" faims_style_class="required">
+          <label>{Next_Object_ID}</label>
         </input>
-        <input faims_read_only="true" ref="GPS_Diagnostics" faims_style_class="">
+        <input faims_read_only="true" ref="GPS_Diagnostics">
           <label>{GPS_Diagnostics}</label>
         </input>
       </group>
@@ -205,13 +200,6 @@
             </trigger>
           </group>
         </group>
-        <select1 ref="Entity_Types">
-          <label>{Entity_Types}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>Options not loaded</value>
-          </item>
-        </select1>
         <select1 appearance="compact" ref="Entity_List">
           <label>{Entity_List}</label>
           <item>
@@ -222,18 +210,8 @@
       </group>
       <group ref="Map" faims_scrollable="false">
         <label>{Map}</label>
-        <input faims_map="true" ref="Map" faims_style_class="">
+        <input faims_map="true" ref="Map">
           <label>{Map}</label>
-        </input>
-      </group>
-    </group>
-    <group ref="Test" faims_archent_type="Test">
-      <label>{Test}</label>
-      <group ref="Test">
-        <label>{Test}</label>
-        <input faims_attribute_type="measure" ref="Test" faims_style_class="" faims_attribute_name="Test">
-          <label>{Test}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
         </input>
       </group>
     </group>
@@ -241,69 +219,69 @@
       <label>{Burial_Mound}</label>
       <group ref="General">
         <label>{General}</label>
-        <input faims_attribute_type="measure" ref="Object_ID" faims_style_class="required" faims_attribute_name="Object ID">
+        <input faims_attribute_type="measure" ref="Object_ID" faims_attribute_name="Object ID" faims_style_class="required">
           <label>{Object_ID}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <input ref="Timestamp" faims_style_class="">
+        <input ref="Timestamp">
           <label>{Timestamp}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <input ref="Author" faims_style_class="">
+        <input ref="Author">
           <label>{Author}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <select1 faims_attribute_type="vocab" ref="Type" faims_style_class="" faims_attribute_name="Type">
+        <select1 faims_attribute_type="vocab" ref="Type" faims_attribute_name="Type">
           <label>{Type}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <select1 faims_attribute_type="vocab" ref="Site_Significance" faims_style_class="" faims_attribute_name="Site Significance">
+        <select1 faims_attribute_type="vocab" ref="Site_Significance" faims_attribute_name="Site Significance">
           <label>{Site_Significance}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <input faims_attribute_type="measure" ref="Name" faims_style_class="" faims_attribute_name="Name">
+        <input faims_attribute_type="measure" ref="Name" faims_attribute_name="Name">
           <label>{Name}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <input faims_attribute_type="measure" ref="Description" faims_style_class="" faims_attribute_name="Description">
+        <input faims_attribute_type="measure" ref="Description" faims_attribute_name="Description">
           <label>{Description}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <select1 faims_attribute_type="vocab" ref="Source" faims_style_class="" faims_attribute_name="Source">
+        <select1 faims_attribute_type="vocab" ref="Source" faims_attribute_name="Source">
           <label>{Source}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <select faims_attribute_type="vocab" ref="Exists_in_Legacy" faims_style_class="" faims_attribute_name="Exists in Legacy">
+        <select faims_attribute_type="vocab" ref="Exists_in_Legacy" faims_attribute_name="Exists in Legacy">
           <label>{Exists_in_Legacy}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select>
-        <select1 faims_attribute_type="vocab" ref="Surrounding_Landuse" faims_style_class="" faims_attribute_name="Surrounding Landuse">
+        <select1 faims_attribute_type="vocab" ref="Surrounding_Landuse" faims_attribute_name="Surrounding Landuse">
           <label>{Surrounding_Landuse}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <select1 faims_attribute_type="vocab" ref="Surface_Landuse" faims_style_class="" faims_attribute_name="Surface Landuse">
+        <select1 faims_attribute_type="vocab" ref="Surface_Landuse" faims_attribute_name="Surface Landuse">
           <label>{Surface_Landuse}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <select1 faims_attribute_type="vocab" ref="Visibility" faims_style_class="" faims_attribute_name="Visibility">
+        <select1 faims_attribute_type="vocab" ref="Visibility" faims_attribute_name="Visibility">
           <label>{Visibility}</label>
           <item>
             <label>Options not loaded</label>
@@ -334,18 +312,18 @@
         <trigger ref="Take_From_GPS">
           <label>{Take_From_GPS}</label>
         </trigger>
-        <input faims_attribute_type="measure" ref="Elevation" faims_style_class="" faims_attribute_name="Elevation">
+        <input faims_attribute_type="measure" ref="Elevation" faims_attribute_name="Elevation">
           <label>{Elevation__MASL_}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <input faims_attribute_type="measure" ref="General_Notes" faims_style_class="" faims_attribute_name="General Notes">
+        <input faims_attribute_type="measure" ref="General_Notes" faims_attribute_name="General Notes">
           <label>{General_Notes}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <trigger ref="Create_Shapefile" faims_style_class="">
+        <trigger ref="Create_Shapefile">
           <label>{Create_Shapefile}</label>
         </trigger>
-        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="General_Photo" faims_style_class="" faims_attribute_name="General Photo">
+        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="General_Photo" faims_attribute_name="General Photo">
           <label>{General_Photo}</label>
           <item>
             <label>Options not loaded</label>
@@ -358,14 +336,14 @@
       </group>
       <group ref="Dimensions">
         <label>{Dimensions}</label>
-        <select1 type="image" faims_attribute_type="vocab" ref="Profile" faims_style_class="" faims_attribute_name="Profile">
+        <select1 type="image" faims_attribute_type="vocab" ref="Profile" faims_attribute_name="Profile">
           <label>{Profile}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <select1 type="image" faims_attribute_type="vocab" ref="Plan" faims_style_class="" faims_attribute_name="Plan">
+        <select1 type="image" faims_attribute_type="vocab" ref="Plan" faims_attribute_name="Plan">
           <label>{Plan}</label>
           <item>
             <label>Options not loaded</label>
@@ -376,52 +354,52 @@
           <label/>
           <group ref="Col_0" faims_style="even">
             <label/>
-            <input faims_attribute_type="measure" ref="Length_Max" faims_style_class="" faims_attribute_name="Length Max">
+            <input faims_attribute_type="measure" ref="Length_Max" faims_attribute_name="Length Max">
               <label>{Length_Max}</label>
-              <!--WARNING: No type t was given for this view; assuming it is an input.-->
+              <!--WARNING: No type t was given for this view; assuming it is an input-->
             </input>
-            <input faims_attribute_type="measure" ref="Width_Max" faims_style_class="" faims_attribute_name="Width Max">
+            <input faims_attribute_type="measure" ref="Width_Max" faims_attribute_name="Width Max">
               <label>{Width_Max}</label>
-              <!--WARNING: No type t was given for this view; assuming it is an input.-->
+              <!--WARNING: No type t was given for this view; assuming it is an input-->
             </input>
-            <input faims_attribute_type="measure" ref="Height_Max" faims_style_class="" faims_attribute_name="Height Max">
+            <input faims_attribute_type="measure" ref="Height_Max" faims_attribute_name="Height Max">
               <label>{Height_Max}</label>
-              <!--WARNING: No type t was given for this view; assuming it is an input.-->
+              <!--WARNING: No type t was given for this view; assuming it is an input-->
             </input>
-            <input faims_attribute_type="measure" ref="Area_Max" faims_style_class="" faims_attribute_name="Area Max">
+            <input faims_attribute_type="measure" ref="Area_Max" faims_attribute_name="Area Max">
               <label>{Area_Max}</label>
-              <!--WARNING: No type t was given for this view; assuming it is an input.-->
+              <!--WARNING: No type t was given for this view; assuming it is an input-->
             </input>
           </group>
           <group ref="Col_1" faims_style="even">
             <label/>
-            <input faims_attribute_type="measure" ref="Length_Min" faims_style_class="" faims_attribute_name="Length Min">
+            <input faims_attribute_type="measure" ref="Length_Min" faims_attribute_name="Length Min">
               <label>{Length_Min}</label>
-              <!--WARNING: No type t was given for this view; assuming it is an input.-->
+              <!--WARNING: No type t was given for this view; assuming it is an input-->
             </input>
-            <input faims_attribute_type="measure" ref="Width_Min" faims_style_class="" faims_attribute_name="Width Min">
+            <input faims_attribute_type="measure" ref="Width_Min" faims_attribute_name="Width Min">
               <label>{Width_Min}</label>
-              <!--WARNING: No type t was given for this view; assuming it is an input.-->
+              <!--WARNING: No type t was given for this view; assuming it is an input-->
             </input>
-            <input faims_attribute_type="measure" ref="Height_Min" faims_style_class="" faims_attribute_name="Height Min">
+            <input faims_attribute_type="measure" ref="Height_Min" faims_attribute_name="Height Min">
               <label>{Height_Min}</label>
-              <!--WARNING: No type t was given for this view; assuming it is an input.-->
+              <!--WARNING: No type t was given for this view; assuming it is an input-->
             </input>
-            <input faims_attribute_type="measure" ref="Area_Min" faims_style_class="" faims_attribute_name="Area Min">
+            <input faims_attribute_type="measure" ref="Area_Min" faims_attribute_name="Area Min">
               <label>{Area_Min}</label>
-              <!--WARNING: No type t was given for this view; assuming it is an input.-->
+              <!--WARNING: No type t was given for this view; assuming it is an input-->
             </input>
           </group>
         </group>
-        <input faims_attribute_type="measure" ref="Other_Dimension" faims_style_class="" faims_attribute_name="Other Dimension">
+        <input faims_attribute_type="measure" ref="Other_Dimension" faims_attribute_name="Other Dimension">
           <label>{Other_Dimension}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <input faims_attribute_type="measure" ref="Dimensions_Notes" faims_style_class="" faims_attribute_name="Dimensions Notes">
+        <input faims_attribute_type="measure" ref="Dimensions_Notes" faims_attribute_name="Dimensions Notes">
           <label>{Dimensions_Notes}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="Attach_A_Sketch" faims_style_class="" faims_attribute_name="Attach A Sketch">
+        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="Attach_A_Sketch" faims_attribute_name="Attach A Sketch">
           <label>{Attach_A_Sketch}</label>
           <item>
             <label>Options not loaded</label>
@@ -431,7 +409,7 @@
         <trigger ref="Button_Attach_A_Sketch">
           <label>{Button_Attach_A_Sketch}</label>
         </trigger>
-        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="Sketch_Photo" faims_style_class="" faims_attribute_name="Sketch Photo">
+        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="Sketch_Photo" faims_attribute_name="Sketch Photo">
           <label>{Sketch_Photo}</label>
           <item>
             <label>Options not loaded</label>
@@ -444,36 +422,36 @@
       </group>
       <group ref="Material">
         <label>{Material}</label>
-        <select1 appearance="full" faims_attribute_type="vocab" ref="Stone_Feature_Present_And_Visible" faims_style_class="" faims_attribute_name="Stone Feature Present And Visible">
+        <select1 appearance="full" faims_attribute_type="vocab" ref="Stone_Feature_Present_And_Visible" faims_attribute_name="Stone Feature Present And Visible">
           <label>{Stone_Feature_Present_And_Visible_}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <input faims_attribute_type="measure" ref="Stone_Feature_Description" faims_style_class="" faims_attribute_name="Stone Feature Description">
+        <input faims_attribute_type="measure" ref="Stone_Feature_Description" faims_attribute_name="Stone Feature Description">
           <label>{Stone_Feature_Description}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <select1 faims_attribute_type="vocab" ref="Surface_Material_Density" faims_style_class="" faims_attribute_name="Surface Material Density">
+        <select1 faims_attribute_type="vocab" ref="Surface_Material_Density" faims_attribute_name="Surface Material Density">
           <label>{Surface_Material_Density}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <input faims_attribute_type="measure" ref="Surface_Material_Description" faims_style_class="" faims_attribute_name="Surface Material Description">
+        <input faims_attribute_type="measure" ref="Surface_Material_Description" faims_attribute_name="Surface Material Description">
           <label>{Surface_Material_Description}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <select1 appearance="full" faims_attribute_type="vocab" ref="Sample_Collected" faims_style_class="" faims_attribute_name="Sample Collected">
+        <select1 appearance="full" faims_attribute_type="vocab" ref="Sample_Collected" faims_attribute_name="Sample Collected">
           <label>{Sample_Collected_}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="Material_Photo" faims_style_class="" faims_attribute_name="Material Photo">
+        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="Material_Photo" faims_attribute_name="Material Photo">
           <label>{Material_Photo}</label>
           <item>
             <label>Options not loaded</label>
@@ -486,89 +464,89 @@
       </group>
       <group ref="CRM">
         <label>{CRM}</label>
-        <select1 faims_attribute_type="vocab" ref="Disturbance_Kind" faims_style_class="" faims_attribute_name="Disturbance Kind">
+        <select1 faims_attribute_type="vocab" ref="Disturbance_Kind" faims_attribute_name="Disturbance Kind">
           <label>{Disturbance_Kind}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <select faims_attribute_type="vocab" ref="Disturbance_Factors" faims_style_class="" faims_attribute_name="Disturbance Factors">
+        <select faims_attribute_type="vocab" ref="Disturbance_Factors" faims_attribute_name="Disturbance Factors">
           <label>{Disturbance_Factors}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select>
-        <select1 faims_attribute_type="vocab" ref="Principal_Factors" faims_style_class="" faims_attribute_name="Principal Factors">
+        <select1 faims_attribute_type="vocab" ref="Principal_Factors" faims_attribute_name="Principal Factors">
           <label>{Principal_Factors}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <select faims_attribute_type="vocab" ref="Age_of_Damage" faims_style_class="" faims_attribute_name="Age of Damage">
+        <select faims_attribute_type="vocab" ref="Age_of_Damage" faims_attribute_name="Age of Damage">
           <label>{Age_of_Damage}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select>
-        <input faims_attribute_type="measure" ref="Disturbance_Description" faims_style_class="" faims_attribute_name="Disturbance Description">
+        <input faims_attribute_type="measure" ref="Disturbance_Description" faims_attribute_name="Disturbance Description">
           <label>{Disturbance_Description}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <select faims_attribute_type="vocab" ref="RT_Kind" faims_style_class="" faims_attribute_name="RT Kind">
+        <select faims_attribute_type="vocab" ref="RT_Kind" faims_attribute_name="RT Kind">
           <label>{RT_Kind}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select>
-        <select faims_attribute_type="vocab" ref="RT_Method" faims_style_class="" faims_attribute_name="RT Method">
+        <select faims_attribute_type="vocab" ref="RT_Method" faims_attribute_name="RT Method">
           <label>{RT_Method}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select>
-        <select1 type="image" faims_attribute_type="vocab" ref="RT_Frequency" faims_style_class="" faims_attribute_name="RT Frequency">
+        <select1 type="image" faims_attribute_type="vocab" ref="RT_Frequency" faims_attribute_name="RT Frequency">
           <label>{RT_Frequency}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <input faims_attribute_type="measure" ref="RT_Description" faims_style_class="" faims_attribute_name="RT Description">
+        <input faims_attribute_type="measure" ref="RT_Description" faims_attribute_name="RT Description">
           <label>{RT_Description}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <select1 faims_attribute_type="vocab" ref="Volume_of_Soil_Removed_via_RT" faims_style_class="" faims_attribute_name="Volume of Soil Removed via RT">
+        <select1 faims_attribute_type="vocab" ref="Volume_of_Soil_Removed_via_RT" faims_attribute_name="Volume of Soil Removed via RT">
           <label>{Volume_of_Soil_Removed_via_RT}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <select1 faims_attribute_type="vocab" ref="Affect" faims_style_class="" faims_attribute_name="Affect">
+        <select1 faims_attribute_type="vocab" ref="Affect" faims_attribute_name="Affect">
           <label>{Affect}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <select1 faims_attribute_type="vocab" ref="Impact" faims_style_class="" faims_attribute_name="Impact">
+        <select1 faims_attribute_type="vocab" ref="Impact" faims_attribute_name="Impact">
           <label>{Impact}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <input faims_attribute_type="measure" ref="Comments_and_Recommendations" faims_style_class="" faims_attribute_name="Comments and Recommendations">
+        <input faims_attribute_type="measure" ref="Comments_and_Recommendations" faims_attribute_name="Comments and Recommendations">
           <label>{Comments_and_Recommendations}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input.-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="CRM_Photo" faims_style_class="" faims_attribute_name="CRM Photo">
+        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="CRM_Photo" faims_attribute_name="CRM Photo">
           <label>{CRM_Photo}</label>
           <item>
             <label>Options not loaded</label>

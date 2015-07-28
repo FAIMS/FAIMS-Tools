@@ -65,9 +65,9 @@
 
   <xsl:template name="model">
     <xsl:for-each select="/module/*">                                  <!-- Iterate over tab group nodes -->
-      <xsl:element name="{name(.)}">
+      <xsl:element name="{name()}">
         <xsl:for-each select="*">                                      <!-- Iterate over tab nodes -->
-          <xsl:if test="not(translate(name(.), $smallcase, '') = '')"> <!-- Skip nodes with "reserved" names (i.e. all lower case letters -->
+          <xsl:if test="not(translate(name(), $smallcase, '') = '')"> <!-- Skip nodes with "reserved" names (i.e. all lower case letters -->
             <xsl:if test="
               contains(translate(name(), $uppercase, $smallcase), 'search') or
               contains(translate(name(), $uppercase, $smallcase), 'records')">
@@ -80,7 +80,7 @@
               <xsl:comment>WARNING: |\_/|      | which searches all arch-ents.)              | </xsl:comment>
               <xsl:comment>WARNING: \___/      \_____________________________________________/ </xsl:comment>
             </xsl:if>
-            <xsl:element name="{name(.)}">
+            <xsl:element name="{name()}">
               <xsl:for-each select="*">                         <!-- Iterate over GUI elements -->
                 <xsl:call-template name="model-expand-cols-or-view"/>
               </xsl:for-each>
@@ -110,9 +110,9 @@
   <xsl:template name="bindings">
     <xsl:for-each select="/module/*">                                <!-- Iterate over tab group nodes -->
       <xsl:for-each select="*">                                      <!-- Iterate over tab nodes -->
-        <xsl:if test="not(translate(name(.), $smallcase, '') = '')"> <!-- Skip nodes with "reserved" names (i.e. all lower case letters -->
+        <xsl:if test="not(translate(name(), $smallcase, '') = '')"> <!-- Skip nodes with "reserved" names (i.e. all lower case letters -->
           <xsl:for-each select="*">                                  <!-- Iterate over GUI elements -->
-            <xsl:call-template name="bind-expand-cols-or-view"/>
+            <xsl:call-template name="bind-expand-reserved-or-view"/>
           </xsl:for-each>
         </xsl:if>
       </xsl:for-each>
@@ -122,7 +122,9 @@
   <xsl:template name="body">
     <xsl:for-each select="/module/*">                                <!-- Iterate over tab group nodes -->
       <xsl:element name="group">
-        <xsl:attribute name="ref"><xsl:value-of select="name()"/></xsl:attribute>
+        <xsl:attribute name="ref">
+          <xsl:value-of select="name()"/>
+        </xsl:attribute>
         <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
           <xsl:attribute name="faims_archent_type">
             <xsl:call-template name="string-replace-all">
@@ -134,7 +136,7 @@
         </xsl:if>
         <xsl:call-template name="label" />
         <xsl:for-each select="*">                                      <!-- Iterate over tab nodes -->
-          <xsl:if test="not(translate(name(.), $smallcase, '') = '')"> <!-- Skip nodes with "reserved" names (i.e. all lower case letters -->
+          <xsl:if test="not(translate(name(), $smallcase, '') = '')"> <!-- Skip nodes with "reserved" names (i.e. all lower case letters -->
             <xsl:element name="group">
               <xsl:attribute name="ref"><xsl:value-of select="name()"/></xsl:attribute>
               <xsl:if test=".//*[normalize-space(@t) = 'map']">
@@ -145,17 +147,17 @@
               </xsl:call-template>
               <xsl:call-template name="label" />
               <xsl:for-each select="*[not(contains(@f, 'onlydata'))]"> <!-- Iterate over GUI elements -->
-                <xsl:call-template name="body-expand-cols-or-view"/>
+                <xsl:call-template name="body-expand-reserved-or-view"/>
               </xsl:for-each>
             </xsl:element>
           </xsl:if>
           <xsl:if test="name() = 'search'">
             <group ref="Search" faims_scrollable="false">
               <xsl:if test="../Search">
-                <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
+                <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid</xsl:comment>
               </xsl:if>
               <xsl:if test="count(//search) &gt; 1">
-                <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
+                <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid</xsl:comment>
               </xsl:if>
               <xsl:call-template name="label"/>
               <group faims_style="orientation" ref="Colgroup_0">
@@ -198,11 +200,17 @@
 
   <xsl:template name="model-expand-cols-or-view">
     <xsl:choose>
-      <xsl:when test="name(.) = 'gps'">
-        <xsl:call-template name="model-expand-gps" />
+      <xsl:when test="name() = 'author'">
+        <xsl:call-template name="model-expand-author" />
       </xsl:when>
-      <xsl:when test="name(.) = 'cols'">
+      <xsl:when test="name() = 'autonum'">
+        <xsl:call-template name="model-expand-autonum" />
+      </xsl:when>
+      <xsl:when test="name() = 'cols'">
         <xsl:call-template name="model-expand-cols" />
+      </xsl:when>
+      <xsl:when test="name() = 'gps'">
+        <xsl:call-template name="model-expand-gps" />
       </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="model-expand-view" />
@@ -210,13 +218,25 @@
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template name="model-expand-author">
+    <input ref="Author" faims_read_only="true">
+      <xsl:call-template name="label" />
+    </input>
+  </xsl:template>
+
+  <xsl:template name="model-expand-autonum">
+    <xsl:for-each select="//*[contains(@f, 'autonum')]">
+      <xsl:element name="Next_{name()}"/>
+    </xsl:for-each>
+  </xsl:template>
+
   <xsl:template name="model-expand-view">
-    <xsl:element name="{name(.)}"/>
+    <xsl:element name="{name()}"/>
     <xsl:if test="normalize-space(@t) = 'audio'
       or normalize-space(@t) = 'camera'
       or normalize-space(@t) = 'file'
       or normalize-space(@t) = 'video'">
-      <xsl:element name="Button_{name(.)}"/>
+      <xsl:element name="Button_{name()}"/>
     </xsl:if>
   </xsl:template>
 
@@ -253,50 +273,134 @@
     </xsl:element>
   </xsl:template>
 
-  <xsl:template name="bind-expand-cols-or-view">
+  <xsl:template name="bind-expand-reserved-or-view">
     <xsl:choose>
+      <xsl:when test="name(.) = 'autonum'">
+        <xsl:call-template name="bind-expand-autonum" />
+      </xsl:when>
       <xsl:when test="name(.) = 'cols'">
         <xsl:call-template name="bind-expand-cols" />
       </xsl:when>
       <xsl:otherwise>
-        <xsl:if test="@b">
-          <xsl:element name="bind">
-            <xsl:attribute name="type">
-              <xsl:value-of select="normalize-space(@b)"/>
-            </xsl:attribute>
-            <xsl:attribute name="nodeset">/faims/<xsl:value-of select="name(ancestor::*[last()-1])"/>/<xsl:value-of select="name(ancestor::*[last()-2])"/>/<xsl:value-of select="name()"/></xsl:attribute>
-          </xsl:element>
-          <xsl:if test="$doWarn and normalize-space(@b) != 'decimal'">
-            <xsl:comment>WARNING: Unexpected binding "<xsl:value-of select="@b"/>"</xsl:comment>
-          </xsl:if>
-        </xsl:if>
+        <xsl:call-template name="bind-expand-view" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template name="bind-expand-autonum">
+    <xsl:for-each select="//*[contains(@f, 'autonum')]">
+      <xsl:element name="bind">
+        <xsl:attribute name="type">decimal</xsl:attribute>
+        <xsl:attribute name="nodeset">
+          <xsl:text>/faims/</xsl:text>
+          <xsl:value-of select="name(//autonum/ancestor::*[last()-1])"/>
+          <xsl:text>/</xsl:text>
+          <xsl:value-of select="name(//autonum/ancestor::*[last()-2])"/>
+          <xsl:text>/Next_</xsl:text>
+          <xsl:value-of select="name()"/>
+        </xsl:attribute>
+      </xsl:element>
+    </xsl:for-each>
+  </xsl:template>
+
   <xsl:template name="bind-expand-cols">
-    <xsl:for-each select=".//*[@b]">
+    <xsl:for-each select=".//*[@b or contains(@f, 'autonum')]">
+      <xsl:if test="$doWarn and @b and contains(@f, 'autonum')">
+        <xsl:comment>WARNING: Binding in b attribute ignored; use of "autonum" flag forces decimal binding</xsl:comment>
+      </xsl:if>
       <xsl:element name="bind">
         <xsl:attribute name="type">
-          <xsl:value-of select="normalize-space(@b)"/>
+          <xsl:choose>
+            <xsl:when test="contains(@f, 'autonum')">
+              <xsl:text>decimal</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="normalize-space(@b)"/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:attribute>
         <xsl:choose>
           <xsl:when test="./ancestor::col">
-            <xsl:attribute name="nodeset">/faims/<xsl:value-of select="name(ancestor::*[last()-1])"/>/<xsl:value-of select="name(ancestor::*[last()-2])"/>/Colgroup_<xsl:value-of select="count(./ancestor::cols[1]/preceding-sibling::cols)"/>/Col_<xsl:value-of select="count(./ancestor::col[1]/preceding-sibling::*)"/>/<xsl:value-of select="name()"/></xsl:attribute>
+            <xsl:attribute name="nodeset">
+              <xsl:text>/faims/</xsl:text>
+              <xsl:value-of select="name(ancestor::*[last()-1])"/>
+              <xsl:text>/</xsl:text>
+              <xsl:value-of select="name(ancestor::*[last()-2])"/>
+              <xsl:text>/Colgroup_</xsl:text>
+              <xsl:value-of select="count(./ancestor::cols[1]/preceding-sibling::cols)"/>
+              <xsl:text>/Col_</xsl:text>
+              <xsl:value-of select="count(./ancestor::col[1]/preceding-sibling::*)"/>
+              <xsl:text>/</xsl:text>
+              <xsl:value-of select="name()"/>
+            </xsl:attribute>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:attribute name="nodeset">/faims/<xsl:value-of select="name(ancestor::*[last()-1])"/>/<xsl:value-of select="name(ancestor::*[last()-2])"/>/Colgroup_<xsl:value-of select="count(./ancestor::cols[1]/preceding-sibling::cols)"/>/Col_<xsl:value-of select="count(./preceding-sibling::*)"/>/<xsl:value-of select="name()"/></xsl:attribute>
+            <xsl:attribute name="nodeset">
+              <xsl:text>/faims/</xsl:text>
+              <xsl:value-of select="name(ancestor::*[last()-1])"/>
+              <xsl:text>/</xsl:text>
+              <xsl:value-of select="name(ancestor::*[last()-2])"/>
+              <xsl:text>/Colgroup_</xsl:text>
+              <xsl:value-of select="count(./ancestor::cols[1]/preceding-sibling::cols)"/>
+              <xsl:text>/Col_</xsl:text>
+              <xsl:value-of select="count(./preceding-sibling::*)"/>
+              <xsl:text>/</xsl:text>
+              <xsl:value-of select="name()"/>
+            </xsl:attribute>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:element>
-      <xsl:if test="$doWarn and normalize-space(@b) != 'decimal'">
+      <xsl:if test="$doWarn and
+            normalize-space(@b) != 'date' and
+            normalize-space(@b) != 'decimal' and
+            normalize-space(@b) != 'string' and
+            normalize-space(@b) != 'time'
+            ">
         <xsl:comment>WARNING: Unexpected binding "<xsl:value-of select="@b"/>"</xsl:comment>
       </xsl:if>
     </xsl:for-each>
   </xsl:template>
 
-  <xsl:template name="body-expand-cols-or-view">
+  <xsl:template name="bind-expand-view">
+    <xsl:if test="@b">
+      <xsl:element name="bind">
+        <xsl:attribute name="type">
+          <xsl:value-of select="normalize-space(@b)"/>
+        </xsl:attribute>
+        <xsl:attribute name="nodeset">/faims/<xsl:value-of select="name(ancestor::*[last()-1])"/>/<xsl:value-of select="name(ancestor::*[last()-2])"/>/<xsl:value-of select="name()"/></xsl:attribute>
+      </xsl:element>
+      <xsl:if test="$doWarn and @b and contains(@f, 'autonum')">
+        <xsl:comment>WARNING: Binding in b attribute ignored; use of "autonum" flag forces decimal binding</xsl:comment>
+      </xsl:if>
+      <xsl:if test="$doWarn and
+        normalize-space(@b) != 'date' and
+        normalize-space(@b) != 'decimal' and
+        normalize-space(@b) != 'string' and
+        normalize-space(@b) != 'time'
+        ">
+        <xsl:comment>WARNING: Unexpected binding "<xsl:value-of select="@b"/>"</xsl:comment>
+      </xsl:if>
+    </xsl:if>
+    <xsl:if test="contains(@f, 'autonum')">
+      <xsl:element name="bind">
+        <xsl:attribute name="type">decimal</xsl:attribute>
+        <xsl:attribute name="nodeset">
+          <xsl:text>/faims/</xsl:text>
+          <xsl:value-of select="name(ancestor::*[last()-1])"/>
+          <xsl:text>/</xsl:text>
+          <xsl:value-of select="name(ancestor::*[last()-2])"/>
+          <xsl:text>/</xsl:text>
+          <xsl:value-of select="name()"/>
+        </xsl:attribute>
+      </xsl:element>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="body-expand-reserved-or-view">
     <xsl:choose>
+      <xsl:when test="name(.) = 'autonum'">
+        <xsl:call-template name="body-expand-autonum" />
+      </xsl:when>
       <xsl:when test="name(.) = 'gps'">
         <xsl:call-template name="body-expand-gps" />
       </xsl:when>
@@ -307,6 +411,25 @@
         <xsl:call-template name="body-expand-view" />
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="body-expand-autonum">
+    <xsl:for-each select="//*[contains(@f, 'autonum')]">
+      <xsl:element name="input">
+        <xsl:attribute name="ref">
+          <xsl:text>Next_</xsl:text>
+          <xsl:value-of select="name()"/>
+        </xsl:attribute>
+        <xsl:attribute name="faims_style_class">
+          <xsl:text>required</xsl:text>
+        </xsl:attribute>
+        <xsl:element name="label">
+          <xsl:text>{Next_</xsl:text>
+          <xsl:value-of select="name()"/>
+          <xsl:text>}</xsl:text>
+        </xsl:element>
+      </xsl:element>
+    </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="body-expand-gps">
@@ -570,7 +693,7 @@
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
           <xsl:if test="$doWarn">
-            <xsl:comment>WARNING: No type t was given for this view; assuming it is an input.</xsl:comment>
+            <xsl:comment>WARNING: No type t was given for this view; assuming it is an input</xsl:comment>
           </xsl:if>
         </xsl:element>
       </xsl:when>
@@ -578,7 +701,7 @@
         <xsl:element name="{normalize-space(@t)}">
           <xsl:call-template name="body-expand-view-standard-nodes" />
           <xsl:if test="$doWarn">
-            <xsl:comment>WARNING: This view was created from an element whose t attribute's value is unexpected.</xsl:comment>
+            <xsl:comment>WARNING: This view was created from an element whose t attribute's value is unexpected</xsl:comment>
           </xsl:if>
         </xsl:element>
       </xsl:otherwise>
@@ -586,10 +709,13 @@
   </xsl:template>
 
   <xsl:template name="body-expand-view-standard-nodes">
-    <xsl:attribute name="ref"><xsl:value-of select="name()"/></xsl:attribute>
-    <xsl:attribute name="faims_style_class"><xsl:value-of select="@c"/></xsl:attribute>
-    <xsl:if test="@c and not(contains(@f, 'notnull'))">
-      <xsl:attribute name="faims_style_class"><xsl:value-of select="@c"/></xsl:attribute>
+    <xsl:attribute name="ref">
+      <xsl:value-of select="name()"/>
+    </xsl:attribute>
+    <xsl:if test="@c and not(contains(@f, 'notnull')) and not(contains(@f, 'autonum'))">
+      <xsl:attribute name="faims_style_class">
+        <xsl:value-of select="@c"/>
+      </xsl:attribute>
     </xsl:if>
     <xsl:if test="normalize-space(@t) != 'group' and
       normalize-space(@t) != 'button' and
@@ -610,7 +736,10 @@
       <xsl:with-param name="flags" select="@f" />
     </xsl:call-template>
     <xsl:if test="$doWarn and @c and contains(@f, 'notnull')">
-      <xsl:comment>WARNING: Style in c attribute not applied; styling conflicts exist due to "notnull" flag</xsl:comment>
+      <xsl:comment>WARNING: Style in c attribute not applied; styling conflict exists due to "notnull" flag</xsl:comment>
+    </xsl:if>
+    <xsl:if test="$doWarn and @c and contains(@f, 'autonum')">
+      <xsl:comment>WARNING: Style in c attribute not applied; styling conflict exists due to "autonum" flag</xsl:comment>
     </xsl:if>
     <xsl:call-template name="label" />
   </xsl:template>
@@ -633,7 +762,7 @@
             </xsl:call-template>
             <xsl:text>}</xsl:text>
             <!--<xsl:if test="$doWarn">-->
-              <!--<xsl:comment>WARNING: Label not given; automatically generated from element name.</xsl:comment>-->
+              <!--<xsl:comment>WARNING: Label not given; automatically generated from element name</xsl:comment>-->
             <!--</xsl:if>-->
           </xsl:otherwise>
         </xsl:choose>
@@ -787,10 +916,17 @@
       <xsl:attribute name="faims_style_class">required</xsl:attribute>
     </xsl:if>
     <xsl:variable name="v14">
-      <xsl:value-of select="normalize-space($v13)" />
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text"    select="$v13" />
+        <xsl:with-param name="replace" select="'autonum'" />
+        <xsl:with-param name="by"      select="''" />
+      </xsl:call-template>
     </xsl:variable>
-    <xsl:if test="$doWarn and $v14 != ''">
-      <xsl:comment>WARNING: Unexpected flag(s) "<xsl:value-of select="$v14" />"</xsl:comment>
+    <xsl:variable name="v15">
+      <xsl:value-of select="normalize-space($v14)" />
+    </xsl:variable>
+    <xsl:if test="$doWarn and $v15 != ''">
+      <xsl:comment>WARNING: Unexpected flag(s) "<xsl:value-of select="$v15" />"</xsl:comment>
     </xsl:if>
   </xsl:template>
 

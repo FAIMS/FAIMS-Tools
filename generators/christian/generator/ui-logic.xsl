@@ -19,6 +19,13 @@ setSyncEnabled(true);
 setSyncMaxInterval(600.0f);
 setSyncMinInterval(5.0f);
 
+
+makeLocalID(){
+  fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);", null);
+  fetchOne("DROP VIEW IF EXISTS parentchild;", null);
+}
+makeLocalID();
+
 newTab(String tab, Boolean resolveTabGroups) {
   if (!resolveTabGroups) {
     return newTab(tab);
@@ -557,9 +564,28 @@ saveTabGroup(String tabGroup, String callback) {
 <xsl:text> () {
   // TODO: Add some things which should happen when this element is clicked
 </xsl:text>
-      <xsl:text>  newTab("</xsl:text>
-      <xsl:value-of select="@l"/>
-      <xsl:text>", true);</xsl:text>
+      <xsl:variable name="link" select="@l"/>
+      <xsl:choose>
+        <xsl:when test="
+          not(contains($link, '/')) and
+          not(/module/*[name() = $link and
+            (contains(@f, 'onlydata') or
+             contains(@f, 'onlyui'))
+          ])">
+          <xsl:text>  new</xsl:text>
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="$link" />
+            <xsl:with-param name="replace" select="'_'" />
+            <xsl:with-param name="by" select="''" />
+          </xsl:call-template>
+          <xsl:text>();</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>  newTab("</xsl:text>
+          <xsl:value-of select="@l"/>
+          <xsl:text>", true);</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:value-of select="$newline" />
       <xsl:text>}</xsl:text>
       <xsl:value-of select="$newline" />
@@ -758,7 +784,15 @@ getExtraAttributes(fetchedAttributes) {
   List extraAttributes = createAttributeList();
   Log.d("Module", "Duplicating fetched attributes: " + fetchedAttributes.toString());
   for (savedAttribute : fetchedAttributes) {
-    extraAttributes.add(createEntityAttribute(savedAttribute.get(0), savedAttribute.get(1), savedAttribute.get(2), savedAttribute.get(3), savedAttribute.get(4)));
+    extraAttributes.add(
+      createEntityAttribute(
+        savedAttribute.get(0),
+        savedAttribute.get(1),
+        savedAttribute.get(2),
+        savedAttribute.get(3),
+        savedAttribute.get(4)
+      )
+    );
   }
   return extraAttributes;
 }
@@ -947,6 +981,129 @@ fillInGPS(String tabgroup) {
 </xsl:text>
     </xsl:if>
 
+    <xsl:if test="//autonum">
+<xsl:text>
+/******************************************************************************/
+/*                       AUTONUMBERING HELPER FUNCTIONS                       */
+/******************************************************************************/
+insertIntoLocalSettings(String key, String val) {
+    fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
+}
+
+insertIntoLocalSettings(String key, Integer val) {
+    insertIntoLocalSettings(key, Integer.toString(val));
+}
+
+/*
+ * If value of field specified by `ref` is null, sets the field to `defaultVal`,
+ * otherwise increments its value.
+ *
+ * Returns the value the field was updated to.
+ */
+incField(String ref, Integer defaultVal) {
+  String val = getFieldValue(ref);
+
+  if (isNull(val)) {
+    setFieldValue(ref, defaultVal);
+    return defaultVal;
+  }
+
+  Integer inc = Integer.parseInt(val) + 1;
+  setFieldValue(ref, inc);
+  insertIntoLocalSettings(ref, inc.toString());
+
+  return inc;
+}
+
+/* Increments the field at `ref` or returns null if it does not contain a
+ * number.
+ */
+incField(String ref) {
+  return incField(ref, 1);
+}
+
+onEvent("Control", "load", "onLoadControl()");
+
+/* This function should only be called once since it creates event handlers,
+ * otherwise multiple copies of the same handler will trigger with the event.
+ */
+onLoadControl() {
+  List l = new ArrayList();
+</xsl:text>
+      <xsl:call-template name="control-starting-id-paths"/>
+<xsl:text>
+
+  for (ref : l) {
+    loadStartingId(ref);
+  }
+  for (ref : l) {
+    onFocus(ref, null,  "insertIntoLocalSettings(\"" + ref + "\", getFieldValue(\"" + ref + "\"));");
+  }
+}
+
+loadStartingId(String ref) {
+  String idQ = "SELECT value FROM localSettings WHERE key = '" + ref + "';";
+  fetchOne(idQ, new FetchCallback() {
+    onFetch(result) {
+      if (!isNull(result)) {
+        setFieldValue(ref, result.get(0));
+      } else {
+        setFieldValue(ref, "1");
+      }
+    }
+  });
+}
+
+</xsl:text>
+      <xsl:call-template name="incautonum"/>
+    </xsl:if>
+
+  </xsl:template>
+
+  <xsl:template name="incautonum">
+    <xsl:text>incAutoNum(String destPath) {</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  Map destToSource = new HashMap();</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:call-template name="incautonum-map"/>
+    <xsl:text></xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String sourcePath = destToSource.get(destPath);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String destVal    = getFieldValue(sourcePath);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  setFieldValue(destPath, destVal);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  incField(sourcePath);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="$newline"/>
+  </xsl:template>
+  <xsl:template name="incautonum-map">
+    <xsl:for-each select="//*[contains(@f, 'autonum')]">
+      <xsl:text>  destToSource.put("</xsl:text>
+      <xsl:call-template name="ref" />
+      <xsl:text>", "</xsl:text>
+      <xsl:value-of select="name(//autonum/ancestor::*[last()-1])" />
+      <xsl:text>/</xsl:text>
+      <xsl:value-of select="name(//autonum/ancestor::*[last()-2])" />
+      <xsl:text>/Next_</xsl:text>
+      <xsl:value-of select="name()"/>
+      <xsl:text>");</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:for-each>
+  </xsl:template>
+  <xsl:template name="control-starting-id-paths">
+    <xsl:for-each select="//*[contains(@f, 'autonum')]">
+      <xsl:text>  l.add("</xsl:text>
+      <xsl:value-of select="name(//autonum/ancestor::*[last()-1])" />
+      <xsl:text>/</xsl:text>
+      <xsl:value-of select="name(//autonum/ancestor::*[last()-2])" />
+      <xsl:text>/Next_</xsl:text>
+      <xsl:value-of select="name()"/>
+      <xsl:text>");</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="take-from-gps-bindings">
@@ -955,7 +1112,7 @@ fillInGPS(String tabgroup) {
       <xsl:value-of select="name(ancestor::*[last()-1])"/>
       <xsl:text>/</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-2])"/>
-      <xsl:text>Take_From_GPS</xsl:text>
+      <xsl:text>/Take_From_GPS</xsl:text>
       <xsl:text>", "click", "takePoint(\"</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-1])"/>
       <xsl:text>\")");</xsl:text>
@@ -1014,12 +1171,62 @@ fillInGPS(String tabgroup) {
     <xsl:text>  String tabgroup = "</xsl:text>
     <xsl:value-of select="name()"/>
     <xsl:text>";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+    <xsl:call-template name="tabgroup-new-no-id"/>
 <xsl:text>
   setUuid(tabgroup, null);
   newTabGroup(tabgroup);
-}
+
 </xsl:text>
+    <xsl:call-template name="tabgroup-new-incautonum"/>
+    <xsl:text>}</xsl:text>
     <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-new-no-id">
+    <xsl:if test=".//*[contains(@f, 'autonum')]">
+      <xsl:text>  String autoNumSource = "";</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:if>
+    <xsl:for-each select=".//*[contains(@f, 'autonum')]">
+      <xsl:text>  autoNumSource = getFieldValue("</xsl:text>
+      <xsl:value-of select="name(//autonum/ancestor::*[last()-1])" />
+      <xsl:text>/</xsl:text>
+      <xsl:value-of select="name(//autonum/ancestor::*[last()-2])" />
+      <xsl:text>/Next_</xsl:text>
+      <xsl:value-of select="name()"/>
+      <xsl:text>");</xsl:text>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>  if (isNull(autoNumSource)) {</xsl:text>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>    showWarning("{Alert}","{A_next_ID_has_not_been_entered_please_provide_one}");</xsl:text>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>    return;</xsl:text>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>  }</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-new-incautonum">
+    <xsl:if test=".//*[contains(@f, 'autonum')]">
+      <xsl:text>  String autoNumDest = "";</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:if>
+    <xsl:for-each select=".//*[contains(@f, 'autonum')]">
+      <xsl:text>  autoNumDest = "</xsl:text>
+      <xsl:call-template name="ref" />
+      <xsl:text>";</xsl:text>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>  incAutoNum(autoNumDest);</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-duplicate-incautonum">
+    <xsl:call-template name="tabgroup-new-incautonum"/>
   </xsl:template>
 
   <xsl:template name="tabgroup-duplicate">
@@ -1038,6 +1245,13 @@ fillInGPS(String tabgroup) {
     <xsl:text>  String tabgroup = "</xsl:text>
     <xsl:value-of select="name()"/>
     <xsl:text>";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  disableAutoSave(tabgroup);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+    <xsl:call-template name="tabgroup-duplicate-incautonum"/>
+    <xsl:value-of select="$newline"/>
     <xsl:call-template name="tabgroup-duplicate-exclusions-1" />
 <xsl:text>
 
