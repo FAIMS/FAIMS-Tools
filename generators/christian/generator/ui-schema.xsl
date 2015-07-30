@@ -584,12 +584,15 @@
           </item>
         </xsl:element>
       </xsl:when>
-      <xsl:when test="normalize-space(@t)='dropdown'">
+      <xsl:when test="normalize-space(@t)='dropdown' or (not(@t) and ./opts)">
         <xsl:element name="select1">
           <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
             <xsl:attribute name="faims_attribute_type">vocab</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
+          <xsl:if test="$doWarn and not(@t)">
+            <xsl:comment>WARNING: No type t was given for this view; assuming it is a dropdown</xsl:comment>
+          </xsl:if>
           <item>
             <label>Options not loaded</label>
             <value>0</value>

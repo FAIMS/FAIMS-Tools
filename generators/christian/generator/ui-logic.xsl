@@ -334,7 +334,7 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
     });
 }
 </xsl:text>
-    <xsl:for-each select="//*[@t and not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')]) and not(contains(@f, 'user'))]">
+    <xsl:for-each select="//*[(@t or ./opts) and not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')]) and not(contains(@f, 'user'))]">
       <xsl:variable name="is-hierarchical">
         <xsl:call-template name="is-hierarchical"/>
       </xsl:variable>
@@ -343,7 +343,8 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
           <xsl:text>makeVocab("CheckBoxGroup", "</xsl:text>
           <xsl:call-template name="complete-makevocab" />
         </xsl:when>
-        <xsl:when test="normalize-space(@t) = 'dropdown'">
+        <xsl:when test="normalize-space(@t) = 'dropdown' or
+          (not(@t) and ./opts)">
           <xsl:choose>
             <xsl:when test="$is-hierarchical = '1'">
               <xsl:text>makeVocab("HierarchicalDropDown", "</xsl:text>

@@ -3,7 +3,7 @@
   <xsl:output method="xml" indent="yes" cdata-section-elements="formatString appendCharacterString"/>
 
   <xsl:variable name="doWarn"           select="not(/module/@suppressWarnings = 'true')" />
-  <xsl:key name="kDropdownOpt" match="*[@t='dropdown']/opts/opt" use="concat(name(ancestor::*[last()-1]), name(ancestor::*[last()-2]), name(ancestor::*[last()-3]), text())"/>
+  <xsl:key name="kDropdownOpt" match="*[@t='dropdown' or @t='']/opts/opt" use="concat(name(ancestor::*[last()-1]), name(ancestor::*[last()-2]), name(ancestor::*[last()-3]), text())"/>
   <xsl:key name="kPropertyName" match="*/*/*//*[
     not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and
     not(name() = 'app') and
@@ -85,7 +85,7 @@
           <xsl:attribute name="isIdentifier">true</xsl:attribute>
         </xsl:if>
         <xsl:if test="normalize-space(@t) = 'input'
-          or not(@t)">
+          or (not(@t) and not(./opts))">
           <xsl:attribute name="type">measure</xsl:attribute>
         </xsl:if>
         <xsl:if test="normalize-space(@t) = 'camera'
@@ -100,6 +100,7 @@
         </xsl:if>
         <xsl:if test="normalize-space(@t) = 'checkbox'
           or normalize-space(@t) = 'dropdown'
+          or (not(@t) and ./opts)
           or normalize-space(@t) = 'picture'
           or normalize-space(@t) = 'radio'
           or normalize-space(@t) = 'list'">

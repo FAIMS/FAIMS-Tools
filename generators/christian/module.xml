@@ -27,7 +27,7 @@
     <Object_ID d="decimal" f="id notnull autonum"/>
     <timestamp/>
     <author/>
-    <Type t="dropdown">
+    <Type>
       <opts>
         <opt>Burial mound</opt>
         <opt>Surface concentration</opt>
@@ -38,7 +38,7 @@
         <opt>Other</opt>
       </opts>
     </Type>
-    <Site_Significance t="dropdown">
+    <Site_Significance>
       <desc>Assess the site's potential for our research objectives or for excavation. Add details in Recommendation at the end of this module.</desc>
       <opts>
         <opt>None</opt>
@@ -49,7 +49,7 @@
     </Site_Significance>
     <Name/>
     <Description/>
-    <Source t="dropdown">
+    <Source>
       <opts>
         <opt>Survey</opt>
         <opt>Remote sensing</opt>
@@ -66,7 +66,7 @@
         <opt>Other</opt>
       </opts>
     </Exists_in_Legacy>
-    <Surrounding_Landuse t="dropdown">
+    <Surrounding_Landuse>
       <opts>
         <opt>Annual agriculture
           <opt>Ploughed</opt>
@@ -89,7 +89,7 @@
         </opt>
       </opts>
     </Surrounding_Landuse>
-    <Surface_Landuse t="dropdown">
+    <Surface_Landuse>
       <opts>
         <opt>Annual agriculture
           <opt>Ploughed</opt>
@@ -112,7 +112,7 @@
         </opt>
       </opts>
     </Surface_Landuse>
-    <Visibility t="dropdown">
+    <Visibility>
       <opts>
         <opt>0-20%</opt>
         <opt>20-40%</opt>
@@ -168,7 +168,7 @@
       </opts>
     </Stone_Feature_Present_And_Visible>
     <Stone_Feature_Description/>
-    <Surface_Material_Density t="dropdown">
+    <Surface_Material_Density>
       <opts>
         <opt>zero</opt>
         <opt>scarce</opt>
@@ -187,7 +187,7 @@
     <Material_Photo t="camera"/>
   </Material>
   <CRM>
-    <Disturbance_Kind t="dropdown">
+    <Disturbance_Kind>
       <opts>
         <opt>undisturbed</opt>
         <opt>surface sediment disturbed</opt>
@@ -204,7 +204,7 @@
         <opt>topographic</opt>
       </opts>
     </Disturbance_Factors>
-    <Principal_Factors t="dropdown">
+    <Principal_Factors>
       <desc>Select one factor that contributes to most visible damage</desc>
       <opts>
         <opt>Anthropic
@@ -250,7 +250,7 @@
     </RT_Method>
     <RT_Frequency t="picture"/>
     <RT_Description/>
-    <Volume_of_Soil_Removed_via_RT t="dropdown">
+    <Volume_of_Soil_Removed_via_RT>
       <opts>
         <opt>&lt;10%</opt>
         <opt>10-20%</opt>
@@ -264,7 +264,7 @@
         <opt>90-100%</opt>
       </opts>
     </Volume_of_Soil_Removed_via_RT>
-    <Affect t="dropdown">
+    <Affect>
       <desc>1=0-20% of the entire feature is missing or disrupted, 5= 80-100% of the feature's surface is missing or disrupted</desc>
       <opts>
         <opt>1</opt>
@@ -274,7 +274,7 @@
         <opt>5</opt>
       </opts>
     </Affect>
-    <Impact t="dropdown">
+    <Impact>
       <desc>1= context is nearly intact; 5 = original context of the feature is nearly all destroyed</desc>
       <opts>
         <opt>1</opt>
