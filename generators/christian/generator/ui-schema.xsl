@@ -427,12 +427,14 @@
   <xsl:template name="body-expand-author">
     <input ref="Author" faims_read_only="true" faims_annotation="false" faims_certainty="false">
       <label>{Author}</label>
+      <xsl:call-template name="warn-unexpected-attr" />
     </input>
   </xsl:template>
 
   <xsl:template name="body-expand-timestamp">
     <input ref="Timestamp" faims_read_only="true" faims_annotation="false" faims_certainty="false">
       <label>{Timestamp}</label>
+      <xsl:call-template name="warn-unexpected-attr" />
     </input>
   </xsl:template>
 
@@ -457,6 +459,7 @@
 
   <xsl:template name="body-expand-gps">
     <group ref="Colgroup_GPS" faims_style="orientation">
+      <xsl:call-template name="warn-unexpected-attr" />
       <label/>
       <group ref="Col_0" faims_style="even">
         <label/>
@@ -498,6 +501,7 @@
     <xsl:element name="group">
       <xsl:attribute name="ref">Colgroup_<xsl:value-of select="count(./preceding-sibling::cols)"/></xsl:attribute>
       <xsl:attribute name="faims_style">orientation</xsl:attribute>
+      <xsl:call-template name="warn-unexpected-attr" />
       <label/>
       <xsl:for-each select="*">
         <xsl:element name="group">
@@ -768,6 +772,7 @@
       <xsl:comment>WARNING: Style in c attribute not applied; styling conflict exists due to "autonum" flag</xsl:comment>
     </xsl:if>
     <xsl:call-template name="label" />
+    <xsl:call-template name="warn-unexpected-attr" />
   </xsl:template>
 
   <xsl:template name="label">
@@ -956,6 +961,25 @@
     <xsl:if test="$doWarn and $v15 != ''">
       <xsl:comment>WARNING: Unexpected flag(s) "<xsl:value-of select="$v15" />"</xsl:comment>
     </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="warn-unexpected-attr">
+    <xsl:for-each select="@*">
+      <xsl:if test="
+        name() != 'b' and
+        name() != 'c' and
+        name() != 'f' and
+        name() != 'l' and
+        name() != 'p' and
+        name() != 't'
+        ">
+        <xsl:comment>
+          <xsl:text>WARNING: Unexpected attribute "</xsl:text>
+          <xsl:value-of select="name()"/>
+          <xsl:text>" ignored</xsl:text>
+        </xsl:comment>
+      </xsl:if>
+    </xsl:for-each>
   </xsl:template>
 
   <!-- WARNING:  This template assumes $string contains at most 80
