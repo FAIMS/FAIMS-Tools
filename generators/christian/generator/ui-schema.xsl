@@ -425,13 +425,13 @@
   </xsl:template>
 
   <xsl:template name="body-expand-author">
-    <input ref="Author" faims_read_only="true">
+    <input ref="Author" faims_read_only="true" faims_annotation="false" faims_certainty="false">
       <label>{Author}</label>
     </input>
   </xsl:template>
 
   <xsl:template name="body-expand-timestamp">
-    <input ref="Timestamp" faims_read_only="true">
+    <input ref="Timestamp" faims_read_only="true" faims_annotation="false" faims_certainty="false">
       <label>{Timestamp}</label>
     </input>
   </xsl:template>
@@ -891,6 +891,10 @@
         <xsl:with-param name="by"      select="''" />
       </xsl:call-template>
     </xsl:variable>
+    <xsl:if test="string-length($v7) &lt; string-length($v6)">
+      <xsl:attribute name="faims_certainty">false</xsl:attribute>
+      <xsl:attribute name="faims_annotation">false</xsl:attribute>
+    </xsl:if>
     <xsl:variable name="v8">
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text"    select="$v7" />

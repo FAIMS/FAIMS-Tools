@@ -157,7 +157,7 @@
       <label>{User}</label>
       <group ref="User">
         <label>{User}</label>
-        <select1 appearance="compact" ref="Select_User">
+        <select1 ref="Select_User">
           <label>{Select_User}</label>
           <item>
             <label>Options not loaded</label>
@@ -223,10 +223,10 @@
           <label>{Object_ID}</label>
           <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
-        <input ref="Timestamp" faims_read_only="true">
+        <input ref="Timestamp" faims_read_only="true" faims_annotation="false" faims_certainty="false">
           <label>{Timestamp}</label>
         </input>
-        <input ref="Author" faims_read_only="true">
+        <input ref="Author" faims_read_only="true" faims_annotation="false" faims_certainty="false">
           <label>{Author}</label>
         </input>
         <select1 faims_attribute_type="vocab" ref="Type" faims_attribute_name="Type">
