@@ -129,6 +129,7 @@
       </instance>
       <bind type="decimal" nodeset="/faims/Control/Main/Next_Object_ID"/>
       <bind type="decimal" nodeset="/faims/Burial_Mound/General/Object_ID"/>
+      <bind type="decimal" nodeset="/faims/Burial_Mound/General/Elevation"/>
     </model>
   </h:head>
   <h:body>
@@ -221,7 +222,6 @@
         <label>{General}</label>
         <input faims_attribute_type="measure" ref="Object_ID" faims_attribute_name="Object ID" faims_style_class="required">
           <label>{Object_ID}</label>
-          <!--WARNING: Unexpected attribute "d" ignored-->
           <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
         <input ref="Timestamp" faims_read_only="true" faims_annotation="false" faims_certainty="false">
@@ -319,7 +319,6 @@
         </trigger>
         <input faims_attribute_type="measure" ref="Elevation" faims_attribute_name="Elevation">
           <label>{Elevation__MASL_}</label>
-          <!--WARNING: Unexpected attribute "d" ignored-->
           <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
         <input faims_attribute_type="measure" ref="General_Notes" faims_attribute_name="General Notes">

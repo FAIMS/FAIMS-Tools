@@ -627,6 +627,14 @@ getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
   return duplicateQuery;
 }
 
+makeDuplicateRelationships(fetchedAttributes, String newuuid){
+  for (savedAttribute : fetchedAttributes){
+    //  saveEntitiesToHierRel(relnname, parent, child, parentverb, childverb, relSaveCallback);
+    //relntypename, parentparticipatesverb, childparticipatesverb, childuuid
+    saveEntitiesToHierRel(savedAttribute.get(0), newuuid, savedAttribute.get(3), savedAttribute.get(1), savedAttribute.get(2), null);
+  }
+}
+
 // generic get extra attributes
 getExtraAttributes(fetchedAttributes) {
   List extraAttributes = createAttributeList();
@@ -685,8 +693,15 @@ duplicateBurialMound(){
       populateAuthorAndTimestamp(tabgroup);
 
       Boolean enable_autosave = true;
-      showToast("{Duplicated_record}");
-      dialog.dismiss();
+
+      fetchAll(getDuplicateRelnQuery(getUuid(tabgroup)), new FetchCallback(){
+        onFetch(result) {
+          makeDuplicateRelationships(result, getUuid(tabgroup));
+          showToast("{Duplicated_record}");
+          dialog.dismiss();
+        }
+      });
+
       saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
         onSave(autosaveUuid, autosaveNewRecord) {
           setUuid(tabgroup, autosaveUuid);

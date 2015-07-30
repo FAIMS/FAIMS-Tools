@@ -24,7 +24,7 @@
 
 <Burial_Mound>
   <General>
-    <Object_ID d="decimal" f="id notnull autonum"/>
+    <Object_ID f="id notnull autonum"/>
     <timestamp/>
     <author/>
     <Type>
@@ -122,7 +122,7 @@
       </opts>
     </Visibility>
     <gps/>
-    <Elevation d="decimal">
+    <Elevation b="decimal">
       Elevation (MASL)
     </Elevation>
     <General_Notes/>
