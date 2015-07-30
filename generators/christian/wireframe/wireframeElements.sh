@@ -9,7 +9,7 @@ mkdir -p wireframeImages
   
   ./makeElement.sh style_large_layout_weight "3" input 1 false false false false false wireframeImages/
   
-  ./makeElement.sh User_User_Select_User "Select User" dropdown 1 false false false false false wireframeImages/
+  ./makeElement.sh User_User_Select_User "Select User" list 1 false false false false false wireframeImages/
   
   ./makeElement.sh User_User_Login "Login" button 1 false false false false false wireframeImages/
   

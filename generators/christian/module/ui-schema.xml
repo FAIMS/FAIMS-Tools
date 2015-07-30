@@ -157,7 +157,7 @@
       <label>{User}</label>
       <group ref="User">
         <label>{User}</label>
-        <select1 ref="Select_User">
+        <select1 appearance="compact" ref="Select_User">
           <label>{Select_User}</label>
           <item>
             <label>Options not loaded</label>

@@ -1502,7 +1502,9 @@ populateListForUsers(){
 String username = "";
 
 selectUser () {
-  String userVocabId  = getFieldValue(userMenuPath);
+</xsl:text>
+    <xsl:call-template name="users-vocabid"/>
+<xsl:text>
   String userQ        = "SELECT userid,fname,lname,email FROM user " +
                         "WHERE  userid='" + userVocabId + "';";
   FetchCallback callback = new FetchCallback() {
@@ -1525,6 +1527,17 @@ onEvent(userMenuPath, "show",  "populateListForUsers()");
 onEvent(userMenuPath, "select", "selectUser()");
 </xsl:text>
     </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="users-vocabid">
+    <xsl:choose>
+      <xsl:when test="normalize-space(@t) = 'list'">
+        <xsl:text>  String userVocabId  = getListItemValue();</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>  String userVocabId  = getFieldValue(userMenuPath);</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 <!--

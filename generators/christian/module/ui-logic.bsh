@@ -210,7 +210,7 @@ populateListForUsers(){
 String username = "";
 
 selectUser () {
-  String userVocabId  = getFieldValue(userMenuPath);
+  String userVocabId  = getListItemValue();
   String userQ        = "SELECT userid,fname,lname,email FROM user " +
                         "WHERE  userid='" + userVocabId + "';";
   FetchCallback callback = new FetchCallback() {
