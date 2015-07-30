@@ -126,6 +126,8 @@ addActionBarItem("external_gps", new ToggleActionButtonCallback() {
 /******************************************************************************/
 /*                                    GPS                                     */
 /******************************************************************************/
+onEvent("Control/Main", "show", "updateGPSDiagnostics()");
+
 updateGPSDiagnostics() {
   String diagnosticsRef = "Control/Main/GPS_Diagnostics";
   if (diagnosticsRef.equals("")) {

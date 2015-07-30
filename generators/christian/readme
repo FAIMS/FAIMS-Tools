@@ -3,7 +3,15 @@ TODO Add "View Attached Files" button?
        - addition to ui schema
 TODO There should be a way of populating lists with archents
 TODO There should be a way of specifying webviews' text
+TODO change t="gpsdiag" to an element
 TODO Child relationships
+     - Possible strategy:
+       - Make lc "link (to) child" attribute
+       - Make ec "entity child" attribute
+       - Make e "entity" attribute while you're at it
+     - Ensure list of related ents has no annotations nor certainties
+     - Consider if your solution can handle the case where, in a module, an
+       entity can both be a child and stand alone.
 TODO Automate regression tests
 TODO CSV to dataschema
 
@@ -19,9 +27,7 @@ Attributes
   c                  Alias for faims_style_class
   f                  Flags (See 'Flags')
   l                  Link to tab or tab group in the format Tabgroup/Tab/
-  p                  In <opt> tags, equivalent to pictureURL attribute. In <str>
-                     tags, provides the position (ordering) of identifiers in a
-                     fortmatted string.
+  p                  In <opt> tags, equivalent to pictureURL attribute.
   suppressWarnings   Prevents warnings from being shown when equal to "true" and
                      present in the <module> tag. Does not suppress errors.
   t                  Type of GUI element (See 'Types'). If this attribute is

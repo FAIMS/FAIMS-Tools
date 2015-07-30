@@ -140,6 +140,9 @@ addActionBarItem("external_gps", new ToggleActionButtonCallback() {
 /******************************************************************************/
 /*                                    GPS                                     */
 /******************************************************************************/
+</xsl:text>
+<xsl:call-template name="gps-diag-update" />
+<xsl:text>
 updateGPSDiagnostics() {
   String diagnosticsRef = "</xsl:text>
   <xsl:call-template name="gps-diag-ref" />
@@ -1636,6 +1639,17 @@ onEvent(userMenuPath, "select", "selectUser()");
       <xsl:text>populateDropDown("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Entity_Types", entityTypes);</xsl:text>
       <xsl:value-of select="$newline" />
     </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="gps-diag-update">
+    <xsl:for-each select="//*[normalize-space(@t) = 'gpsdiag'][1]">
+      <xsl:text>onEvent("</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])"/>
+      <xsl:text>/</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-2])"/>
+      <xsl:text>", "show", "updateGPSDiagnostics()");</xsl:text>
+      <xsl:value-of select="$newline" />
+    </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="gps-diag-ref">
