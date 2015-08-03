@@ -28,9 +28,21 @@
 
   <xsl:template match="/module">
     <dataSchema>
+      <xsl:call-template name="parent-of" />
       <xsl:copy-of select="/module/rels/*" />
       <xsl:call-template name="arch-el" />
     </dataSchema>
+  </xsl:template>
+
+  <xsl:template name="parent-of">
+    <xsl:if test="//@lc">
+      <RelationshipElement name="Parent Of" type="hierarchical">
+        <xsl:if test="/module/rels//*[@lc = 'Parent Of']">
+          <xsl:comment>ERROR: This automatically generated relationship is a duplicate of a user-specified one and is required to implement child relationships specified by the use of any "lc" attributes</xsl:comment>
+        </xsl:if>
+        <description>A 1-to-n relationship between the parent and its children, respectively.</description>
+      </RelationshipElement>
+    </xsl:if>
   </xsl:template>
 
   <!-- ArchaeologicalElement -->

@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <ValidationSchema>
+  <ArchaeologicalElement name="My_Baby"/>
+  <ArchaeologicalElement name="TG"/>
   <ArchaeologicalElement name="Burial_Mound">
     <property name="Object ID">
       <validator type="blankchecker">

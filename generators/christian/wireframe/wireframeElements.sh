@@ -23,9 +23,17 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Control_Search_Search_Button "Search" button 2 false false false false false wireframeImages/
   
+  ./makeElement.sh Control_Search_Entity_Types "Entity Types" dropdown 1 false false false false false wireframeImages/
+  
   ./makeElement.sh Control_Search_Entity_List "Entity List" list 1 false false false false false wireframeImages/
   
   ./makeElement.sh Control_Map_Map "Map" map 1 false false false false false wireframeImages/
+  
+  ./makeElement.sh My_Baby_My_Baby_Field_1 "Field 1" input 1 false false true false false wireframeImages/
+  
+  ./makeElement.sh TG_T_Add_Baby "Add Baby" input 1 false false true false false wireframeImages/
+  
+  ./makeElement.sh TG_T_List_Of_Related_Babies "List Of Related Babies" list 1 false false true false false wireframeImages/
   
   ./makeElement.sh Burial_Mound_General_Object_ID "Object ID" input 1 false false true true false wireframeImages/
   

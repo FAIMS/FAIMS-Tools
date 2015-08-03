@@ -22,6 +22,7 @@
 <arch16n k="{80_40_}"><![CDATA[80-40%]]></arch16n>
 <arch16n k="{90_100_}"><![CDATA[90-100%]]></arch16n>
 <arch16n k="{Accuracy}"><![CDATA[Accuracy]]></arch16n>
+<arch16n k="{Add_Baby}"><![CDATA[Add Baby]]></arch16n>
 <arch16n k="{Affect}"><![CDATA[Affect]]></arch16n>
 <arch16n k="{Age}"><![CDATA[Age]]></arch16n>
 <arch16n k="{Age_of_Damage}"><![CDATA[Age of Damage]]></arch16n>
@@ -86,6 +87,7 @@
 <arch16n k="{Exposure}"><![CDATA[Exposure]]></arch16n>
 <arch16n k="{External_GPS_Disabled}"><![CDATA[External GPS disabled]]></arch16n>
 <arch16n k="{External_GPS_Enabled}"><![CDATA[External GPS enabled]]></arch16n>
+<arch16n k="{Field_1}"><![CDATA[Field 1]]></arch16n>
 <arch16n k="{Forest}"><![CDATA[Forest]]></arch16n>
 <arch16n k="{Fresh}"><![CDATA[Fresh]]></arch16n>
 <arch16n k="{General}"><![CDATA[General]]></arch16n>
@@ -113,6 +115,7 @@
 <arch16n k="{Legacy_verification}"><![CDATA[Legacy verification]]></arch16n>
 <arch16n k="{Length_Max}"><![CDATA[Length Max]]></arch16n>
 <arch16n k="{Length_Min}"><![CDATA[Length Min]]></arch16n>
+<arch16n k="{List_Of_Related_Babies}"><![CDATA[List Of Related Babies]]></arch16n>
 <arch16n k="{Login}"><![CDATA[Login]]></arch16n>
 <arch16n k="{Longitude}"><![CDATA[Longitude]]></arch16n>
 <arch16n k="{Looting}"><![CDATA[Looting]]></arch16n>
@@ -128,6 +131,7 @@
 <arch16n k="{medium}"><![CDATA[medium]]></arch16n>
 <arch16n k="{Medium}"><![CDATA[Medium]]></arch16n>
 <arch16n k="{Mound_geomorphology}"><![CDATA[Mound geomorphology]]></arch16n>
+<arch16n k="{My_Baby}"><![CDATA[My Baby]]></arch16n>
 <arch16n k="{Name}"><![CDATA[Name]]></arch16n>
 <arch16n k="{New}"><![CDATA[New]]></arch16n>
 <arch16n k="{New_record_created}"><![CDATA[New record created]]></arch16n>
@@ -191,6 +195,7 @@
 <arch16n k="{Sync_Enabled}"><![CDATA[Sync enabled]]></arch16n>
 <arch16n k="{Take_Feature}"><![CDATA[Take Feature]]></arch16n>
 <arch16n k="{Take_From_GPS}"><![CDATA[Take From GPS]]></arch16n>
+<arch16n k="{TG}"><![CDATA[TG]]></arch16n>
 <arch16n k="{This_record_is_unsaved_and_cannot_be_duplicated}"><![CDATA[This record is unsaved and cannot be duplicated]]></arch16n>
 <arch16n k="{timestamp}"><![CDATA[timestamp]]></arch16n>
 <arch16n k="{Timestamp}"><![CDATA[Timestamp]]></arch16n>
@@ -199,6 +204,7 @@
 <arch16n k="{Topo}"><![CDATA[Topo]]></arch16n>
 <arch16n k="{totally_disturbed}"><![CDATA[totally disturbed]]></arch16n>
 <arch16n k="{Trench}"><![CDATA[Trench]]></arch16n>
+<arch16n k="{T}"><![CDATA[T]]></arch16n>
 <arch16n k="{Tunnel}"><![CDATA[Tunnel]]></arch16n>
 <arch16n k="{Type}"><![CDATA[Type]]></arch16n>
 <arch16n k="{undisturbed}"><![CDATA[undisturbed]]></arch16n>
@@ -216,5 +222,6 @@
 <arch16n k="{Width_Min}"><![CDATA[Width Min]]></arch16n>
 <arch16n k="{Wind_damage}"><![CDATA[Wind damage]]></arch16n>
 <arch16n k="{Yes}"><![CDATA[Yes]]></arch16n>
+<arch16n k="{You_must_save_this_tabgroup_first}"><![CDATA[You must save this tab group first]]></arch16n>
 <arch16n k="{zero}"><![CDATA[zero]]></arch16n>
 </arch16ns>

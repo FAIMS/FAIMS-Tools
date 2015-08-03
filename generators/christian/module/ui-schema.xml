@@ -37,12 +37,24 @@
                   <Search_Button/>
                 </Col_1>
               </Colgroup_0>
+              <Entity_Types/>
               <Entity_List/>
             </Search>
             <Map>
               <Map/>
             </Map>
           </Control>
+          <My_Baby>
+            <My_Baby>
+              <Field_1/>
+            </My_Baby>
+          </My_Baby>
+          <TG>
+            <T>
+              <Add_Baby/>
+              <List_Of_Related_Babies/>
+            </T>
+          </TG>
           <Burial_Mound>
             <General>
               <Object_ID/>
@@ -129,7 +141,6 @@
       </instance>
       <bind type="decimal" nodeset="/faims/Control/Main/Next_Object_ID"/>
       <bind type="decimal" nodeset="/faims/Burial_Mound/General/Object_ID"/>
-      <bind type="decimal" nodeset="/faims/Burial_Mound/General/Elevation"/>
     </model>
   </h:head>
   <h:body>
@@ -201,6 +212,13 @@
             </trigger>
           </group>
         </group>
+        <select1 ref="Entity_Types">
+          <label>{Entity_Types}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>Options not loaded</value>
+          </item>
+        </select1>
         <select1 appearance="compact" ref="Entity_List">
           <label>{Entity_List}</label>
           <item>
@@ -216,12 +234,42 @@
         </input>
       </group>
     </group>
+    <group ref="My_Baby" faims_archent_type="My Baby">
+      <label>{My_Baby}</label>
+      <group ref="My_Baby">
+        <label>{My_Baby}</label>
+        <input faims_attribute_type="measure" ref="Field_1" faims_attribute_name="Field 1">
+          <label>{Field_1}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+      </group>
+    </group>
+    <group ref="TG" faims_archent_type="TG">
+      <label>{TG}</label>
+      <group ref="T">
+        <label>{T}</label>
+        <input faims_attribute_type="measure" ref="Add_Baby" faims_attribute_name="Add Baby">
+          <label>{Add_Baby}</label>
+          <!--WARNING: Unexpected attribute "lc" ignored-->
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <select1 appearance="compact" ref="List_Of_Related_Babies" faims_attribute_name="List Of Related Babies">
+          <label>{List_Of_Related_Babies}</label>
+          <!--WARNING: Unexpected attribute "ec" ignored-->
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+      </group>
+    </group>
     <group ref="Burial_Mound" faims_archent_type="Burial Mound">
       <label>{Burial_Mound}</label>
       <group ref="General">
         <label>{General}</label>
         <input faims_attribute_type="measure" ref="Object_ID" faims_attribute_name="Object ID" faims_style_class="required">
           <label>{Object_ID}</label>
+          <!--WARNING: Unexpected attribute "d" ignored-->
           <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
         <input ref="Timestamp" faims_read_only="true" faims_annotation="false" faims_certainty="false">
@@ -319,6 +367,7 @@
         </trigger>
         <input faims_attribute_type="measure" ref="Elevation" faims_attribute_name="Elevation">
           <label>{Elevation__MASL_}</label>
+          <!--WARNING: Unexpected attribute "d" ignored-->
           <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
         <input faims_attribute_type="measure" ref="General_Notes" faims_attribute_name="General Notes">

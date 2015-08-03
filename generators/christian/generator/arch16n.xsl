@@ -139,6 +139,7 @@ This_record_is_unsaved_and_cannot_be_duplicated=This record is unsaved and canno
 Timestamp=Timestamp
 Validate=Validate
 Warning=Warning
+You_must_save_this_tabgroup_first=You must save this tab group first
 no_GPS_position_could_be_found=no GPS position could be found
 off=off
 on=on

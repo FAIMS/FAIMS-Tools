@@ -144,6 +144,8 @@ for entry in html['feed']['entry']:
                 p['terms'] = []
                 p['parents'] = []
             #print "%s %s %s" % (entity, attribute, type(vocabTable[entity]['properties']))
+            if (not isinstance(vocabTable[entity]['properties'], list)):
+                vocabTable[entity]['properties'] = []
             vocabTable[entity]['properties'].append(p)
 
 print """<?xml version="1.0" encoding="UTF-8"?>

@@ -1,6 +1,7 @@
 import android.util.Log;
 
-Object dialog;
+Object dialog;         // Used to help coordinate the display of a "busy..." dialog
+String parentTabgroup; // Used to allow entities to be saved as children
 
 setFileSyncEnabled(true);
 setSyncDelay(5.0f);
@@ -446,14 +447,20 @@ saveTabGroup(String tabgroup) {
 }
 
 saveTabGroup(String tabgroup, String callback) {
-  Boolean enableAutosave = true;
-  String  id             = getUuid(tabgroup);
-  List    geometry       = null;
-  List    attributes     = null;
+  Boolean enableAutosave  = true;
+  String  id              = getUuid(tabgroup);
+  List    geometry        = null;
+  List    attributes      = null;
+  String  parentTabgroup_ = parentTabgroup;
+
+  parentTabgroup = null;
   SaveCallback saveCallback  = new SaveCallback() {
     onSave(uuid, newRecord) {
       setUuid(tabgroup, uuid);
       populateAuthorAndTimestamp(tabgroup);
+      if (newRecord && !isNull(parentTabgroup_)) {
+        saveEntitiesToRel("Parent Of", getUuid(parentTabgroup_), uuid, relCallback);
+      }
       execute(callback);
     }
     onError(message) {
@@ -496,11 +503,21 @@ populateAuthorAndTimestamp(String tabgroup) {
   fetchOne(q, callback);
 }
 
+onShowMyBaby () {
+  // TODO: Add some things which should happen when this tab group is shown
+  saveTabGroup("My_Baby");
+}
+onShowTG () {
+  // TODO: Add some things which should happen when this tab group is shown
+  saveTabGroup("TG");
+}
 onShowBurialMound () {
   // TODO: Add some things which should happen when this tab group is shown
   saveTabGroup("Burial_Mound");
 }
 
+onEvent("My_Baby", "show", "onShowMyBaby()");
+onEvent("TG", "show", "onShowTG()");
 onEvent("Burial_Mound", "show", "onShowBurialMound()");
 
 onClickUserLogin () {
@@ -515,9 +532,20 @@ onClickBurialMoundCreateShapefile () {
   // TODO: Add some things which should happen when this element is clicked
   newTab("Control/Map", true);
 }
+onClickTGAddBaby () {
+  // TODO: Add some things which should happen when this element is clicked
+  String tabgroup = "TG";
+  if (isNull(getUuid(tabgroup))){
+    showToast("{You_must_save_this_tabgroup_first}");
+    return;
+  }
+  parentTabgroup = tabgroup;
+  newMyBaby();
+}
 
 onEvent("User/User/Login", "click", "onClickUserLogin()");
 onEvent("Control/Main/Take_Feature", "click", "onClickControlTakeFeature()");
+onEvent("TG/T/Add_Baby", "click", "onClickTGAddBaby()");
 onEvent("Burial_Mound/General/Create_Shapefile", "click", "onClickBurialMoundCreateShapefile()");
 
 
@@ -587,6 +615,40 @@ addNavigationButtons(String tabgroup) {
   }, "default");
 }
 
+/******************************************************************************/
+/*        ENTITY AND RELATIONSHIP SAVING AND LOADING HELPER FUNCTIONS         */
+/******************************************************************************/
+/** Saves two entity id's as a relation. **/
+saveEntitiesToRel(String type, String entity1, String entity2) {
+    String callback = null;
+    saveEntitiesToRel(type, entity1, entity2, callback);
+}
+
+/** Saves two entity id's as a relation with some callback executed. **/
+saveEntitiesToRel(String type, String entity1, String entity2, String callback) {
+    String e1verb = null;
+    String e2verb = null;
+    saveEntitiesToHierRel(type, entity1, entity2, e1verb, e2verb, callback);
+}
+
+/** Saves two entity id's as a hierachical relation with some callback executed. **/
+saveEntitiesToHierRel(String type, String entity1, String entity2, String e1verb, String e2verb, String callback) {
+    if (isNull(entity1) || isNull(entity2)) return;
+    saveRel(null, type, null, null, new SaveCallback() {
+        onSave(rel_id, newRecord) {
+            addReln(entity1, rel_id, e1verb);
+            addReln(entity2, rel_id, e2verb);
+            if(!isNull(callback)) {
+               execute(callback);
+            }
+        }
+        onError(message) {
+            Log.e("saveEntitiesToHierRel", message);
+            showToast(message);
+        }
+    });
+}
+
 // Makes a new record of the given tabgroup
 newRecord(String tabgroup) {
   cancelTabGroup(tabgroup, false);
@@ -651,6 +713,162 @@ getExtraAttributes(fetchedAttributes) {
     );
   }
   return extraAttributes;
+}
+
+loadEntity() {
+  loadEntityFrom(getListItemValue());
+}
+
+loadEntityFrom(String entityID) {
+  if (isNull(entityID)) {
+    Log.e("Module", "Cannot load an entity with a null ID.");
+    return;
+  }
+
+  String getEntTypeNameQ = "SELECT aenttypename " +
+                           "  FROM latestnondeletedarchent " +
+                           "  JOIN aenttype " +
+                           " USING (aenttypeid) " +
+                           " WHERE uuid = '" + entityID + "'";
+  fetchAll(getEntTypeNameQ, new FetchCallback() {
+    onFetch(result) {
+      String archEntName = result.get(0).get(0);
+      String loadFunction = "load" + archEntName.replaceAll(" ", "") + "From(entityID)"; // Typical value: loadContextFrom(entityID)
+      eval(loadFunction);
+    }
+  });
+}
+
+newMyBaby(){
+  String tabgroup = "My_Baby";
+
+
+  setUuid(tabgroup, null);
+  newTabGroup(tabgroup);
+
+}
+
+duplicateMyBaby(){
+  String tabgroup = "My_Baby";
+
+  disableAutoSave(tabgroup);
+
+
+
+
+  saveCallback = new SaveCallback() {
+    onSave(uuid, newRecord) {
+      setUuid(tabgroup, uuid);
+      populateAuthorAndTimestamp(tabgroup);
+
+      Boolean enable_autosave = true;
+
+      fetchAll(getDuplicateRelnQuery(getUuid(tabgroup)), new FetchCallback(){
+        onFetch(result) {
+          makeDuplicateRelationships(result, getUuid(tabgroup));
+          showToast("{Duplicated_record}");
+          dialog.dismiss();
+        }
+      });
+
+      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
+        onSave(autosaveUuid, autosaveNewRecord) {
+          setUuid(tabgroup, autosaveUuid);
+        }
+      }, enable_autosave);
+    }
+  };
+
+  String extraDupeAttributes = "";
+  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
+    onFetch(result) {
+      excludeAttributes = new ArrayList();
+
+      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
+    }
+  });
+}
+
+deleteMyBaby(){
+  String tabgroup = "My_Baby";
+
+  if (isNull(getUuid(tabgroup))) {
+    cancelTabGroup(tabgroup, true);
+  } else {
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteMyBaby()", "doNotDelete()");
+  }
+}
+
+reallyDeleteMyBaby(){
+  String tabgroup = "My_Baby";
+  deleteArchEnt(getUuid(tabgroup));
+  cancelTabGroup(tabgroup, false);
+}
+
+newTG(){
+  String tabgroup = "TG";
+
+
+  setUuid(tabgroup, null);
+  newTabGroup(tabgroup);
+
+}
+
+duplicateTG(){
+  String tabgroup = "TG";
+
+  disableAutoSave(tabgroup);
+
+
+
+
+  saveCallback = new SaveCallback() {
+    onSave(uuid, newRecord) {
+      setUuid(tabgroup, uuid);
+      populateAuthorAndTimestamp(tabgroup);
+
+      Boolean enable_autosave = true;
+
+      fetchAll(getDuplicateRelnQuery(getUuid(tabgroup)), new FetchCallback(){
+        onFetch(result) {
+          makeDuplicateRelationships(result, getUuid(tabgroup));
+          showToast("{Duplicated_record}");
+          dialog.dismiss();
+        }
+      });
+
+      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
+        onSave(autosaveUuid, autosaveNewRecord) {
+          setUuid(tabgroup, autosaveUuid);
+        }
+      }, enable_autosave);
+    }
+  };
+
+  String extraDupeAttributes = "";
+  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
+    onFetch(result) {
+      excludeAttributes = new ArrayList();
+
+      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
+    }
+  });
+}
+
+deleteTG(){
+  String tabgroup = "TG";
+
+  if (isNull(getUuid(tabgroup))) {
+    cancelTabGroup(tabgroup, true);
+  } else {
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteTG()", "doNotDelete()");
+  }
+}
+
+reallyDeleteTG(){
+  String tabgroup = "TG";
+  deleteArchEnt(getUuid(tabgroup));
+  cancelTabGroup(tabgroup, false);
 }
 
 newBurialMound(){
@@ -747,6 +965,8 @@ doNotDelete(){
 }
 onEvent("User", "show", "removeNavigationButtons()");
 onEvent("Control", "show", "removeNavigationButtons()");
+onEvent("My_Baby", "show", "addNavigationButtons(\"My_Baby\")");
+onEvent("TG", "show", "addNavigationButtons(\"TG\")");
 onEvent("Burial_Mound", "show", "addNavigationButtons(\"Burial_Mound\")");
 
 /******************************************************************************/
@@ -756,6 +976,14 @@ onEvent("Control/Search"               , "show"  , "search();");
 onEvent("Control/Search/Entity_List"   , "click" , "loadEntity();");
 onEvent("Control/Search/Search_Button" , "click" , "search()");
 onEvent("Control/Search/Search_Term"   , "click" , "clearSearch()");
+onEvent("Control/Search/Entity_Types"  , "click" , "search()");
+
+entityTypes = new ArrayList();
+entityTypes.add(new NameValuePair("{All}", "All"));
+entityTypes.add(new NameValuePair("{My_Baby}", "My Baby"));
+entityTypes.add(new NameValuePair("{TG}", "TG"));
+entityTypes.add(new NameValuePair("{Burial_Mound}", "Burial Mound"));
+populateDropDown("Control/Search/Entity_Types", entityTypes);
 
 clearSearch(){
   setFieldValue("Control/Search/Search_Term","");
@@ -767,14 +995,13 @@ search(){
   String refSearchTerm  = tabgroup + "/Search/Search_Term";
   String refEntityTypes = tabgroup + "/Search/Entity_Types";
 
-  String type = "All";
+  String type = getFieldValue(refEntityTypes);
   String term = getFieldValue(refSearchTerm);
   String searchQuery = "SELECT uuid, response "+
                        "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
                        " WHERE uuid in (SELECT uuid "+
                        "                  FROM latestNonDeletedArchEntIdentifiers "+
-                       "                 WHERE attributename != 'Site Code' "+
-                       "                   AND measure LIKE '"+term+"'||'%'  "+
+                       "                 WHERE measure LIKE '"+term+"'||'%'  "+
                        "                   AND ( aenttypename LIKE '"+type+"' OR 'All' = '"+type+"' ) "+
                        "                )  "+
                        " ORDER BY response "+
@@ -787,28 +1014,20 @@ search(){
   Log.d("Boncuklu Module", "Search query: " + searchQuery);
 }
 
-loadEntity() {
-  loadEntityFrom(getListItemValue());
+loadMyBabyFrom(String uuid) {
+  String tabgroup = "My_Baby";
+  setUuid(tabgroup, uuid);
+  if (isNull(uuid)) return;
+
+  showTabGroup(tabgroup, uuid);
 }
 
-loadEntityFrom(String entityID) {
-  if (isNull(entityID)) {
-    Log.e("Module", "Cannot load an entity with a null ID.");
-    return;
-  }
+loadTGFrom(String uuid) {
+  String tabgroup = "TG";
+  setUuid(tabgroup, uuid);
+  if (isNull(uuid)) return;
 
-  String getEntTypeNameQ = "SELECT aenttypename " +
-                           "  FROM latestnondeletedarchent " +
-                           "  JOIN aenttype " +
-                           " USING (aenttypeid) " +
-                           " WHERE uuid = '" + entityID + "'";
-  fetchAll(getEntTypeNameQ, new FetchCallback() {
-    onFetch(result) {
-      String archEntName = result.get(0).get(0);
-      String loadFunction = "load" + archEntName.replaceAll(" ", "") + "From(entityID)"; // Typical value: loadContextFrom(entityID)
-      eval(loadFunction);
-    }
-  });
+  showTabGroup(tabgroup, uuid);
 }
 
 loadBurialMoundFrom(String uuid) {
@@ -967,3 +1186,104 @@ incAutoNum(String destPath) {
   setFieldValue(destPath, destVal);
   incField(sourcePath);
 }
+
+/******************************************************************************/
+/*                POPULATION OF ENTITY AND CHILD ENTITY LISTS                 */
+/******************************************************************************/
+/*
+ * `viewType`   the type of GUI element to be populated. It can either equal
+ *              "DropDown" or "List".
+ * `path`       the reference of the GUI element to be populated.
+ * `parentUuid` the parent in the relationship denoted by `relType`.
+ * `entType`    the type of the entities the menu will be populated with.
+ * `relType`    the name of the relationship the children are to be in with the
+ *              entity denoted by `parentUuid`.
+ */
+populateMenuWithEntities (
+  String viewType,
+  String path,
+  String parentUuid,
+  String entType,
+  String relType
+) {
+  if (isNull(parentUuid))
+    return;
+
+  // TODO: Make this query work. (childaenttypename doesn't exist.)
+  String getChildEntitiesQ = "" +
+    "SELECT childuuid, response "+
+    "  FROM parentchild JOIN latestNonDeletedArchEntFormattedIdentifiers ON (childuuid = uuid) " +
+    "  JOIN createdmodifiedatby USING (uuid) " +
+    " WHERE relationshipid IN (SELECT relationshipid  " +
+    "                            FROM latestnondeletedrelationship JOIN relntype USING (relntypeid) " +
+    "                           WHERE relntypename = '"+relType+"') " +
+    "   AND parentuuid = " + parentUuid + " " +
+    "   AND childaenttypename = '"+entType+"' OR '"+entType+"' = '' " +
+    " ORDER BY createdat DESC ";
+
+  String getEntitiesQ = "" +
+    "SELECT uuid, response "+
+    "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
+    " WHERE uuid in (SELECT uuid "+
+    "                  FROM latestNonDeletedArchEntIdentifiers "+
+    "                 WHERE aenttypename LIKE '"+entType+"' OR '"+entType+"' = '' " +
+    "               )  "+
+    " ORDER BY response ";
+
+  String q = null;
+  if (relType.equals("")) {
+    q = getEntitiesQ;
+  } else {
+    q = getChildEntitiesQ;
+  }
+
+  FetchCallback cbPopulateDropDown = new FetchCallback() {
+    onFetch(result) {
+      populateDropDown(path, result);
+    }
+  };
+
+  switch (viewType) {
+    case "DropDown":
+      fetchAll(q, cbPopulateDropDown);
+      break;
+    case "List":
+      q += " LIMIT ? OFFSET ? ";
+      populateCursorList(path, q, 25);
+      break;
+    default:
+      Log.e("populateMenuWithEntities ", "Unexpected type '" + viewType + "'");
+  }
+}
+
+menus = new ArrayList();
+menus.add(new String[] {
+  "List",
+  "TG/T/List_Of_Related_Babies",
+  getUuid("TG"),
+  "My_Baby",
+  "Parent Of"
+});
+for (m : menus) {
+  String viewType   = m.get(0);
+  String path       = m.get(1);
+  String parentUuid = m.get(2);
+  String entType    = m.get(3);
+  String relType    = m.get(4);
+
+  String functionCall = "";
+  functionCall += "populateMenuWithEntities(";
+  functionCall += "\"" + viewType   + "\"";
+  functionCall += ", ";
+  functionCall += "\"" + path       + "\"";
+  functionCall += ", ";
+  functionCall += "\"" + parentUuid + "\"";
+  functionCall += ", ";
+  functionCall += "\"" + entType    + "\"";
+  functionCall += ", ";
+  functionCall += "\"" + relType    + "\"";
+  functionCall += ")";
+
+  onEvent(path, "show", functionCall);
+}
+onEvent("TG/T/List_Of_Related_Babies", "click", "loadEntity()");

@@ -1,5 +1,26 @@
 <?xml version="1.0"?>
 <dataSchema>
+  <RelationshipElement name="Parent Of" type="hierarchical">
+    <description>A 1-to-n relationship between the parent and its children, respectively.</description>
+  </RelationshipElement>
+  <ArchaeologicalElement name="My Baby">
+    <!--ERROR: Identifier not given-->
+    <description/>
+    <property name="Field 1" type="measure">
+      <description/>
+    </property>
+  </ArchaeologicalElement>
+  <ArchaeologicalElement name="TG">
+    <!--ERROR: Identifier not given-->
+    <description/>
+    <property name="Add Baby" type="measure">
+      <description/>
+    </property>
+    <property name="List Of Related Babies" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+  </ArchaeologicalElement>
   <ArchaeologicalElement name="Burial Mound">
     <description/>
     <property name="Object ID" isIdentifier="true" type="measure">

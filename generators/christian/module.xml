@@ -22,9 +22,22 @@
   </Map>
 </Control>
 
+<My_Baby>
+  <My_Baby>
+    <Field_1/>
+  </My_Baby>
+</My_Baby>
+
+<TG>
+  <T>
+    <Add_Baby lc="My_Baby"/>
+    <List_Of_Related_Babies t="list" ec="My_Baby"/>
+  </T>
+</TG>
+
 <Burial_Mound>
   <General>
-    <Object_ID f="id notnull autonum"/>
+    <Object_ID d="decimal" f="id notnull autonum"/>
     <timestamp/>
     <author/>
     <Type>
@@ -122,7 +135,7 @@
       </opts>
     </Visibility>
     <gps/>
-    <Elevation b="decimal">
+    <Elevation d="decimal">
       Elevation (MASL)
     </Elevation>
     <General_Notes/>

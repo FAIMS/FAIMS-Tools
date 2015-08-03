@@ -1,16 +1,25 @@
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema
+TODO arch16n key should be name of node
+TODO The search feature will give unexpected results if a module contains an
+     archent called 'All'
+TODO Author and Timestamp's text should be used as a label
+TODO Warn about duplicate archents
 TODO Ensure audio, video, pictures and files don't have faims_certainty nor
      faims_annotation
 TODO There should be a way of populating lists with archents
 TODO There should be a way of specifying webviews' text
 TODO change t="gpsdiag" t="map" to an element
-TODO Child relationships
+TODO Child relationships. (Protip: Check Bon's onSampleSaved() function.)
      - Possible strategy:
        - Make lc "link (to) child" attribute
        - Make ec "entity child" attribute
+          <xsl:template name="entity-child-list">
+          </xsl:template>
        - Make e "entity" attribute while you're at it
+          <xsl:template name="entity-list">
+          </xsl:template>
      - Ensure list of related ents has no annotations nor certainties
      - Consider if your solution can handle the case where, in a module, an
        entity can both be a child and stand alone.
@@ -20,15 +29,19 @@ TODO Child relationships
      - Duplicating a parent must not duplicate the relationship to the child.
 TODO Automate regression tests
 TODO CSV to dataschema
+________________________________________________________________________________
 
-Quick Start
+QUICK START
+
   1. Modify the example module.xml. If you see something there which you don't
      understand, check this file.
   2. Run `./generate.sh`
   3. Collect your new shiny new module from the 'module' directory and your
      shiny new wireframe from the 'wireframe' directory.
+________________________________________________________________________________
 
-Attributes
+ATTRIBUTES
+
   b                  Binding (See 'Bindings')
   c                  Alias for faims_style_class
   f                  Flags (See 'Flags')
@@ -38,13 +51,20 @@ Attributes
                      present in the <module> tag. Does not suppress errors.
   t                  Type of GUI element (See 'Types'). If this attribute is
                      omitted from a view, t="input" is assumed.
+________________________________________________________________________________
 
-Bindings
+BINDINGS
+
+  - date
   - decimal
-  Other bindings are possible (e.g. by writing b = "string") but generate a
+  - string
+  - time
+  Other bindings are possible (e.g. by writing b = "my-binding") but generate a
   warning.
+________________________________________________________________________________
 
-Flags
+FLAGS
+
   hidden          Equivalent to faims_hidden="true".
   id              Equivalent to isIdentifier="true".
   noannotation    Equivalent to faims_annotation="false".
@@ -62,8 +82,10 @@ Flags
   user            Used to indicate that a menu should contain a list of users.
   notnull         Adds client- and server-side validation specifying that the
                   field should not be left blank.
+________________________________________________________________________________
 
-Types
+TYPES
+
   Types of GUI element:
   - audio        <select type="file" faims_sync=true>
   - button       <trigger>
@@ -80,8 +102,10 @@ Types
   - radio        <select1 appearance="full">
   - video        <select type="file" faims_sync=true>
   - web[view]    <input faims_web="true">
+________________________________________________________________________________
 
-Reserved Element Names and Recommended Naming Conventions
+RESERVED ELEMENT NAMES AND RECOMMENDED NAMING CONVENTIONS
+
   "Reserved" elements only contain lower case letters:
     - <col>      One column in a <cols> tag
     - <cols>     Columns
@@ -106,8 +130,10 @@ Reserved Element Names and Recommended Naming Conventions
   underscores as separators:
     - <My_User_Defined_Element t="dropdown" />
   Neither of these naming conventions are strictly enforced however.
+________________________________________________________________________________
 
-Intended Purpose of The <rels> Tag
+INTENDED PURPOSE OF THE <rels> TAG
+
   When placed as a direct child of the <module> element, contents of the <rels>
   tag are copied as-is to the generated data schema. No warnings are shown if
   something is awry with its contents.
@@ -115,8 +141,10 @@ Intended Purpose of The <rels> Tag
   Because the <rels> tags' contents are directly copied, in principle you could
   put anything in there which you want to appear in the data schema. Doing so
   would make you a bad person.
+________________________________________________________________________________
 
-Semantics of <cols> Tags
+SEMANTICS OF <cols> TAGS
+
   Direct children of <cols> tags are interpreted as columns. For example,
       <cols>
         <Field_1 t="input"/>
@@ -137,8 +165,10 @@ Semantics of <cols> Tags
       </cols>
   results in two columns. The left column contains Field_1, while the right
   contains Field_2 and Field_3.
+________________________________________________________________________________
 
-Labels
+LABELS
+
   An element's text is taken as its label. For instance, the following input
       <My_Input t="input">
         Droopy Soup
@@ -162,8 +192,10 @@ Labels
   and faims_attribute_name, which the programmer sees. Note that it merely
   "encourages" consistency as the programmer can change the corresponding,
   generated, arch16n (english.0.properties) entry.
+________________________________________________________________________________
 
-Generation of The arch16n File
+GENERATION OF THE ARCH16N FILE
+
   Labels and menu options (e.g. from checkboxes and dropdowns) have arch16n
   entries generated for them. The left-hand side of an arch16n entry (i.e.
   everything to the left of the equals sign) is produced by changing all
@@ -181,10 +213,12 @@ Generation of The arch16n File
   Moreover, the programmer is not warned if such a conflict exists, as, in
   practise, it assumed that such conflicts are very rare and checking for them
   in XSLT 1.0 violates Article 5 of 'The Universal Declaration of Human Rights'.
+________________________________________________________________________________
 
-Known Issues
+KNOWN ISSUES
+
   Arbitrarily nested group elements cannot be specified within a tab. For
-  example, the following module is poorly defined:
+  example, the code generated from the following module.xml is undefined:
       <?xml version="1.0" ?>
       <module>
         <Tab_Group>
@@ -229,8 +263,10 @@ Known Issues
   of the inputs or button/trigger. (Another difference, aside from the main
   point, but important nonetheless, is that appropriate bindings will not be
   generated in the UI logic file.)
+________________________________________________________________________________
 
-Grammar
+GRAMMAR
+
   The empty string is denoted by a period (.), comments begin with hash symbols
   (#), and \w is used to indicate an arbitrary tag name. Also, non-terminals and
   starting symbols are surrounded by backticks.
