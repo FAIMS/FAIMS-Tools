@@ -1,10 +1,6 @@
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema
-TODO arch16n key should be name of node
-TODO The search feature will give unexpected results if a module contains an
-     archent called 'All'
-TODO Author and Timestamp's text should be used as a label
 TODO Warn about duplicate archents
 TODO Ensure audio, video, pictures and files don't have faims_certainty nor
      faims_annotation
@@ -107,25 +103,27 @@ ________________________________________________________________________________
 RESERVED ELEMENT NAMES AND RECOMMENDED NAMING CONVENTIONS
 
   "Reserved" elements only contain lower case letters:
-    - <col>      One column in a <cols> tag
-    - <cols>     Columns
-    - <desc>     Description to put in the data schema
+    - <col>        One column in a <cols> tag
+    - <cols>       Columns
+    - <desc>       Description to put in the data schema
     - <module>
-    - <opt>      Option in <opts> tag
-    - <opts>     Options for, say, a dropdown menu
-    - <rels>     Intended to be a direct child of <module> and hold
-                 <RelationshipElement> tags
-    - <gps>      A set of fields including Latitude, Longitude, Northing,
-                 Easting and a "Take From GPS" button.
-    - <search>   A tab for searching all records. Its text is used as a label.
-    - <str>      Contains <formatString>-related data.
-    - <pos>      When the child of a <str>, gives the position (order) of an
-                 identifier in a formatted string
-    - <fmt>      When the child of a <str>, contains <formatString> data.
-    - <app>      When the child of a <str>, contains <appendCharacterString>
-                 data.
-    - <author>
-    - <timestamp>
+    - <opt>        Option in <opts> tag
+    - <opts>       Options for, say, a dropdown menu
+    - <rels>       Intended to be a direct child of <module> and hold
+                   <RelationshipElement> tags
+    - <gps>        A set of fields including Latitude, Longitude, Northing,
+                   Easting and a "Take From GPS" button.
+    - <search>     A tab for searching all records. Its text is used as a label.
+    - <str>        Contains <formatString>-related data.
+    - <pos>        When the child of a <str>, gives the position (order) of an
+                   identifier in a formatted string
+    - <fmt>        When the child of a <str>, contains <formatString> data.
+    - <app>        When the child of a <str>, contains <appendCharacterString>
+                   data.
+    - <author>     A read-only field displaying the username of the current user
+                   or a message if the entity it appears in has not been saved.
+    - <timestamp>  A read-only field displaying the creation time of the entity
+                   it appears in.
   User-defined elements should start with an upper case letter and use
   underscores as separators:
     - <My_User_Defined_Element t="dropdown" />

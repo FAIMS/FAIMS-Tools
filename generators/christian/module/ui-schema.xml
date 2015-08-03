@@ -28,6 +28,15 @@
               <Next_Object_ID/>
               <GPS_Diagnostics/>
             </Main>
+            <!--WARNING:  __                                                        -->
+            <!--WARNING: /  \        _____________________________________________  -->
+            <!--WARNING: |  |       /                                             \ -->
+            <!--WARNING: @  @       | It looks like you are implementing a search | -->
+            <!--WARNING: || ||   ___| feature. Would you like help? (You can use  | -->
+            <!--WARNING: || ||  /   | the built-in "search" tag here to add a tab | -->
+            <!--WARNING: |\_/|      | which searches all arch-ents.)              | -->
+            <!--WARNING: \___/      \_____________________________________________/ -->
+            <Search/>
             <Search>
               <Colgroup_0>
                 <Col_0>
@@ -195,7 +204,11 @@
           <label>{GPS_Diagnostics}</label>
         </input>
       </group>
+      <group ref="Search">
+        <label>{Search}</label>
+      </group>
       <group ref="Search" faims_scrollable="false">
+        <!--ERROR: View name is duplicated such that this UI schema is invalid-->
         <label>{Records}</label>
         <group faims_style="orientation" ref="Colgroup_0">
           <label/>
@@ -273,10 +286,10 @@
           <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
         <input ref="Timestamp" faims_read_only="true" faims_annotation="false" faims_certainty="false">
-          <label>{Timestamp}</label>
+          <label>{Your_Love}</label>
         </input>
         <input ref="Author" faims_read_only="true" faims_annotation="false" faims_certainty="false">
-          <label>{Author}</label>
+          <label>{author}</label>
         </input>
         <select1 faims_attribute_type="vocab" ref="Type" faims_attribute_name="Type">
           <label>{Type}</label>

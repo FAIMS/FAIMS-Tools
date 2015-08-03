@@ -27,7 +27,7 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Control_Search_Entity_List "Entity List" list 1 false false false false false wireframeImages/
   
-  ./makeElement.sh Control_Map_Map "Map" map 1 false false false false false wireframeImages/
+  ./makeElement.sh Control_Map_Map " Map" map 1 false false false false false wireframeImages/
   
   ./makeElement.sh My_Baby_My_Baby_Field_1 "Field 1" input 1 false false true false false wireframeImages/
   
@@ -37,27 +37,27 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Burial_Mound_General_Object_ID "Object ID" input 1 false false true true false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Timestamp "Timestamp" input 1 false false false false true wireframeImages/
+  ./makeElement.sh Burial_Mound_General_Timestamp "Your Love" input 1 false false false false true wireframeImages/
   
   ./makeElement.sh Burial_Mound_General_Author "Author" input 1 false false false false true wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Type "Type" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_General_Type "" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Site_Significance "Site Significance" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_General_Site_Significance "" dropdown 1 false false true false false wireframeImages/
   
   ./makeElement.sh Burial_Mound_General_Name "Name" input 1 false false true false false wireframeImages/
   
   ./makeElement.sh Burial_Mound_General_Description "Description" input 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Source "Source" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_General_Source "" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Exists_in_Legacy "Exists in Legacy" checkbox 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_General_Exists_in_Legacy "" checkbox 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Surrounding_Landuse "Surrounding Landuse" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_General_Surrounding_Landuse "" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Surface_Landuse "Surface Landuse" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_General_Surface_Landuse "" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Visibility "Visibility" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_General_Visibility "" dropdown 1 false false true false false wireframeImages/
   
   ./makeElement.sh Burial_Mound_General_Latitude "Latitude" input 2 false false true false true wireframeImages/
   
@@ -75,13 +75,13 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Burial_Mound_General_Create_Shapefile "Create Shapefile" button 1 false false false false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_General_Photo "General Photo" camera 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_General_General_Photo "" camera 1 false false true false false wireframeImages/
   
   ./makeElement.sh Burial_Mound_General_Button_General_Photo "Attach Photograph" button 1 false false false false false wireframeImages/
   
   ./makeElement.sh Burial_Mound_Dimensions_Profile "Profile" pictureGallery 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_Dimensions_Plan "Plan" pictureGallery 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_Dimensions_Plan "" pictureGallery 1 false false true false false wireframeImages/
   
   ./makeElement.sh Burial_Mound_Dimensions_Length_Max "Length Max" input 2 false false true false false wireframeImages/
   
@@ -115,7 +115,7 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Burial_Mound_Material_Stone_Feature_Description "Stone Feature Description" input 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_Material_Surface_Material_Density "Surface Material Density" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_Material_Surface_Material_Density "" dropdown 1 false false true false false wireframeImages/
   
   ./makeElement.sh Burial_Mound_Material_Surface_Material_Description "Surface Material Description" input 1 false false true false false wireframeImages/
   
@@ -125,29 +125,29 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Burial_Mound_Material_Button_Material_Photo "Attach Photograph" button 1 false false false false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_CRM_Disturbance_Kind "Disturbance Kind" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_CRM_Disturbance_Kind "" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_CRM_Disturbance_Factors "Disturbance Factors" checkbox 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_CRM_Disturbance_Factors "" checkbox 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_CRM_Principal_Factors "Principal Factors" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_CRM_Principal_Factors "" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_CRM_Age_of_Damage "Age of Damage" checkbox 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_CRM_Age_of_Damage "" checkbox 1 false false true false false wireframeImages/
   
   ./makeElement.sh Burial_Mound_CRM_Disturbance_Description "Disturbance Description" input 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_CRM_RT_Kind "RT Kind" checkbox 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_CRM_RT_Kind "" checkbox 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_CRM_RT_Method "RT Method" checkbox 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_CRM_RT_Method "" checkbox 1 false false true false false wireframeImages/
   
   ./makeElement.sh Burial_Mound_CRM_RT_Frequency "RT Frequency" pictureGallery 1 false false true false false wireframeImages/
   
   ./makeElement.sh Burial_Mound_CRM_RT_Description "RT Description" input 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_CRM_Volume_of_Soil_Removed_via_RT "Volume of Soil Removed via RT" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_CRM_Volume_of_Soil_Removed_via_RT "" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_CRM_Affect "Affect" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_CRM_Affect "" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_CRM_Impact "Impact" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Burial_Mound_CRM_Impact "" dropdown 1 false false true false false wireframeImages/
   
   ./makeElement.sh Burial_Mound_CRM_Comments_and_Recommendations "Comments and Recommendations" input 1 false false true false false wireframeImages/
   

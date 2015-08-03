@@ -32,7 +32,16 @@
 
         <xsl:variable name="arch16n-val">
           <xsl:choose>
-            <xsl:when test="normalize-space(text())">
+            <xsl:when test="not(text()) and name() = 'author'">
+              <xsl:text>Author</xsl:text>
+            </xsl:when>
+            <xsl:when test="not(text()) and name() = 'search'">
+              <xsl:text>Search</xsl:text>
+            </xsl:when>
+            <xsl:when test="not(text()) and name() = 'timestamp'">
+              <xsl:text>Timestamp</xsl:text>
+            </xsl:when>
+            <xsl:when test="    text()">
               <xsl:value-of select="normalize-space(text())" />
             </xsl:when>
             <xsl:otherwise>
@@ -93,7 +102,6 @@ Accuracy=Accuracy
 Alert=Alert
 All=All
 Any_unsaved_changes_will_be_lost=Any unsaved changes will be lost
-Author=Author
 Clean_Synced_Files=Clean synced files
 Confirm_Deletion=Confirm Deletion
 Delete=Delete
@@ -130,13 +138,11 @@ Please_Enable_Bluetooth=Please enable bluetooth
 Position=Position
 Press_OK_to_Delete_this_Record=Press OK to delete this record
 Previous_status=Previous status
-Search=Search
 Search_Term=Search Term
 Sync_Disabled=Sync disabled
 Sync_Enabled=Sync enabled
 Take_From_GPS=Take From GPS
 This_record_is_unsaved_and_cannot_be_duplicated=This record is unsaved and cannot be duplicated
-Timestamp=Timestamp
 Validate=Validate
 Warning=Warning
 You_must_save_this_tabgroup_first=You must save this tab group first

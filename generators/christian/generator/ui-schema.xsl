@@ -426,14 +426,14 @@
 
   <xsl:template name="body-expand-author">
     <input ref="Author" faims_read_only="true" faims_annotation="false" faims_certainty="false">
-      <label>{Author}</label>
+      <xsl:call-template name="label" />
       <xsl:call-template name="warn-unexpected-attr" />
     </input>
   </xsl:template>
 
   <xsl:template name="body-expand-timestamp">
     <input ref="Timestamp" faims_read_only="true" faims_annotation="false" faims_certainty="false">
-      <label>{Timestamp}</label>
+      <xsl:call-template name="label" />
       <xsl:call-template name="warn-unexpected-attr" />
     </input>
   </xsl:template>
