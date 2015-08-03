@@ -979,7 +979,7 @@ onEvent("Control/Search/Search_Term"   , "click" , "clearSearch()");
 onEvent("Control/Search/Entity_Types"  , "click" , "search()");
 
 entityTypes = new ArrayList();
-entityTypes.add(new NameValuePair("{All}", "All"));
+entityTypes.add(new NameValuePair("{All}", ""));
 entityTypes.add(new NameValuePair("{My_Baby}", "My Baby"));
 entityTypes.add(new NameValuePair("{TG}", "TG"));
 entityTypes.add(new NameValuePair("{Burial_Mound}", "Burial Mound"));
@@ -1002,7 +1002,7 @@ search(){
                        " WHERE uuid in (SELECT uuid "+
                        "                  FROM latestNonDeletedArchEntIdentifiers "+
                        "                 WHERE measure LIKE '"+term+"'||'%'  "+
-                       "                   AND ( aenttypename LIKE '"+type+"' OR 'All' = '"+type+"' ) "+
+                       "                   AND ( aenttypename LIKE '"+type+"' OR '' = '"+type+"' ) "+
                        "                )  "+
                        " ORDER BY response "+
                        " LIMIT ? "+

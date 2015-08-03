@@ -1024,7 +1024,7 @@ search(){
 
 </xsl:text>
 <xsl:if test="count(/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &lt; 2">
-  <xsl:text>  String type = "All";</xsl:text>
+  <xsl:text>  String type = "";</xsl:text>
 </xsl:if>
 <xsl:if test="count(/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
   <xsl:text>  String type = getFieldValue(refEntityTypes);</xsl:text>
@@ -1036,7 +1036,7 @@ search(){
                        " WHERE uuid in (SELECT uuid "+
                        "                  FROM latestNonDeletedArchEntIdentifiers "+
                        "                 WHERE measure LIKE '"+term+"'||'%'  "+
-                       "                   AND ( aenttypename LIKE '"+type+"' OR 'All' = '"+type+"' ) "+
+                       "                   AND ( aenttypename LIKE '"+type+"' OR '' = '"+type+"' ) "+
                        "                )  "+
                        " ORDER BY response "+
                        " LIMIT ? "+
@@ -1900,7 +1900,7 @@ onEvent(userMenuPath, "select", "selectUser()");
       <xsl:value-of select="$newline" />
       <xsl:text>entityTypes = new ArrayList();</xsl:text>
       <xsl:value-of select="$newline" />
-      <xsl:text>entityTypes.add(new NameValuePair("{All}", "All"));</xsl:text>
+      <xsl:text>entityTypes.add(new NameValuePair("{All}", ""));</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:for-each select="/module/*[not(contains(@f, 'onlyui'))]">
         <xsl:text>entityTypes.add(new NameValuePair("{</xsl:text>
