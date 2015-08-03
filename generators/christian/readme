@@ -4,7 +4,6 @@ TODO Add "View Attached Files" button?
 TODO Warn about duplicate archents
 TODO Ensure audio, video, pictures and files don't have faims_certainty nor
      faims_annotation
-TODO There should be a way of populating lists with archents
 TODO There should be a way of specifying webviews' text
 TODO change t="gpsdiag" t="map" to an element
 TODO Child relationships. (Protip: Check Bon's onSampleSaved() function.)
@@ -40,6 +39,9 @@ ATTRIBUTES
 
   b                  Binding (See 'Bindings')
   c                  Alias for faims_style_class
+  e="Type"           Populates the menu with entities of the type `Type`. If the
+                    `Type` is the empty string, entities of all types are shown.
+  ec, lc             (See 'Child Entities')
   f                  Flags (See 'Flags')
   l                  Link to tab or tab group in the format Tabgroup/Tab/
   p                  In <opt> tags, equivalent to pictureURL attribute.
@@ -163,6 +165,36 @@ SEMANTICS OF <cols> TAGS
       </cols>
   results in two columns. The left column contains Field_1, while the right
   contains Field_2 and Field_3.
+________________________________________________________________________________
+
+CHILD ENTITIES
+
+  Entities can be saved as children by the use of the "lc" attribute. For
+  instance, writing
+      <Add_Child t="button" lc="Child_Ent" />
+  generates a button which links to the Child_Ent tab group. When displayed by
+  clicking the Add_Child button, the Child_Ent tab group will have auto-saving
+  enabled and be saved as a child of the tab group that the button appeared in.
+  For example, consider the following module.xml:
+      <module>
+        <Tab_Group>
+          <Tab>
+            <Add_Child t="button" lc="Tab_Group" />
+          </Tab>
+        </Tab_Group>
+      </module>
+  Clicking the Add_Child button will cause the user to be taken to a new
+  instance of Tab_Group which will be saved as a child of the original instance.
+  But because the original instance was not loaded by clicking the button, it
+  will not be saved as a child.
+
+  A list of child entities can be displayed to the user by using the "ec"
+  attribute:
+      <List_Of_Related_Entities t="list" ec="Type_Of_Childen" />
+  The list will be populated with entities which are children of the tab group
+  the list appears in. The entities will be constrained to have the type
+  "Type_Of_Children". However, writing `ec=""` produces an unconstrained list,
+  where children of all types are displayed.
 ________________________________________________________________________________
 
 LABELS

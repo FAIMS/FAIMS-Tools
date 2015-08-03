@@ -13,9 +13,6 @@
   <ArchaeologicalElement name="TG">
     <!--ERROR: Identifier not given-->
     <description/>
-    <property name="Add Baby" type="measure">
-      <description/>
-    </property>
     <property name="List Of Related Babies" type="vocab">
       <!--WARNING: A set of <opts> tags are expected but not present-->
       <description/>

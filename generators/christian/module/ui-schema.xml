@@ -248,14 +248,11 @@
       <label>{TG}</label>
       <group ref="T">
         <label>{T}</label>
-        <input faims_attribute_type="measure" ref="Add_Baby" faims_attribute_name="Add Baby">
+        <trigger ref="Add_Baby">
           <label>{Add_Baby}</label>
-          <!--WARNING: Unexpected attribute "lc" ignored-->
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
-        </input>
+        </trigger>
         <select1 appearance="compact" ref="List_Of_Related_Babies" faims_attribute_name="List Of Related Babies">
           <label>{List_Of_Related_Babies}</label>
-          <!--WARNING: Unexpected attribute "ec" ignored-->
           <item>
             <label>Options not loaded</label>
             <value>0</value>

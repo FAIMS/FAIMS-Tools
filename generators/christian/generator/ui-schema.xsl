@@ -975,8 +975,11 @@
       <xsl:if test="
         name() != 'b' and
         name() != 'c' and
+        name() != 'e' and
+        name() != 'ec' and
         name() != 'f' and
         name() != 'l' and
+        name() != 'lc' and
         name() != 'p' and
         name() != 't'
         ">

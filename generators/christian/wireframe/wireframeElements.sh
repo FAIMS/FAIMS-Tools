@@ -31,7 +31,7 @@ mkdir -p wireframeImages
   
   ./makeElement.sh My_Baby_My_Baby_Field_1 "Field 1" input 1 false false true false false wireframeImages/
   
-  ./makeElement.sh TG_T_Add_Baby "Add Baby" input 1 false false true false false wireframeImages/
+  ./makeElement.sh TG_T_Add_Baby "Add Baby" button 1 false false false false false wireframeImages/
   
   ./makeElement.sh TG_T_List_Of_Related_Babies "List Of Related Babies" list 1 false false true false false wireframeImages/
   

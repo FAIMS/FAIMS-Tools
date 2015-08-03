@@ -30,7 +30,7 @@
 
 <TG>
   <T>
-    <Add_Baby lc="My_Baby"/>
+    <Add_Baby t="button" lc="My_Baby"/>
     <List_Of_Related_Babies t="list" ec="My_Baby"/>
   </T>
 </TG>
