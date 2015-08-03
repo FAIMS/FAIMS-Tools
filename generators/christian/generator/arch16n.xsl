@@ -32,13 +32,13 @@
 
         <xsl:variable name="arch16n-val">
           <xsl:choose>
-            <xsl:when test="not(text()) and name() = 'author'">
+            <xsl:when test="not(normalize-space(text())) and name() = 'author'">
               <xsl:text>Author</xsl:text>
             </xsl:when>
-            <xsl:when test="not(text()) and name() = 'search'">
+            <xsl:when test="not(normalize-space(text())) and name() = 'search'">
               <xsl:text>Search</xsl:text>
             </xsl:when>
-            <xsl:when test="not(text()) and name() = 'timestamp'">
+            <xsl:when test="not(normalize-space(text())) and name() = 'timestamp'">
               <xsl:text>Timestamp</xsl:text>
             </xsl:when>
             <xsl:when test="    text()">
