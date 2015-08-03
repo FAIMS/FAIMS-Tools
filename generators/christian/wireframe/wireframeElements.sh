@@ -21,7 +21,7 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Control_Search_Search_Term "Search Term" input 2 false false false false false wireframeImages/
   
-  ./makeElement.sh Control_Search_Search_Button "Search" button 2 false false false false false wireframeImages/
+  ./makeElement.sh Control_Search_Search_Button "" button 2 false false false false false wireframeImages/
   
   ./makeElement.sh Control_Search_Entity_Types "Entity Types" dropdown 1 false false false false false wireframeImages/
   
@@ -37,7 +37,7 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Burial_Mound_General_Object_ID "Object ID" input 1 false false true true false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Timestamp "Your Love" input 1 false false false false true wireframeImages/
+  ./makeElement.sh Burial_Mound_General_Timestamp "Timestamp" input 1 false false false false true wireframeImages/
   
   ./makeElement.sh Burial_Mound_General_Author "Author" input 1 false false false false true wireframeImages/
   

@@ -40,7 +40,6 @@
 <arch16n k="{Aspect}"><![CDATA[Aspect]]></arch16n>
 <arch16n k="{Attach_A_Sketch}"><![CDATA[Attach A Sketch]]></arch16n>
 <arch16n k="{author}"><![CDATA[Author]]></arch16n>
-<arch16n k="{Author}"><![CDATA[Author]]></arch16n>
 <arch16n k="{Basic_pit}"><![CDATA[Basic pit]]></arch16n>
 <arch16n k="{Beach}"><![CDATA[Beach]]></arch16n>
 <arch16n k="{Bibliography}"><![CDATA[Bibliography]]></arch16n>
@@ -172,7 +171,6 @@
 <arch16n k="{Satellite_Image}"><![CDATA[Satellite Image]]></arch16n>
 <arch16n k="{scarce}"><![CDATA[scarce]]></arch16n>
 <arch16n k="{Scrub}"><![CDATA[Scrub]]></arch16n>
-<arch16n k="{Search}"><![CDATA[Search]]></arch16n>
 <arch16n k="{Search_Term}"><![CDATA[Search Term]]></arch16n>
 <arch16n k="{Seedlings}"><![CDATA[Seedlings]]></arch16n>
 <arch16n k="{Select_User}"><![CDATA[Select User]]></arch16n>
@@ -199,7 +197,7 @@
 <arch16n k="{Take_From_GPS}"><![CDATA[Take From GPS]]></arch16n>
 <arch16n k="{TG}"><![CDATA[]]></arch16n>
 <arch16n k="{This_record_is_unsaved_and_cannot_be_duplicated}"><![CDATA[This record is unsaved and cannot be duplicated]]></arch16n>
-<arch16n k="{Timestamp}"><![CDATA[Timestamp]]></arch16n>
+<arch16n k="{timestamp}"><![CDATA[Timestamp]]></arch16n>
 <arch16n k="{topographic}"><![CDATA[topographic]]></arch16n>
 <arch16n k="{Topographic}"><![CDATA[Topographic]]></arch16n>
 <arch16n k="{Topo}"><![CDATA[Topo]]></arch16n>
@@ -223,6 +221,5 @@
 <arch16n k="{Wind_damage}"><![CDATA[Wind damage]]></arch16n>
 <arch16n k="{Yes}"><![CDATA[Yes]]></arch16n>
 <arch16n k="{You_must_save_this_tabgroup_first}"><![CDATA[You must save this tab group first]]></arch16n>
-<arch16n k="{Your_Love}"><![CDATA[Your Love]]></arch16n>
 <arch16n k="{zero}"><![CDATA[zero]]></arch16n>
 </arch16ns>
