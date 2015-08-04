@@ -114,6 +114,7 @@
 <arch16n k="{Report}"><![CDATA[Report]]></arch16n>
 <arch16n k="{Researcher}"><![CDATA[Researcher]]></arch16n>
 <arch16n k="{Role}"><![CDATA[Role]]></arch16n>
+<arch16n k="{Search}"><![CDATA[Search]]></arch16n>
 <arch16n k="{Search_Term}"><![CDATA[Search Term]]></arch16n>
 <arch16n k="{Select_User}"><![CDATA[Select User]]></arch16n>
 <arch16n k="{Signer}"><![CDATA[Signer]]></arch16n>

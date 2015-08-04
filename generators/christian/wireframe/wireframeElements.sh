@@ -19,7 +19,7 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Control_Search_Search_Term "Search Term" input 2 false false false false false wireframeImages/
   
-  ./makeElement.sh Control_Search_Search_Button "" button 2 false false false false false wireframeImages/
+  ./makeElement.sh Control_Search_Search_Button "Search" button 2 false false false false false wireframeImages/
   
   ./makeElement.sh Control_Search_Entity_Types "Entity Types" dropdown 1 false false false false false wireframeImages/
   
