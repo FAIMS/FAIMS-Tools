@@ -13,19 +13,18 @@ setSyncMinInterval(5.0f);
 makeLocalID(){
   fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);", null);
   fetchOne("DROP VIEW IF EXISTS parentchild;", null);
-    fetchOne( "CREATE VIEW parentchild AS "+
-            "  SELECT parent.uuid as parentuuid, child.uuid as childuuid, parent.participatesverb as parentparticipatesverb, parent.relationshipid, parent.aenttypename as parentaenttypename, child.participatesverb as childparticipatesverb, child.aenttypename as childaenttypename "+
-            "    FROM (SELECT uuid, participatesverb, aenttypename, relationshipid"+
-            "            FROM latestnondeletedaentreln "+
-            "            JOIN relationship USING (relationshipid) "+
-            "            JOIN latestnondeletedarchent USING (uuid) "+
-            "            JOIN aenttype USING (aenttypeid)) parent "+
-            "    JOIN (SELECT uuid, relationshipid, participatesverb, aenttypename "+
-            "            FROM latestnondeletedaentreln "+
-            "            JOIN relationship USING (relationshipid) "+
-            "            JOIN aenttype USING (aenttypeid)) child "+
-            "      ON (parent.relationshipid = child.relationshipid AND parent.uuid != child.uuid);", null);
-}  
+  fetchOne("CREATE VIEW parentchild AS "+
+           "SELECT parent.uuid as parentuuid, child.uuid as childuuid, parent.participatesverb as parentparticipatesverb, parent.relationshipid, parent.aenttypename as parentaenttypename, child.participatesverb as childparticipatesverb, child.aenttypename as childaenttypename "+
+           "  FROM (SELECT uuid, participatesverb, aenttypename, relationshipid"+
+           "          FROM latestnondeletedaentreln "+
+           "          JOIN relationship USING (relationshipid) "+
+           "          JOIN latestnondeletedarchent USING (uuid) "+
+           "          JOIN aenttype USING (aenttypeid)) parent "+
+           "  JOIN (SELECT uuid, relationshipid, participatesverb, aenttypename "+
+           "          FROM latestnondeletedaentreln "+
+           "          JOIN relationship USING (relationshipid) "+
+           "          JOIN aenttype USING (aenttypeid)) child "+
+           "    ON (parent.relationshipid = child.relationshipid AND parent.uuid != child.uuid);", null);
 }
 makeLocalID();
 
@@ -968,7 +967,6 @@ populateMenuWithEntities (
     "                            FROM latestnondeletedrelationship JOIN relntype USING (relntypeid) " +
     "                           WHERE relntypename = '"+relType+"') " +
     "   AND parentuuid = " + parentUuid + " " +
-    "   AND childaenttypename = '"+entType+"' OR '"+entType+"' = '' " +
     " ORDER BY createdat DESC ";
 
   String getEntitiesQ = "" +
@@ -976,7 +974,7 @@ populateMenuWithEntities (
     "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
     " WHERE uuid in (SELECT uuid "+
     "                  FROM latestNonDeletedArchEntIdentifiers "+
-    "                 WHERE aenttypename LIKE '"+entType+"' OR '"+entType+"' = '' " +
+    "                 WHERE aenttypename = '"+entType+"' OR '"+entType+"' = '' " +
     "               )  "+
     " ORDER BY response ";
 
@@ -1008,11 +1006,11 @@ populateMenuWithEntities (
 
 menus = new ArrayList();
 menus.add(new String[] {
-  "List",
+  "DropDown",
   "Interview/Interview/List_of_Agent_Roles",
   getUuid("Interview"),
-  "Agent_Role",
-  ""
+  "Agent Role",
+  "Parent Of"
 });
 for (m : menus) {
   String viewType   = m[0];
@@ -1036,4 +1034,3 @@ for (m : menus) {
 
   onEvent(path, "show", functionCall);
 }
-onEvent("Interview/Interview/List_of_Agent_Roles", "click", "loadEntity()");

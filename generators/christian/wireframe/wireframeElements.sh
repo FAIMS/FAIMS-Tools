@@ -37,7 +37,7 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Interview_Interview_Add_Agent_Role "Add Agent Role" button 1 false false false false false wireframeImages/
   
-  ./makeElement.sh Interview_Interview_List_of_Agent_Roles "List of Agent Roles" list 1 false false true false false wireframeImages/
+  ./makeElement.sh Interview_Interview_List_of_Agent_Roles "List of Agent Roles" dropdown 1 false false false false false wireframeImages/
   
   ./makeElement.sh Interview_Interview_Linguistic_Data_Type "Linguistic Data Type" dropdown 1 false false true false false wireframeImages/
   

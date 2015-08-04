@@ -24,6 +24,18 @@ setSyncMinInterval(5.0f);
 makeLocalID(){
   fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);", null);
   fetchOne("DROP VIEW IF EXISTS parentchild;", null);
+  fetchOne("CREATE VIEW parentchild AS "+
+           "SELECT parent.uuid as parentuuid, child.uuid as childuuid, parent.participatesverb as parentparticipatesverb, parent.relationshipid, parent.aenttypename as parentaenttypename, child.participatesverb as childparticipatesverb, child.aenttypename as childaenttypename "+
+           "  FROM (SELECT uuid, participatesverb, aenttypename, relationshipid"+
+           "          FROM latestnondeletedaentreln "+
+           "          JOIN relationship USING (relationshipid) "+
+           "          JOIN latestnondeletedarchent USING (uuid) "+
+           "          JOIN aenttype USING (aenttypeid)) parent "+
+           "  JOIN (SELECT uuid, relationshipid, participatesverb, aenttypename "+
+           "          FROM latestnondeletedaentreln "+
+           "          JOIN relationship USING (relationshipid) "+
+           "          JOIN aenttype USING (aenttypeid)) child "+
+           "    ON (parent.relationshipid = child.relationshipid AND parent.uuid != child.uuid);", null);
 }
 makeLocalID();
 
@@ -1238,7 +1250,6 @@ populateMenuWithEntities (
     "                            FROM latestnondeletedrelationship JOIN relntype USING (relntypeid) " +
     "                           WHERE relntypename = '"+relType+"') " +
     "   AND parentuuid = " + parentUuid + " " +
-    "   AND childaenttypename = '"+entType+"' OR '"+entType+"' = '' " +
     " ORDER BY createdat DESC ";
 
   String getEntitiesQ = "" +
@@ -1246,7 +1257,7 @@ populateMenuWithEntities (
     "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
     " WHERE uuid in (SELECT uuid "+
     "                  FROM latestNonDeletedArchEntIdentifiers "+
-    "                 WHERE aenttypename LIKE '"+entType+"' OR '"+entType+"' = '' " +
+    "                 WHERE aenttypename = '"+entType+"' OR '"+entType+"' = '' " +
     "               )  "+
     " ORDER BY response ";
 
@@ -1710,11 +1721,11 @@ menus = new ArrayList();
       <xsl:text>menus.add(new String[] {</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:choose>
-        <xsl:when test="normalize-space(@t) = 'list'">
-          <xsl:text>  "List",</xsl:text>
+        <xsl:when test="normalize-space(@t) = 'dropdown'">
+          <xsl:text>  "DropDown",</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:text>  "DropDown",</xsl:text>
+          <xsl:text>  "List",</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:value-of select="$newline" />
@@ -1722,7 +1733,13 @@ menus = new ArrayList();
       <xsl:value-of select="$newline" />
       <xsl:text>  getUuid("</xsl:text><xsl:value-of select="name(ancestor::*[last()-1])"/><xsl:text>"),</xsl:text>
       <xsl:value-of select="$newline" />
-      <xsl:text>  "</xsl:text><xsl:value-of select="@e"/><xsl:text>",</xsl:text>
+      <xsl:text>  "</xsl:text>
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="@e" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="' '" />
+      </xsl:call-template>
+      <xsl:text>",</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:text>  ""</xsl:text>
       <xsl:value-of select="$newline" />
@@ -1736,11 +1753,11 @@ menus = new ArrayList();
       <xsl:text>menus.add(new String[] {</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:choose>
-        <xsl:when test="normalize-space(@t) = 'list'">
-          <xsl:text>  "List",</xsl:text>
+        <xsl:when test="normalize-space(@t) = 'dropdown'">
+          <xsl:text>  "DropDown",</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:text>  "DropDown",</xsl:text>
+          <xsl:text>  "List",</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:value-of select="$newline" />
@@ -1748,7 +1765,13 @@ menus = new ArrayList();
       <xsl:value-of select="$newline" />
       <xsl:text>  getUuid("</xsl:text><xsl:value-of select="name(ancestor::*[last()-1])"/><xsl:text>"),</xsl:text>
       <xsl:value-of select="$newline" />
-      <xsl:text>  "</xsl:text><xsl:value-of select="@ec"/><xsl:text>",</xsl:text>
+      <xsl:text>  "</xsl:text>
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="@ec" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="' '" />
+      </xsl:call-template>
+      <xsl:text>",</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:text>  "Parent Of"</xsl:text>
       <xsl:value-of select="$newline" />
@@ -1758,7 +1781,7 @@ menus = new ArrayList();
   </xsl:template>
 
   <xsl:template name="entity-loading">
-    <xsl:for-each select="//*[normalize-space(@t) = 'list' and (@e or @ec)]">
+    <xsl:for-each select="//*[(normalize-space(@t) = 'list' or normalize-space(@t) = '') and (@e or @ec)]">
       <xsl:text>onEvent("</xsl:text>
       <xsl:call-template name="ref" />
       <xsl:text>", "click", "loadEntity()");</xsl:text>
@@ -1815,7 +1838,7 @@ onEvent(userMenuPath, "select", "selectUser()");
 
   <xsl:template name="users-vocabid">
     <xsl:choose>
-      <xsl:when test="normalize-space(@t) = 'list'">
+      <xsl:when test="normalize-space(@t) = 'list' or normalize-space(@t) = ''">
         <xsl:text>  String userVocabId  = getListItemValue();</xsl:text>
       </xsl:when>
       <xsl:otherwise>

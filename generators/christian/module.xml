@@ -40,7 +40,7 @@
       <desc>Use this field to provide any necessary comments on the scope of the value you entered in the origination date field, e.g. "unknown date in February 1993"</desc>
     </Origination_Date_Narrative>
     <Add_Agent_Role t="button" lc="Agent_Role"/>
-    <List_of_Agent_Roles t="list" e="Agent_Role"/>
+    <List_of_Agent_Roles t="dropdown" ec="Agent_Role"/>
     <Linguistic_Data_Type>
       <desc>If data is relevant to linguistics, choose one of the three basic linguistics data types. Primary text: Linguistic material which is itself the object of study; Lexicon: a systematic listing of lexical items; Language description: describes a language or some aspect(s) of a language via a systematic documentation of linguistic structures. If your data is not relevant to linguistics, leave this field blank.</desc>
       <opts>
