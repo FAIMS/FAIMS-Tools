@@ -23,6 +23,7 @@ makeLocalID(){
            "  JOIN (SELECT uuid, relationshipid, participatesverb, aenttypename "+
            "          FROM latestnondeletedaentreln "+
            "          JOIN relationship USING (relationshipid) "+
+           "          JOIN latestnondeletedarchent USING (uuid) "+
            "          JOIN aenttype USING (aenttypeid)) child "+
            "    ON (parent.relationshipid = child.relationshipid AND parent.uuid != child.uuid);", null);
 }
@@ -480,7 +481,6 @@ populateAuthorAndTimestamp(String tabgroup) {
   Map tabgroupToAuthor    = new HashMap();
   Map tabgroupToTimestamp = new HashMap();
 
-
   String uuid          = getUuid(tabgroup);
   String authorPath    = tabgroupToAuthor.get(tabgroup);
   String timestampPath = tabgroupToTimestamp.get(tabgroup);
@@ -678,6 +678,14 @@ getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
                           " WHERE attributename IN ('', "+attributesToDupe+") " +
                           "   AND uuid = '"+originalRecordID+"'; ";
   return duplicateQuery;
+}
+
+getDuplicateRelnQuery(String originalRecordID) {
+  String dupeRelnQuery = "SELECT relntypename, parentparticipatesverb, childparticipatesverb, childuuid "+
+                         "  FROM parentchild join relationship using (relationshipid) "+
+                         "  JOIN relntype using (relntypeid) "+
+                         " WHERE parentuuid = '"+originalRecordID+"';";
+  return dupeRelnQuery;
 }
 
 makeDuplicateRelationships(fetchedAttributes, String newuuid){
@@ -916,7 +924,7 @@ search(){
   populateCursorList(refEntityList, searchQuery, 25);
   refreshTabgroupCSS(tabgroup);
 
-  Log.d("Boncuklu Module", "Search query: " + searchQuery);
+  Log.d("Module", "Search query: " + searchQuery);
 }
 
 loadInterviewFrom(String uuid) {
@@ -958,7 +966,6 @@ populateMenuWithEntities (
   if (isNull(parentUuid))
     return;
 
-  // TODO: Make this query work. (childaenttypename doesn't exist.)
   String getChildEntitiesQ = "" +
     "SELECT childuuid, response "+
     "  FROM parentchild JOIN latestNonDeletedArchEntFormattedIdentifiers ON (childuuid = uuid) " +
@@ -967,6 +974,7 @@ populateMenuWithEntities (
     "                            FROM latestnondeletedrelationship JOIN relntype USING (relntypeid) " +
     "                           WHERE relntypename = '"+relType+"') " +
     "   AND parentuuid = " + parentUuid + " " +
+    "   AND (childaenttypename = '"+entType+"' OR '"+entType+"' = '') " +
     " ORDER BY createdat DESC ";
 
   String getEntitiesQ = "" +
@@ -1008,28 +1016,28 @@ menus = new ArrayList();
 menus.add(new String[] {
   "DropDown",
   "Interview/Interview/List_of_Agent_Roles",
-  getUuid("Interview"),
+  "getUuid(\"Interview\")",
   "Agent Role",
   "Parent Of"
 });
 for (m : menus) {
-  String viewType   = m[0];
-  String path       = m[1];
-  String parentUuid = m[2];
-  String entType    = m[3];
-  String relType    = m[4];
+  String viewType       = m[0];
+  String path           = m[1];
+  String parentUuidCall = m[2];
+  String entType        = m[3];
+  String relType        = m[4];
 
   String functionCall = "";
   functionCall += "populateMenuWithEntities(";
-  functionCall += "\"" + viewType   + "\"";
+  functionCall += "\"" + viewType       + "\"";
   functionCall += ", ";
-  functionCall += "\"" + path       + "\"";
+  functionCall += "\"" + path           + "\"";
   functionCall += ", ";
-  functionCall += "\"" + parentUuid + "\"";
+  functionCall +=        parentUuidCall       ;
   functionCall += ", ";
-  functionCall += "\"" + entType    + "\"";
+  functionCall += "\"" + entType        + "\"";
   functionCall += ", ";
-  functionCall += "\"" + relType    + "\"";
+  functionCall += "\"" + relType        + "\"";
   functionCall += ")";
 
   onEvent(path, "show", functionCall);

@@ -1,3 +1,5 @@
+TOOD A validation button appears on tabgroups without any notnull fields. When
+     clicked, it produces a logic error.
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema
@@ -13,12 +15,12 @@ TODO Child relationships. (Protip: Check Bon's onSampleSaved() function.)
        - Make e "entity" attribute while you're at it
           <xsl:template name="entity-list">
           </xsl:template>
-     - Ensure list of related ents has no annotations nor certainties
+x    - Ensure list of related ents has no annotations nor certainties
      - Consider if your solution can handle the case where, in a module, an
        entity can both be a child and stand alone.
      - Consider if your solution can handle the case where a child has an
        arbitrary number of descendants.
-     - Duplicating a child must duplicate the relationship to the parent but;
+x    - Duplicating a child must duplicate the relationship to the parent but;
      - Duplicating a parent must not duplicate the relationship to the child.
 TODO Automate regression tests
 TODO CSV to dataschema

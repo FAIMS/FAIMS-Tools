@@ -34,6 +34,7 @@ makeLocalID(){
            "  JOIN (SELECT uuid, relationshipid, participatesverb, aenttypename "+
            "          FROM latestnondeletedaentreln "+
            "          JOIN relationship USING (relationshipid) "+
+           "          JOIN latestnondeletedarchent USING (uuid) "+
            "          JOIN aenttype USING (aenttypeid)) child "+
            "    ON (parent.relationshipid = child.relationshipid AND parent.uuid != child.uuid);", null);
 }
@@ -544,7 +545,6 @@ saveTabGroup(String tabgroup, String callback) {
 populateAuthorAndTimestamp(String tabgroup) {
   Map tabgroupToAuthor    = new HashMap();
   Map tabgroupToTimestamp = new HashMap();
-
 </xsl:text>
     <xsl:call-template name="populate-author" />
     <xsl:call-template name="populate-timestamp" />
@@ -933,6 +933,14 @@ getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
   return duplicateQuery;
 }
 
+getDuplicateRelnQuery(String originalRecordID) {
+  String dupeRelnQuery = "SELECT relntypename, parentparticipatesverb, childparticipatesverb, childuuid "+
+                         "  FROM parentchild join relationship using (relationshipid) "+
+                         "  JOIN relntype using (relntypeid) "+
+                         " WHERE parentuuid = '"+originalRecordID+"';";
+  return dupeRelnQuery;
+}
+
 makeDuplicateRelationships(fetchedAttributes, String newuuid){
   for (savedAttribute : fetchedAttributes){
     //  saveEntitiesToHierRel(relnname, parent, child, parentverb, childverb, relSaveCallback);
@@ -1059,7 +1067,7 @@ search(){
   populateCursorList(refEntityList, searchQuery, 25);
   refreshTabgroupCSS(tabgroup);
 
-  Log.d("Boncuklu Module", "Search query: " + searchQuery);
+  Log.d("Module", "Search query: " + searchQuery);
 }
 </xsl:text>
       <xsl:value-of select="$newline"/>
@@ -1241,7 +1249,6 @@ populateMenuWithEntities (
   if (isNull(parentUuid))
     return;
 
-  // TODO: Make this query work. (childaenttypename doesn't exist.)
   String getChildEntitiesQ = "" +
     "SELECT childuuid, response "+
     "  FROM parentchild JOIN latestNonDeletedArchEntFormattedIdentifiers ON (childuuid = uuid) " +
@@ -1250,6 +1257,7 @@ populateMenuWithEntities (
     "                            FROM latestnondeletedrelationship JOIN relntype USING (relntypeid) " +
     "                           WHERE relntypename = '"+relType+"') " +
     "   AND parentuuid = " + parentUuid + " " +
+    "   AND (childaenttypename = '"+entType+"' OR '"+entType+"' = '') " +
     " ORDER BY createdat DESC ";
 
   String getEntitiesQ = "" +
@@ -1292,23 +1300,23 @@ menus = new ArrayList();
       <xsl:call-template name="entity-menu" />
       <xsl:call-template name="entity-child-menu" />
 <xsl:text>for (m : menus) {
-  String viewType   = m[0];
-  String path       = m[1];
-  String parentUuid = m[2];
-  String entType    = m[3];
-  String relType    = m[4];
+  String viewType       = m[0];
+  String path           = m[1];
+  String parentUuidCall = m[2];
+  String entType        = m[3];
+  String relType        = m[4];
 
   String functionCall = "";
   functionCall += "populateMenuWithEntities(";
-  functionCall += "\"" + viewType   + "\"";
+  functionCall += "\"" + viewType       + "\"";
   functionCall += ", ";
-  functionCall += "\"" + path       + "\"";
+  functionCall += "\"" + path           + "\"";
   functionCall += ", ";
-  functionCall += "\"" + parentUuid + "\"";
+  functionCall +=        parentUuidCall       ;
   functionCall += ", ";
-  functionCall += "\"" + entType    + "\"";
+  functionCall += "\"" + entType        + "\"";
   functionCall += ", ";
-  functionCall += "\"" + relType    + "\"";
+  functionCall += "\"" + relType        + "\"";
   functionCall += ")";
 
   onEvent(path, "show", functionCall);
@@ -1731,7 +1739,7 @@ menus = new ArrayList();
       <xsl:value-of select="$newline" />
       <xsl:text>  "</xsl:text><xsl:call-template name="ref" /><xsl:text>",</xsl:text>
       <xsl:value-of select="$newline" />
-      <xsl:text>  getUuid("</xsl:text><xsl:value-of select="name(ancestor::*[last()-1])"/><xsl:text>"),</xsl:text>
+      <xsl:text>  "getUuid(\"</xsl:text><xsl:value-of select="name(ancestor::*[last()-1])"/><xsl:text>\")",</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:text>  "</xsl:text>
       <xsl:call-template name="string-replace-all">
@@ -1763,7 +1771,7 @@ menus = new ArrayList();
       <xsl:value-of select="$newline" />
       <xsl:text>  "</xsl:text><xsl:call-template name="ref" /><xsl:text>",</xsl:text>
       <xsl:value-of select="$newline" />
-      <xsl:text>  getUuid("</xsl:text><xsl:value-of select="name(ancestor::*[last()-1])"/><xsl:text>"),</xsl:text>
+      <xsl:text>  "getUuid(\"</xsl:text><xsl:value-of select="name(ancestor::*[last()-1])"/><xsl:text>\")",</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:text>  "</xsl:text>
       <xsl:call-template name="string-replace-all">
