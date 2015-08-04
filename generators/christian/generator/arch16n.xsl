@@ -41,7 +41,7 @@
             <xsl:when test="not(normalize-space(text())) and name() = 'timestamp'">
               <xsl:text>Timestamp</xsl:text>
             </xsl:when>
-            <xsl:when test="    text()">
+            <xsl:when test="    normalize-space(text())">
               <xsl:value-of select="normalize-space(text())" />
             </xsl:when>
             <xsl:otherwise>

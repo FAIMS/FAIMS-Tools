@@ -13,9 +13,7 @@ mkdir -p wireframeImages
   
   ./makeElement.sh User_User_Login "Login" button 1 false false false false false wireframeImages/
   
-  ./makeElement.sh Control_Main_Take_Feature "Take Feature" button 1 false false false false false wireframeImages/
-  
-  ./makeElement.sh Control_Main_Next_Object_ID "Next Object ID" input 1 false false false true false wireframeImages/
+  ./makeElement.sh Control_Main_Record_Interview "Record Interview" button 1 false false false false false wireframeImages/
   
   ./makeElement.sh Control_Main_GPS_Diagnostics "GPS Diagnostics" input 1 false false false false true wireframeImages/
   
@@ -27,131 +25,47 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Control_Search_Entity_List "Entity List" list 1 false false false false false wireframeImages/
   
-  ./makeElement.sh Control_Map_Map " Map" map 1 false false false false false wireframeImages/
+  ./makeElement.sh Interview_Interview_Title "Title" input 1 false false true true false wireframeImages/
   
-  ./makeElement.sh My_Baby_My_Baby_Field_1 "Field 1" input 1 false false true false false wireframeImages/
+  ./makeElement.sh Interview_Interview_Description "Description" input 1 false false true true false wireframeImages/
   
-  ./makeElement.sh TG_T_Add_Baby "Add Baby" button 1 false false false false false wireframeImages/
+  ./makeElement.sh Interview_Interview_Private "Private" radio 1 false false true true false wireframeImages/
   
-  ./makeElement.sh TG_T_List_Of_Related_Babies "List Of Related Babies" list 1 false false true false false wireframeImages/
+  ./makeElement.sh Interview_Interview_Origination_Date "Origination Date" input 1 false false true true false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Object_ID "Object ID" input 1 false false true true false wireframeImages/
+  ./makeElement.sh Interview_Interview_Origination_Date_Narrative "Origination Date Narrative" input 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Timestamp "Timestamp" input 1 false false false false true wireframeImages/
+  ./makeElement.sh Interview_Interview_Add_Agent_Role "Add Agent Role" button 1 false false false false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Author "Author" input 1 false false false false true wireframeImages/
+  ./makeElement.sh Interview_Interview_List_of_Agent_Roles "List of Agent Roles" list 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Type "" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Interview_Interview_Linguistic_Data_Type "Linguistic Data Type" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Site_Significance "" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Interview_Interview_Discourse_Type "Discourse Type" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Name "Name" input 1 false false true false false wireframeImages/
+  ./makeElement.sh Interview_Interview_Linguistic_Subject "Linguistic Subject" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Description "Description" input 1 false false true false false wireframeImages/
+  ./makeElement.sh Interview_Interview_Country "Country" dropdown 1 false false true true false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Source "" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Interview_Interview_Region_Villiage "Region Villiage" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Exists_in_Legacy "" checkbox 1 false false true false false wireframeImages/
+  ./makeElement.sh Interview_Interview_Language_Local_Name "Language Local Name" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Surrounding_Landuse "" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Interview_Interview_Language_Content_ISO639-3 "Language Content ISO639-3" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Surface_Landuse "" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Interview_Interview_Language_Subject_ISO639-3 "Language Subject ISO639-3" dropdown 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Visibility "" dropdown 1 false false true false false wireframeImages/
+  ./makeElement.sh Interview_Interview_Attached_Audio "Attached Audio" file 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Latitude "Latitude" input 2 false false true false true wireframeImages/
+  ./makeElement.sh Interview_Interview_Button_Attached_Audio "Attach Audio" button 1 false false false false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Northing "Northing" input 2 false false true false true wireframeImages/
+  ./makeElement.sh Interview_Interview_Attached_Video "Attached Video" video 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Longitude "Longitude" input 2 false false true false true wireframeImages/
+  ./makeElement.sh Interview_Interview_Button_Attached_Video "Attach Video" button 1 false false false false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Easting "Easting" input 2 false false true false true wireframeImages/
+  ./makeElement.sh Agent_Role_Agent_Role_First_Name "First Name" input 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Take_From_GPS "Take From GPS" button 1 false false false false false wireframeImages/
+  ./makeElement.sh Agent_Role_Agent_Role_Last_Name "Last Name" input 1 false false true false false wireframeImages/
   
-  ./makeElement.sh Burial_Mound_General_Elevation "Elevation (MASL)" input 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_General_General_Notes "General Notes" input 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_General_Create_Shapefile "Create Shapefile" button 1 false false false false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_General_General_Photo "" camera 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_General_Button_General_Photo "Attach Photograph" button 1 false false false false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Profile "Profile" pictureGallery 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Plan "" pictureGallery 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Length_Max "Length Max" input 2 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Width_Max "Width Max" input 2 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Height_Max "Height Max" input 2 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Area_Max "Area Max" input 2 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Length_Min "Length Min" input 2 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Width_Min "Width Min" input 2 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Height_Min "Height Min" input 2 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Area_Min "Area Min" input 2 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Other_Dimension "Other Dimension" input 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Dimensions_Notes "Dimensions Notes" input 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Attach_A_Sketch "Attach A Sketch" file 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Button_Attach_A_Sketch "Attach File" button 1 false false false false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Sketch_Photo "Sketch Photo" camera 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Dimensions_Button_Sketch_Photo "Attach Photograph" button 1 false false false false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Material_Stone_Feature_Present_And_Visible "Stone Feature Present And Visible?" radio 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Material_Stone_Feature_Description "Stone Feature Description" input 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Material_Surface_Material_Density "" dropdown 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Material_Surface_Material_Description "Surface Material Description" input 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Material_Sample_Collected "Sample Collected?" radio 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Material_Material_Photo "Material Photo" camera 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_Material_Button_Material_Photo "Attach Photograph" button 1 false false false false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_Disturbance_Kind "" dropdown 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_Disturbance_Factors "" checkbox 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_Principal_Factors "" dropdown 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_Age_of_Damage "" checkbox 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_Disturbance_Description "Disturbance Description" input 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_RT_Kind "" checkbox 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_RT_Method "" checkbox 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_RT_Frequency "RT Frequency" pictureGallery 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_RT_Description "RT Description" input 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_Volume_of_Soil_Removed_via_RT "" dropdown 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_Affect "" dropdown 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_Impact "" dropdown 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_Comments_and_Recommendations "Comments and Recommendations" input 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_CRM_Photo "CRM Photo" camera 1 false false true false false wireframeImages/
-  
-  ./makeElement.sh Burial_Mound_CRM_Button_CRM_Photo "Attach Photograph" button 1 false false false false false wireframeImages/
+  ./makeElement.sh Agent_Role_Agent_Role_Role "Role" dropdown 1 false false true false false wireframeImages/
   

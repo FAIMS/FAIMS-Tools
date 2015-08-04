@@ -1,6 +1,9 @@
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema
+TODO Elements having ec or e attributes should have t="list" by assumption. Make
+     sure to include a warning.
+TODO Elements have a user flag should have t="list" by assumption. Incl. warning
 TODO Warn about duplicate archents
 TODO Ensure audio, video, pictures and files don't have faims_certainty nor
      faims_annotation

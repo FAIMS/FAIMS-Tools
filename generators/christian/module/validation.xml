@@ -1,12 +1,31 @@
 <?xml version="1.0"?>
 <ValidationSchema>
-  <ArchaeologicalElement name="My_Baby"/>
-  <ArchaeologicalElement name="TG"/>
-  <ArchaeologicalElement name="Burial_Mound">
-    <property name="Object ID">
+  <ArchaeologicalElement name="Interview">
+    <property name="Title">
+      <validator type="blankchecker">
+        <param value="measure" type="field"/>
+      </validator>
+    </property>
+    <property name="Description">
+      <validator type="blankchecker">
+        <param value="measure" type="field"/>
+      </validator>
+    </property>
+    <property name="Private">
+      <validator type="blankchecker">
+        <param value="vocab" type="field"/>
+      </validator>
+    </property>
+    <property name="Origination Date">
+      <validator type="blankchecker">
+        <param value="measure" type="field"/>
+      </validator>
+    </property>
+    <property name="Country">
       <validator type="blankchecker">
         <param value="measure" type="field"/>
       </validator>
     </property>
   </ArchaeologicalElement>
+  <ArchaeologicalElement name="Agent_Role"/>
 </ValidationSchema>

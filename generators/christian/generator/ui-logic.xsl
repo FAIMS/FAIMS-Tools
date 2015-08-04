@@ -516,7 +516,7 @@ saveTabGroup(String tabgroup, String callback) {
       setUuid(tabgroup, uuid);
       populateAuthorAndTimestamp(tabgroup);
       if (newRecord &amp;&amp; !isNull(parentTabgroup_)) {
-        saveEntitiesToRel("Parent Of", getUuid(parentTabgroup_), uuid, relCallback);
+        saveEntitiesToRel("Parent Of", getUuid(parentTabgroup_), uuid);
       }
       execute(callback);
     }
@@ -537,9 +537,9 @@ populateAuthorAndTimestamp(String tabgroup) {
     <xsl:call-template name="populate-author" />
     <xsl:call-template name="populate-timestamp" />
 <xsl:text>
+  String uuid          = getUuid(tabgroup);
   String authorPath    = tabgroupToAuthor.get(tabgroup);
   String timestampPath = tabgroupToTimestamp.get(tabgroup);
-  String uuid = getUuid(tabgroup);
   if (isNull(uuid)) {
     if (!isNull(authorPath))
       setFieldValue(authorPath,    "Entity not yet saved");
@@ -553,8 +553,10 @@ populateAuthorAndTimestamp(String tabgroup) {
              " WHERE uuid = '" + uuid + "'";
   FetchCallback callback = new FetchCallback() {
     onFetch(result) {
-      setFieldValue(timestampPath, result.get(0));
-      setFieldValue(authorPath,    result.get(1));
+      if (!isNull(timestampPath))
+        setFieldValue(timestampPath, result.get(0));
+      if (!isNull(authorPath))
+        setFieldValue(authorPath,    result.get(1));
     }
   };
 
@@ -1279,11 +1281,11 @@ menus = new ArrayList();
       <xsl:call-template name="entity-menu" />
       <xsl:call-template name="entity-child-menu" />
 <xsl:text>for (m : menus) {
-  String viewType   = m.get(0);
-  String path       = m.get(1);
-  String parentUuid = m.get(2);
-  String entType    = m.get(3);
-  String relType    = m.get(4);
+  String viewType   = m[0];
+  String path       = m[1];
+  String parentUuid = m[2];
+  String entType    = m[3];
+  String relType    = m[4];
 
   String functionCall = "";
   functionCall += "populateMenuWithEntities(";
