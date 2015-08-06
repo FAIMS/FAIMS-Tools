@@ -561,6 +561,8 @@ removeNavigationButtons() {
 
 addNavigationButtons(String tabgroup) {
   removeNavigationButtons();
+  List tabgroupsToValidate = new ArrayList();
+  tabgroupsToValidate.add("Interview");
 
   addNavigationButton("new", new ActionButtonCallback() {
     actionOnLabel() {
@@ -595,15 +597,17 @@ addNavigationButtons(String tabgroup) {
       deleteRecord(tabgroup);
     }
   }, "danger");
-  addNavigationButton("validate", new ActionButtonCallback() {
-    actionOnLabel() {
-      "{Validate}";
-    }
-    actionOn() {
-      String validationFunction = "validate" + tabgroup.replaceAll("_", "") + "()";
-      eval(validationFunction);
-    }
-  }, "default");
+  if (tabgroupsToValidate.contains(tabgroup)) {
+    addNavigationButton("validate", new ActionButtonCallback() {
+      actionOnLabel() {
+        "{Validate}";
+      }
+      actionOn() {
+        String validationFunction = "validate" + tabgroup.replaceAll("_", "") + "()";
+        eval(validationFunction);
+      }
+    }, "default");
+  }
 }
 
 /******************************************************************************/

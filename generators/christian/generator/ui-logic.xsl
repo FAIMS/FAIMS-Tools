@@ -814,7 +814,10 @@ removeNavigationButtons() {
 
 addNavigationButtons(String tabgroup) {
   removeNavigationButtons();
-
+  List tabgroupsToValidate = new ArrayList();
+</xsl:text>
+    <xsl:call-template name="tabgroups-to-validate"/>
+    <xsl:text>
   addNavigationButton("new", new ActionButtonCallback() {
     actionOnLabel() {
       "{New}";
@@ -848,15 +851,17 @@ addNavigationButtons(String tabgroup) {
       deleteRecord(tabgroup);
     }
   }, "danger");
-  addNavigationButton("validate", new ActionButtonCallback() {
-    actionOnLabel() {
-      "{Validate}";
-    }
-    actionOn() {
-      String validationFunction = "validate" + tabgroup.replaceAll("_", "") + "()";
-      eval(validationFunction);
-    }
-  }, "default");
+  if (tabgroupsToValidate.contains(tabgroup)) {
+    addNavigationButton("validate", new ActionButtonCallback() {
+      actionOnLabel() {
+        "{Validate}";
+      }
+      actionOn() {
+        String validationFunction = "validate" + tabgroup.replaceAll("_", "") + "()";
+        eval(validationFunction);
+      }
+    }, "default");
+  }
 }
 
 /******************************************************************************/
@@ -1325,6 +1330,15 @@ menus = new ArrayList();
       <xsl:call-template name="entity-loading" />
     </xsl:if>
 
+  </xsl:template>
+
+  <xsl:template name="tabgroups-to-validate">
+    <xsl:for-each select="/module/*[.//*[contains(@f, 'notnull')]]">
+      <xsl:text>  tabgroupsToValidate.add("</xsl:text>
+      <xsl:value-of select="name()" />
+      <xsl:text>");</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="populate-author">
