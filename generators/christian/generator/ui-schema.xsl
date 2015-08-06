@@ -770,6 +770,10 @@
         </xsl:call-template>
       </xsl:attribute>
     </xsl:if>
+    <xsl:if test="@e or @ec">
+      <xsl:attribute name="faims_annotation">false</xsl:attribute>
+      <xsl:attribute name="faims_certainty" >false</xsl:attribute>
+    </xsl:if>
     <xsl:call-template name="parse-flags">
       <xsl:with-param name="flags" select="@f" />
     </xsl:call-template>
