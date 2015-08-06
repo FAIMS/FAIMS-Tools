@@ -43,6 +43,8 @@
           <xsl:comment>ERROR: This automatically generated relationship is a duplicate of a user-specified one and is required to implement child relationships specified by the use of any "lc" attributes</xsl:comment>
         </xsl:if>
         <description>A 1-to-n relationship between the parent and its children, respectively.</description>
+        <parent>Parent of</parent>
+        <child>Child of</child>
       </RelationshipElement>
     </xsl:if>
   </xsl:template>

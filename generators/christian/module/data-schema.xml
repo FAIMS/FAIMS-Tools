@@ -2,6 +2,8 @@
 <dataSchema>
   <RelationshipElement name="Parent Of" type="hierarchical">
     <description>A 1-to-n relationship between the parent and its children, respectively.</description>
+    <parent>Parent of</parent>
+    <child>Child of</child>
   </RelationshipElement>
   <ArchaeologicalElement name="Interview">
     <description/>

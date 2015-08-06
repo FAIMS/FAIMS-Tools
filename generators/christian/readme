@@ -6,22 +6,6 @@ TODO Add "View Attached Files" button?
 TODO Warn about duplicate archents
 TODO There should be a way of specifying webviews' text
 TODO change t="gpsdiag" t="map" to an element
-TODO Child relationships. (Protip: Check Bon's onSampleSaved() function.)
-     - Possible strategy:
-       - Make lc "link (to) child" attribute
-       - Make ec "entity child" attribute
-          <xsl:template name="entity-child-list">
-          </xsl:template>
-       - Make e "entity" attribute while you're at it
-          <xsl:template name="entity-list">
-          </xsl:template>
-x    - Ensure list of related ents has no annotations nor certainties
-     - Consider if your solution can handle the case where, in a module, an
-       entity can both be a child and stand alone.
-     - Consider if your solution can handle the case where a child has an
-       arbitrary number of descendants.
-x    - Duplicating a child must duplicate the relationship to the parent but;
-     - Duplicating a parent must not duplicate the relationship to the child.
 TODO Automate regression tests
 TODO CSV to dataschema
 ________________________________________________________________________________

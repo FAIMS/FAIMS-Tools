@@ -529,7 +529,14 @@ saveTabGroup(String tabgroup, String callback) {
       setUuid(tabgroup, uuid);
       populateAuthorAndTimestamp(tabgroup);
       if (newRecord &amp;&amp; !isNull(parentTabgroup_)) {
-        saveEntitiesToRel("Parent Of", getUuid(parentTabgroup_), uuid);
+        saveEntitiesToHierRel(
+          "Parent Of",
+          getUuid(parentTabgroup_),
+          uuid,
+          "Parent Of",
+          "Child Of",
+          null
+        );
       }
       execute(callback);
     }
@@ -869,33 +876,33 @@ addNavigationButtons(String tabgroup) {
 /******************************************************************************/
 /** Saves two entity id's as a relation. **/
 saveEntitiesToRel(String type, String entity1, String entity2) {
-    String callback = null;
-    saveEntitiesToRel(type, entity1, entity2, callback);
+  String callback = null;
+  saveEntitiesToRel(type, entity1, entity2, callback);
 }
 
 /** Saves two entity id's as a relation with some callback executed. **/
 saveEntitiesToRel(String type, String entity1, String entity2, String callback) {
-    String e1verb = null;
-    String e2verb = null;
-    saveEntitiesToHierRel(type, entity1, entity2, e1verb, e2verb, callback);
+  String e1verb = null;
+  String e2verb = null;
+  saveEntitiesToHierRel(type, entity1, entity2, e1verb, e2verb, callback);
 }
 
 /** Saves two entity id's as a hierachical relation with some callback executed. **/
 saveEntitiesToHierRel(String type, String entity1, String entity2, String e1verb, String e2verb, String callback) {
-    if (isNull(entity1) || isNull(entity2)) return;
-    saveRel(null, type, null, null, new SaveCallback() {
-        onSave(rel_id, newRecord) {
-            addReln(entity1, rel_id, e1verb);
-            addReln(entity2, rel_id, e2verb);
-            if(!isNull(callback)) {
-               execute(callback);
-            }
-        }
-        onError(message) {
-            Log.e("saveEntitiesToHierRel", message);
-            showToast(message);
-        }
-    });
+  if (isNull(entity1) || isNull(entity2)) return;
+  saveRel(null, type, null, null, new SaveCallback() {
+    onSave(rel_id, newRecord) {
+      addReln(entity1, rel_id, e1verb);
+      addReln(entity2, rel_id, e2verb);
+      if(!isNull(callback)) {
+         execute(callback);
+      }
+    }
+    onError(message) {
+      Log.e("saveEntitiesToHierRel", message);
+      showToast(message);
+    }
+  });
 }
 
 // Makes a new record of the given tabgroup
@@ -939,18 +946,25 @@ getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
 }
 
 getDuplicateRelnQuery(String originalRecordID) {
-  String dupeRelnQuery = "SELECT relntypename, parentparticipatesverb, childparticipatesverb, childuuid "+
+  String dupeRelnQuery = "SELECT relntypename, parentparticipatesverb, childparticipatesverb, parentuuid "+
                          "  FROM parentchild join relationship using (relationshipid) "+
                          "  JOIN relntype using (relntypeid) "+
-                         " WHERE parentuuid = '"+originalRecordID+"';";
+                         " WHERE childuuid = '"+originalRecordID+"' " +
+                         "   AND parentparticipatesverb = 'Parent Of' ";
   return dupeRelnQuery;
 }
 
 makeDuplicateRelationships(fetchedAttributes, String newuuid){
+  Log.e("Module", "makeDuplicateRelationships");
   for (savedAttribute : fetchedAttributes){
     //  saveEntitiesToHierRel(relnname, parent, child, parentverb, childverb, relSaveCallback);
     //relntypename, parentparticipatesverb, childparticipatesverb, childuuid
-    saveEntitiesToHierRel(savedAttribute.get(0), newuuid, savedAttribute.get(3), savedAttribute.get(1), savedAttribute.get(2), null);
+    Log.e("Module", "in");
+    String relntypename           = savedAttribute.get(0);
+    String parentparticipatesverb = savedAttribute.get(1);
+    String childparticipatesverb  = savedAttribute.get(2);
+    String childuuid              = savedAttribute.get(3);
+    saveEntitiesToHierRel(relntypename, newuuid, childuuid, parentparticipatesverb, childparticipatesverb, null);
   }
 }
 
@@ -1555,6 +1569,8 @@ menus = new ArrayList();
     <xsl:value-of select="name()"/>
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$newline"/>
+    <xsl:text>  String uuidOld = getUuid(tabgroup);</xsl:text>
+    <xsl:value-of select="$newline"/>
     <xsl:value-of select="$newline"/>
     <xsl:text>  disableAutoSave(tabgroup);</xsl:text>
     <xsl:value-of select="$newline"/>
@@ -1571,8 +1587,9 @@ menus = new ArrayList();
 
       Boolean enable_autosave = true;
 
-      fetchAll(getDuplicateRelnQuery(getUuid(tabgroup)), new FetchCallback(){
+      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
         onFetch(result) {
+          Log.e("Module", result.toString());
           makeDuplicateRelationships(result, getUuid(tabgroup));
           showToast("{Duplicated_record}");
           dialog.dismiss();
