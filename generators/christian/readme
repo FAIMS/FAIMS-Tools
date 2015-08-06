@@ -1,7 +1,5 @@
 TODO Tell Brian that having separate relns for each entity pair will pretty much
      require a re-write of the child entity stuff.
-TOOD A validation button appears on tabgroups without any notnull fields. When
-     clicked, it produces a logic error.
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema

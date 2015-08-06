@@ -590,7 +590,7 @@
       </xsl:when>
       <xsl:when test="normalize-space(@t)='dropdown' or (not(@t) and ./opts)">
         <xsl:element name="select1">
-          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')]) and not(@e) and not(@ec)">
             <xsl:attribute name="faims_attribute_type">vocab</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />

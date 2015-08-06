@@ -186,7 +186,7 @@
         <trigger ref="Add_Agent_Role">
           <label>{Add_Agent_Role}</label>
         </trigger>
-        <select1 faims_attribute_type="vocab" ref="List_of_Agent_Roles">
+        <select1 ref="List_of_Agent_Roles">
           <label>{List_of_Agent_Roles}</label>
           <item>
             <label>Options not loaded</label>
