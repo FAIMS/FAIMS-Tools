@@ -590,7 +590,7 @@
       </xsl:when>
       <xsl:when test="normalize-space(@t)='dropdown' or (not(@t) and ./opts)">
         <xsl:element name="select1">
-          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')]) and not(@e) and not(@ec)">
             <xsl:attribute name="faims_attribute_type">vocab</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -645,10 +645,16 @@
           <xsl:call-template name="body-expand-view-standard-nodes" />
         </xsl:element>
       </xsl:when>
-      <xsl:when test="normalize-space(@t)='list'">
+      <xsl:when test="normalize-space(@t)='list' or
+        not(@t) and @e or
+        not(@t) and @ec or
+        not(@t) and contains(@f, 'user')">
         <xsl:element name="select1">
           <xsl:attribute name="appearance">compact</xsl:attribute>
           <xsl:call-template name="body-expand-view-standard-nodes" />
+          <xsl:if test="$doWarn and not(@t)">
+            <xsl:comment>WARNING: No type t was given for this view; assuming it is a list</xsl:comment>
+          </xsl:if>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
@@ -753,6 +759,8 @@
       normalize-space(@t) != 'web' and
       normalize-space(@t) != 'webview' and
       normalize-space(@t) != 'gpsdiag' and
+      not(@e) and
+      not(@ec) and
       not(ancestor-or-self::*[contains(@f, 'onlyui')])">
       <xsl:attribute name="faims_attribute_name">
         <xsl:call-template name="string-replace-all">
@@ -761,6 +769,10 @@
           <xsl:with-param name="by" select="' '" />
         </xsl:call-template>
       </xsl:attribute>
+    </xsl:if>
+    <xsl:if test="@e or @ec">
+      <xsl:attribute name="faims_annotation">false</xsl:attribute>
+      <xsl:attribute name="faims_certainty" >false</xsl:attribute>
     </xsl:if>
     <xsl:call-template name="parse-flags">
       <xsl:with-param name="flags" select="@f" />

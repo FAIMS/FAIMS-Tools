@@ -24,6 +24,19 @@ setSyncMinInterval(5.0f);
 makeLocalID(){
   fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);", null);
   fetchOne("DROP VIEW IF EXISTS parentchild;", null);
+  fetchOne("CREATE VIEW parentchild AS "+
+           "SELECT parent.uuid as parentuuid, child.uuid as childuuid, parent.participatesverb as parentparticipatesverb, parent.relationshipid, parent.aenttypename as parentaenttypename, child.participatesverb as childparticipatesverb, child.aenttypename as childaenttypename "+
+           "  FROM (SELECT uuid, participatesverb, aenttypename, relationshipid"+
+           "          FROM latestnondeletedaentreln "+
+           "          JOIN relationship USING (relationshipid) "+
+           "          JOIN latestnondeletedarchent USING (uuid) "+
+           "          JOIN aenttype USING (aenttypeid)) parent "+
+           "  JOIN (SELECT uuid, relationshipid, participatesverb, aenttypename "+
+           "          FROM latestnondeletedaentreln "+
+           "          JOIN relationship USING (relationshipid) "+
+           "          JOIN latestnondeletedarchent USING (uuid) "+
+           "          JOIN aenttype USING (aenttypeid)) child "+
+           "    ON (parent.relationshipid = child.relationshipid AND parent.uuid != child.uuid);", null);
 }
 makeLocalID();
 
@@ -516,7 +529,14 @@ saveTabGroup(String tabgroup, String callback) {
       setUuid(tabgroup, uuid);
       populateAuthorAndTimestamp(tabgroup);
       if (newRecord &amp;&amp; !isNull(parentTabgroup_)) {
-        saveEntitiesToRel("Parent Of", getUuid(parentTabgroup_), uuid);
+        saveEntitiesToHierRel(
+          "Parent Of",
+          getUuid(parentTabgroup_),
+          uuid,
+          "Parent Of",
+          "Child Of",
+          null
+        );
       }
       execute(callback);
     }
@@ -532,7 +552,6 @@ saveTabGroup(String tabgroup, String callback) {
 populateAuthorAndTimestamp(String tabgroup) {
   Map tabgroupToAuthor    = new HashMap();
   Map tabgroupToTimestamp = new HashMap();
-
 </xsl:text>
     <xsl:call-template name="populate-author" />
     <xsl:call-template name="populate-timestamp" />
@@ -802,7 +821,10 @@ removeNavigationButtons() {
 
 addNavigationButtons(String tabgroup) {
   removeNavigationButtons();
-
+  List tabgroupsToValidate = new ArrayList();
+</xsl:text>
+    <xsl:call-template name="tabgroups-to-validate"/>
+    <xsl:text>
   addNavigationButton("new", new ActionButtonCallback() {
     actionOnLabel() {
       "{New}";
@@ -836,15 +858,17 @@ addNavigationButtons(String tabgroup) {
       deleteRecord(tabgroup);
     }
   }, "danger");
-  addNavigationButton("validate", new ActionButtonCallback() {
-    actionOnLabel() {
-      "{Validate}";
-    }
-    actionOn() {
-      String validationFunction = "validate" + tabgroup.replaceAll("_", "") + "()";
-      eval(validationFunction);
-    }
-  }, "default");
+  if (tabgroupsToValidate.contains(tabgroup)) {
+    addNavigationButton("validate", new ActionButtonCallback() {
+      actionOnLabel() {
+        "{Validate}";
+      }
+      actionOn() {
+        String validationFunction = "validate" + tabgroup.replaceAll("_", "") + "()";
+        eval(validationFunction);
+      }
+    }, "default");
+  }
 }
 
 /******************************************************************************/
@@ -852,33 +876,33 @@ addNavigationButtons(String tabgroup) {
 /******************************************************************************/
 /** Saves two entity id's as a relation. **/
 saveEntitiesToRel(String type, String entity1, String entity2) {
-    String callback = null;
-    saveEntitiesToRel(type, entity1, entity2, callback);
+  String callback = null;
+  saveEntitiesToRel(type, entity1, entity2, callback);
 }
 
 /** Saves two entity id's as a relation with some callback executed. **/
 saveEntitiesToRel(String type, String entity1, String entity2, String callback) {
-    String e1verb = null;
-    String e2verb = null;
-    saveEntitiesToHierRel(type, entity1, entity2, e1verb, e2verb, callback);
+  String e1verb = null;
+  String e2verb = null;
+  saveEntitiesToHierRel(type, entity1, entity2, e1verb, e2verb, callback);
 }
 
 /** Saves two entity id's as a hierachical relation with some callback executed. **/
 saveEntitiesToHierRel(String type, String entity1, String entity2, String e1verb, String e2verb, String callback) {
-    if (isNull(entity1) || isNull(entity2)) return;
-    saveRel(null, type, null, null, new SaveCallback() {
-        onSave(rel_id, newRecord) {
-            addReln(entity1, rel_id, e1verb);
-            addReln(entity2, rel_id, e2verb);
-            if(!isNull(callback)) {
-               execute(callback);
-            }
-        }
-        onError(message) {
-            Log.e("saveEntitiesToHierRel", message);
-            showToast(message);
-        }
-    });
+  if (isNull(entity1) || isNull(entity2)) return;
+  saveRel(null, type, null, null, new SaveCallback() {
+    onSave(rel_id, newRecord) {
+      addReln(entity1, rel_id, e1verb);
+      addReln(entity2, rel_id, e2verb);
+      if(!isNull(callback)) {
+         execute(callback);
+      }
+    }
+    onError(message) {
+      Log.e("saveEntitiesToHierRel", message);
+      showToast(message);
+    }
+  });
 }
 
 // Makes a new record of the given tabgroup
@@ -921,11 +945,26 @@ getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
   return duplicateQuery;
 }
 
+getDuplicateRelnQuery(String originalRecordID) {
+  String dupeRelnQuery = "SELECT relntypename, parentparticipatesverb, childparticipatesverb, parentuuid "+
+                         "  FROM parentchild join relationship using (relationshipid) "+
+                         "  JOIN relntype using (relntypeid) "+
+                         " WHERE childuuid = '"+originalRecordID+"' " +
+                         "   AND parentparticipatesverb = 'Parent Of' ";
+  return dupeRelnQuery;
+}
+
 makeDuplicateRelationships(fetchedAttributes, String newuuid){
+  Log.e("Module", "makeDuplicateRelationships");
   for (savedAttribute : fetchedAttributes){
     //  saveEntitiesToHierRel(relnname, parent, child, parentverb, childverb, relSaveCallback);
     //relntypename, parentparticipatesverb, childparticipatesverb, childuuid
-    saveEntitiesToHierRel(savedAttribute.get(0), newuuid, savedAttribute.get(3), savedAttribute.get(1), savedAttribute.get(2), null);
+    Log.e("Module", "in");
+    String relntypename           = savedAttribute.get(0);
+    String parentparticipatesverb = savedAttribute.get(1);
+    String childparticipatesverb  = savedAttribute.get(2);
+    String childuuid              = savedAttribute.get(3);
+    saveEntitiesToHierRel(relntypename, newuuid, childuuid, parentparticipatesverb, childparticipatesverb, null);
   }
 }
 
@@ -1047,7 +1086,7 @@ search(){
   populateCursorList(refEntityList, searchQuery, 25);
   refreshTabgroupCSS(tabgroup);
 
-  Log.d("Boncuklu Module", "Search query: " + searchQuery);
+  Log.d("Module", "Search query: " + searchQuery);
 }
 </xsl:text>
       <xsl:value-of select="$newline"/>
@@ -1229,7 +1268,6 @@ populateMenuWithEntities (
   if (isNull(parentUuid))
     return;
 
-  // TODO: Make this query work. (childaenttypename doesn't exist.)
   String getChildEntitiesQ = "" +
     "SELECT childuuid, response "+
     "  FROM parentchild JOIN latestNonDeletedArchEntFormattedIdentifiers ON (childuuid = uuid) " +
@@ -1238,7 +1276,7 @@ populateMenuWithEntities (
     "                            FROM latestnondeletedrelationship JOIN relntype USING (relntypeid) " +
     "                           WHERE relntypename = '"+relType+"') " +
     "   AND parentuuid = " + parentUuid + " " +
-    "   AND childaenttypename = '"+entType+"' OR '"+entType+"' = '' " +
+    "   AND (childaenttypename = '"+entType+"' OR '"+entType+"' = '') " +
     " ORDER BY createdat DESC ";
 
   String getEntitiesQ = "" +
@@ -1246,7 +1284,7 @@ populateMenuWithEntities (
     "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
     " WHERE uuid in (SELECT uuid "+
     "                  FROM latestNonDeletedArchEntIdentifiers "+
-    "                 WHERE aenttypename LIKE '"+entType+"' OR '"+entType+"' = '' " +
+    "                 WHERE aenttypename = '"+entType+"' OR '"+entType+"' = '' " +
     "               )  "+
     " ORDER BY response ";
 
@@ -1281,23 +1319,23 @@ menus = new ArrayList();
       <xsl:call-template name="entity-menu" />
       <xsl:call-template name="entity-child-menu" />
 <xsl:text>for (m : menus) {
-  String viewType   = m[0];
-  String path       = m[1];
-  String parentUuid = m[2];
-  String entType    = m[3];
-  String relType    = m[4];
+  String viewType       = m[0];
+  String path           = m[1];
+  String parentUuidCall = m[2];
+  String entType        = m[3];
+  String relType        = m[4];
 
   String functionCall = "";
   functionCall += "populateMenuWithEntities(";
-  functionCall += "\"" + viewType   + "\"";
+  functionCall += "\"" + viewType       + "\"";
   functionCall += ", ";
-  functionCall += "\"" + path       + "\"";
+  functionCall += "\"" + path           + "\"";
   functionCall += ", ";
-  functionCall += "\"" + parentUuid + "\"";
+  functionCall +=        parentUuidCall       ;
   functionCall += ", ";
-  functionCall += "\"" + entType    + "\"";
+  functionCall += "\"" + entType        + "\"";
   functionCall += ", ";
-  functionCall += "\"" + relType    + "\"";
+  functionCall += "\"" + relType        + "\"";
   functionCall += ")";
 
   onEvent(path, "show", functionCall);
@@ -1306,6 +1344,15 @@ menus = new ArrayList();
       <xsl:call-template name="entity-loading" />
     </xsl:if>
 
+  </xsl:template>
+
+  <xsl:template name="tabgroups-to-validate">
+    <xsl:for-each select="/module/*[.//*[contains(@f, 'notnull')]]">
+      <xsl:text>  tabgroupsToValidate.add("</xsl:text>
+      <xsl:value-of select="name()" />
+      <xsl:text>");</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="populate-author">
@@ -1522,6 +1569,8 @@ menus = new ArrayList();
     <xsl:value-of select="name()"/>
     <xsl:text>";</xsl:text>
     <xsl:value-of select="$newline"/>
+    <xsl:text>  String uuidOld = getUuid(tabgroup);</xsl:text>
+    <xsl:value-of select="$newline"/>
     <xsl:value-of select="$newline"/>
     <xsl:text>  disableAutoSave(tabgroup);</xsl:text>
     <xsl:value-of select="$newline"/>
@@ -1538,8 +1587,9 @@ menus = new ArrayList();
 
       Boolean enable_autosave = true;
 
-      fetchAll(getDuplicateRelnQuery(getUuid(tabgroup)), new FetchCallback(){
+      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
         onFetch(result) {
+          Log.e("Module", result.toString());
           makeDuplicateRelationships(result, getUuid(tabgroup));
           showToast("{Duplicated_record}");
           dialog.dismiss();
@@ -1710,19 +1760,25 @@ menus = new ArrayList();
       <xsl:text>menus.add(new String[] {</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:choose>
-        <xsl:when test="normalize-space(@t) = 'list'">
-          <xsl:text>  "List",</xsl:text>
+        <xsl:when test="normalize-space(@t) = 'dropdown'">
+          <xsl:text>  "DropDown",</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:text>  "DropDown",</xsl:text>
+          <xsl:text>  "List",</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:value-of select="$newline" />
       <xsl:text>  "</xsl:text><xsl:call-template name="ref" /><xsl:text>",</xsl:text>
       <xsl:value-of select="$newline" />
-      <xsl:text>  getUuid("</xsl:text><xsl:value-of select="name(ancestor::*[last()-1])"/><xsl:text>"),</xsl:text>
+      <xsl:text>  "getUuid(\"</xsl:text><xsl:value-of select="name(ancestor::*[last()-1])"/><xsl:text>\")",</xsl:text>
       <xsl:value-of select="$newline" />
-      <xsl:text>  "</xsl:text><xsl:value-of select="@e"/><xsl:text>",</xsl:text>
+      <xsl:text>  "</xsl:text>
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="@e" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="' '" />
+      </xsl:call-template>
+      <xsl:text>",</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:text>  ""</xsl:text>
       <xsl:value-of select="$newline" />
@@ -1736,19 +1792,25 @@ menus = new ArrayList();
       <xsl:text>menus.add(new String[] {</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:choose>
-        <xsl:when test="normalize-space(@t) = 'list'">
-          <xsl:text>  "List",</xsl:text>
+        <xsl:when test="normalize-space(@t) = 'dropdown'">
+          <xsl:text>  "DropDown",</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:text>  "DropDown",</xsl:text>
+          <xsl:text>  "List",</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:value-of select="$newline" />
       <xsl:text>  "</xsl:text><xsl:call-template name="ref" /><xsl:text>",</xsl:text>
       <xsl:value-of select="$newline" />
-      <xsl:text>  getUuid("</xsl:text><xsl:value-of select="name(ancestor::*[last()-1])"/><xsl:text>"),</xsl:text>
+      <xsl:text>  "getUuid(\"</xsl:text><xsl:value-of select="name(ancestor::*[last()-1])"/><xsl:text>\")",</xsl:text>
       <xsl:value-of select="$newline" />
-      <xsl:text>  "</xsl:text><xsl:value-of select="@ec"/><xsl:text>",</xsl:text>
+      <xsl:text>  "</xsl:text>
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="@ec" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="' '" />
+      </xsl:call-template>
+      <xsl:text>",</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:text>  "Parent Of"</xsl:text>
       <xsl:value-of select="$newline" />
@@ -1758,7 +1820,7 @@ menus = new ArrayList();
   </xsl:template>
 
   <xsl:template name="entity-loading">
-    <xsl:for-each select="//*[normalize-space(@t) = 'list' and (@e or @ec)]">
+    <xsl:for-each select="//*[(normalize-space(@t) = 'list' or normalize-space(@t) = '') and (@e or @ec)]">
       <xsl:text>onEvent("</xsl:text>
       <xsl:call-template name="ref" />
       <xsl:text>", "click", "loadEntity()");</xsl:text>
@@ -1815,7 +1877,7 @@ onEvent(userMenuPath, "select", "selectUser()");
 
   <xsl:template name="users-vocabid">
     <xsl:choose>
-      <xsl:when test="normalize-space(@t) = 'list'">
+      <xsl:when test="normalize-space(@t) = 'list' or normalize-space(@t) = ''">
         <xsl:text>  String userVocabId  = getListItemValue();</xsl:text>
       </xsl:when>
       <xsl:otherwise>

@@ -138,6 +138,7 @@ Please_Enable_Bluetooth=Please enable bluetooth
 Position=Position
 Press_OK_to_Delete_this_Record=Press OK to delete this record
 Previous_status=Previous status
+Search=Search
 Search_Term=Search Term
 Sync_Disabled=Sync disabled
 Sync_Enabled=Sync enabled

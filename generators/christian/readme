@@ -1,30 +1,11 @@
+TODO Tell Brian that having separate relns for each entity pair will pretty much
+     require a re-write of the child entity stuff.
 TODO Add "View Attached Files" button?
        - onEvent call
        - addition to ui schema
-TODO Elements having ec or e attributes should have t="list" by assumption. Make
-     sure to include a warning.
-TODO Elements have a user flag should have t="list" by assumption. Incl. warning
 TODO Warn about duplicate archents
-TODO Ensure audio, video, pictures and files don't have faims_certainty nor
-     faims_annotation
 TODO There should be a way of specifying webviews' text
 TODO change t="gpsdiag" t="map" to an element
-TODO Child relationships. (Protip: Check Bon's onSampleSaved() function.)
-     - Possible strategy:
-       - Make lc "link (to) child" attribute
-       - Make ec "entity child" attribute
-          <xsl:template name="entity-child-list">
-          </xsl:template>
-       - Make e "entity" attribute while you're at it
-          <xsl:template name="entity-list">
-          </xsl:template>
-     - Ensure list of related ents has no annotations nor certainties
-     - Consider if your solution can handle the case where, in a module, an
-       entity can both be a child and stand alone.
-     - Consider if your solution can handle the case where a child has an
-       arbitrary number of descendants.
-     - Duplicating a child must duplicate the relationship to the parent but;
-     - Duplicating a parent must not duplicate the relationship to the child.
 TODO Automate regression tests
 TODO CSV to dataschema
 ________________________________________________________________________________
