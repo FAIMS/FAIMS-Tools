@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <dataSchema>
-  <RelationshipElement name="Interview - Agent Role" type="bidirectional">
+  <RelationshipElement name="Interview - Agent Role" type="hierarchical">
     <description>A 1-to-n relationship between the parent and its children, respectively.</description>
+    <parent>Parent Of</parent>
+    <child>Child Of</child>
   </RelationshipElement>
   <ArchaeologicalElement name="Interview">
     <description/>

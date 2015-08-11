@@ -533,10 +533,13 @@ saveTabGroup(String tabgroup, String callback) {
         rel += parentTabgroup_.replaceAll("_", " ");
         rel += " - ";
         rel += tabgroup.replaceAll("_", " ");
-        saveEntitiesToRel(
+        saveEntitiesToHierRel(
           rel,
           getUuid(parentTabgroup_),
-          uuid
+          uuid,
+          "Parent Of",
+          "Child Of",
+          null
         );
       }
       execute(callback);
@@ -947,10 +950,11 @@ getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
 }
 
 getDuplicateRelnQuery(String originalRecordID) {
-  String dupeRelnQuery = "SELECT relntypename, parentparticipatesverb, childparticipatesverb, childuuid "+
+  String dupeRelnQuery = "SELECT relntypename, parentparticipatesverb, childparticipatesverb, parentuuid "+
                          "  FROM parentchild join relationship using (relationshipid) "+
                          "  JOIN relntype using (relntypeid) "+
-                         " WHERE parentuuid = '"+originalRecordID+"';";
+                         " WHERE childuuid = '"+originalRecordID+"' " +
+                         "   AND parentparticipatesverb = 'Parent Of' ";
   return dupeRelnQuery;
 }
 

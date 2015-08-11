@@ -53,11 +53,13 @@
           <xsl:with-param name="by" select="' '" />
         </xsl:call-template>
       </xsl:variable>
-      <RelationshipElement name="{$rel-name}" type="bidirectional">
+      <RelationshipElement name="{$rel-name}" type="hierarchical">
         <xsl:if test="/module/rels//*[@name = $rel-name]">
           <xsl:comment>ERROR: This automatically generated relationship is a duplicate of a user-specified one and is required to implement child relationships specified by the use of any "lc" attributes</xsl:comment>
         </xsl:if>
         <description>A 1-to-n relationship between the parent and its children, respectively.</description>
+        <parent>Parent Of</parent>
+        <child>Child Of</child>
       </RelationshipElement>
     </xsl:for-each>
   </xsl:template>
