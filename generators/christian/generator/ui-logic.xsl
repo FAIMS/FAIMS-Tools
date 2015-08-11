@@ -1265,9 +1265,6 @@ populateMenuWithEntities (
   String entType,
   String relType
 ) {
-  if (isNull(parentUuid))
-    return;
-
   String getChildEntitiesQ = "" +
     "SELECT childuuid, response "+
     "  FROM parentchild JOIN latestNonDeletedArchEntFormattedIdentifiers ON (childuuid = uuid) " +
