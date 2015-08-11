@@ -1,8 +1,4 @@
-TODO Tell Brian that having separate relns for each entity pair will pretty much
-     require a re-write of the child entity stuff.
-TODO Add "View Attached Files" button?
-       - onEvent call
-       - addition to ui schema
+TODO Add "View Attached Files" button
 TODO Warn about duplicate archents
 TODO There should be a way of specifying webviews' text
 TODO change t="gpsdiag" t="map" to an element
@@ -179,6 +175,10 @@ CHILD ENTITIES
   the list appears in. The entities will be constrained to have the type
   "Type_Of_Children". However, writing `ec=""` produces an unconstrained list,
   where children of all types are displayed.
+
+  The user should note carefully that, while including an "lc" attribute causes
+  a corresponding <RelationshipElement> to be generated in the data schema,
+  including an "ec" attribute does not.
 ________________________________________________________________________________
 
 LABELS

@@ -464,13 +464,14 @@ saveTabGroup(String tabgroup, String callback) {
       setUuid(tabgroup, uuid);
       populateAuthorAndTimestamp(tabgroup);
       if (newRecord && !isNull(parentTabgroup_)) {
-        saveEntitiesToHierRel(
-          "Parent Of",
+        String rel = "";
+        rel += parentTabgroup_.replaceAll("_", " ");
+        rel += " - ";
+        rel += tabgroup.replaceAll("_", " ");
+        saveEntitiesToRel(
+          rel,
           getUuid(parentTabgroup_),
-          uuid,
-          "Parent Of",
-          "Child Of",
-          null
+          uuid
         );
       }
       execute(callback);
@@ -692,11 +693,10 @@ getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
 }
 
 getDuplicateRelnQuery(String originalRecordID) {
-  String dupeRelnQuery = "SELECT relntypename, parentparticipatesverb, childparticipatesverb, parentuuid "+
+  String dupeRelnQuery = "SELECT relntypename, parentparticipatesverb, childparticipatesverb, childuuid "+
                          "  FROM parentchild join relationship using (relationshipid) "+
                          "  JOIN relntype using (relntypeid) "+
-                         " WHERE childuuid = '"+originalRecordID+"' " +
-                         "   AND parentparticipatesverb = 'Parent Of' ";
+                         " WHERE parentuuid = '"+originalRecordID+"';";
   return dupeRelnQuery;
 }
 
@@ -1040,7 +1040,7 @@ menus.add(new String[] {
   "Interview/Interview/List_of_Agent_Roles",
   "getUuid(\"Interview\")",
   "Agent Role",
-  "Parent Of"
+  "Interview - Agent Role",
 });
 for (m : menus) {
   String viewType       = m[0];

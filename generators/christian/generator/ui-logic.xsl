@@ -529,13 +529,14 @@ saveTabGroup(String tabgroup, String callback) {
       setUuid(tabgroup, uuid);
       populateAuthorAndTimestamp(tabgroup);
       if (newRecord &amp;&amp; !isNull(parentTabgroup_)) {
-        saveEntitiesToHierRel(
-          "Parent Of",
+        String rel = "";
+        rel += parentTabgroup_.replaceAll("_", " ");
+        rel += " - ";
+        rel += tabgroup.replaceAll("_", " ");
+        saveEntitiesToRel(
+          rel,
           getUuid(parentTabgroup_),
-          uuid,
-          "Parent Of",
-          "Child Of",
-          null
+          uuid
         );
       }
       execute(callback);
@@ -946,11 +947,10 @@ getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
 }
 
 getDuplicateRelnQuery(String originalRecordID) {
-  String dupeRelnQuery = "SELECT relntypename, parentparticipatesverb, childparticipatesverb, parentuuid "+
+  String dupeRelnQuery = "SELECT relntypename, parentparticipatesverb, childparticipatesverb, childuuid "+
                          "  FROM parentchild join relationship using (relationshipid) "+
                          "  JOIN relntype using (relntypeid) "+
-                         " WHERE childuuid = '"+originalRecordID+"' " +
-                         "   AND parentparticipatesverb = 'Parent Of' ";
+                         " WHERE parentuuid = '"+originalRecordID+"';";
   return dupeRelnQuery;
 }
 
@@ -1812,7 +1812,19 @@ menus = new ArrayList();
       </xsl:call-template>
       <xsl:text>",</xsl:text>
       <xsl:value-of select="$newline" />
-      <xsl:text>  "Parent Of"</xsl:text>
+      <xsl:text>  "</xsl:text>
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name(ancestor::*[last()-1])" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="' '" />
+      </xsl:call-template>
+      <xsl:text> - </xsl:text>
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="@ec" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="' '" />
+      </xsl:call-template>
+      <xsl:text>",</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:text>});</xsl:text>
       <xsl:value-of select="$newline" />
