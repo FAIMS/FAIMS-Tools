@@ -8,36 +8,7 @@
 import urllib2, json, sys
 
 arch16n = dict()
-'''
-def getRowValue(row, format, column_name):    
-    if str(column_name) == '':
-        raise ValueError('column_name must not empty')
-    begin = row.find('%s:' % column_name)       
-    if begin == -1:
-        return ''
-    begin = begin + len(column_name) + 1
-    end = -1
-    found_begin = False
-    
-    for entity in format:
-        if found_begin and row.find(entity) != -1:
-            end = row.find(entity)
-            break
-        
-        if entity == column_name:
-            found_begin = True
-    
-    #check if last element
-    if format[len(format) -1 ] == column_name:
-        end = len(row)
-    else:
-        if end == -1:
-            end = len(row)
-        else:
-            end = end - 2
-    value = row[begin: end].strip()
-    return value
-'''
+
 #Implementation of perl's autovivification feature.
 class AutoVivification(dict):
     def __getitem__(self, item):
@@ -58,169 +29,178 @@ class Term:
         self.children = []
 
 # Do a depth first search to print out hierarchical vocabulary
-
 def dfs(depth, terms, current):
-    s = "\n" + '  ' * depth + "<term" 
+    s = "\n" + '  ' * depth + "<term"
     if current.pictureurl != "":
-        s = s + " pictureURL=\"" + current.pictureurl + "\""
-    s = s + "> "
+        s += " pictureURL=\"" + current.pictureurl + "\""
+    s += "> "
     if current.arch16n == "":
-        s = s + current.term
+        s += current.term
     else:
-        s = s + "{" + current.term  + "}"
+        s += "{" + current.term  + "}"
         arch16n[current.term] = current.arch16n
     if current.description != "":
         s += "\n" + '  ' * (int(depth)+1) +  "<description>" + current.description + "</description>"
     else:
         s += "\n" +'  ' * (int(depth)+1) + "<description/>"
     for child in current.children:
-        s = s + dfs(depth+1, terms, terms[child])
+        s += dfs(depth+1, terms, terms[child])
     s += "\n" +'  ' * depth + "</term>"
     return s
 
-
-def getRowValue(row, format, column_name):
-    #print row
+def getRowValue(row, column_name):
     return row['gsx$%s' % (column_name)]['$t'].encode('utf-8').strip()
 
-# Program starts here
+def printArchElement(vocabTable, entity):
+    s = "  <ArchaeologicalElement name=\"" + entity + "\""
+    if 'type' in vocabTable[entity]:
+        s += " type=\"" + vocabTable[entity]['type'] + "\""
+    s += ">"
+    print s
+    printDescription(vocabTable[entity])
+    printProperties(vocabTable[entity])
+    print "  </ArchaeologicalElement>"
 
+def printRelnElement(vocabTable, entity):
+    s = '  ' * depth + "<RelationshipElement name=\"" + entity + "\""
+    if 'type' in vocabTable[entity]:
+        s += " type=\"" + vocabTable[entity]['type'] + "\""
+    s += ">"
+    print s
+    printDescription(vocabTable[entity])
+    if vocabTable[entity]['type'] == "hierarchical":
+        if 'parent' in vocabTable[entity]:
+            print "    <parent>" + vocabTable[entity]['parent'] + "</parent>"
+        if 'child' in vocabTable[entity]:
+            print "    <child>" + vocabTable[entity]['child'] + "</child>"
+    print "  </RelationshipElement>"
+
+# `source` can either be a vocabTable (dict) or string
+def printDescription(source, depth=1):
+    # Extract description from source if necessary
+    if isinstance(source, basestring):
+        desc = source
+    else:
+        if 'description' in source:
+            desc = source['description']
+        else:
+            desc = ''
+
+    # Print the tag-enclosed description
+    if desc == "":
+        print '  ' * depth + "<description/>"
+    else:
+        print '  ' * depth + "<description>" + desc + "</description>"
+
+def printProperties(source):
+    depth = 1
+    for p in source['properties']:
+        s = '  ' * depth + '<property name="' + p['attribute'] + '"'
+
+        if p['type'] == 'hierarchical':
+            s += ' type="enum"'
+        elif p['type'] == 'file':
+            s += ' type="file" file="true" thumbnail="true"'
+        elif p['type'] != '':
+            s += ' type="' + p['type'] + '"'
+
+        if p['identifier'] != '':
+            s += ' isIdentifier="' + p['identifier'].lower() + '"'
+        s += '>'
+        print s
+
+        depth += 1
+        printDescription(p['description'], depth)
+        if p['type'] in ('hierarchical', 'enum'):
+            s = '  ' * depth + '<lookup>'
+            depth += 1
+            for term in p['parents']:
+                s += dfs(depth, p['terms'], term)
+            print s
+            depth -= 1
+            print '  ' * depth + '</lookup>'
+        depth -= 1
+        print '  ' * depth + '</property>'
+
+# Program starts here
 if len(sys.argv) < 2:
     sys.stderr.write("Specify Google Spreadsheet ID as argument")
     exit()
 sheet_id = sys.argv[1]
-url = 'https://spreadsheets.google.com/feeds/list/' + sheet_id + '/od6/public/values?prettyprint=true&alt=json';
+url      = 'https://spreadsheets.google.com/feeds/list/' + sheet_id + '/1/public/values?prettyprint=true&alt=json';
 response = urllib2.urlopen(url)
-html = response.read()
-
-html = json.loads(html)
-
-format = ['entityname', 'element', 'attribute', 'type', 'identifier', 'term', 'arch16n', 'pictureurl', 'description', 'depth', 'parent', 'child']
+html     = response.read()
+html     = json.loads(html)
 
 vocabTable = AutoVivification()
 
-for entry in html['feed']['entry']:
-    #print entry
-    row = entry
+for row in html['feed']['entry']:
+    entity = getRowValue(row, 'entityname')
 
-    entity = getRowValue(row, format, 'entityname')
-
-
-    
-
-
-    if getRowValue(row, format, 'element') != "":
-        vocabTable[entity]['enttype'] = getRowValue(row, format, 'element')
-        vocabTable[entity]['description'] = getRowValue(row, format, 'description')
-        vocabTable[entity]['properties'] = []
-        if getRowValue(row, format, 'type') != "":
-            vocabTable[entity]['type'] = getRowValue(row, format, 'type')
-            if getRowValue(row, format, 'type') == "hierarchical":
-                vocabTable[entity]['parent'] = getRowValue(row, format, 'parent')
-                vocabTable[entity]['child'] = getRowValue(row, format, 'child')
+    if getRowValue(row, 'element') != "":
+        vocabTable[entity]['element']     = getRowValue(row, 'element')
+        vocabTable[entity]['description'] = getRowValue(row, 'description')
+        vocabTable[entity]['properties']  = []
+        if getRowValue(row, 'type') != "":
+            vocabTable[entity]['type'] = getRowValue(row, 'type')
+            if getRowValue(row, 'type') == "hierarchical":
+                vocabTable[entity]['parent'] = getRowValue(row, 'parent')
+                vocabTable[entity]['child']  = getRowValue(row, 'child')
     else:
-        attribute =  getRowValue(row, format, 'attribute')
-        #print attribute
-        found = False
+        attribute =  getRowValue(row, 'attribute')
+        termFound = False
         for attr in vocabTable[entity]['properties']:
             if attr['attribute'] == attribute:
-                found = True
-        if found:
-            t = Term(getRowValue(row, format, 'term'), getRowValue(row, format, 'description'), getRowValue(row, format, 'parent'), len(p['terms']), getRowValue(row, format, 'pictureurl'), getRowValue(row, format, 'arch16n'))
-            
-            if int(t.parent) != -1:
-                p['terms'][int(t.parent)].children.append(t.index)
+                termFound = True
+        if termFound:
+            t = Term(
+                    getRowValue(row, 'term'),
+                    getRowValue(row, 'description'),
+                    getRowValue(row, 'parent'),
+                    len(p['terms']),
+                    getRowValue(row, 'pictureurl'),
+                    getRowValue(row, 'arch16n')
+            )
+
+            if t.parent == '':
+                termIndex = -1
+            else:
+                termIndex = int(t.parent)
+            if termIndex != -1:
+                p['terms'][termIndex].children.append(t.index)
             else:
                 p['parents'].append(t)
             p['terms'].append(t)
         else:
             p = AutoVivification()
-            p['attribute'] = getRowValue(row, format, 'attribute')
-            p['type'] = getRowValue(row, format, 'type')
-            p['identifier'] = getRowValue(row, format, 'identifier')
-            p['description'] = getRowValue(row, format, 'description')
-            p['arch16n'] = getRowValue(row, format, 'arch16n')
-            if p['type'] == "enum" or p['type'] == "hierarchical":
-                p['terms'] = []
+            p['attribute']   = getRowValue(row, 'attribute')
+            p['type']        = getRowValue(row, 'type')
+            p['identifier']  = getRowValue(row, 'identifier')
+            p['description'] = getRowValue(row, 'description')
+            p['arch16n']     = getRowValue(row, 'arch16n')
+            if p['type'] in ('enum', 'hierarchical'):
+                p['terms']   = []
                 p['parents'] = []
-            #print "%s %s %s" % (entity, attribute, type(vocabTable[entity]['properties']))
-            if (not isinstance(vocabTable[entity]['properties'], list)):
+            if not isinstance(vocabTable[entity]['properties'], list):
                 vocabTable[entity]['properties'] = []
             vocabTable[entity]['properties'].append(p)
 
-print """<?xml version="1.0" encoding="UTF-8"?>
-<dataSchema>"""
-depth = 1
+print """<?xml version="1.0" encoding="UTF-8"?>"""
+print """<dataSchema>"""
 for entity in vocabTable:
-    # print out ArchElement or RelnElement
-    if vocabTable[entity]['enttype'] == "archent":
-        s = '  ' * depth + "<ArchaeologicalElement name=\"" + entity + "\""
-        if 'type' in vocabTable[entity]:
-            s += " type=\"" + vocabTable[entity]['type'] + "\""
-
-        s += ">"
-        print s
+    if   vocabTable[entity]['element'] == 'archent':
+        printArchElement(vocabTable, entity)
+    elif vocabTable[entity]['element'] == 'relnent':
+        printRelnElement(vocabTable, entity)
     else:
-        s = '  ' * depth + "<RelationshipElement name=\"" + entity + "\""
-        if 'type' in vocabTable[entity]:
-            s += " type=\"" + vocabTable[entity]['type'] + "\""
+        sys.stderr.write('Unexpected element "%s"' % vocabTable[entity]['element'])
 
-        s += ">"
-        print s
-    depth += 1
-    #print description
-    if 'description' in vocabTable[entity]:
-        print '  ' * depth + "<description>" + vocabTable[entity]["description"] + "</description>"
-    else:
-        print '  ' * depth + "<description/>"
-    #if its a hierarchical relationship, print the parent/child
-    if vocabTable[entity]['enttype'] == "relnent" and vocabTable[entity]['type'] == "hierarchical":
-        if 'parent' in vocabTable[entity]:
-            print '  ' * depth + "<parent>" + vocabTable[entity]['parent'] + "</parent>"
-        if 'child' in vocabTable[entity]:
-            print '  ' * depth + "<child>" + vocabTable[entity]['child'] + "</child>"
-
-    #print the properties
     for p in vocabTable[entity]['properties']:
-        s = '  ' * depth + "<property name=\"" + p['attribute'] + "\""
-        if p['type'] != "":
-            if p['type'] == "hierarchical":
-                s = s + " type=\"enum\""
-            elif p['type'] == "file":
-                s = s + " type=\"file\" file=\"true\" thumbnail=\"true\""
-            else:
-                s = s + " type=\"" + p['type'] + "\""
-        if p['identifier'] != "":
-            s = s + " isIdentifier=\"" + p['identifier'].lower() + "\""
-        s = s + ">"
-        if p['arch16n'] != "":
+        if p['arch16n'] != '':
             arch16n[p['attribute']] = p['arch16n']
-        print s
-        depth += 1
-        if p['description'] != "":
-            s = '  ' * depth + "<description>" + p['description'] + "</description>"
-        else:
-            s = '  ' * depth + "<description/>"
-        print s
-        if p['type'] == "hierarchical" or p['type'] == "enum":
-            s = '  ' * depth + "<lookup>"
-            depth += 1
-            for term in p['parents']: 
-                s = s + dfs(depth, p['terms'], term)
-            print s    
-            depth -= 1
-            print '  ' * depth + "</lookup>"
-        depth -= 1
-        print '  ' * depth + "</property>"
+print '</dataSchema>'
 
-    depth -= 1
-    if vocabTable[entity]['enttype'] == "archent":
-        print '  ' * depth + "</ArchaeologicalElement>"
+print '\n\n\n\n'
 
-    else:
-        print '  ' * depth + "</RelationshipElement>"
-print "</dataSchema>"
-
-print "\n\n\n\n"
 for key in arch16n:
-    print key + "=" + str(arch16n[key])
+    print key + '=' + str(arch16n[key])
