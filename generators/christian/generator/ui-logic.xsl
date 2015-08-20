@@ -1161,10 +1161,10 @@ fillInGPS(String tabgroup) {
   fetchOne(query, new FetchCallback() {
     onFetch(result) {
       print("[fillInGPS()] Fetched DB transformed geometry: " + result);
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Latitude"  , result.get(0));
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Longitude" , result.get(1));
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Northing"  , result.get(2));
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Easting"   , result.get(3));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Longitude" , result.get(0));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Latitude"  , result.get(1));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Easting"   , result.get(2));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Northing"  , result.get(3));
     }
   });
 }
