@@ -3,10 +3,16 @@ from   lxml import etree
 from   copy import deepcopy
 
 def expandToXPath(shorthand):
+    reserved = []
+    reserved.append('description')
+    reserved.append('formatString')
+    reserved.append('appendCharacterString')
+
     shorthand = shorthand.split('/')
     if len(shorthand) >= 2:
         shorthand[0] = 'ArchaeologicalElement[@name="%s"]' % shorthand[0]
-        shorthand[1] = 'property[@name="%s"]'              % shorthand[1]
+        if shorthand[1] not in reserved:
+            shorthand[1] = 'property[@name="%s"]'          % shorthand[1]
         shorthand.insert(0, '/dataSchema')
     return '/'.join(shorthand)
 

@@ -29,7 +29,7 @@ def rowToNode(row):
     arch16nKey   = getRowValue(row, 'faimsVocab')
     archentNames = getRowValue(row, 'attributeLocation')
     countOrder   = getRowValue(row, 'VocabCountOrder')
-    descProp     = 'Babbys first desc' # TODO
+    descProp     = getRowValue(row, 'AttributeDescription')
     descVocab    = getRowValue(row, 'VocabDescription')
     infoPictures = getRowValue(row, 'infoFilenames')
     parentVocab  = getRowValue(row, 'parentVocabularyName')
@@ -64,11 +64,12 @@ def rowToNode(row):
         )
         s  = '\n'
         s += '<div>\n'
-        s += '    <h1>' + arch16nKey + '</h1>\n'
+        #s += '    <h1>' + arch16nKey + '</h1>\n'
         s += '    <p>'  + descProp   + '</p>\n'
         s += '    <hr/>\n'
         s += '</div>\n'
         descPr.text = etree.CDATA(s)
+        # If it doesn't have a description and vocab items, leave <description> tags empty
 
         # Put lookup in property
         lookup = etree.SubElement(
@@ -202,7 +203,10 @@ def arrangeTermsHelper(t):
 
 def getRowValue(row, columnName):
     columnName = columnName.lower()
-    return row['gsx$%s' % columnName]['$t'].encode('utf-8').strip()
+    key = 'gsx$%s' % columnName
+    if key in row:
+        return row[key]['$t'].encode('utf-8').strip()
+    return ''
 
 ################################################################################
 #                                     MAIN                                     #
