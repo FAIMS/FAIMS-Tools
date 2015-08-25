@@ -1,6 +1,7 @@
-import urllib2, json, sys
-from lxml import etree
-from lxml.etree import CDATA
+from   lxml import etree
+import json
+import sys
+import urllib2
 
 def makeTree():
     root = etree.Element('dataSchema')
@@ -67,7 +68,7 @@ def rowToNode(row):
         s += '    <p>'  + descProp   + '</p>\n'
         s += '    <hr/>\n'
         s += '</div>\n'
-        descPr.text = CDATA(s)
+        descPr.text = etree.CDATA(s)
 
         # Put lookup in property
         lookup = etree.SubElement(
@@ -100,7 +101,7 @@ def rowToNode(row):
         s += '<hr/>\n'
         s += '</div>\n'
         if len(infoPictures):
-            descTe.text = CDATA(s)
+            descTe.text = etree.CDATA(s)
 
         # DO SOME CLEANUP
         if not pictureUrl:

@@ -12,7 +12,7 @@
     </property>
     <property name="Private" type="vocab">
       <description>Choose either “false”, meaning that the metadata for the item should be publicly available, or “true”, meaning that the metadata for the item should be hidden (perhaps because you plan to check it and edit it later).</description>
-      <lookup>
+      <lookup __RESERVED_CP__="true">
         <term>{True}
 <description/></term>
         <term>{False}
