@@ -34,7 +34,7 @@ if len(sys.argv) < 3:
     sys.stderr.write('   Adds the attribute __RESERVED__CP__="true" to each node of XML specified\n')
     sys.stderr.write('   in FLAGS.\n')
     sys.stderr.write('\n')
-    sys.stderr.write('   Flags in the FLAGS file are specified in the format:\n')
+    sys.stderr.write('   Nodes in the FLAGS file are specified in the format:\n')
     sys.stderr.write('       tabgroup/tab/xpath-expression\n')
     sys.stderr.write('   For example, writing\n')
     sys.stderr.write('       Diary/AreaCode/lookup\n')

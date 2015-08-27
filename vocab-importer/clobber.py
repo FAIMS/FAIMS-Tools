@@ -124,7 +124,8 @@ if len(sys.argv) < 3:
     sys.stderr.write('       python %s SOURCE TARGET\n' % sys.argv[0])
     sys.stderr.write('\n')
     sys.stderr.write('DESCRIPTION\n')
-    sys.stderr.write('       Copy the nodes from the SOURCE xml file to the TARGET.\n')
+    sys.stderr.write('       Copy the nodes from the SOURCE xml file, whose __RESERVED_CP__ attribute\n')
+    sys.stderr.write('       is "true", to the TARGET.\n')
     exit()
 
 sourceTree = etree.parse(sys.argv[1])
