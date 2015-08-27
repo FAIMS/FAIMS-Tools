@@ -68,8 +68,8 @@ def rowToNode(row):
         s += '    <p>'  + descProp   + '</p>\n'
         s += '    <hr/>\n'
         s += '</div>\n'
-        descPr.text = etree.CDATA(s)
-        # If it doesn't have a description and vocab items, leave <description> tags empty
+        if descProp:
+            descPr.text = etree.CDATA(s)
 
         # Put lookup in property
         lookup = etree.SubElement(
