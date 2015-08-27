@@ -1,0 +1,3 @@
+TODO
+  - make spreadsheet-to-data-schema.py produce sensible output for spreadsheets
+    with missing columns.
