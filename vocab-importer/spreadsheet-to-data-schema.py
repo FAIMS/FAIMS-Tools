@@ -203,9 +203,9 @@ def arrangeTermsHelper(t):
 
 def getRowValue(row, columnName):
     columnName = columnName.lower()
-    key = 'gsx$%s' % columnName
-    if key in row:
-        return row[key]['$t'].encode('utf-8').strip()
+    columnName = 'gsx$%s' % columnName
+    if columnName in row:
+        return row[columnName]['$t'].encode('utf-8').strip()
     return ''
 
 ################################################################################
