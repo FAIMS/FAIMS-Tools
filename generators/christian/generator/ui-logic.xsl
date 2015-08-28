@@ -20,7 +20,6 @@ setSyncEnabled(true);
 setSyncMaxInterval(600.0f);
 setSyncMinInterval(5.0f);
 
-
 makeLocalID(){
   fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);", null);
   fetchOne("DROP VIEW IF EXISTS parentchild;", null);
@@ -51,6 +50,70 @@ newTab(String tab, Boolean resolveTabGroups) {
     newTab(tab);
   } else {
     newTabGroup(tab);
+  }
+}
+
+/******************************************************************************/
+/*                            BINDING ACCUMULATOR                             */
+/*                                                                            */
+/* Allows onEvent bindings for the same element to accumulate over multiple   */
+/* onEvent calls instead of having later calls override earlier ones.         */
+/******************************************************************************/
+
+List events = new ArrayList();
+addOnEvent(ref, event, statement) {
+  List onEventParams = new ArrayList();
+  onEventParams.add(ref);
+  onEventParams.add(event);
+  onEventParams.add(statement);
+
+  events.add(onEventParams);
+}
+
+onEventComparator = new Comparator() {
+  public int compare(List oe1, List oe2) {
+    ref1 = oe1.get(0);
+    ref2 = oe2.get(0);
+    evt1 = oe1.get(1);
+    evt2 = oe2.get(1);
+    left  = ref1 + evt1;
+    right = ref2 + evt2;
+    return left.compareTo(right);
+  }
+};
+
+bindOnEvents() {
+  // Coallesce statements containing like refs/paths
+  Collections.sort(events, onEventComparator);
+  for (i = 0; i &lt; events.size() - 1; i++) {
+    thisEventParams = events.get(i    );
+    nextEventParams = events.get(i + 1);
+    thisRef   = thisEventParams.get(0);
+    nextRef   = nextEventParams.get(0);
+    thisEvent = thisEventParams.get(1);
+    nextEvent = nextEventParams.get(1);
+    thisStmt  = thisEventParams.get(2);
+    nextStmt  = nextEventParams.get(2);
+    if (thisRef.equals(nextRef) &amp;&amp; thisEvent.equals(nextEvent)) {
+      String coallesced = "";
+      coallesced += thisStmt;
+      coallesced += "; ";
+      coallesced += nextStmt;
+
+      // Update this statement
+      thisStmt = coallesced;
+      events.get(i).set(2, thisStmt);
+      // Remove next statement (because "thisStmt" now contains it)
+      events.remove(i + 1);
+    }
+  }
+
+  // Bind
+  for (e : events) {
+    ref       = e.get(0);
+    event     = e.get(1);
+    statement = e.get(2);
+    onEvent(ref, event, statement);
   }
 }
 
@@ -604,7 +667,7 @@ populateAuthorAndTimestamp(String tabgroup) {
     </xsl:for-each>
     <xsl:value-of select="$newline" />
     <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')])]">
-      <xsl:text>onEvent("</xsl:text>
+      <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name()"/>
       <xsl:text>", "show", "onShow</xsl:text>
       <xsl:call-template name="string-replace-all">
@@ -747,7 +810,7 @@ populateAuthorAndTimestamp(String tabgroup) {
         <xsl:value-of select="name()"/>
       </xsl:variable>
 
-      <xsl:text>onEvent("</xsl:text>
+      <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="$button-path"/>
       <xsl:text>", "click", </xsl:text>
       <xsl:value-of select="$show-tab-string"/>
@@ -763,7 +826,7 @@ populateAuthorAndTimestamp(String tabgroup) {
 /******************************************************************************/
 </xsl:text>
     <xsl:for-each select="//*[normalize-space(@t) = 'audio']">
-      <xsl:text>onEvent("</xsl:text>
+      <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-1])"/>
       <xsl:text>/</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-2])"/>
@@ -775,7 +838,7 @@ populateAuthorAndTimestamp(String tabgroup) {
       <xsl:value-of select="$newline" />
     </xsl:for-each>
     <xsl:for-each select="//*[normalize-space(@t) = 'camera']">
-      <xsl:text>onEvent("</xsl:text>
+      <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-1])"/>
       <xsl:text>/</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-2])"/>
@@ -787,7 +850,7 @@ populateAuthorAndTimestamp(String tabgroup) {
       <xsl:value-of select="$newline" />
     </xsl:for-each>
     <xsl:for-each select="//*[normalize-space(@t) = 'file']">
-      <xsl:text>onEvent("</xsl:text>
+      <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-1])"/>
       <xsl:text>/</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-2])"/>
@@ -799,7 +862,7 @@ populateAuthorAndTimestamp(String tabgroup) {
       <xsl:value-of select="$newline" />
     </xsl:for-each>
     <xsl:for-each select="//*[normalize-space(@t) = 'video']">
-      <xsl:text>onEvent("</xsl:text>
+      <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-1])"/>
       <xsl:text>/</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-2])"/>
@@ -1027,13 +1090,13 @@ doNotDelete(){
 }
 </xsl:text>
     <xsl:for-each select="/module/*[ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')]]">
-      <xsl:text>onEvent("</xsl:text>
+      <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name()"/>
       <xsl:text>", "show", "removeNavigationButtons()");</xsl:text>
       <xsl:value-of select="$newline"/>
     </xsl:for-each>
     <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')])]">
-      <xsl:text>onEvent("</xsl:text>
+      <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name()"/>
       <xsl:text>", "show", "addNavigationButtons(\"</xsl:text>
       <xsl:value-of select="name()"/>
@@ -1050,10 +1113,10 @@ doNotDelete(){
 /******************************************************************************/
 /*                                   SEARCH                                   */
 /******************************************************************************/
-onEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search"               , "show"  , "search();");
-onEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Entity_List"   , "click" , "loadEntity();");
-onEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Search_Button" , "click" , "search()");
-onEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Search_Term"   , "click" , "clearSearch()");
+addOnEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search"               , "show"  , "search();");
+addOnEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Entity_List"   , "click" , "loadEntity();");
+addOnEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Search_Button" , "click" , "search()");
+addOnEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Search_Term"   , "click" , "clearSearch()");
 </xsl:text>
       <xsl:call-template name="search-entities" />
       <xsl:text>
@@ -1212,7 +1275,7 @@ incField(String ref) {
   return incField(ref, 1);
 }
 
-onEvent("Control", "load", "onLoadControl()");
+addOnEvent("Control", "load", "onLoadControl()");
 
 /* This function should only be called once since it creates event handlers,
  * otherwise multiple copies of the same handler will trigger with the event.
@@ -1339,11 +1402,18 @@ menus = new ArrayList();
   functionCall += "\"" + relType        + "\"";
   functionCall += ")";
 
-  onEvent(path, "show", functionCall);
+  addOnEvent(path, "show", functionCall);
 }
 </xsl:text>
       <xsl:call-template name="entity-loading" />
     </xsl:if>
+
+<xsl:text>
+/******************************************************************************/
+/*                                FINALISATION                                */
+/******************************************************************************/
+bindOnEvents();
+</xsl:text>
 
   </xsl:template>
 
@@ -1432,7 +1502,7 @@ menus = new ArrayList();
 
   <xsl:template name="take-from-gps-bindings">
     <xsl:for-each select="/module//gps">
-      <xsl:text>onEvent("</xsl:text>
+      <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-1])"/>
       <xsl:text>/</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-2])"/>
@@ -1834,7 +1904,7 @@ menus = new ArrayList();
 
   <xsl:template name="entity-loading">
     <xsl:for-each select="//*[(normalize-space(@t) = 'list' or normalize-space(@t) = '') and (@e or @ec)]">
-      <xsl:text>onEvent("</xsl:text>
+      <xsl:text>addOnEvent("</xsl:text>
       <xsl:call-template name="ref" />
       <xsl:text>", "click", "loadEntity()");</xsl:text>
       <xsl:value-of select="$newline" />
@@ -1853,7 +1923,9 @@ populateListForUsers(){
 
   fetchAll(getNonDeletedUsersQuery, new FetchCallback() {
     onFetch(result) {
-      populateDropDown(userMenuPath, result, true);
+</xsl:text>
+    <xsl:call-template name="users-populate-call" />
+<xsl:text>
     }
   });
 }
@@ -1866,6 +1938,7 @@ selectUser () {
 <xsl:text>
   String userQ        = "SELECT userid,fname,lname,email FROM user " +
                         "WHERE  userid='" + userVocabId + "';";
+  showWarning("asdf", "va");
   FetchCallback callback = new FetchCallback() {
     onFetch(result) {
       user = new User(
@@ -1876,16 +1949,28 @@ selectUser () {
       );
       setUser(user);
       username = result.get(1) + " " + result.get(2);
+      showWarning(username, username);
     }
   };
 
   fetchOne(userQ, callback);
 }
 
-onEvent(userMenuPath, "show",  "populateListForUsers()");
-onEvent(userMenuPath, "select", "selectUser()");
+addOnEvent(userMenuPath, "show",  "populateListForUsers()");
+addOnEvent(userMenuPath, "click", "selectUser()");
 </xsl:text>
     </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="users-populate-call">
+    <xsl:choose>
+      <xsl:when test="normalize-space(@t) = 'list' or normalize-space(@t) = ''">
+        <xsl:text>      populateList(userMenuPath, result);</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>      populateDropDown(userMenuPath, result, true);</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template name="users-vocabid">
@@ -1895,6 +1980,11 @@ onEvent(userMenuPath, "select", "selectUser()");
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>  String userVocabId  = getFieldValue(userMenuPath);</xsl:text>
+        <xsl:value-of select="$newline" />
+        <xsl:text>  if (isNull(userVocabId))</xsl:text>
+        <xsl:value-of select="$newline" />
+        <xsl:text>    return;</xsl:text>
+        <xsl:value-of select="$newline" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1972,7 +2062,7 @@ onEvent(userMenuPath, "select", "selectUser()");
 
   <xsl:template name="search-entities">
     <xsl:if test="count(/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
-      <xsl:text>onEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Entity_Types"  , "click" , "search()");</xsl:text>
+      <xsl:text>addOnEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Entity_Types"  , "click" , "search()");</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:value-of select="$newline" />
       <xsl:text>entityTypes = new ArrayList();</xsl:text>
@@ -1998,7 +2088,7 @@ onEvent(userMenuPath, "select", "selectUser()");
 
   <xsl:template name="gps-diag-update">
     <xsl:for-each select="//*[normalize-space(@t) = 'gpsdiag'][1]">
-      <xsl:text>onEvent("</xsl:text>
+      <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-1])"/>
       <xsl:text>/</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-2])"/>

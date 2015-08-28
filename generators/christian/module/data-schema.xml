@@ -1,214 +1,405 @@
 <?xml version="1.0"?>
 <dataSchema>
-  <RelationshipElement name="Interview - Agent Role" type="hierarchical">
-    <description>A 1-to-n relationship between the parent and its children, respectively.</description>
-    <parent>Parent Of</parent>
-    <child>Child Of</child>
-  </RelationshipElement>
-  <ArchaeologicalElement name="Interview">
+  <ArchaeologicalElement name="Burial Mound">
     <description/>
-    <property name="Title" isIdentifier="true" type="measure">
-      <description>This title should be a sensible title, unique to each item, briefly summarising the contents of the item, for example "Ilocano songs recorded in Burgos, Ilocos Sur, Philippines, 17 April 1993"</description>
+    <property name="Object ID" isIdentifier="true" type="measure">
+      <description/>
       <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
       <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Type" type="vocab">
+      <description/>
+      <lookup>
+        <term>{Burial_mound}
+<description/></term>
+        <term>{Surface_concentration}
+<description/></term>
+        <term>{Special_find}
+<description/></term>
+        <term>{Standing_masonry}
+<description/></term>
+        <term>{Earthwork}
+<description/></term>
+        <term>{Unknown}
+<description/></term>
+        <term>{Other}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Site Significance" type="vocab">
+      <description>Assess the site's potential for our research objectives or for excavation. Add details in Recommendation at the end of this module.</description>
+      <lookup>
+        <term>{None}
+<description/></term>
+        <term>{Low}
+<description/></term>
+        <term>{Medium}
+<description/></term>
+        <term>{High}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Name" type="measure">
+      <description/>
     </property>
     <property name="Description" type="measure">
-      <description>Description may include but is not limited to: an abstract, table of contents, reference to a graphical representation of content, or a free-text summary account of the content. [DCMT] Description may also offer an annotation, or a qualitative or evaluative comment about the resource, such as a statement about suitability for a particular application or context.</description>
-    </property>
-    <property name="Private" type="vocab">
-      <description>Choose either “false”, meaning that the metadata for the item should be publicly available, or “true”, meaning that the metadata for the item should be hidden (perhaps because you plan to check it and edit it later).</description>
-      <lookup>
-        <term>{True}
-<description/></term>
-        <term>{False}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Origination Date" type="measure">
-      <description>Date the item was captured or created, using the format yyyy-mm-dd. If you are unsure of the day, month or decade enter the first day of the relevant period: e.g. "1970s" 1970-01-01, "2001" 2001-01-01, "February 1993" 1993-02-01. If entering a date of this type, clarify in the originationDateNarrative field. If you really did record on 1 January 2001, say so in the originationDate field.</description>
-    </property>
-    <property name="Origination Date Narrative" type="measure">
-      <description>Use this field to provide any necessary comments on the scope of the value you entered in the origination date field, e.g. "unknown date in February 1993"</description>
-    </property>
-    <property name="Linguistic Data Type" type="vocab">
-      <description>If data is relevant to linguistics, choose one of the three basic linguistics data types. Primary text: Linguistic material which is itself the object of study; Lexicon: a systematic listing of lexical items; Language description: describes a language or some aspect(s) of a language via a systematic documentation of linguistic structures. If your data is not relevant to linguistics, leave this field blank.</description>
-      <lookup>
-        <term>{Lexicon}
-<description/></term>
-        <term>{Language_Description}
-<description/></term>
-        <term>{Primary_Text}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Discourse Type" type="vocab">
-      <description>Used to describe the content of a resource as representing discourse of a particular structural type. Dialogue: interactive discourse with two or more participants; drama: planned, creative, rendition of discourse involving two or more participants; formulaic: ritually or conventionally structured discourse; ludic:  language whose primary function is to be part of play, or a style of speech that involves a creative manipulation of the structures of the language; oratory: public speaking, or of speaking eloquently according to rules or conventions; narrative: monologic discourse which represents temporally organized events; procedural: explanation or description of a method, process, or situation having ordered steps; report: a factual account of some event or circumstance; singing: words or sounds [articulated] in succession with musical inflections or modulations of the voice; unintelligible: utterances that are not intended to be interpretable as ordinary language.</description>
-      <lookup>
-        <term>{Dialogue}
-<description/></term>
-        <term>{Drama}
-<description/></term>
-        <term>{Narrative}
-<description/></term>
-        <term>{Procedural}
-<description/></term>
-        <term>{Ludic}
-<description/></term>
-        <term>{Singing}
-<description/></term>
-        <term>{Oratory}
-<description/></term>
-        <term>{Report}
-<description/></term>
-        <term>{Unintelligible_speech}
-<description/></term>
-        <term>{Formulaic}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Linguistic Subject" type="vocab">
-      <description>Use to describe the content of a resource if it is about a particular subfield of linguistic science.</description>
-      <lookup>
-        <term>{Phonology}
-<description/></term>
-        <term>{Text_And_Corpus_Linguistics}
-<description/></term>
-        <term>{Historical_Linguistics}
-<description/></term>
-        <term>{Language_Documentation}
-<description/></term>
-        <term>{Lexicography}
-<description/></term>
-        <term>{Typology}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Country" type="vocab">
-      <description>This should be the standard name of the country in which the file was recorded (see http://www.ethnologue.com/country_index.asp). Prefix the country name with the two-letter ISO3166-1 code (http://www.iso.org/iso/country_codes.htm).</description>
-      <lookup>
-        <term>{PH___Philippines}
-<description/></term>
-        <term>{AU___Australia}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Region Villiage" type="vocab">
-      <description>Indicate the geographical scope of the item. Enter data in the order locality, state or province, country.</description>
-      <lookup>
-        <term>{_locality____state_or_province____country_}
-<description/></term>
-        <term>{Burgos__Ilocos_Sur__Philippines}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Language Local Name" type="vocab">
-      <description>The purpose of this field is to reflect language names in local use, with local spellings, if different from official name.</description>
-      <lookup>
-        <term>{Language___local_spelling__free_text_}
-<description/></term>
-        <term>{Ilocano}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Language Content ISO639-3" type="vocab">
-      <description>Content language is the language included in your data (spoken and/or written). Insert the 3-letter ISO 639-3 code for your language, and the standard name of the language as spelt in the ethnologue entry [search on www.ethnologue.com/site_search.asp]. Separate the code and the language with a hyphen, e.g. "ilo - Ilocano"</description>
-      <lookup>
-        <term>{mis___Uncoded_languages}
-<description/></term>
-        <term>{und___Undetermined_languages}
-<description/></term>
-        <term>{mul___Multiple_languages}
-<description/></term>
-        <term>{zxx___No_linguistic_content}
-<description/></term>
-        <term>{_3_letter_ISO639_3_code_____Ethnologue_name_of_language_}
-<description/></term>
-        <term>{ilo___Ilocano}
-<description/></term>
-        <term>{eng___English}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Language Subject ISO639-3" type="vocab">
-      <description>Subject language is the language that is the subject of your research. Insert the 3-letter ISO 639-3 code for your language, and the standard name of the language as spelt in the ethnologue entry [search on www.ethnologue.com/site_search.asp]. Separate the code and the language with a hyphen, e.g. "ilo - Ilocano"</description>
-      <lookup>
-        <term>{zxx___No_linguistic_content}
-<description/></term>
-        <term>{_3_letter_ISO639_3_code_____Language_subject_of_your_research_}
-<description/></term>
-        <term>{mis___Uncoded_languages}
-<description/></term>
-        <term>{und___Undetermined_languages}
-<description/></term>
-        <term>{mul___Multiple_languages}
-<description/></term>
-        <term>{ilo___Ilocano}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Attached Audio" type="file" file="true" thumbnail="true">
       <description/>
     </property>
-    <property name="Attached Video" type="file" file="true" thumbnail="true">
+    <property name="Source" type="vocab">
       <description/>
-    </property>
-  </ArchaeologicalElement>
-  <ArchaeologicalElement name="Agent Role">
-    <description>Enter participant name in the format Lastname, Firstname. Choose the participant role from the closed vocabulary provided. Use the description field to provide additional information on role or agents. Enter participant name in the format Lastname, firstname. Choose the participant role from the closed vocabulary provided. Add more participants by clicking the "+" button to the right. If you need to provide extra information on the agent or the role, use the item's “Description” field to provide additional information on role or agents.</description>
-    <property name="First Name" isIdentifier="true" type="measure">
-      <description/>
-      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
-      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
-    </property>
-    <property name="Last Name" isIdentifier="true" type="measure">
-      <description/>
-      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
-      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
-    </property>
-    <property name="Role" isIdentifier="true" type="vocab">
-      <description/>
-      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
-      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
       <lookup>
-        <term>{Data_Inputter}
+        <term>{Survey}
 <description/></term>
-        <term>{Performer}
+        <term>{Remote_sensing}
 <description/></term>
-        <term>{Speaker}
+        <term>{Informant}
 <description/></term>
-        <term>{Developer}
+        <term>{Legacy_verification}
 <description/></term>
-        <term>{Transcriber}
+        <term>{Bibliography}
 <description/></term>
-        <term>{Photographer}
-<description/></term>
-        <term>{Interpreter}
-<description/></term>
-        <term>{Singer}
-<description/></term>
-        <term>{Signer}
-<description/></term>
-        <term>{Compiler}
-<description/></term>
-        <term>{Recorder}
-<description/></term>
-        <term>{Depositor}
-<description/></term>
-        <term>{Interviewer}
-<description/></term>
-        <term>{Editor}
-<description/></term>
-        <term>{Author}
-<description/></term>
-        <term>{Translator}
-<description/></term>
-        <term>{Researcher}
-<description/></term>
-        <term>{Annotator}
-<description/></term>
-        <term>{Participant}
+        <term>{Other}
 <description/></term>
       </lookup>
+    </property>
+    <property name="Exists in Legacy" type="vocab">
+      <description/>
+      <lookup>
+        <term>{Topo}
+<description/></term>
+        <term>{Satellite_Image}
+<description/></term>
+        <term>{Other}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Surrounding Landuse" type="vocab">
+      <description/>
+      <lookup>
+        <term>{Annual_agriculture}
+<description/><term>{Ploughed}
+<description/></term><term>{Harrowed}
+<description/></term><term>{Seedlings}
+<description/></term><term>{Mature_crop}
+<description/></term><term>{Harvested}
+<description/></term></term>
+        <term>{Perennial}
+<description/><term>{Orchard}
+<description/></term><term>{Lavender}
+<description/></term><term>{Vineyard}
+<description/></term></term>
+        <term>{Other}
+<description/><term>{Meadow}
+<description/></term><term>{Beach}
+<description/></term><term>{Scrub}
+<description/></term><term>{Forest}
+<description/></term><term>{Other}
+<description/></term></term>
+      </lookup>
+    </property>
+    <property name="Surface Landuse" type="vocab">
+      <description/>
+      <lookup>
+        <term>{Annual_agriculture}
+<description/><term>{Ploughed}
+<description/></term><term>{Harrowed}
+<description/></term><term>{Seedlings}
+<description/></term><term>{Mature_crop}
+<description/></term><term>{Harvested}
+<description/></term></term>
+        <term>{Perennial}
+<description/><term>{Orchard}
+<description/></term><term>{Lavender}
+<description/></term><term>{Vineyard}
+<description/></term></term>
+        <term>{Other}
+<description/><term>{Meadow}
+<description/></term><term>{Beach}
+<description/></term><term>{Scrub}
+<description/></term><term>{Forest}
+<description/></term><term>{Other}
+<description/></term></term>
+      </lookup>
+    </property>
+    <property name="Visibility" type="vocab">
+      <description/>
+      <lookup>
+        <term>{0_20_}
+<description/></term>
+        <term>{20_40_}
+<description/></term>
+        <term>{40_60_}
+<description/></term>
+        <term>{60_80_}
+<description/></term>
+        <term>{80_100_}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Elevation" type="measure">
+      <description/>
+    </property>
+    <property name="General Notes" type="measure">
+      <description/>
+    </property>
+    <property name="General Photo" type="file" file="true" thumbnail="true">
+      <description>Take 1 general overview shot that includes the complete feature profile, and a scale. Include direction in the Annotation (from which direction was the image taken)</description>
+    </property>
+    <property name="Profile" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="Plan" type="vocab">
+      <description/>
+      <lookup>
+        <term>{Circular}
+<description/></term>
+        <term>{Elipsoid}
+<description/></term>
+        <term>{Uneven}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Length Max" type="measure">
+      <description/>
+    </property>
+    <property name="Width Max" type="measure">
+      <description/>
+    </property>
+    <property name="Height Max" type="measure">
+      <description/>
+    </property>
+    <property name="Area Max" type="measure">
+      <description/>
+    </property>
+    <property name="Length Min" type="measure">
+      <description/>
+    </property>
+    <property name="Width Min" type="measure">
+      <description/>
+    </property>
+    <property name="Height Min" type="measure">
+      <description/>
+    </property>
+    <property name="Area Min" type="measure">
+      <description/>
+    </property>
+    <property name="Other Dimension" type="measure">
+      <description/>
+    </property>
+    <property name="Dimensions Notes" type="measure">
+      <description/>
+    </property>
+    <property name="Attach A Sketch" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="Sketch Photo" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="Stone Feature Present And Visible" type="vocab">
+      <description/>
+      <lookup>
+        <term>{Yes}
+<description/></term>
+        <term>{No}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Stone Feature Description" type="measure">
+      <description/>
+    </property>
+    <property name="Surface Material Density" type="vocab">
+      <description/>
+      <lookup>
+        <term>{zero}
+<description/></term>
+        <term>{scarce}
+<description/></term>
+        <term>{medium}
+<description/></term>
+        <term>{high}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Surface Material Description" type="measure">
+      <description/>
+    </property>
+    <property name="Sample Collected" type="vocab">
+      <description/>
+      <lookup>
+        <term>{Yes}
+<description/></term>
+        <term>{No}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Material Photo" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="Disturbance Kind" type="vocab">
+      <description/>
+      <lookup>
+        <term>{undisturbed}
+<description/></term>
+        <term>{surface_sediment_disturbed}
+<description/></term>
+        <term>{subsurface_disturbed}
+<description/></term>
+        <term>{totally_disturbed}
+<description/></term>
+        <term>{unknown}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Disturbance Factors" type="vocab">
+      <description/>
+      <lookup>
+        <term>{anthropic}
+<description/></term>
+        <term>{animal_activity}
+<description/></term>
+        <term>{post_depositional}
+<description/></term>
+        <term>{topographic}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Principal Factors" type="vocab">
+      <description>Select one factor that contributes to most visible damage</description>
+      <lookup>
+        <term>{Anthropic}
+<description/><term>{Agricultural}
+<description/></term><term>{Looting}
+<description/></term><term>{Development}
+<description/></term></term>
+        <term>{Post_depositional}
+<description/><term>{Mound_geomorphology}
+<description/></term><term>{Erosion}
+<description/></term><term>{Wind_damage}
+<description/></term><term>{Water_damage}
+<description/></term><term>{Age}
+<description/></term></term>
+        <term>{Topographic}
+<description/><term>{Aspect}
+<description/></term><term>{Slope}
+<description/></term><term>{Exposure}
+<description/></term><term>{Hydrology}
+<description/></term></term>
+      </lookup>
+    </property>
+    <property name="Age of Damage" type="vocab">
+      <description/>
+      <lookup>
+        <term>{Remote}
+<description/></term>
+        <term>{Recent}
+<description/></term>
+        <term>{Fresh}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Disturbance Description" type="measure">
+      <description/>
+    </property>
+    <property name="RT Kind" type="vocab">
+      <description/>
+      <lookup>
+        <term>{Basic_pit}
+<description/></term>
+        <term>{Trench}
+<description/></term>
+        <term>{Tunnel}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="RT Method" type="vocab">
+      <description/>
+      <lookup>
+        <term>{Manual}
+<description/></term>
+        <term>{Mechanized}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="RT Frequency" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="RT Description" type="measure">
+      <description/>
+    </property>
+    <property name="Volume of Soil Removed via RT" type="vocab">
+      <description/>
+      <lookup>
+        <term>{_10_}
+<description/></term>
+        <term>{10_20_}
+<description/></term>
+        <term>{20_30_}
+<description/></term>
+        <term>{30_40_}
+<description/></term>
+        <term>{40_40_}
+<description/></term>
+        <term>{50_40_}
+<description/></term>
+        <term>{60_40_}
+<description/></term>
+        <term>{70_40_}
+<description/></term>
+        <term>{80_40_}
+<description/></term>
+        <term>{90_100_}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Affect" type="vocab">
+      <description>1=0-20% of the entire feature is missing or disrupted, 5= 80-100% of the feature's surface is missing or disrupted</description>
+      <lookup>
+        <term>{1}
+<description/></term>
+        <term>{2}
+<description/></term>
+        <term>{3}
+<description/></term>
+        <term>{4}
+<description/></term>
+        <term>{5}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Impact" type="vocab">
+      <description>1= context is nearly intact; 5 = original context of the feature is nearly all destroyed</description>
+      <lookup>
+        <term>{1}
+<description/></term>
+        <term>{2}
+<description/></term>
+        <term>{3}
+<description/></term>
+        <term>{4}
+<description/></term>
+        <term>{5}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Comments and Recommendations" type="measure">
+      <description/>
+    </property>
+    <property name="CRM Photo" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="Latitude" type="measure">
+      <description/>
+    </property>
+    <property name="Longitude" type="measure">
+      <description/>
+    </property>
+    <property name="Northing" type="measure">
+      <description/>
+    </property>
+    <property name="Easting" type="measure">
+      <description/>
     </property>
   </ArchaeologicalElement>
 </dataSchema>

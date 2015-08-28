@@ -58,4 +58,4 @@ for xp in flagPaths:
     markNodes(tree, xp)
 
 # Collect your prize
-print etree.tostring(tree, pretty_print=True)
+print etree.tostring(tree, pretty_print=True, xml_declaration=True, encoding='utf-8')

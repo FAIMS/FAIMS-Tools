@@ -9,7 +9,6 @@ setSyncEnabled(true);
 setSyncMaxInterval(600.0f);
 setSyncMinInterval(5.0f);
 
-
 makeLocalID(){
   fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);", null);
   fetchOne("DROP VIEW IF EXISTS parentchild;", null);
@@ -40,6 +39,71 @@ newTab(String tab, Boolean resolveTabGroups) {
     newTab(tab);
   } else {
     newTabGroup(tab);
+  }
+}
+
+/******************************************************************************/
+/*                            BINDING ACCUMULATOR                             */
+/*                                                                            */
+/* Allows onEvent bindings for the same element to accumulate over multiple   */
+/* onEvent calls instead of having later calls override earlier ones.         */
+/******************************************************************************/
+
+List events = new ArrayList();
+addOnEvent(ref, event, statement) {
+  List onEventParams = new ArrayList();
+  onEventParams.add(ref);
+  onEventParams.add(event);
+  onEventParams.add(statement);
+
+  events.add(onEventParams);
+}
+
+onEventComparator = new Comparator() {
+  public int compare(List oe1, List oe2) {
+    ref1 = oe1.get(0);
+    ref2 = oe2.get(0);
+    evt1 = oe1.get(1);
+    evt2 = oe2.get(1);
+    left  = ref1 + evt1;
+    right = ref2 + evt2;
+    return left.compareTo(right);
+  }
+};
+
+bindOnEvents() {
+  // Coallesce statements containing like refs/paths
+  Collections.sort(events, onEventComparator);
+  for (i = 0; i < events.size() - 1; i++) {
+    thisEventParams = events.get(i    );
+    nextEventParams = events.get(i + 1);
+    thisRef   = thisEventParams.get(0);
+    nextRef   = nextEventParams.get(0);
+    thisEvent = thisEventParams.get(1);
+    nextEvent = nextEventParams.get(1);
+    thisStmt  = thisEventParams.get(2);
+    nextStmt  = nextEventParams.get(2);
+    if (thisRef.equals(nextRef) && thisEvent.equals(nextEvent)) {
+      String coallesced = "";
+      coallesced += thisStmt;
+      coallesced += "; ";
+      coallesced += nextStmt;
+
+      // Update this statement
+      thisStmt = coallesced;
+      events.get(i).set(2, thisStmt);
+      // Remove next statement (because "thisStmt" now contains it)
+      events.remove(i + 1);
+    }
+  }
+
+  // Bind
+  for (e : events) {
+    ref       = e.get(0);
+    event     = e.get(1);
+    statement = e.get(2);
+    showWarning(ref, statement);
+    onEvent(ref, event, statement);
   }
 }
 
@@ -140,7 +204,7 @@ addActionBarItem("external_gps", new ToggleActionButtonCallback() {
 /******************************************************************************/
 /*                                    GPS                                     */
 /******************************************************************************/
-onEvent("Control/Main", "show", "updateGPSDiagnostics()");
+addOnEvent("Control/Main", "show", "updateGPSDiagnostics()");
 
 updateGPSDiagnostics() {
   String diagnosticsRef = "Control/Main/GPS_Diagnostics";
@@ -227,8 +291,12 @@ String username = "";
 
 selectUser () {
   String userVocabId  = getFieldValue(userMenuPath);
+  if (isNull(userVocabId))
+    return;
+
   String userQ        = "SELECT userid,fname,lname,email FROM user " +
                         "WHERE  userid='" + userVocabId + "';";
+  showWarning("asdf", "va");
   FetchCallback callback = new FetchCallback() {
     onFetch(result) {
       user = new User(
@@ -239,14 +307,15 @@ selectUser () {
       );
       setUser(user);
       username = result.get(1) + " " + result.get(2);
+      showWarning(username, username);
     }
   };
 
   fetchOne(userQ, callback);
 }
 
-onEvent(userMenuPath, "show",  "populateListForUsers()");
-onEvent(userMenuPath, "select", "selectUser()");
+addOnEvent(userMenuPath, "show",  "populateListForUsers()");
+addOnEvent(userMenuPath, "click", "selectUser()");
 
 
 /******************************************************************************/
@@ -343,16 +412,28 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
       }
     });
 }
-makeVocab("RadioGroup", "Interview/Interview/Private", "Private");
-makeVocab("DropDown", "Interview/Interview/Linguistic_Data_Type", "Linguistic Data Type");
-makeVocab("DropDown", "Interview/Interview/Discourse_Type", "Discourse Type");
-makeVocab("DropDown", "Interview/Interview/Linguistic_Subject", "Linguistic Subject");
-makeVocab("DropDown", "Interview/Interview/Country", "Country");
-makeVocab("DropDown", "Interview/Interview/Region_Villiage", "Region Villiage");
-makeVocab("DropDown", "Interview/Interview/Language_Local_Name", "Language Local Name");
-makeVocab("DropDown", "Interview/Interview/Language_Content_ISO639-3", "Language Content ISO639-3");
-makeVocab("DropDown", "Interview/Interview/Language_Subject_ISO639-3", "Language Subject ISO639-3");
-makeVocab("DropDown", "Agent_Role/Agent_Role/Role", "Role");
+makeVocab("DropDown", "Burial_Mound/General/Type", "Type");
+makeVocab("DropDown", "Burial_Mound/General/Site_Significance", "Site Significance");
+makeVocab("DropDown", "Burial_Mound/General/Source", "Source");
+makeVocab("CheckBoxGroup", "Burial_Mound/General/Exists_in_Legacy", "Exists in Legacy");
+makeVocab("HierarchicalDropDown", "Burial_Mound/General/Surrounding_Landuse", "Surrounding Landuse");
+makeVocab("HierarchicalDropDown", "Burial_Mound/General/Surface_Landuse", "Surface Landuse");
+makeVocab("DropDown", "Burial_Mound/General/Visibility", "Visibility");
+makeVocab("PictureGallery", "Burial_Mound/Dimensions/Profile", "Profile");
+makeVocab("PictureGallery", "Burial_Mound/Dimensions/Plan", "Plan");
+makeVocab("RadioGroup", "Burial_Mound/Material/Stone_Feature_Present_And_Visible", "Stone Feature Present And Visible");
+makeVocab("DropDown", "Burial_Mound/Material/Surface_Material_Density", "Surface Material Density");
+makeVocab("RadioGroup", "Burial_Mound/Material/Sample_Collected", "Sample Collected");
+makeVocab("DropDown", "Burial_Mound/CRM/Disturbance_Kind", "Disturbance Kind");
+makeVocab("CheckBoxGroup", "Burial_Mound/CRM/Disturbance_Factors", "Disturbance Factors");
+makeVocab("HierarchicalDropDown", "Burial_Mound/CRM/Principal_Factors", "Principal Factors");
+makeVocab("CheckBoxGroup", "Burial_Mound/CRM/Age_of_Damage", "Age of Damage");
+makeVocab("CheckBoxGroup", "Burial_Mound/CRM/RT_Kind", "RT Kind");
+makeVocab("CheckBoxGroup", "Burial_Mound/CRM/RT_Method", "RT Method");
+makeVocab("PictureGallery", "Burial_Mound/CRM/RT_Frequency", "RT Frequency");
+makeVocab("DropDown", "Burial_Mound/CRM/Volume_of_Soil_Removed_via_RT", "Volume of Soil Removed via RT");
+makeVocab("DropDown", "Burial_Mound/CRM/Affect", "Affect");
+makeVocab("DropDown", "Burial_Mound/CRM/Impact", "Impact");
 
 
 /******************************************************************************/
@@ -421,14 +502,10 @@ validateFields(List fields, String format) {
   return out;
 }
 
-validateInterview() {
+validateBurialMound() {
   List f = new ArrayList(); // Fields to be validated
 
-  f.add(fieldPair("Interview/Interview/Title", "{Title}"));
-  f.add(fieldPair("Interview/Interview/Description", "{Description}"));
-  f.add(fieldPair("Interview/Interview/Private", "{Private}"));
-  f.add(fieldPair("Interview/Interview/Origination_Date", "{Origination_Date}"));
-  f.add(fieldPair("Interview/Interview/Country", "{Country}"));
+  f.add(fieldPair("Burial_Mound/General/Object_ID", "{Object_ID}"));
 
   String validationMessage = validateFields(f, "PLAINTEXT");
   showWarning("Validation Results", validationMessage);
@@ -491,6 +568,8 @@ saveTabGroup(String tabgroup, String callback) {
 populateAuthorAndTimestamp(String tabgroup) {
   Map tabgroupToAuthor    = new HashMap();
   Map tabgroupToTimestamp = new HashMap();
+  tabgroupToAuthor.put("Burial_Mound", "Burial_Mound/General/Author");
+  tabgroupToTimestamp.put("Burial_Mound", "Burial_Mound/General/Timestamp");
 
   String uuid          = getUuid(tabgroup);
   String authorPath    = tabgroupToAuthor.get(tabgroup);
@@ -518,47 +597,39 @@ populateAuthorAndTimestamp(String tabgroup) {
   fetchOne(q, callback);
 }
 
-onShowInterview () {
+onShowBurialMound () {
   // TODO: Add some things which should happen when this tab group is shown
-  saveTabGroup("Interview");
-}
-onShowAgentRole () {
-  // TODO: Add some things which should happen when this tab group is shown
-  saveTabGroup("Agent_Role");
+  saveTabGroup("Burial_Mound");
 }
 
-onEvent("Interview", "show", "onShowInterview()");
-onEvent("Agent_Role", "show", "onShowAgentRole()");
+addOnEvent("Burial_Mound", "show", "onShowBurialMound()");
 
 onClickUserLogin () {
   // TODO: Add some things which should happen when this element is clicked
   newTab("Control", true);
 }
-onClickControlRecordInterview () {
+onClickControlTakeFeature () {
   // TODO: Add some things which should happen when this element is clicked
-  newInterview();
+  newBurialMound();
 }
-onClickInterviewAddAgentRole () {
+onClickBurialMoundCreateShapefile () {
   // TODO: Add some things which should happen when this element is clicked
-  String tabgroup = "Interview";
-  if (isNull(getUuid(tabgroup))){
-    showToast("{You_must_save_this_tabgroup_first}");
-    return;
-  }
-  parentTabgroup = tabgroup;
-  newAgentRole();
+  newTab("Control/Map", true);
 }
 
-onEvent("User/User/Login", "click", "onClickUserLogin()");
-onEvent("Control/Main/Record_Interview", "click", "onClickControlRecordInterview()");
-onEvent("Interview/Interview/Add_Agent_Role", "click", "onClickInterviewAddAgentRole()");
+addOnEvent("User/User/Login", "click", "onClickUserLogin()");
+addOnEvent("Control/Main/Take_Feature", "click", "onClickControlTakeFeature()");
+addOnEvent("Burial_Mound/General/Create_Shapefile", "click", "onClickBurialMoundCreateShapefile()");
 
 
 /******************************************************************************/
 /*                   AUDIO, CAMERA, FILE AND VIDEO BINDINGS                   */
 /******************************************************************************/
-onEvent("Interview/Interview/Button_Attached_Audio", "click", "attachAudioTo(\"Interview/Interview/Attached_Audio\")");
-onEvent("Interview/Interview/Button_Attached_Video", "click", "attachVideoTo(\"Interview/Interview/Attached_Video\")");
+addOnEvent("Burial_Mound/General/Button_General_Photo", "click", "attachPictureTo(\"Burial_Mound/General/General_Photo\")");
+addOnEvent("Burial_Mound/Dimensions/Button_Sketch_Photo", "click", "attachPictureTo(\"Burial_Mound/Dimensions/Sketch_Photo\")");
+addOnEvent("Burial_Mound/Material/Button_Material_Photo", "click", "attachPictureTo(\"Burial_Mound/Material/Material_Photo\")");
+addOnEvent("Burial_Mound/CRM/Button_CRM_Photo", "click", "attachPictureTo(\"Burial_Mound/CRM/CRM_Photo\")");
+addOnEvent("Burial_Mound/Dimensions/Button_Attach_A_Sketch", "click", "attachFileTo(\"Burial_Mound/Dimensions/Attach_A_Sketch\")");
 
 /******************************************************************************/
 /*                             NAVIGATION DRAWER                              */
@@ -573,7 +644,7 @@ removeNavigationButtons() {
 addNavigationButtons(String tabgroup) {
   removeNavigationButtons();
   List tabgroupsToValidate = new ArrayList();
-  tabgroupsToValidate.add("Interview");
+  tabgroupsToValidate.add("Burial_Mound");
 
   addNavigationButton("new", new ActionButtonCallback() {
     actionOnLabel() {
@@ -760,24 +831,39 @@ loadEntityFrom(String entityID) {
   });
 }
 
-newInterview(){
-  String tabgroup = "Interview";
+newBurialMound(){
+  String tabgroup = "Burial_Mound";
 
+  String autoNumSource = "";
+  autoNumSource = getFieldValue("Control/Main/Next_Object_ID");
+  if (isNull(autoNumSource)) {
+    showWarning("{Alert}","{A_next_ID_has_not_been_entered_please_provide_one}");
+    return;
+  }
 
   setUuid(tabgroup, null);
   newTabGroup(tabgroup);
 
+  String autoNumDest = "";
+  autoNumDest = "Burial_Mound/General/Object_ID";
+  incAutoNum(autoNumDest);
 }
 
-duplicateInterview(){
-  String tabgroup = "Interview";
+duplicateBurialMound(){
+  String tabgroup = "Burial_Mound";
   String uuidOld = getUuid(tabgroup);
 
   disableAutoSave(tabgroup);
 
+  String autoNumDest = "";
+  autoNumDest = "Burial_Mound/General/Object_ID";
+  incAutoNum(autoNumDest);
 
-  populateFileList("Interview/Interview/Attached_Audio", new ArrayList());
-  populateVideoGallery("Interview/Interview/Attached_Video", new ArrayList());
+  populateCameraPictureGallery("Burial_Mound/General/General_Photo", new ArrayList());
+  populateFileList("Burial_Mound/Dimensions/Attach_A_Sketch", new ArrayList());
+  populateCameraPictureGallery("Burial_Mound/Dimensions/Sketch_Photo", new ArrayList());
+  populateCameraPictureGallery("Burial_Mound/Material/Material_Photo", new ArrayList());
+  populateCameraPictureGallery("Burial_Mound/CRM/CRM_Photo", new ArrayList());
 
 
   saveCallback = new SaveCallback() {
@@ -808,94 +894,29 @@ duplicateInterview(){
   fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
     onFetch(result) {
       excludeAttributes = new ArrayList();
-      excludeAttributes.add("Attached Audio");
-      excludeAttributes.add("Attached Video");
+      excludeAttributes.add("General Photo");
+      excludeAttributes.add("Attach A Sketch");
+      excludeAttributes.add("Sketch Photo");
+      excludeAttributes.add("Material Photo");
+      excludeAttributes.add("CRM Photo");
 
       duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
     }
   });
 }
 
-deleteInterview(){
-  String tabgroup = "Interview";
+deleteBurialMound(){
+  String tabgroup = "Burial_Mound";
 
   if (isNull(getUuid(tabgroup))) {
     cancelTabGroup(tabgroup, true);
   } else {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteInterview()", "doNotDelete()");
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteBurialMound()", "doNotDelete()");
   }
 }
 
-reallyDeleteInterview(){
-  String tabgroup = "Interview";
-  deleteArchEnt(getUuid(tabgroup));
-  cancelTabGroup(tabgroup, false);
-}
-
-newAgentRole(){
-  String tabgroup = "Agent_Role";
-
-
-  setUuid(tabgroup, null);
-  newTabGroup(tabgroup);
-
-}
-
-duplicateAgentRole(){
-  String tabgroup = "Agent_Role";
-  String uuidOld = getUuid(tabgroup);
-
-  disableAutoSave(tabgroup);
-
-
-
-
-  saveCallback = new SaveCallback() {
-    onSave(uuid, newRecord) {
-      setUuid(tabgroup, uuid);
-      populateAuthorAndTimestamp(tabgroup);
-
-      Boolean enable_autosave = true;
-
-      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
-        onFetch(result) {
-          Log.e("Module", result.toString());
-          makeDuplicateRelationships(result, getUuid(tabgroup));
-          showToast("{Duplicated_record}");
-          dialog.dismiss();
-        }
-      });
-
-      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
-        onSave(autosaveUuid, autosaveNewRecord) {
-          setUuid(tabgroup, autosaveUuid);
-        }
-      }, enable_autosave);
-    }
-  };
-
-  String extraDupeAttributes = "";
-  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
-    onFetch(result) {
-      excludeAttributes = new ArrayList();
-
-      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
-    }
-  });
-}
-
-deleteAgentRole(){
-  String tabgroup = "Agent_Role";
-
-  if (isNull(getUuid(tabgroup))) {
-    cancelTabGroup(tabgroup, true);
-  } else {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteAgentRole()", "doNotDelete()");
-  }
-}
-
-reallyDeleteAgentRole(){
-  String tabgroup = "Agent_Role";
+reallyDeleteBurialMound(){
+  String tabgroup = "Burial_Mound";
   deleteArchEnt(getUuid(tabgroup));
   cancelTabGroup(tabgroup, false);
 }
@@ -904,25 +925,17 @@ reallyDeleteAgentRole(){
 doNotDelete(){
   showToast("{Delete_Cancelled}");
 }
-onEvent("User", "show", "removeNavigationButtons()");
-onEvent("Control", "show", "removeNavigationButtons()");
-onEvent("Interview", "show", "addNavigationButtons(\"Interview\")");
-onEvent("Agent_Role", "show", "addNavigationButtons(\"Agent_Role\")");
+addOnEvent("User", "show", "removeNavigationButtons()");
+addOnEvent("Control", "show", "removeNavigationButtons()");
+addOnEvent("Burial_Mound", "show", "addNavigationButtons(\"Burial_Mound\")");
 
 /******************************************************************************/
 /*                                   SEARCH                                   */
 /******************************************************************************/
-onEvent("Control/Search"               , "show"  , "search();");
-onEvent("Control/Search/Entity_List"   , "click" , "loadEntity();");
-onEvent("Control/Search/Search_Button" , "click" , "search()");
-onEvent("Control/Search/Search_Term"   , "click" , "clearSearch()");
-onEvent("Control/Search/Entity_Types"  , "click" , "search()");
-
-entityTypes = new ArrayList();
-entityTypes.add(new NameValuePair("{All}", ""));
-entityTypes.add(new NameValuePair("{Interview}", "Interview"));
-entityTypes.add(new NameValuePair("{Agent_Role}", "Agent Role"));
-populateDropDown("Control/Search/Entity_Types", entityTypes);
+addOnEvent("Control/Search"               , "show"  , "search();");
+addOnEvent("Control/Search/Entity_List"   , "click" , "loadEntity();");
+addOnEvent("Control/Search/Search_Button" , "click" , "search()");
+addOnEvent("Control/Search/Search_Term"   , "click" , "clearSearch()");
 
 clearSearch(){
   setFieldValue("Control/Search/Search_Term","");
@@ -934,7 +947,7 @@ search(){
   String refSearchTerm  = tabgroup + "/Search/Search_Term";
   String refEntityTypes = tabgroup + "/Search/Entity_Types";
 
-  String type = getFieldValue(refEntityTypes);
+  String type = "";
   String term = getFieldValue(refSearchTerm);
   String searchQuery = "SELECT uuid, response "+
                        "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
@@ -953,16 +966,8 @@ search(){
   Log.d("Module", "Search query: " + searchQuery);
 }
 
-loadInterviewFrom(String uuid) {
-  String tabgroup = "Interview";
-  setUuid(tabgroup, uuid);
-  if (isNull(uuid)) return;
-
-  showTabGroup(tabgroup, uuid);
-}
-
-loadAgentRoleFrom(String uuid) {
-  String tabgroup = "Agent_Role";
+loadBurialMoundFrom(String uuid) {
+  String tabgroup = "Burial_Mound";
   setUuid(tabgroup, uuid);
   if (isNull(uuid)) return;
 
@@ -971,97 +976,154 @@ loadAgentRoleFrom(String uuid) {
 
 
 /******************************************************************************/
-/*                POPULATION OF ENTITY AND CHILD ENTITY LISTS                 */
+/*                          TAKE FROM GPS BUTTON(S)                           */
 /******************************************************************************/
-/*
- * `viewType`   the type of GUI element to be populated. It can either equal
- *              "DropDown" or "List".
- * `path`       the reference of the GUI element to be populated.
- * `parentUuid` the parent in the relationship denoted by `relType`.
- * `entType`    the type of the entities the menu will be populated with.
- * `relType`    the name of the relationship the children are to be in with the
- *              entity denoted by `parentUuid`.
- */
-populateMenuWithEntities (
-  String viewType,
-  String path,
-  String parentUuid,
-  String entType,
-  String relType
-) {
-  String getChildEntitiesQ = "" +
-    "SELECT childuuid, response "+
-    "  FROM parentchild JOIN latestNonDeletedArchEntFormattedIdentifiers ON (childuuid = uuid) " +
-    "  JOIN createdmodifiedatby USING (uuid) " +
-    " WHERE relationshipid IN (SELECT relationshipid  " +
-    "                            FROM latestnondeletedrelationship JOIN relntype USING (relntypeid) " +
-    "                           WHERE relntypename = '"+relType+"') " +
-    "   AND parentuuid = " + parentUuid + " " +
-    "   AND (childaenttypename = '"+entType+"' OR '"+entType+"' = '') " +
-    " ORDER BY createdat DESC ";
+addOnEvent("Burial_Mound/General/Take_From_GPS", "click", "takePoint(\"Burial_Mound\")");
 
-  String getEntitiesQ = "" +
-    "SELECT uuid, response "+
-    "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
-    " WHERE uuid in (SELECT uuid "+
-    "                  FROM latestNonDeletedArchEntIdentifiers "+
-    "                 WHERE aenttypename = '"+entType+"' OR '"+entType+"' = '' " +
-    "               )  "+
-    " ORDER BY response ";
-
-  String q = null;
-  if (relType.equals("")) {
-    q = getEntitiesQ;
-  } else {
-    q = getChildEntitiesQ;
+/* Takes the current point using gps. */
+takePoint(String tabgroup) {
+  String archEntType = tabgroup.replaceAll("_", " ");
+  String currentUuid = getUuid(tabgroup);
+  if (isNull(currentUuid)){
+    showToast("Please enter data first and let a save occur.");
   }
 
-  FetchCallback cbPopulateDropDown = new FetchCallback() {
-    onFetch(result) {
-      populateDropDown(path, result);
+  Object position = getGPSPosition();
+  if (position == null) {
+    showToast("{GPS_Not_Initialised}");
+    return;
+  }
+
+  Object projPosition = getGPSPositionProjected();
+  Double latitude     = position.getLatitude();
+  Double longitude    = position.getLongitude();
+  Double northing     = projPosition.getLatitude();
+  Double easting      = projPosition.getLongitude();
+
+  samplePoint = new Point(new MapPos(easting, northing), null, (PointStyle) null, null);
+  ArrayList geolist = new ArrayList();
+  geolist.add(samplePoint);
+
+  attributes = createAttributeList();
+  attributes.add(createEntityAttribute("Latitude", "Accuracy: "+getGPSEstimatedAccuracy(), null, null, null));
+
+  saveArchEnt(currentUuid, archEntType, geolist, attributes, new SaveCallback() {
+    onSave(uuid, newRecord) {
+      print("[takePoint()] Added geometry: " + geolist);
+      fillInGPS(tabgroup);
     }
-  };
+  });
+}
 
-  switch (viewType) {
-    case "DropDown":
-      fetchAll(q, cbPopulateDropDown);
-      break;
-    case "List":
-      q += " LIMIT ? OFFSET ? ";
-      populateCursorList(path, q, 25);
-      break;
-    default:
-      Log.e("populateMenuWithEntities ", "Unexpected type '" + viewType + "'");
+/* Sets the value of GPS views for the given tab path. */
+fillInGPS(String tabgroup) {
+  Map tabgroupToTabRef = new HashMap();
+  tabgroupToTabRef.put("Burial_Mound", "Burial_Mound/General/");
+
+  String currentUuid = getUuid(tabgroup);
+  if (isNull(currentUuid)) {
+    return;
+  }
+
+  String query = "SELECT x(transform(geospatialcolumn,                4326)) as longtiude, " +
+                 "       y(transform(geospatialcolumn,                4326)) as latitude, " +
+                 "       x(transform(geospatialcolumn, "+getModuleSrid()+")) as easting, " +
+                 "       y(transform(geospatialcolumn, "+getModuleSrid()+")) as northing " +
+                 "  FROM latestnondeletedarchent, vocabulary " +
+                 " WHERE uuid = '" + currentUuid + "';";
+
+  fetchOne(query, new FetchCallback() {
+    onFetch(result) {
+      print("[fillInGPS()] Fetched DB transformed geometry: " + result);
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Longitude" , result.get(0));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Latitude"  , result.get(1));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Easting"   , result.get(2));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Northing"  , result.get(3));
+    }
+  });
+}
+
+/******************************************************************************/
+/*                       AUTONUMBERING HELPER FUNCTIONS                       */
+/******************************************************************************/
+insertIntoLocalSettings(String key, String val) {
+    fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
+}
+
+insertIntoLocalSettings(String key, Integer val) {
+    insertIntoLocalSettings(key, Integer.toString(val));
+}
+
+/*
+ * If value of field specified by `ref` is null, sets the field to `defaultVal`,
+ * otherwise increments its value.
+ *
+ * Returns the value the field was updated to.
+ */
+incField(String ref, Integer defaultVal) {
+  String val = getFieldValue(ref);
+
+  if (isNull(val)) {
+    setFieldValue(ref, defaultVal);
+    return defaultVal;
+  }
+
+  Integer inc = Integer.parseInt(val) + 1;
+  setFieldValue(ref, inc);
+  insertIntoLocalSettings(ref, inc.toString());
+
+  return inc;
+}
+
+/* Increments the field at `ref` or returns null if it does not contain a
+ * number.
+ */
+incField(String ref) {
+  return incField(ref, 1);
+}
+
+addOnEvent("Control", "load", "onLoadControl()");
+
+/* This function should only be called once since it creates event handlers,
+ * otherwise multiple copies of the same handler will trigger with the event.
+ */
+onLoadControl() {
+  List l = new ArrayList();
+  l.add("Control/Main/Next_Object_ID");
+
+
+  for (ref : l) {
+    loadStartingId(ref);
+  }
+  for (ref : l) {
+    onFocus(ref, null,  "insertIntoLocalSettings(\"" + ref + "\", getFieldValue(\"" + ref + "\"));");
   }
 }
 
-menus = new ArrayList();
-menus.add(new String[] {
-  "DropDown",
-  "Interview/Interview/List_of_Agent_Roles",
-  "getUuid(\"Interview\")",
-  "Agent Role",
-  "Interview - Agent Role",
-});
-for (m : menus) {
-  String viewType       = m[0];
-  String path           = m[1];
-  String parentUuidCall = m[2];
-  String entType        = m[3];
-  String relType        = m[4];
-
-  String functionCall = "";
-  functionCall += "populateMenuWithEntities(";
-  functionCall += "\"" + viewType       + "\"";
-  functionCall += ", ";
-  functionCall += "\"" + path           + "\"";
-  functionCall += ", ";
-  functionCall +=        parentUuidCall       ;
-  functionCall += ", ";
-  functionCall += "\"" + entType        + "\"";
-  functionCall += ", ";
-  functionCall += "\"" + relType        + "\"";
-  functionCall += ")";
-
-  onEvent(path, "show", functionCall);
+loadStartingId(String ref) {
+  String idQ = "SELECT value FROM localSettings WHERE key = '" + ref + "';";
+  fetchOne(idQ, new FetchCallback() {
+    onFetch(result) {
+      if (!isNull(result)) {
+        setFieldValue(ref, result.get(0));
+      } else {
+        setFieldValue(ref, "1");
+      }
+    }
+  });
 }
+
+incAutoNum(String destPath) {
+  Map destToSource = new HashMap();
+  destToSource.put("Burial_Mound/General/Object_ID", "Control/Main/Next_Object_ID");
+
+  String sourcePath = destToSource.get(destPath);
+  String destVal    = getFieldValue(sourcePath);
+  setFieldValue(destPath, destVal);
+  incField(sourcePath);
+}
+
+/******************************************************************************/
+/*                                FINALISATION                                */
+/******************************************************************************/
+bindOnEvents();
