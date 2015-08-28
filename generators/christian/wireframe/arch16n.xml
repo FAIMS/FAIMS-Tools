@@ -133,6 +133,7 @@
 <arch16n k="{no_GPS_position_could_be_found}"><![CDATA[no GPS position could be found]]></arch16n>
 <arch16n k="{None}"><![CDATA[None]]></arch16n>
 <arch16n k="{No}"><![CDATA[No]]></arch16n>
+<arch16n k="{No_Observation}"><![CDATA[No Observation]]></arch16n>
 <arch16n k="{Northing}"><![CDATA[Northing]]></arch16n>
 <arch16n k="{Object_ID}"><![CDATA[Object ID]]></arch16n>
 <arch16n k="{off}"><![CDATA[off]]></arch16n>

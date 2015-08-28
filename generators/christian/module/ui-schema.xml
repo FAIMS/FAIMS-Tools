@@ -155,7 +155,7 @@
     </group>
     <group ref="User">
       <label>{User}</label>
-      <group ref="User">
+      <group ref="User" faims_scrollable="false">
         <label>{User}</label>
         <select1 appearance="compact" ref="Select_User">
           <label>{Select_User}</label>

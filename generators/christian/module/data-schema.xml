@@ -146,8 +146,11 @@
       <description>Take 1 general overview shot that includes the complete feature profile, and a scale. Include direction in the Annotation (from which direction was the image taken)</description>
     </property>
     <property name="Profile" type="vocab">
-      <!--WARNING: A set of <opts> tags are expected but not present-->
       <description/>
+      <lookup>
+        <term>{No_Observation}
+<description/></term>
+      </lookup>
     </property>
     <property name="Plan" type="vocab">
       <description/>
@@ -322,8 +325,11 @@
       </lookup>
     </property>
     <property name="RT Frequency" type="vocab">
-      <!--WARNING: A set of <opts> tags are expected but not present-->
       <description/>
+      <lookup>
+        <term>{No_Observation}
+<description/></term>
+      </lookup>
     </property>
     <property name="RT Description" type="measure">
       <description/>
