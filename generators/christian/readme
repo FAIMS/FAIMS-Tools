@@ -12,6 +12,10 @@ QUICK START
   2. Run `./generate.sh`
   3. Collect your new shiny new module from the 'module' directory and your
      shiny new wireframe from the 'wireframe' directory.
+  4. (After running `./generate.sh`, you can run `./parse-warnings.sh` and
+     `./parse-errors.sh` to check just how shiny your module is---They just
+     search the module's files for generator-produced warnings/errors and
+     display whatever's found.)
 ________________________________________________________________________________
 
 ATTRIBUTES
