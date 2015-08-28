@@ -54,7 +54,7 @@ FLAGS
                   file and video elements in the data schema.
   notscrollable   Equivalent to faims_scrollable="false".
   onlydata        Only allows code to be generated for the data schema.
-  onlyui          Only allows code to be generated for the UI schema.
+  onlyui          Generates code as usual, but ommits data schema entries.
   readonly        Equivalent to faims_read_only="true".
   user            Used to indicate that a menu should contain a list of users.
   notnull         Adds client- and server-side validation specifying that the
@@ -64,26 +64,30 @@ ________________________________________________________________________________
 TYPES
 
   Types of GUI element:
-  - audio        <select type="file" faims_sync=true>
-  - button       <trigger>
-  - camera       <select type="camera" faims_sync=true>
-  - checkbox     <select>
-  - dropdown     <select1>
-  - file         <select type="file" faims_sync=true>
-  - gpsdiag      <input faims_read_only="true">
-  - group        <group>
-  - input        <input>
-  - list         <select1 appearance="compact">
-  - map          <input faims_map="true">
-  - picture      <select1 type="image">
-  - radio        <select1 appearance="full">
-  - video        <select type="file" faims_sync=true>
-  - web[view]    <input faims_web="true">
+    - audio        <select type="file" faims_sync=true/>
+                   <trigger/>
+    - button       <trigger/>
+    - camera       <select type="camera" faims_sync=true/>
+                   <trigger/>
+    - checkbox     <select/>
+    - dropdown     <select1/>
+    - file         <select type="file" faims_sync=true/>
+                   <trigger/>
+    - gpsdiag      <input faims_read_only="true"/>...
+    - group        <group/>
+    - input        <input/>
+    - list         <select1 appearance="compact"/>
+    - map          <input faims_map="true"/>
+    - picture      <select1 type="image"/>
+    - radio        <select1 appearance="full"/>
+    - video        <select type="file" faims_sync=true/>
+                   <trigger/>
+    - web[view]    <input faims_web="true"/>
 ________________________________________________________________________________
 
 RESERVED ELEMENT NAMES AND RECOMMENDED NAMING CONVENTIONS
 
-  "Reserved" elements only contain lower case letters:
+  "Reserved" elements only contain lowercase letters:
     - <col>        One column in a <cols> tag
     - <cols>       Columns
     - <desc>       Description to put in the data schema
@@ -105,7 +109,7 @@ RESERVED ELEMENT NAMES AND RECOMMENDED NAMING CONVENTIONS
                    or a message if the entity it appears in has not been saved.
     - <timestamp>  A read-only field displaying the creation time of the entity
                    it appears in.
-  User-defined elements should start with an upper case letter and use
+  User-defined elements should start with an uppercase letter and use
   underscores as separators:
     - <My_User_Defined_Element t="dropdown" />
   Neither of these naming conventions are strictly enforced however.
@@ -191,7 +195,7 @@ LABELS
   stripped.
 
   If a label is not provided, it is "inferred" from the element's name. More
-  specifically, underscores in the element's name are replaced with whitespace,
+  specifically, underscores in the element's name are replaced with spaces,
   which becomes the element's label. Therefore, the element
       <Droopy_Soup t="input">
         <desc>Similar to drippy soup, but not quite...</desc>
