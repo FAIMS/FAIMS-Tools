@@ -47,7 +47,7 @@ newTab(String tab, Boolean resolveTabGroups) {
   tab = tab.replaceAll("/$", "");
   tab = tab.replaceAll("^/", "");
   showWarning(tab, tab);
-  if (tab.matches("/")) {
+  if (tab.contains("/")) {
     newTab(tab);
   } else {
     newTabGroup(tab);

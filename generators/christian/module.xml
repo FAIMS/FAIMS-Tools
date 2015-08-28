@@ -131,7 +131,11 @@
     </General_Photo>
   </General>
   <Dimensions>
-    <Profile t="picture"/>
+    <Profile t="picture">
+      <opts>
+        <opt>No Observation</opt>
+      </opts>
+    </Profile>
     <Plan t="picture">
       <opts>
         <opt>Circular</opt>
@@ -247,7 +251,11 @@
         <opt>Mechanized</opt>
       </opts>
     </RT_Method>
-    <RT_Frequency t="picture"/>
+    <RT_Frequency t="picture">
+      <opts>
+        <opt>No Observation</opt>
+      </opts>
+    </RT_Frequency>
     <RT_Description/>
     <Volume_of_Soil_Removed_via_RT>
       <opts>

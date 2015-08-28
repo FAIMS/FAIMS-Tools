@@ -36,7 +36,7 @@ newTab(String tab, Boolean resolveTabGroups) {
   tab = tab.replaceAll("/$", "");
   tab = tab.replaceAll("^/", "");
   showWarning(tab, tab);
-  if (tab.matches("/")) {
+  if (tab.contains("/")) {
     newTab(tab);
   } else {
     newTabGroup(tab);
@@ -282,7 +282,7 @@ populateListForUsers(){
 
   fetchAll(getNonDeletedUsersQuery, new FetchCallback() {
     onFetch(result) {
-      populateDropDown(userMenuPath, result, true);
+      populateList(userMenuPath, result);
     }
   });
 }
@@ -290,10 +290,7 @@ populateListForUsers(){
 String username = "";
 
 selectUser () {
-  String userVocabId  = getFieldValue(userMenuPath);
-  if (isNull(userVocabId))
-    return;
-
+  String userVocabId  = getListItemValue();
   String userQ        = "SELECT userid,fname,lname,email FROM user " +
                         "WHERE  userid='" + userVocabId + "';";
   FetchCallback callback = new FetchCallback() {
@@ -602,7 +599,7 @@ onShowBurialMound () {
 
 addOnEvent("Burial_Mound", "show", "onShowBurialMound()");
 
-onClickUserLogin () {
+onClickUserSelectUser () {
   // TODO: Add some things which should happen when this element is clicked
   newTab("Control", true);
 }
@@ -615,7 +612,7 @@ onClickBurialMoundCreateShapefile () {
   newTab("Control/Map", true);
 }
 
-addOnEvent("User/User/Login", "click", "onClickUserLogin()");
+addOnEvent("User/User/Select_User", "click", "onClickUserSelectUser()");
 addOnEvent("Control/Main/Take_Feature", "click", "onClickControlTakeFeature()");
 addOnEvent("Burial_Mound/General/Create_Shapefile", "click", "onClickBurialMoundCreateShapefile()");
 
