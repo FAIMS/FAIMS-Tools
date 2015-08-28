@@ -46,6 +46,7 @@ newTab(String tab, Boolean resolveTabGroups) {
 
   tab = tab.replaceAll("/$", "");
   tab = tab.replaceAll("^/", "");
+  showWarning(tab, tab);
   if (tab.matches("/")) {
     newTab(tab);
   } else {
@@ -1938,7 +1939,6 @@ selectUser () {
 <xsl:text>
   String userQ        = "SELECT userid,fname,lname,email FROM user " +
                         "WHERE  userid='" + userVocabId + "';";
-  showWarning("asdf", "va");
   FetchCallback callback = new FetchCallback() {
     onFetch(result) {
       user = new User(
@@ -1949,7 +1949,6 @@ selectUser () {
       );
       setUser(user);
       username = result.get(1) + " " + result.get(2);
-      showWarning(username, username);
     }
   };
 

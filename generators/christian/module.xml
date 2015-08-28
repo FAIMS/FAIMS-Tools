@@ -3,8 +3,7 @@
 
 <User f="onlyui">
   <User>
-    <Select_User t="dropdown" f="user"/>
-    <Login t="button" l="Control" />
+    <Select_User t="list" f="user" l="Control"/>
   </User>
 </User>
 
