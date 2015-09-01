@@ -53,6 +53,8 @@ if len(sys.argv) < 2:
 # Parse XML
 tree = etree.parse(sys.argv[1])
 tree = tree.getroot()
+
+# Generate or parse XPath expressions indicating which nodes should be marked
 if len(sys.argv) == 2:
     flagPaths = []
     flagPaths.append('//*[not(*)]')
