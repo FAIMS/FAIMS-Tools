@@ -21,18 +21,25 @@ def markNodes(tree, xPathExpr):
     for n in ns:
         n.attrib['__RESERVED_CP__'] = 'true'
 
+def parseFlagsFromFile(filename):
+    with open(filename) as f:
+        flagPaths = f.readlines()
+    for i in xrange(len(flagPaths)):
+        flagPaths[i] = expandToXPath(flagPaths[i])
+    return flagPaths
+
 ################################################################################
 #                                     MAIN                                     #
 ################################################################################
 reservedCopy = '__RESERVED_CP__'
 
-if len(sys.argv) < 3:
+if len(sys.argv) < 2:
     sys.stderr.write('SYNOPSIS\n')
-    sys.stderr.write('       python %s XML FLAGS\n' % sys.argv[0])
+    sys.stderr.write('       python %s XML [FLAGS]\n' % sys.argv[0])
     sys.stderr.write('\n')
     sys.stderr.write('DESCRIPTION\n')
     sys.stderr.write('   Adds the attribute __RESERVED__CP__="true" to each node of XML specified\n')
-    sys.stderr.write('   in FLAGS.\n')
+    sys.stderr.write('   in FLAGS. If FLAGS is not given, all leaf nodes are marked.\n')
     sys.stderr.write('\n')
     sys.stderr.write('   Nodes in the FLAGS file are specified in the format:\n')
     sys.stderr.write('       tabgroup/tab/xpath-expression\n')
@@ -44,14 +51,13 @@ if len(sys.argv) < 3:
     exit()
 
 # Parse XML
-tree  = etree.parse(sys.argv[1])
-tree  = tree.getroot()
-# Parse flags
-flagPaths = sys.argv[2]
-with open(flagPaths) as f:
-    flagPaths = f.readlines()
-for i in xrange(len(flagPaths)):
-    flagPaths[i] = expandToXPath(flagPaths[i])
+tree = etree.parse(sys.argv[1])
+tree = tree.getroot()
+if len(sys.argv) == 2:
+    flagPaths = []
+    flagPaths.append('//*[not(*)]')
+elif len(sys.argv) == 3:
+    flagPaths = parseFlagsFromFile(sys.argv[2])
 
 # Mark nodes
 for xp in flagPaths:
