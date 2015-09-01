@@ -1,9 +1,14 @@
 TODO Links to tabs don't work
 TODO 'Take Picture' buttons don't work
+TODO change onlydata and onlyui to noui and nodata, respectively
+TODO make the generate.sh script take an argument: the module's filename
+TODO generate warning about superfluous element text
 TODO Add "View Attached Files" button
+TODO change search, author, timestamp and gps fields to be indicated by t attrib
+TODO notscrollable should probably be noscroll
+
 TODO Warn about duplicate archents
 TODO There should be a way of specifying webviews' text
-TODO change t="gpsdiag" t="map" to an element
 TODO Automate regression tests
 ________________________________________________________________________________
 
