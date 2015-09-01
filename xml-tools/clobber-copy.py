@@ -150,4 +150,4 @@ for sourceNode in toCopy:
 deleteAttribFromTree('__RESERVED_CP__', targetTree)
 
 # Collect your prize
-print etree.tostring(targetTree, pretty_print=True)
+print etree.tostring(targetTree, pretty_print=True, xml_declaration=True, encoding='utf-8')

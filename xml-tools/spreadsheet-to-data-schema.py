@@ -23,7 +23,25 @@ def parseList(listString, delim=';'):
         list[i] = list[i].strip()
     list = filter(None, list) # Remove empty strings
 
-    return list
+    return parseListAttributeCountOrderNormaliser(list)
+
+def parseListAttributeCountOrderNormaliser(parsedList):
+    containsOnlyDigits = True
+    for e in parsedList:
+        if not e.isdigit():
+            containsOnlyDigits = False
+
+    elementsAreEqual = len(set(parsedList)) <= 1
+    if containsOnlyDigits and not elementsAreEqual:
+        sys.stderr('attributeCountOrder contains semi-colon delimited list whose elements differ.\n')
+
+    if   containsOnlyDigits and len(parsedList) == 0:
+        return ''
+    elif containsOnlyDigits and len(parsedList) >  0:
+        return parsedList[0]
+    else:
+        return parsedList
+
 
 def rowToNode(row):
     arch16nKey   = getRowValue(row, 'faimsVocab')
@@ -37,6 +55,7 @@ def rowToNode(row):
     propertyName = getRowValue(row, 'faimsEntityAttributeName')
 
     archentNames = parseList(archentNames)
+    countOrder   = parseList(countOrder)
     infoPictures = parseList(infoPictures)
 
     root = makeTree()
@@ -111,7 +130,11 @@ def rowToNode(row):
             del term.attrib['__RESERVED_PAR__']
         if not arch16nKey:
             lookup.getparent().remove(lookup)
-        if not n:
+        if not descProp:
+            descPr.getparent().remove(descPr)
+        if not propertyName or len(prop) == 0:
+            prop.getparent().remove(prop)
+        if not n            or len(archEl) == 0:
             archEl.getparent().remove(archEl)
 
     return root
@@ -235,4 +258,4 @@ dataSchema = sortTerms(dataSchema)
 dataSchema = deleteAttribFromTree('__RESERVED_POS__', dataSchema)
 
 # Gimme dat data schema, blood
-print etree.tostring(dataSchema, pretty_print=True)
+print etree.tostring(dataSchema, pretty_print=True, xml_declaration=True, encoding='utf-8')
