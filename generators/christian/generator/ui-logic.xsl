@@ -11,8 +11,9 @@
 
 <xsl:text>import android.util.Log;
 
-Object dialog;         // Used to help coordinate the display of a "busy..." dialog
-String parentTabgroup; // Used to allow entities to be saved as children
+Object  dialog;         // Used to help coordinate the display of a "busy..." dialog
+String  parentTabgroup; // Used to allow entities to be saved as children
+Boolean doRedirectToTab;// makes newTab work as expected
 
 setFileSyncEnabled(true);
 setSyncDelay(5.0f);
@@ -46,11 +47,26 @@ newTab(String tab, Boolean resolveTabGroups) {
 
   tab = tab.replaceAll("/$", "");
   tab = tab.replaceAll("^/", "");
-  showWarning(tab, tab);
-  if (tab.contains("/")) {
-    newTab(tab);
-  } else {
-    newTabGroup(tab);
+
+  path = tab.split("/");
+  switch (path.length) {
+    case 0:
+      break;
+    case 1:
+      newTabGroup(path[0]);
+      break;
+    case 2:
+      String tabgroupString = path[0];
+      String tabString      = path[0] + "/" + path[1];
+
+      doRedirectToTab = true;
+      String onShowTabgroup = "if (doRedirectToTab) { newTab(\"" + tabString + "\"); doRedirectToTab = false; }";
+      addOnEvent(tabgroupString, "show", onShowTabgroup);
+
+      newTabGroup(tabgroupString);
+      newTab(tabString);
+      break;
+    default:
   }
 }
 
@@ -60,62 +76,42 @@ newTab(String tab, Boolean resolveTabGroups) {
 /* Allows onEvent bindings for the same element to accumulate over multiple   */
 /* onEvent calls instead of having later calls override earlier ones.         */
 /******************************************************************************/
+Map events = new HashMap();
 
-List events = new ArrayList();
-addOnEvent(ref, event, statement) {
-  List onEventParams = new ArrayList();
-  onEventParams.add(ref);
-  onEventParams.add(event);
-  onEventParams.add(statement);
-
-  events.add(onEventParams);
+/* Returns the set of statements bound to an element at `ref` and occuring on
+ * `event`.
+ */
+getStatements(String ref, String event) {
+  String    key = ref + event;
+  ArrayList val = (ArrayList) events.get(key);
+  if (val == null) {
+    val = new ArrayList();
+    events.put(key, val);
+  }
+  return val;
 }
 
-onEventComparator = new Comparator() {
-  public int compare(List oe1, List oe2) {
-    ref1 = oe1.get(0);
-    ref2 = oe2.get(0);
-    evt1 = oe1.get(1);
-    evt2 = oe2.get(1);
-    left  = ref1 + evt1;
-    right = ref2 + evt2;
-    return left.compareTo(right);
-  }
-};
+addOnEvent(String ref, String event, String statement) {
+  // Calling `remove()` first ensures statement occurs once in the list, at the end.
+  while(getStatements(ref, event).remove(statement));
+  getStatements(ref, event).add(statement);
+  bindOnEvent(ref, event);
+}
 
-bindOnEvents() {
-  // Coallesce statements containing like refs/paths
-  Collections.sort(events, onEventComparator);
-  for (i = 0; i &lt; events.size() - 1; i++) {
-    thisEventParams = events.get(i    );
-    nextEventParams = events.get(i + 1);
-    thisRef   = thisEventParams.get(0);
-    nextRef   = nextEventParams.get(0);
-    thisEvent = thisEventParams.get(1);
-    nextEvent = nextEventParams.get(1);
-    thisStmt  = thisEventParams.get(2);
-    nextStmt  = nextEventParams.get(2);
-    if (thisRef.equals(nextRef) &amp;&amp; thisEvent.equals(nextEvent)) {
-      String coallesced = "";
-      coallesced += thisStmt;
-      coallesced += "; ";
-      coallesced += nextStmt;
+delOnEvent(String ref, String event, String statement) {
+  while(getStatements(ref, event).remove(statement));
+  bindOnEvent(ref, event);
+}
 
-      // Update this statement
-      thisStmt = coallesced;
-      events.get(i).set(2, thisStmt);
-      // Remove next statement (because "thisStmt" now contains it)
-      events.remove(i + 1);
-    }
+bindOnEvent(String ref, String event) {
+  ArrayList stmts = getStatements(ref, event);
+  String stmtsExpr = "";
+  for (String s : stmts) {
+    stmtsExpr += s;
+    stmtsExpr += "; ";
   }
 
-  // Bind
-  for (e : events) {
-    ref       = e.get(0);
-    event     = e.get(1);
-    statement = e.get(2);
-    onEvent(ref, event, statement);
-  }
+  onEvent(ref, event, stmtsExpr);
 }
 
 /******************************************************************************/
@@ -1408,13 +1404,6 @@ menus = new ArrayList();
 </xsl:text>
       <xsl:call-template name="entity-loading" />
     </xsl:if>
-
-<xsl:text>
-/******************************************************************************/
-/*                                FINALISATION                                */
-/******************************************************************************/
-bindOnEvents();
-</xsl:text>
 
   </xsl:template>
 
