@@ -590,26 +590,16 @@ populateAuthorAndTimestamp(String tabgroup) {
   fetchOne(q, callback);
 }
 
-onShowUser () {
-  // TODO: Add some things which should happen when this tab group is shown
-  saveTabGroup("User");
-}
-onShowControl () {
-  // TODO: Add some things which should happen when this tab group is shown
-  saveTabGroup("Control");
-}
 onShowBurialMound () {
   // TODO: Add some things which should happen when this tab group is shown
   saveTabGroup("Burial_Mound");
 }
 
-addOnEvent("User", "show", "onShowUser()");
-addOnEvent("Control", "show", "onShowControl()");
 addOnEvent("Burial_Mound", "show", "onShowBurialMound()");
 
 onClickUserSelectUser () {
   // TODO: Add some things which should happen when this element is clicked
-  newControl();
+  newTab("Control", true);
 }
 onClickControlTakeFeature () {
   // TODO: Add some things which should happen when this element is clicked
@@ -834,142 +824,6 @@ loadEntityFrom(String entityID) {
   });
 }
 
-newUser(){
-  String tabgroup = "User";
-
-
-  setUuid(tabgroup, null);
-  newTabGroup(tabgroup);
-
-}
-
-duplicateUser(){
-  String tabgroup = "User";
-  String uuidOld = getUuid(tabgroup);
-
-  disableAutoSave(tabgroup);
-
-
-
-
-  saveCallback = new SaveCallback() {
-    onSave(uuid, newRecord) {
-      setUuid(tabgroup, uuid);
-      populateAuthorAndTimestamp(tabgroup);
-
-      Boolean enable_autosave = true;
-
-      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
-        onFetch(result) {
-          Log.e("Module", result.toString());
-          makeDuplicateRelationships(result, getUuid(tabgroup));
-          showToast("{Duplicated_record}");
-          dialog.dismiss();
-        }
-      });
-
-      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
-        onSave(autosaveUuid, autosaveNewRecord) {
-          setUuid(tabgroup, autosaveUuid);
-        }
-      }, enable_autosave);
-    }
-  };
-
-  String extraDupeAttributes = "";
-  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
-    onFetch(result) {
-      excludeAttributes = new ArrayList();
-
-      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
-    }
-  });
-}
-
-deleteUser(){
-  String tabgroup = "User";
-
-  if (isNull(getUuid(tabgroup))) {
-    cancelTabGroup(tabgroup, true);
-  } else {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteUser()", "doNotDelete()");
-  }
-}
-
-reallyDeleteUser(){
-  String tabgroup = "User";
-  deleteArchEnt(getUuid(tabgroup));
-  cancelTabGroup(tabgroup, false);
-}
-
-newControl(){
-  String tabgroup = "Control";
-
-
-  setUuid(tabgroup, null);
-  newTabGroup(tabgroup);
-
-}
-
-duplicateControl(){
-  String tabgroup = "Control";
-  String uuidOld = getUuid(tabgroup);
-
-  disableAutoSave(tabgroup);
-
-
-
-
-  saveCallback = new SaveCallback() {
-    onSave(uuid, newRecord) {
-      setUuid(tabgroup, uuid);
-      populateAuthorAndTimestamp(tabgroup);
-
-      Boolean enable_autosave = true;
-
-      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
-        onFetch(result) {
-          Log.e("Module", result.toString());
-          makeDuplicateRelationships(result, getUuid(tabgroup));
-          showToast("{Duplicated_record}");
-          dialog.dismiss();
-        }
-      });
-
-      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
-        onSave(autosaveUuid, autosaveNewRecord) {
-          setUuid(tabgroup, autosaveUuid);
-        }
-      }, enable_autosave);
-    }
-  };
-
-  String extraDupeAttributes = "";
-  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
-    onFetch(result) {
-      excludeAttributes = new ArrayList();
-
-      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
-    }
-  });
-}
-
-deleteControl(){
-  String tabgroup = "Control";
-
-  if (isNull(getUuid(tabgroup))) {
-    cancelTabGroup(tabgroup, true);
-  } else {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteControl()", "doNotDelete()");
-  }
-}
-
-reallyDeleteControl(){
-  String tabgroup = "Control";
-  deleteArchEnt(getUuid(tabgroup));
-  cancelTabGroup(tabgroup, false);
-}
-
 newBurialMound(){
   String tabgroup = "Burial_Mound";
 
@@ -1064,8 +918,8 @@ reallyDeleteBurialMound(){
 doNotDelete(){
   showToast("{Delete_Cancelled}");
 }
-addOnEvent("User", "show", "addNavigationButtons(\"User\")");
-addOnEvent("Control", "show", "addNavigationButtons(\"Control\")");
+addOnEvent("User", "show", "removeNavigationButtons()");
+addOnEvent("Control", "show", "removeNavigationButtons()");
 addOnEvent("Burial_Mound", "show", "addNavigationButtons(\"Burial_Mound\")");
 
 /******************************************************************************/
@@ -1075,14 +929,6 @@ addOnEvent("Control/Search"               , "show"  , "search();");
 addOnEvent("Control/Search/Entity_List"   , "click" , "loadEntity();");
 addOnEvent("Control/Search/Search_Button" , "click" , "search()");
 addOnEvent("Control/Search/Search_Term"   , "click" , "clearSearch()");
-addOnEvent("Control/Search/Entity_Types"  , "click" , "search()");
-
-entityTypes = new ArrayList();
-entityTypes.add(new NameValuePair("{All}", ""));
-entityTypes.add(new NameValuePair("{User}", "User"));
-entityTypes.add(new NameValuePair("{Control}", "Control"));
-entityTypes.add(new NameValuePair("{Burial_Mound}", "Burial Mound"));
-populateDropDown("Control/Search/Entity_Types", entityTypes);
 
 clearSearch(){
   setFieldValue("Control/Search/Search_Term","");
@@ -1094,7 +940,7 @@ search(){
   String refSearchTerm  = tabgroup + "/Search/Search_Term";
   String refEntityTypes = tabgroup + "/Search/Entity_Types";
 
-  String type = getFieldValue(refEntityTypes);
+  String type = "";
   String term = getFieldValue(refSearchTerm);
   String searchQuery = "SELECT uuid, response "+
                        "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
@@ -1111,22 +957,6 @@ search(){
   refreshTabgroupCSS(tabgroup);
 
   Log.d("Module", "Search query: " + searchQuery);
-}
-
-loadUserFrom(String uuid) {
-  String tabgroup = "User";
-  setUuid(tabgroup, uuid);
-  if (isNull(uuid)) return;
-
-  showTabGroup(tabgroup, uuid);
-}
-
-loadControlFrom(String uuid) {
-  String tabgroup = "Control";
-  setUuid(tabgroup, uuid);
-  if (isNull(uuid)) return;
-
-  showTabGroup(tabgroup, uuid);
 }
 
 loadBurialMoundFrom(String uuid) {

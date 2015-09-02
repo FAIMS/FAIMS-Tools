@@ -36,7 +36,6 @@
                   <Search_Button/>
                 </Col_1>
               </Colgroup_0>
-              <Entity_Types/>
               <Entity_List/>
             </Search>
             <Map>
@@ -154,11 +153,11 @@
         </input>
       </group>
     </group>
-    <group ref="User" faims_archent_type="User">
+    <group ref="User">
       <label>{User}</label>
       <group ref="User" faims_scrollable="false">
         <label>{User}</label>
-        <select1 appearance="compact" ref="Select_User" faims_attribute_name="Select User">
+        <select1 appearance="compact" ref="Select_User">
           <label>{Select_User}</label>
           <item>
             <label>Options not loaded</label>
@@ -167,7 +166,7 @@
         </select1>
       </group>
     </group>
-    <group ref="Control" faims_archent_type="Control">
+    <group ref="Control">
       <label>{Control}</label>
       <group ref="Main">
         <label>{Main}</label>
@@ -198,13 +197,6 @@
             </trigger>
           </group>
         </group>
-        <select1 ref="Entity_Types">
-          <label>{Entity_Types}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>Options not loaded</value>
-          </item>
-        </select1>
         <select1 appearance="compact" ref="Entity_List">
           <label>{Entity_List}</label>
           <item>

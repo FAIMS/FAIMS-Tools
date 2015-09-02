@@ -9,7 +9,7 @@ mkdir -p wireframeImages
   
   ./makeElement.sh style_large_layout_weight "3" input 1 false false false false false wireframeImages/
   
-  ./makeElement.sh User_User_Select_User "Select User" list 1 false false true false false wireframeImages/
+  ./makeElement.sh User_User_Select_User "Select User" list 1 false false false false false wireframeImages/
   
   ./makeElement.sh Control_Main_Take_Feature "Take Feature" button 1 false false false false false wireframeImages/
   
@@ -20,8 +20,6 @@ mkdir -p wireframeImages
   ./makeElement.sh Control_Search_Search_Term "Search Term" input 2 false false false false false wireframeImages/
   
   ./makeElement.sh Control_Search_Search_Button "Search" button 2 false false false false false wireframeImages/
-  
-  ./makeElement.sh Control_Search_Entity_Types "Entity Types" dropdown 1 false false false false false wireframeImages/
   
   ./makeElement.sh Control_Search_Entity_List "Entity List" list 1 false false false false false wireframeImages/
   

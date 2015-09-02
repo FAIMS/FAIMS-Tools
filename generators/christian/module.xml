@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
 <module suppressWarnings="false">
 
-<User f="onlyui">
+<User f="nodata">
   <User f="noscroll">
     <Select_User t="list" f="user" l="Control"/>
   </User>
 </User>
 
-<Control f="onlyui">
+<Control f="nodata">
   <Main>
     <Take_Feature t="button" l="Burial_Mound"/>
     <autonum/>
