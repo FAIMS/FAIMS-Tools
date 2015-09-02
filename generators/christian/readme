@@ -2,7 +2,6 @@ TODO 'Take Picture' buttons don't work
 TODO make the generate.sh script take an argument: the module's filename
 TODO generate warning about superfluous element text
 TODO Add "View Attached Files" button
-TODO notscrollable should probably be noscroll
 
 TODO Warn about duplicate archents
 TODO There should be a way of specifying webviews' text
@@ -63,7 +62,7 @@ FLAGS
                   file and video GUI elements.
   nothumb[nail]   Removes the thumbnail="true" attribute from audio, camera,
                   file and video elements in the data schema.
-  notscrollable   Equivalent to faims_scrollable="false".
+  noscroll        Equivalent to faims_scrollable="false".
   noui            Only allows code related to the data schema to be generated.
   nodata          Generates code as usual, but ommits data schema entries.
   readonly        Equivalent to faims_read_only="true".

@@ -2,7 +2,7 @@
 <module suppressWarnings="false">
 
 <User f="onlyui">
-  <User f="notscrollable">
+  <User f="noscroll">
     <Select_User t="list" f="user" l="Control"/>
   </User>
 </User>

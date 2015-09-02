@@ -850,7 +850,7 @@
     <xsl:variable name="v1">
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text"    select="$flags" />
-        <xsl:with-param name="replace" select="'notscrollable'" />
+        <xsl:with-param name="replace" select="'noscroll'" />
         <xsl:with-param name="by"      select="''" />
       </xsl:call-template>
     </xsl:variable>
