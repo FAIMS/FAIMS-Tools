@@ -413,7 +413,7 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
     });
 }
 </xsl:text>
-    <xsl:for-each select="//*[(@t or ./opts) and not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')]) and not(contains(@f, 'user')) and not(@e) and not(@ec)]">
+    <xsl:for-each select="//*[(@t or ./opts) and not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')]) and not(contains(@f, 'user')) and not(@e) and not(@ec)]">
       <xsl:variable name="is-hierarchical">
         <xsl:call-template name="is-hierarchical"/>
       </xsl:variable>
@@ -649,7 +649,7 @@ populateAuthorAndTimestamp(String tabgroup) {
 }
 
 </xsl:text>
-    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')])]">
+    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])]">
       <xsl:text>onShow</xsl:text>
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text" select="name()" />
@@ -665,7 +665,7 @@ populateAuthorAndTimestamp(String tabgroup) {
       <xsl:value-of select="$newline" />
     </xsl:for-each>
     <xsl:value-of select="$newline" />
-    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')])]">
+    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])]">
       <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name()"/>
       <xsl:text>", "show", "onShow</xsl:text>
@@ -708,8 +708,8 @@ populateAuthorAndTimestamp(String tabgroup) {
         <xsl:when test="
           not(contains($link, '/')) and
           not(/module/*[name() = $link and
-            (contains(@f, 'onlydata') or
-             contains(@f, 'onlyui'))
+            (contains(@f, 'noui') or
+             contains(@f, 'nodata'))
           ])">
           <xsl:text>  new</xsl:text>
           <xsl:call-template name="string-replace-all">
@@ -753,8 +753,8 @@ populateAuthorAndTimestamp(String tabgroup) {
         <xsl:when test="
           not(contains($link, '/')) and
           not(/module/*[name() = $link and
-            (contains(@f, 'onlydata') or
-             contains(@f, 'onlyui'))
+            (contains(@f, 'noui') or
+             contains(@f, 'nodata'))
           ])">
           <xsl:text>  String tabgroup = "</xsl:text>
           <xsl:value-of select="name(ancestor::*[last()-1])"/>
@@ -779,7 +779,7 @@ populateAuthorAndTimestamp(String tabgroup) {
           <xsl:text>();</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:text>  // ERROR: "lc" attribute cannot belong to element flagged with "onlydata" or "onlyui"</xsl:text>
+          <xsl:text>  // ERROR: "lc" attribute cannot belong to element flagged with "noui" or "nodata"</xsl:text>
           <xsl:value-of select="$newline" />
         </xsl:otherwise>
       </xsl:choose>
@@ -1081,7 +1081,7 @@ loadEntityFrom(String entityID) {
 }
 
 </xsl:text>
-    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')])]">
+    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])]">
       <xsl:call-template name="tabgroup-new" />
       <xsl:call-template name="tabgroup-duplicate" />
       <xsl:call-template name="tabgroup-delete" />
@@ -1092,13 +1092,13 @@ doNotDelete(){
   showToast("{Delete_Cancelled}");
 }
 </xsl:text>
-    <xsl:for-each select="/module/*[ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')]]">
+    <xsl:for-each select="/module/*[ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')]]">
       <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name()"/>
       <xsl:text>", "show", "removeNavigationButtons()");</xsl:text>
       <xsl:value-of select="$newline"/>
     </xsl:for-each>
-    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')])]">
+    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])]">
       <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name()"/>
       <xsl:text>", "show", "addNavigationButtons(\"</xsl:text>
@@ -1134,10 +1134,10 @@ search(){
   String refEntityTypes = tabgroup + "/Search/Entity_Types";
 
 </xsl:text>
-<xsl:if test="count(/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &lt; 2">
+<xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &lt; 2">
   <xsl:text>  String type = "";</xsl:text>
 </xsl:if>
-<xsl:if test="count(/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
+<xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
   <xsl:text>  String type = getFieldValue(refEntityTypes);</xsl:text>
 </xsl:if>
 <xsl:text>
@@ -1526,7 +1526,7 @@ menus = new ArrayList();
   </xsl:template>
 
   <xsl:template name="load-entity-functions">
-    <xsl:for-each select="/module/*[not(contains(@f, 'onlyui'))]">
+    <xsl:for-each select="/module/*[not(contains(@f, 'nodata'))]">
       <xsl:text>load</xsl:text>
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text" select="name()" />
@@ -1687,7 +1687,7 @@ menus = new ArrayList();
   </xsl:template>
 
   <xsl:template name="tabgroup-duplicate-exclusions-1">
-    <xsl:for-each select=".//*[@t and not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')]) and not(contains(@f, 'user'))]">
+    <xsl:for-each select=".//*[@t and not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')]) and not(contains(@f, 'user'))]">
       <xsl:choose>
         <xsl:when test="normalize-space(@t) = 'audio'">
           <xsl:text>  populateFileList("</xsl:text>
@@ -1725,7 +1725,7 @@ menus = new ArrayList();
         normalize-space(@t) = 'file' or
         normalize-space(@t) = 'video'
       ) and
-      not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'onlydata')]) and not(contains(@f, 'user'))]">
+      not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')]) and not(contains(@f, 'user'))]">
 
       <xsl:text>      excludeAttributes.add("</xsl:text>
       <xsl:call-template name="string-replace-all">
@@ -2055,7 +2055,7 @@ addOnEvent(userMenuPath, "click", "selectUser()");
   </xsl:template>
 
   <xsl:template name="search-entities">
-    <xsl:if test="count(/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
+    <xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
       <xsl:text>addOnEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Entity_Types"  , "click" , "search()");</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:value-of select="$newline" />
@@ -2063,7 +2063,7 @@ addOnEvent(userMenuPath, "click", "selectUser()");
       <xsl:value-of select="$newline" />
       <xsl:text>entityTypes.add(new NameValuePair("{All}", ""));</xsl:text>
       <xsl:value-of select="$newline" />
-      <xsl:for-each select="/module/*[not(contains(@f, 'onlyui'))]">
+      <xsl:for-each select="/module/*[not(contains(@f, 'nodata'))]">
         <xsl:text>entityTypes.add(new NameValuePair("{</xsl:text>
         <xsl:value-of select="name()"/>
         <xsl:text>}", "</xsl:text>

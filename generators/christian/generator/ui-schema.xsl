@@ -96,7 +96,7 @@
                   <Search_Button/>
                 </Col_1>
               </Colgroup_0>
-              <xsl:if test="count(/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
+              <xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
                 <Entity_Types/>
               </xsl:if>
               <Entity_List/>
@@ -125,7 +125,7 @@
         <xsl:attribute name="ref">
           <xsl:value-of select="name()"/>
         </xsl:attribute>
-        <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+        <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')])">
           <xsl:attribute name="faims_archent_type">
             <xsl:call-template name="string-replace-all">
               <xsl:with-param name="text" select="name()" />
@@ -146,7 +146,7 @@
                 <xsl:with-param name="flags" select="@f" />
               </xsl:call-template>
               <xsl:call-template name="label" />
-              <xsl:for-each select="*[not(contains(@f, 'onlydata'))]"> <!-- Iterate over GUI elements -->
+              <xsl:for-each select="*[not(contains(@f, 'noui'))]"> <!-- Iterate over GUI elements -->
                 <xsl:call-template name="body-expand-reserved-or-view"/>
               </xsl:for-each>
             </xsl:element>
@@ -175,7 +175,7 @@
                   </trigger>
                 </group>
               </group>
-              <xsl:if test="count(/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
+              <xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
                 <select1 ref="Entity_Types">
                   <label>{Entity_Types}</label>
                   <item>
@@ -528,7 +528,7 @@
       <xsl:when test="normalize-space(@t)='audio'">
         <xsl:element name="select">
           <xsl:attribute name="type">file</xsl:attribute>
-          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')])">
             <xsl:attribute name="faims_attribute_type">measure</xsl:attribute>
           </xsl:if>
           <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nosync')])">
@@ -556,7 +556,7 @@
       <xsl:when test="normalize-space(@t)='camera'">
         <xsl:element name="select">
           <xsl:attribute name="type">camera</xsl:attribute>
-          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')])">
             <xsl:attribute name="faims_attribute_type">measure</xsl:attribute>
           </xsl:if>
           <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nosync')])">
@@ -578,7 +578,7 @@
       </xsl:when>
       <xsl:when test="normalize-space(@t)='checkbox'">
         <xsl:element name="select">
-          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')])">
             <xsl:attribute name="faims_attribute_type">vocab</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -590,7 +590,7 @@
       </xsl:when>
       <xsl:when test="normalize-space(@t)='dropdown' or (not(@t) and ./opts)">
         <xsl:element name="select1">
-          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')]) and not(@e) and not(@ec)">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')]) and not(@e) and not(@ec)">
             <xsl:attribute name="faims_attribute_type">vocab</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -606,7 +606,7 @@
       <xsl:when test="normalize-space(@t)='file'">
         <xsl:element name="select">
           <xsl:attribute name="type">file</xsl:attribute>
-          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')])">
             <xsl:attribute name="faims_attribute_type">measure</xsl:attribute>
           </xsl:if>
           <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nosync')])">
@@ -639,7 +639,7 @@
       </xsl:when>
       <xsl:when test="normalize-space(@t)='input'">
         <xsl:element name="{normalize-space(@t)}">
-          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')])">
             <xsl:attribute name="faims_attribute_type">measure</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -670,7 +670,7 @@
       <xsl:when test="normalize-space(@t)='picture'">
         <xsl:element name="select1">
           <xsl:attribute name="type">image</xsl:attribute>
-          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')])">
             <xsl:attribute name="faims_attribute_type">vocab</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -683,7 +683,7 @@
       <xsl:when test="normalize-space(@t)='radio'">
         <xsl:element name="select1">
           <xsl:attribute name="appearance">full</xsl:attribute>
-          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')])">
             <xsl:attribute name="faims_attribute_type">vocab</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -696,7 +696,7 @@
       <xsl:when test="normalize-space(@t)='video'">
         <xsl:element name="select">
           <xsl:attribute name="type">video</xsl:attribute>
-          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')])">
             <xsl:attribute name="faims_attribute_type">measure</xsl:attribute>
           </xsl:if>
           <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nosync')])">
@@ -724,7 +724,7 @@
       </xsl:when>
       <xsl:when test="normalize-space(@t) = ''">
         <xsl:element name="input">
-          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+          <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')])">
             <xsl:attribute name="faims_attribute_type">measure</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
@@ -761,7 +761,7 @@
       normalize-space(@t) != 'gpsdiag' and
       not(@e) and
       not(@ec) and
-      not(ancestor-or-self::*[contains(@f, 'onlyui')])">
+      not(ancestor-or-self::*[contains(@f, 'nodata')])">
       <xsl:attribute name="faims_attribute_name">
         <xsl:call-template name="string-replace-all">
           <xsl:with-param name="text" select="name()" />
@@ -789,7 +789,7 @@
 
   <xsl:template name="label">
     <xsl:element name="label">
-      <xsl:if test="not(contains(@f, 'nolabel')) and not(contains(@f, 'onlydata'))">
+      <xsl:if test="not(contains(@f, 'nolabel')) and not(contains(@f, 'noui'))">
         <xsl:choose>
           <xsl:when test="normalize-space(text())">
             <xsl:text>{</xsl:text>
@@ -907,7 +907,7 @@
     <xsl:variable name="v7">
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text"    select="$v6" />
-        <xsl:with-param name="replace" select="'onlyui'" />
+        <xsl:with-param name="replace" select="'nodata'" />
         <xsl:with-param name="by"      select="''" />
       </xsl:call-template>
     </xsl:variable>
@@ -918,7 +918,7 @@
     <xsl:variable name="v8">
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text"    select="$v7" />
-        <xsl:with-param name="replace" select="'onlydata'" />
+        <xsl:with-param name="replace" select="'noui'" />
         <xsl:with-param name="by"      select="''" />
       </xsl:call-template>
     </xsl:variable>

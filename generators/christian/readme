@@ -1,5 +1,4 @@
 TODO 'Take Picture' buttons don't work
-TODO change onlydata and onlyui to noui and nodata, respectively
 TODO make the generate.sh script take an argument: the module's filename
 TODO generate warning about superfluous element text
 TODO Add "View Attached Files" button
@@ -65,8 +64,8 @@ FLAGS
   nothumb[nail]   Removes the thumbnail="true" attribute from audio, camera,
                   file and video elements in the data schema.
   notscrollable   Equivalent to faims_scrollable="false".
-  onlydata        Only allows code to be generated for the data schema.
-  onlyui          Generates code as usual, but ommits data schema entries.
+  noui            Only allows code related to the data schema to be generated.
+  nodata          Generates code as usual, but ommits data schema entries.
   readonly        Equivalent to faims_read_only="true".
   user            Used to indicate that a menu should contain a list of users.
   notnull         Adds client- and server-side validation specifying that the

@@ -5,7 +5,7 @@
   <xsl:variable name="doWarn"           select="not(/module/@suppressWarnings = 'true')" />
   <xsl:key name="kDropdownOpt" match="*[@t='dropdown' or @t='']/opts/opt" use="concat(name(ancestor::*[last()-1]), name(ancestor::*[last()-2]), name(ancestor::*[last()-3]), text())"/>
   <xsl:key name="kPropertyName" match="*/*/*//*[
-    not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and
+    not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and
     not(@e) and
     not(@ec) and
     not(name() = 'app') and
@@ -66,7 +66,7 @@
 
   <!-- ArchaeologicalElement -->
   <xsl:template name="arch-el">
-    <xsl:for-each select="/module/*[not(contains(@f, 'onlyui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'gps') and not(name() = 'author') and not(name() = 'timestamp') and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]">
+    <xsl:for-each select="/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'gps') and not(name() = 'author') and not(name() = 'timestamp') and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]">
       <xsl:variable name="faims-archent-name">
         <xsl:call-template name="string-replace-all">
           <xsl:with-param name="text" select="name()" />
@@ -101,7 +101,7 @@
 
   <!-- property -->
   <xsl:template name="properties">
-    <xsl:for-each select="./*//*[not(@e) and not(@ec) and not(ancestor-or-self::*[contains(@f, 'onlyui') or contains(@f, 'user')]) and not(name() = 'gps') and not(name() = 'author') and not(name() = 'timestamp') and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(name() = 'str') and not(name() = 'pos') and not(name() = 'fmt') and not(name() = 'app')]">
+    <xsl:for-each select="./*//*[not(@e) and not(@ec) and not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'gps') and not(name() = 'author') and not(name() = 'timestamp') and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(name() = 'str') and not(name() = 'pos') and not(name() = 'fmt') and not(name() = 'app')]">
       <xsl:sort select="concat(str/pos/text(), substring('not-found', 1 div not(str/pos/text())))" />
 
       <xsl:variable name="faims-attribute-name">
