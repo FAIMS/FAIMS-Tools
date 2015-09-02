@@ -1,6 +1,6 @@
+TODO use underscores instead of dashes for filenames outputted by generator
+TODO Include buttons in map
 TODO 'Take Picture' buttons don't work
-TODO make the generate.sh script take an argument: the module's filename
-TODO Add "View Attached Files" button
 
 TODO Warn about duplicate archents
 TODO There should be a way of specifying webviews' text
@@ -82,6 +82,8 @@ TYPES
     - dropdown     <select1/>
     - file         <select type="file" faims_sync=true/>
                    <trigger/>
+        File list with a button to add a file
+
     - gpsdiag      <input faims_read_only="true"/>...
     - group        <group/>
     - input        <input/>
@@ -91,6 +93,8 @@ TYPES
     - radio        <select1 appearance="full"/>
     - video        <select type="file" faims_sync=true/>
                    <trigger/>
+    - viewfiles    <trigger/>
+        A button to view all files related to an archent.
     - web[view]    <input faims_web="true"/>
 ________________________________________________________________________________
 

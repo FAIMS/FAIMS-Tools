@@ -68,25 +68,25 @@
 
         <!-- Some types t add buttons not explicitly mentioned in the module's
              xml file. -->
-        <xsl:if test="contains(normalize-space(@t), 'audio')">
+        <xsl:if test="normalize-space(@t) = 'audio'">
           <xsl:text>Button_</xsl:text>
           <xsl:value-of select="$arch16n-key" />
           <xsl:text>=Attach Audio</xsl:text>
           <xsl:value-of select="$newline" />
         </xsl:if>
-        <xsl:if test="contains(normalize-space(@t), 'camera')">
+        <xsl:if test="normalize-space(@t) = 'camera'">
           <xsl:text>Button_</xsl:text>
           <xsl:value-of select="$arch16n-key" />
           <xsl:text>=Attach Photograph</xsl:text>
           <xsl:value-of select="$newline" />
         </xsl:if>
-        <xsl:if test="contains(normalize-space(@t), 'file')">
+        <xsl:if test="normalize-space(@t) = 'file'">
           <xsl:text>Button_</xsl:text>
           <xsl:value-of select="$arch16n-key" />
           <xsl:text>=Attach File</xsl:text>
           <xsl:value-of select="$newline" />
         </xsl:if>
-        <xsl:if test="contains(normalize-space(@t), 'video')">
+        <xsl:if test="normalize-space(@t) = 'video'">
           <xsl:text>Button_</xsl:text>
           <xsl:value-of select="$arch16n-key" />
           <xsl:text>=Attach Video</xsl:text>

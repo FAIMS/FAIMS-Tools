@@ -625,6 +625,11 @@ addOnEvent("Burial_Mound/CRM/Button_CRM_Photo", "click", "attachPictureTo(\"Buri
 addOnEvent("Burial_Mound/Dimensions/Button_Attach_A_Sketch", "click", "attachFileTo(\"Burial_Mound/Dimensions/Attach_A_Sketch\")");
 
 /******************************************************************************/
+/*                 BINDINGS FOR 'VIEW ATTACHED FILES' BUTTONS                 */
+/******************************************************************************/
+addOnEvent("Control/Main/Button_Wat_Iz_Dis", "click", "viewAttachedFiles(getUuid(\"Control\"))");
+
+/******************************************************************************/
 /*                             NAVIGATION DRAWER                              */
 /******************************************************************************/
 removeNavigationButtons() {

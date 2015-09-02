@@ -26,6 +26,7 @@
               <Take_Feature/>
               <Next_Object_ID/>
               <GPS_Diagnostics/>
+              <Wat_Iz_Dis/>
             </Main>
             <Search>
               <Colgroup_0>
@@ -179,6 +180,10 @@
         <input faims_read_only="true" ref="GPS_Diagnostics">
           <label>{GPS_Diagnostics}</label>
         </input>
+        <trigger ref="Wat_Iz_Dis">
+          <label>{Wat_Iz_Dis}</label>
+          <!--ERROR: viewfiles button cannot belong to element flagged with 'nodata'-->
+        </trigger>
       </group>
       <group ref="Search" faims_scrollable="false">
         <label>{Records}</label>

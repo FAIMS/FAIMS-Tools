@@ -823,11 +823,18 @@ populateAuthorAndTimestamp(String tabgroup) {
     <xsl:value-of select="$newline" />
 
     <!-- onEvent calls for audio, camera, file and video GUI elements -->
+    <xsl:if test="//*[
+      normalize-space(@t) = 'audio' or
+      normalize-space(@t) = 'camera' or
+      normalize-space(@t) = 'file' or
+      normalize-space(@t) = 'video'
+      ]">
 <xsl:text>
 /******************************************************************************/
 /*                   AUDIO, CAMERA, FILE AND VIDEO BINDINGS                   */
 /******************************************************************************/
 </xsl:text>
+    </xsl:if>
     <xsl:for-each select="//*[normalize-space(@t) = 'audio']">
       <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-1])"/>
@@ -874,6 +881,25 @@ populateAuthorAndTimestamp(String tabgroup) {
       <xsl:text>", "click", "attachVideoTo(\"</xsl:text>
       <xsl:call-template name="ref" />
       <xsl:text>\")");</xsl:text>
+      <xsl:value-of select="$newline" />
+    </xsl:for-each>
+    <xsl:if test="//*[normalize-space(@t) = 'viewfiles']">
+<xsl:text>
+/******************************************************************************/
+/*                 BINDINGS FOR 'VIEW ATTACHED FILES' BUTTONS                 */
+/******************************************************************************/
+</xsl:text>
+    </xsl:if>
+    <xsl:for-each select="//*[normalize-space(@t) = 'viewfiles']">
+      <xsl:text>addOnEvent("</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])"/>
+      <xsl:text>/</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-2])"/>
+      <xsl:text>/Button_</xsl:text>
+      <xsl:value-of select="name()"/>
+      <xsl:text>", "click", "viewAttachedFiles(getUuid(\"</xsl:text>
+      <xsl:value-of select="name(ancestor::*[last()-1])"/>
+      <xsl:text>\"))");</xsl:text>
       <xsl:value-of select="$newline" />
     </xsl:for-each>
 

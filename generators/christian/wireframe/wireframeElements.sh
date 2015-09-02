@@ -17,6 +17,8 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Control_Main_GPS_Diagnostics "GPS Diagnostics" input 1 false false false false true wireframeImages/
   
+  ./makeElement.sh Control_Main_Wat_Iz_Dis "Wat Iz Dis" button 1 false false false false false wireframeImages/
+  
   ./makeElement.sh Control_Search_Search_Term "Search Term" input 2 false false false false false wireframeImages/
   
   ./makeElement.sh Control_Search_Search_Button "Search" button 2 false false false false false wireframeImages/
