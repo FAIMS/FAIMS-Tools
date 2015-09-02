@@ -49,11 +49,8 @@ newTab(String tab, Boolean resolveTabGroups) {
       String tabString      = path[0] + "/" + path[1];
 
       doRedirectToTab = true;
-
       String onShowTabgroup = "if (doRedirectToTab) { newTab(\"" + tabString + "\"); doRedirectToTab = false; }";
       addOnEvent(tabgroupString, "show", onShowTabgroup);
-
-      showWarning(onShowTabgroup, onShowTabgroup);
 
       newTabGroup(tabgroupString);
       newTab(tabString);
@@ -604,7 +601,7 @@ onClickUserSelectUser () {
 }
 onClickControlTakeFeature () {
   // TODO: Add some things which should happen when this element is clicked
-  newTab("Control/Map", true);
+  newTab("Control/Search", true);
 }
 onClickBurialMoundCreateShapefile () {
   // TODO: Add some things which should happen when this element is clicked

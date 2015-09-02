@@ -719,7 +719,11 @@ populateAuthorAndTimestamp(String tabgroup) {
         </xsl:when>
         <xsl:otherwise>
           <xsl:text>  newTab("</xsl:text>
-          <xsl:value-of select="@l"/>
+          <xsl:call-template name="string-replace-all">
+            <xsl:with-param name="text" select="@l" />
+            <xsl:with-param name="replace" select="'/search'" />
+            <xsl:with-param name="by" select="'/Search'" />
+          </xsl:call-template>
           <xsl:text>", true);</xsl:text>
         </xsl:otherwise>
       </xsl:choose>

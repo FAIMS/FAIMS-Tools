@@ -9,7 +9,7 @@
 
 <Control f="onlyui">
   <Main>
-    <Take_Feature t="button" l="Burial_Mound"/>
+    <Take_Feature t="button" l="Control/search"/>
     <autonum/>
     <GPS_Diagnostics t="gpsdiag"/>
   </Main>

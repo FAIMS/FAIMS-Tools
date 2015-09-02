@@ -1,12 +1,10 @@
+TODO bug: tab links don't work if more than one is given in a module
 TODO 'Take Picture' buttons don't work
 TODO change onlydata and onlyui to noui and nodata, respectively
 TODO make the generate.sh script take an argument: the module's filename
 TODO generate warning about superfluous element text
 TODO Add "View Attached Files" button
-TODO change search, author, timestamp and gps fields to be indicated by t attrib
 TODO notscrollable should probably be noscroll
-TODO Ensure the search tab can be linked to. There might be something weird with
-     the capitalisation
 
 TODO Warn about duplicate archents
 TODO There should be a way of specifying webviews' text
