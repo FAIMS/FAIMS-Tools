@@ -15,4 +15,4 @@ $proc1 generator/ui-styling.xsl  module.xml               >module/ui_styling.css
 $proc1 generator/validation.xsl  module.xml               >module/validation.xml
 
 gawk    -f generator/arch16nForWireframe.awk   module/english.0.properties >wireframe/arch16n.xml
-$proc2 -xsl:generator/wireframeElements.xsl  -s:module/ui-schema.xml        >wireframe/wireframeElements.sh
+$proc2 -xsl:generator/wireframeElements.xsl  -s:module/ui_schema.xml        >wireframe/wireframeElements.sh
