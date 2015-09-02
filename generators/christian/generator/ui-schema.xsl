@@ -8,9 +8,10 @@
                 version="1.0">
   <xsl:output method="xml" indent="yes"/>
 
-  <xsl:variable name="smallcase" select="'abcdefghijklmnopqrstuvwxyz'" />
-  <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
-  <xsl:variable name="doWarn"    select="not(/module/@suppressWarnings = 'true')" />
+  <xsl:variable name="valid-in-label" select="'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789- '" />
+  <xsl:variable name="smallcase"      select="'abcdefghijklmnopqrstuvwxyz'" />
+  <xsl:variable name="uppercase"      select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
+  <xsl:variable name="doWarn"         select="not(/module/@suppressWarnings = 'true')" />
 
   <xsl:template match="/">
     <h:html>
@@ -792,6 +793,14 @@
       <xsl:if test="not(contains(@f, 'nolabel')) and not(contains(@f, 'noui'))">
         <xsl:choose>
           <xsl:when test="normalize-space(text())">
+            <xsl:if test="
+              $doWarn and
+              not(name() = 'author') and
+              not(name() = 'search') and
+              not(name() = 'timestamp') and
+              not(translate(normalize-space(text()), $valid-in-label, ''))">
+              <xsl:comment>WARNING: For this element, a label was explicitly given. It may have been able to be represented more succinctly by allowing it to be inferred from its element's tag</xsl:comment>
+            </xsl:if>
             <xsl:text>{</xsl:text>
             <xsl:call-template name="string-to-arch16n-line">
               <xsl:with-param name="string" select="normalize-space(text())" />
