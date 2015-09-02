@@ -1,4 +1,3 @@
-TODO bug: tab links don't work if more than one is given in a module
 TODO 'Take Picture' buttons don't work
 TODO change onlydata and onlyui to noui and nodata, respectively
 TODO make the generate.sh script take an argument: the module's filename

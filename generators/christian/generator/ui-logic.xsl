@@ -11,9 +11,9 @@
 
 <xsl:text>import android.util.Log;
 
-Object  dialog;         // Used to help coordinate the display of a "busy..." dialog
-String  parentTabgroup; // Used to allow entities to be saved as children
-Boolean doRedirectToTab;// makes newTab work as expected
+Object dialog;          // Used to help coordinate the display of a "busy..." dialog
+String parentTabgroup;  // Used to allow entities to be saved as children
+String redirectTab;     // makes newTab work as expected
 
 setFileSyncEnabled(true);
 setSyncDelay(5.0f);
@@ -59,8 +59,10 @@ newTab(String tab, Boolean resolveTabGroups) {
       String tabgroupString = path[0];
       String tabString      = path[0] + "/" + path[1];
 
-      doRedirectToTab = true;
-      String onShowTabgroup = "if (doRedirectToTab) { newTab(\"" + tabString + "\"); doRedirectToTab = false; }";
+      showWarning(tabString, tabString);
+
+      redirectTab = tabString;
+      String onShowTabgroup = "if (!isNull(redirectTab)) { newTab(redirectTab); redirectTab = \"\"; }";
       addOnEvent(tabgroupString, "show", onShowTabgroup);
 
       newTabGroup(tabgroupString);
