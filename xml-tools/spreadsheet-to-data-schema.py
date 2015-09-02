@@ -235,7 +235,7 @@ def getRowValue(row, columnName):
 #                                     MAIN                                     #
 ################################################################################
 if len(sys.argv) < 2:
-    sys.stderr.write('Specify Google Spreadsheet ID as argument')
+    sys.stderr.write('Specify Google Spreadsheet ID as argument\n')
     exit()
 
 # Download the spreadsheet and interpret as JSON object
