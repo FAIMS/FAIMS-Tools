@@ -1,6 +1,4 @@
-import json
 import sys
-import urllib2
 
 def parseArchLine(line):
     parsed = line.split('=')
