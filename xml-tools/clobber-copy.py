@@ -87,9 +87,9 @@ def mergeTrees(t1, t2):
     shallowCopyChildren(t1, t2)
     for i in range(0, len(t2)):
         for j in range(i+1, len(t2)):
-            if isEquivalent(t2[i], t2[j]):
-                mergeTrees( t2[i], t2[j])
-                t2NodesToDelete.append(i)
+            if isEquivalent(t2[j], t2[i]):
+                mergeTrees( t2[j], t2[i])
+                t2NodesToDelete.append(j)
 
     t2NodesToDelete.sort(reverse=True) # Needs to be sorted in reverse order to
                                        # prevent elements' indices getting moved
@@ -99,6 +99,8 @@ def mergeTrees(t1, t2):
 
     return t2
 
+# Copies each child from `src` to within `dest`. I.e. makes the children of
+# `src` into the children of `dest`.
 def shallowCopyChildren(src, dest):
     for child in src:
         dest.append(child)

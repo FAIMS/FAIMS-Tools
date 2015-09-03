@@ -1,4 +1,0 @@
-TODO
-  - Make spreadsheet-to-data-schema.py produce sensible output for spreadsheets
-    with missing columns.
-  - Make programs output XML declaration of target
