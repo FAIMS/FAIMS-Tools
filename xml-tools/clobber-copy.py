@@ -56,7 +56,16 @@ def isEquivalent(t1, t2):
         attribT1.pop(r, None)
         attribT2.pop(r, None)
 
-    return t1.tag == t2.tag and attribT1 == attribT2
+    t1Text = t1.text
+    t2Text = t2.text
+    if not t1Text:
+        t1Text = ''
+    if not t2Text:
+        t2Text = ''
+    t1Text = t1Text.strip()
+    t2Text = t2Text.strip()
+
+    return t1.tag == t2.tag and attribT1 == attribT2 and t1Text == t2Text
 
 # Returns true iff `t1` and `t2` have equivalent paths.
 def isEquivalentPathwise(t1, t2):
