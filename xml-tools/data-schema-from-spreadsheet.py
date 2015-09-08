@@ -23,10 +23,12 @@ def normaliseUrls(urls):
     prefix = 'files/data/gallery/'
 
     if   isinstance(urls, str):
+        urls = urls.replace('&', '_')
+        urls = urls.replace(' ', '_')
         return prefix + urls
     elif isinstance(urls, list):
         for i in range(len(urls)):
-            urls[i] = prefix + urls[i]
+            urls[i] = normaliseUrls(urls[i])
         return urls
     else:
         return ''
@@ -144,8 +146,6 @@ def rowToNode(row):
         s +=     '<div>\n'
         s +=     '    <h2>' + arch16nKey + '</h2>\n'
         for src in infoPictures:
-            src = src.replace('&', '_')
-            src = src.replace(' ', '_')
             s += '    <div>\n'
             s += '        <img style="width:100%" src="' + src + '" alt="' + src + '" />\n'
             s += '    </div>\n'
