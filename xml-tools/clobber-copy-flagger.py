@@ -51,13 +51,14 @@ if len(sys.argv) < 2:
     exit()
 
 # Parse XML
-tree = etree.parse(sys.argv[1])
+parser = etree.XMLParser(strip_cdata=False)
+tree = etree.parse(sys.argv[1], parser)
 tree = tree.getroot()
 
 # Generate or parse XPath expressions indicating which nodes should be marked
 if len(sys.argv) == 2:
     flagPaths = []
-    flagPaths.append('//*[not(*)]')
+    flagPaths.append('//*[not(*)]') # Leaf nodes
 elif len(sys.argv) == 3:
     flagPaths = parseFlagsFromFile(sys.argv[2])
 
