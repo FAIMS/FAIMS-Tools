@@ -154,6 +154,16 @@ def arrangeTerms(t):
     source = deleteAttribFromTree(positionAttribute, source)
     return arrangeTerms(t)
 
+# Returns a tuple containing entries used to uniquely identify a child term's
+# proper parent.
+def arrangeTermsHelper(t):
+    positionAttribute = '__RESERVED_PAR__'
+
+    archentName  = t.xpath('ancestor::ArchaeologicalElement')[0].attrib['name']
+    propertyName = t.xpath('ancestor::property')[0].attrib['name']
+    text         = t.attrib[positionAttribute]
+    return archentName, propertyName, text
+
 ################################################################################
 #                                     MAIN                                     #
 ################################################################################
@@ -168,8 +178,9 @@ if len(sys.argv) < 3:
     sys.stderr.write('       is "true", to the TARGET.\n')
     exit()
 
-sourceTree = etree.parse(sys.argv[1])
-targetTree = etree.parse(sys.argv[2])
+parser = etree.XMLParser(strip_cdata=False)
+sourceTree = etree.parse(sys.argv[1], parser)
+targetTree = etree.parse(sys.argv[2], parser)
 sourceTree = sourceTree.getroot()
 targetTree = targetTree.getroot()
 
@@ -187,7 +198,7 @@ for sourceNode in toCopy:
     clobber(sourceNode, targetNode)
 
 # Make terms hierarchical where needed and remove temporary attribute
-dataSchema = arrangeTerms(dataSchema)
+targetTree = arrangeTerms(targetTree)
 
 # Clean up
 deleteAttribFromTree('__RESERVED_CP__', targetTree)
