@@ -123,6 +123,27 @@ def deleteAttribFromTree(attrib, t):
         deleteAttribFromTree(attrib, e)
     return t
 
+def arrangeTerms(t):
+    positionAttribute = '__RESERVED_PAR__'
+
+    # If there aren't an elements with a `positionAttribute`, there's nothing to
+    # do.
+    source = t.xpath('(//*[@%s])[1]' % positionAttribute)
+    if len(source) == 0:
+        return t
+    source = source[0]
+
+    # The desired parent node
+    destPath = '//ArchaeologicalElement[@name="%s"]/property[@name="%s"]//term[text()="%s"]' % arrangeTermsHelper(source)
+    dest = t.xpath(destPath)
+    if len(dest) < 1:
+        return t
+    dest = dest[0]
+
+    dest.append(source) # Move (not copy) source to dest
+    source = deleteAttribFromTree(positionAttribute, source)
+    return arrangeTerms(t)
+
 ################################################################################
 #                                     MAIN                                     #
 ################################################################################
@@ -154,6 +175,9 @@ for sourceNode in toCopy:
 
     targetNode = getTargetNode(sourceNode, targetTree)
     clobber(sourceNode, targetNode)
+
+# Make terms hierarchical where needed and remove temporary attribute
+dataSchema = arrangeTerms(dataSchema)
 
 # Clean up
 deleteAttribFromTree('__RESERVED_CP__', targetTree)

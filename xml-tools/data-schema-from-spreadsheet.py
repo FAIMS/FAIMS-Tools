@@ -193,10 +193,10 @@ def shallowCopyChildren(src, dest):
         dest.append(child)
     return dest
 
-def sortSiblings(t, atrrib):
+def sortSiblings(t, attrib):
     t[:] = sorted(t, key=lambda n: getPositionOfNode(n, attrib))
     for e in t:
-        e = sortSiblings(e)
+        e = sortSiblings(e, attrib)
     return t
 
 def deleteAttribFromTree(attrib, t):
@@ -229,9 +229,9 @@ def arrangeTerms(t):
 
     # The desired parent node
     destPath = '//ArchaeologicalElement[@name="%s"]/property[@name="%s"]//term[text()="%s"]' % arrangeTermsHelper(source)
-    print destPath
     dest = t.xpath(destPath)
-    print len(dest)
+    if len(dest) < 1:
+        return t
     dest = dest[0]
 
     dest.append(source) # Move (not copy) source to dest
@@ -282,7 +282,7 @@ sortBy = []
 sortBy.append('__RESERVED_POS__')
 sortBy.append('__RESERVED_ATTR_ORDER__')
 for s in sortBy:
-    dataSchema = sortSiblings(dataSchema, )
+    dataSchema = sortSiblings(dataSchema, s)
     dataSchema = deleteAttribFromTree(s, dataSchema)
 
 # Gimme dat data schema, blood
