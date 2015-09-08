@@ -44,10 +44,17 @@ def isEquivalent(t1, t2):
     if t1 == None or t2 == None:
         return t1 == t2
 
+    # Ignore reserved attributes when checking equivalence of attributes
+    reserved = []
+    reserved.append('__RESERVED_ATTR_ORDER__')
+    reserved.append('__RESERVED_CP__')
+    reserved.append('__RESERVED_PAR__')
+
     attribT1 = dict(t1.attrib)
     attribT2 = dict(t2.attrib)
-    attribT1.pop('__RESERVED_CP__', None)
-    attribT2.pop('__RESERVED_CP__', None)
+    for r in reserved:
+        attribT1.pop(r, None)
+        attribT2.pop(r, None)
 
     return t1.tag == t2.tag and attribT1 == attribT2
 

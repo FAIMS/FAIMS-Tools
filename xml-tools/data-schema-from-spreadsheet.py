@@ -169,7 +169,22 @@ def mergeTrees(t1, t2):
 
 # Returns true iff the roots of the trees share the same names and attributes.
 def isEquivalent(t1, t2):
-    return t1.tag == t2.tag and t1.attrib == t2.attrib
+    if t1 == None or t2 == None:
+        return t1 == t2
+
+    # Ignore reserved attributes when checking equivalence of attributes
+    reserved = []
+    reserved.append('__RESERVED_ATTR_ORDER__')
+    reserved.append('__RESERVED_CP__')
+    reserved.append('__RESERVED_PAR__')
+
+    attribT1 = dict(t1.attrib)
+    attribT2 = dict(t2.attrib)
+    for r in reserved:
+        attribT1.pop(r, None)
+        attribT2.pop(r, None)
+
+    return t1.tag == t2.tag and attribT1 == attribT2
 
 # Copies each child from `src` to within `dest`. I.e. makes the children of
 # `src` into the children of `dest`.
@@ -178,10 +193,10 @@ def shallowCopyChildren(src, dest):
         dest.append(child)
     return dest
 
-def sortTerms(t):
-    t[:] = sorted(t, key=lambda n: getPositionOfTerm(n))
+def sortSiblings(t, atrrib):
+    t[:] = sorted(t, key=lambda n: getPositionOfNode(n, attrib))
     for e in t:
-        e = sortTerms(e)
+        e = sortSiblings(e)
     return t
 
 def deleteAttribFromTree(attrib, t):
@@ -194,10 +209,10 @@ def deleteAttribFromTree(attrib, t):
         deleteAttribFromTree(attrib, e)
     return t
 
-def getPositionOfTerm(n):
-    positionAttribute = '__RESERVED_POS__'
-    if positionAttribute in n.attrib:
-        return n.attrib[positionAttribute]
+def getPositionOfNode(n, attrib):
+    attrib = '__RESERVED_POS__'
+    if attrib in n.attrib:
+        return n.attrib[attrib]
     else:
         return sys.maxint
 
@@ -213,7 +228,10 @@ def arrangeTerms(t):
     source = source[0]
 
     # The desired parent node
-    dest = t.xpath('//ArchaeologicalElement[@name="%s"]/property[@name="%s"]//term[text()="%s"]' % arrangeTermsHelper(source))
+    destPath = '//ArchaeologicalElement[@name="%s"]/property[@name="%s"]//term[text()="%s"]' % arrangeTermsHelper(source)
+    print destPath
+    dest = t.xpath(destPath)
+    print len(dest)
     dest = dest[0]
 
     dest.append(source) # Move (not copy) source to dest
@@ -260,8 +278,12 @@ for row in html['feed']['entry']:
 dataSchema = arrangeTerms(dataSchema)
 
 # Sort entries and remove the attribute used to temporarily store ordering
-dataSchema = sortTerms(dataSchema)
-dataSchema = deleteAttribFromTree('__RESERVED_POS__', dataSchema)
+sortBy = []
+sortBy.append('__RESERVED_POS__')
+sortBy.append('__RESERVED_ATTR_ORDER__')
+for s in sortBy:
+    dataSchema = sortSiblings(dataSchema, )
+    dataSchema = deleteAttribFromTree(s, dataSchema)
 
 # Gimme dat data schema, blood
 print etree.tostring(dataSchema, pretty_print=True, xml_declaration=True, encoding='utf-8')
