@@ -16,6 +16,30 @@ def insertIntoTree(row, xmlTree):
 
     return xmlTree
 
+def normaliseUrls(urls):
+    if not urls:
+        return ''
+
+    prefix = 'files/data/gallery/'
+
+    if   isinstance(urls, str):
+        return prefix + urls
+    elif isinstance(urls, list):
+        for i in range(len(urls)):
+            urls[i] = prefix + urls[i]
+        return urls
+    else:
+        return ''
+
+def parseDesc(desc, delim='_x000D_'):
+    if not desc:
+        return ''
+    paragraphs = desc.split(delim)
+    for i in range(len(paragraphs)):
+        paragraphs[i] = '<p>' + paragraphs[i] + '</p>\n'
+    parsed = ''.join(paragraphs)
+    return parsed
+
 # Parse a string of semicolon-delimited values into a python list
 def parseList(listString, delim=';'):
     list = listString.split(delim)
@@ -48,16 +72,19 @@ def rowToNode(row):
     archentNames = getRowValue(row, 'attributeLocation')
     attribOrder  = getRowValue(row, 'attributeorder')
     countOrder   = getRowValue(row, 'VocabCountOrder')
-    descProp     = getRowValue(row, 'AttributeDescription')
-    descVocab    = getRowValue(row, 'VocabDescription')
+    desc         = getRowValue(row, 'VocabDescription', 'AttributeDescription')
     infoPictures = getRowValue(row, 'infoFilenames')
     parentVocab  = getRowValue(row, 'parentVocabularyName')
     pictureUrl   = getRowValue(row, 'pictureFilename')
     propertyName = getRowValue(row, 'faimsEntityAttributeName')
 
+    desc         = parseDesc(desc)
     archentNames = parseList(archentNames)
     countOrder   = parseList(countOrder)
     infoPictures = parseList(infoPictures)
+
+    infoPictures = normaliseUrls(infoPictures)
+    pictureUrl   = normaliseUrls(pictureUrl)
 
     root = makeTree()
     for n in archentNames:
@@ -86,10 +113,10 @@ def rowToNode(row):
         s  = '\n'
         s += '<div>\n'
         #s += '    <h1>' + arch16nKey + '</h1>\n'
-        s += '    <p>'  + descProp   + '</p>\n'
+        s += '    '     + desc
         s += '    <hr/>\n'
         s += '</div>\n'
-        if descProp:
+        if desc and not arch16nKey: # if this row is a property (instead of term)
             descPr.text = etree.CDATA(s)
 
         # Put lookup in property
@@ -113,16 +140,21 @@ def rowToNode(row):
                 term,
                 'description'
         )
-        s  = '\n'
-        s += '<div>\n'
-        s += '    <h2>' + arch16nKey + '</h2>\n'
+        s  =     '\n'
+        s +=     '<div>\n'
+        s +=     '    <h2>' + arch16nKey + '</h2>\n'
         for src in infoPictures:
+            src = src.replace('&', '_')
+            src = src.replace(' ', '_')
             s += '    <div>\n'
             s += '        <img style="width:100%" src="' + src + '" alt="' + src + '" />\n'
             s += '    </div>\n'
-        s += '<hr/>\n'
-        s += '</div>\n'
-        if len(infoPictures):
+        s +=     '    <div>\n'
+        s +=     '        ' + desc
+        s +=     '    </div>\n'
+        s +=     '    <hr/>\n'
+        s +=     '</div>\n'
+        if desc and arch16nKey and len(infoPictures):
             descTe.text = etree.CDATA(s)
 
         # DO SOME CLEANUP
@@ -130,9 +162,11 @@ def rowToNode(row):
             del term.attrib['pictureURL']
         if not parentVocab:
             del term.attrib['__RESERVED_PAR__']
+        if not descTe.text:
+            descTe.getparent().remove(descTe)
         if not arch16nKey:
             lookup.getparent().remove(lookup)
-        if not descProp:
+        if not descPr.text:
             descPr.getparent().remove(descPr)
         if not attribOrder:
             del prop.attrib['__RESERVED_ATTR_ORDER__']
@@ -184,7 +218,16 @@ def isEquivalent(t1, t2):
         attribT1.pop(r, None)
         attribT2.pop(r, None)
 
-    return t1.tag == t2.tag and attribT1 == attribT2
+    t1Text = t1.text
+    t2Text = t2.text
+    if not t1Text:
+        t1Text = ''
+    if not t2Text:
+        t2Text = ''
+    t1Text = t1Text.strip()
+    t2Text = t2Text.strip()
+
+    return t1.tag == t2.tag and attribT1 == attribT2 and t1Text == t2Text
 
 # Copies each child from `src` to within `dest`. I.e. makes the children of
 # `src` into the children of `dest`.
@@ -248,7 +291,14 @@ def arrangeTermsHelper(t):
     text         = t.attrib[positionAttribute]
     return archentName, propertyName, text
 
-def getRowValue(row, columnName):
+def getRowValue(row, *columnNames):
+    for n in columnNames:
+        val = getRowValue_(row, n)
+        if val:
+            return val
+    return ''
+
+def getRowValue_(row, columnName):
     columnName = columnName.lower()
     columnName = 'gsx$%s' % columnName
     if columnName in row:
