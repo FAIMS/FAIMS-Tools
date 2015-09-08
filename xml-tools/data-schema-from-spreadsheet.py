@@ -211,6 +211,7 @@ def isEquivalent(t1, t2):
     reserved.append('__RESERVED_ATTR_ORDER__')
     reserved.append('__RESERVED_CP__')
     reserved.append('__RESERVED_PAR__')
+    reserved.append('type')
 
     attribT1 = dict(t1.attrib)
     attribT2 = dict(t2.attrib)
