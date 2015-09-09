@@ -3,13 +3,7 @@
 import json
 import sys
 import urllib2
-
-def getRowValue(row, columnName):
-    columnName = columnName.lower()
-    columnName = 'gsx$%s' % columnName
-    if columnName in row:
-        return row[columnName]['$t'].encode('utf-8').strip()
-    return ''
+import spreadsheettools as sheets
 
 def normaliseKey(key):
     key = key.replace('{', '')
@@ -25,11 +19,8 @@ if len(sys.argv) < 2:
     exit()
 
 # Download the spreadsheet and interpret as JSON object
-sheet_id = sys.argv[1]
-url      = 'https://spreadsheets.google.com/feeds/list/' + sheet_id + '/1/public/values?prettyprint=true&alt=json';
-response = urllib2.urlopen(url)
-html     = response.read()
-html     = json.loads(html)
+sheetId = sys.argv[1]
+html = sheets.id2Html(sheetId)
 
 archKV = {} # Arch16n key-value pairs
 
@@ -38,8 +29,8 @@ for row in html['feed']['entry']:
     kColName = 'faimsVocab'
     vColName = 'mungoVocab'
 
-    key = getRowValue(row, kColName)
-    val = getRowValue(row, vColName)
+    key = sheets.getRowValue(row, kColName)
+    val = sheets.getRowValue(row, vColName)
 
     # Normalisation steps
     if key == '':                                                            # 1

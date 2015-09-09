@@ -1,14 +1,14 @@
 #! /usr/bin/env python
 
 import sys
+import xmltools
 from   lxml import etree
-from   copy import deepcopy
 
 def normaliseTree(t):
     if t == None:
         return t
     if t.xpath('ancestor::*[@__RESERVED_CP__]'):
-        deleteAttribFromTree('__RESERVED_CP__', t)
+        xmltools.deleteAttribFromTree('__RESERVED_CP__', t)
     if '__RESERVED_CP__' in t.attrib:
         t.attrib['__RESERVED_CP__'] = t.attrib['__RESERVED_CP__'].strip().lower()
 
@@ -25,6 +25,7 @@ def getTargetNode(sourceNode, targetTree):
     return None
 
 def getSourceNodes(sourceTree):
+    reservedCopy = '__RESERVED_CP__'
     toCopy = sourceTree.xpath('//*[@%s]' % reservedCopy)
     for n in toCopy: # Remove nodes whose attribute isn't "true" (or similar)
         if n.attrib[reservedCopy] != 'true':
@@ -36,39 +37,10 @@ def getSourceNodes(sourceTree):
 # function.
 def clobber(sourceNode, targetNode):
     for i in range(len(targetNode)):
-        if isEquivalent(targetNode[i], sourceNode):
+        if xmltools.isEquivalent(targetNode[i], sourceNode):
             targetNode[i] = sourceNode
             return
     targetNode.append(sourceNode)
-
-# Returns true iff the roots of the trees share the same names and attributes.
-def isEquivalent(t1, t2):
-    if t1 == None or t2 == None:
-        return t1 == t2
-
-    # Ignore reserved attributes when checking equivalence of attributes
-    reserved = []
-    reserved.append('__RESERVED_ATTR_ORDER__')
-    reserved.append('__RESERVED_CP__')
-    reserved.append('__RESERVED_PAR__')
-    reserved.append('type')
-
-    attribT1 = dict(t1.attrib)
-    attribT2 = dict(t2.attrib)
-    for r in reserved:
-        attribT1.pop(r, None)
-        attribT2.pop(r, None)
-
-    t1Text = t1.text
-    t2Text = t2.text
-    if not t1Text:
-        t1Text = ''
-    if not t2Text:
-        t2Text = ''
-    t1Text = t1Text.strip()
-    t2Text = t2Text.strip()
-
-    return t1.tag == t2.tag and attribT1 == attribT2 and t1Text == t2Text
 
 # Returns true iff `t1` and `t2` have equivalent paths.
 def isEquivalentPathwise(t1, t2):
@@ -76,95 +48,17 @@ def isEquivalentPathwise(t1, t2):
     p2 = t2.getparent()
 
     if p1 == None or p2 == None:
-        return isEquivalent(p1, p2) and isEquivalent(t1, t2)
-    return isEquivalentPathwise(p1, p2) and isEquivalent(t1, t2)
+        return xmltools.isEquivalent(p1, p2) and xmltools.isEquivalent(t1, t2)
+    return isEquivalentPathwise(p1, p2) and xmltools.isEquivalent(t1, t2)
 
 def copyPathwise(n, target):
-    result = deepcopyNoChildren(n)
+    result = xmltools.deepCopyNoChildren(n)
     for n_ in n.iterancestors():
-        cpyN_ = deepcopyNoChildren(n_)
+        cpyN_ = xmltools.deepCopyNoChildren(n_)
         cpyN_.append(result)
         result = cpyN_
 
-    target = mergeTrees(result, target)
-
-def deepcopyNoChildren(n):
-    result = deepcopy(n)
-    for n_ in result:
-        n_.getparent().remove(n_)
-    return result
-
-# This thing's time complexity could be better...
-# t2 is modified during the call
-def mergeTrees(t1, t2):
-    if t1 == None:
-        return t2
-    if t2 == None:
-        return t1
-
-    t2NodesToDelete = []
-    shallowCopyChildren(t1, t2)
-    for i in range(0, len(t2)):
-        for j in range(i+1, len(t2)):
-            if isEquivalent(t2[j], t2[i]):
-                mergeTrees( t2[j], t2[i])
-                t2NodesToDelete.append(j)
-
-    t2NodesToDelete.sort(reverse=True) # Needs to be sorted in reverse order to
-                                       # prevent elements' indices getting moved
-                                       # after each `del`.
-    for index in t2NodesToDelete:
-        del t2[index]
-
-    return t2
-
-# Copies each child from `src` to within `dest`. I.e. makes the children of
-# `src` into the children of `dest`.
-def shallowCopyChildren(src, dest):
-    for child in src:
-        dest.append(child)
-    return dest
-
-def deleteAttribFromTree(attrib, t):
-    if t == None:
-        return t
-    if attrib in t.attrib:
-        del t.attrib[attrib]
-
-    for e in t:
-        deleteAttribFromTree(attrib, e)
-    return t
-
-def arrangeTerms(t):
-    positionAttribute = '__RESERVED_PAR__'
-
-    # If there aren't an elements with a `positionAttribute`, there's nothing to
-    # do.
-    source = t.xpath('(//*[@%s])[1]' % positionAttribute)
-    if len(source) == 0:
-        return t
-    source = source[0]
-
-    # The desired parent node
-    destPath = '//ArchaeologicalElement[@name="%s"]/property[@name="%s"]//term[text()="%s"]' % arrangeTermsHelper(source)
-    dest = t.xpath(destPath)
-    if len(dest) < 1:
-        return t
-    dest = dest[0]
-
-    dest.append(source) # Move (not copy) source to dest
-    source = deleteAttribFromTree(positionAttribute, source)
-    return arrangeTerms(t)
-
-# Returns a tuple containing entries used to uniquely identify a child term's
-# proper parent.
-def arrangeTermsHelper(t):
-    positionAttribute = '__RESERVED_PAR__'
-
-    archentName  = t.xpath('ancestor::ArchaeologicalElement')[0].attrib['name']
-    propertyName = t.xpath('ancestor::property')[0].attrib['name']
-    text         = t.attrib[positionAttribute]
-    return archentName, propertyName, text
+    target = xmltools.mergeTrees(result, target)
 
 ################################################################################
 #                                     MAIN                                     #
@@ -200,10 +94,10 @@ for sourceNode in toCopy:
     clobber(sourceNode, targetNode)
 
 # Make terms hierarchical where needed and remove temporary attribute
-targetTree = arrangeTerms(targetTree)
+targetTree = xmltools.nestTerms(targetTree)
 
 # Clean up
-deleteAttribFromTree('__RESERVED_CP__', targetTree)
+xmltools.deleteAttribFromTree('__RESERVED_CP__', targetTree)
 
 # Collect your prize
 print etree.tostring(targetTree, pretty_print=True, xml_declaration=True, encoding='utf-8')

@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import sys
+import xmltools
 from   lxml import etree
 from   copy import deepcopy
 
@@ -17,11 +18,6 @@ def expandToXPath(shorthand):
             shorthand[1] = 'property[@name="%s"]'          % shorthand[1]
         shorthand.insert(0, '/dataSchema')
     return '/'.join(shorthand)
-
-def markNodes(tree, xPathExpr):
-    ns = tree.xpath(xPathExpr)
-    for n in ns:
-        n.attrib['__RESERVED_CP__'] = 'true'
 
 def parseFlagsFromFile(filename):
     with open(filename) as f:
@@ -66,7 +62,7 @@ elif len(sys.argv) == 3:
 
 # Mark nodes
 for xp in flagPaths:
-    markNodes(tree, xp)
+    xmltools.markNodesToCopy(tree, xp)
 
 # Collect your prize
 print etree.tostring(tree, pretty_print=True, xml_declaration=True, encoding='utf-8')

@@ -1,0 +1,2 @@
+Fix isEquivalent so that descriptions end up getting correctly merged/clobbered
+Ensure shit gets deleted

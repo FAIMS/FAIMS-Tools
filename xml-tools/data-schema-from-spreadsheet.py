@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 
 from   lxml import etree
-import json
+import spreadsheettools as sheets
 import sys
-import urllib2
+import xmltools
 
 def makeTree():
     root = etree.Element('dataSchema')
@@ -14,7 +14,7 @@ def insertIntoTree(row, xmlTree):
         xmlTree = makeTree()
 
     node = rowToNode(row)
-    xmlTree = mergeTrees(node, xmlTree)
+    xmlTree = xmltools.mergeTrees(node, xmlTree)
 
     return xmlTree
 
@@ -72,15 +72,15 @@ def parseListAttributeCountOrderNormaliser(parsedList):
 
 
 def rowToNode(row):
-    arch16nKey   = getRowValue(row, 'faimsVocab')
-    archentNames = getRowValue(row, 'attributeLocation')
-    attribOrder  = getRowValue(row, 'attributeorder')
-    countOrder   = getRowValue(row, 'VocabCountOrder')
-    desc         = getRowValue(row, 'VocabDescription', 'AttributeDescription')
-    infoPictures = getRowValue(row, 'infoFilenames')
-    parentVocab  = getRowValue(row, 'parentVocabularyName')
-    pictureUrl   = getRowValue(row, 'pictureFilename')
-    propertyName = getRowValue(row, 'faimsEntityAttributeName')
+    arch16nKey   = sheets.getRowValue(row, 'faimsVocab')
+    archentNames = sheets.getRowValue(row, 'attributeLocation')
+    attribOrder  = sheets.getRowValue(row, 'attributeorder')
+    countOrder   = sheets.getRowValue(row, 'VocabCountOrder')
+    desc         = sheets.getRowValue(row, 'VocabDescription', 'AttributeDescription')
+    infoPictures = sheets.getRowValue(row, 'infoFilenames')
+    parentVocab  = sheets.getRowValue(row, 'parentVocabularyName')
+    pictureUrl   = sheets.getRowValue(row, 'pictureFilename')
+    propertyName = sheets.getRowValue(row, 'faimsEntityAttributeName')
 
     desc         = parseDesc(desc)
     archentNames = parseList(archentNames)
@@ -179,135 +179,6 @@ def rowToNode(row):
 
     return root
 
-# This thing's time complexity could be better...
-# t2 is modified during the call
-def mergeTrees(t1, t2):
-    if t1 == None:
-        return t2
-    if t2 == None:
-        return t1
-
-    t2NodesToDelete = []
-    shallowCopyChildren(t1, t2)
-    for i in range(0, len(t2)):
-        for j in range(i+1, len(t2)):
-            if isEquivalent(t2[j], t2[i]):
-                mergeTrees( t2[j], t2[i])
-                t2NodesToDelete.append(j)
-
-    t2NodesToDelete.sort(reverse=True) # Needs to be sorted in reverse order to
-                                       # prevent elements' indices getting moved
-                                       # after each `del`.
-    for index in t2NodesToDelete:
-        del t2[index]
-
-    return t2
-
-# Returns true iff the roots of the trees share the same names and attributes.
-def isEquivalent(t1, t2):
-    if t1 == None or t2 == None:
-        return t1 == t2
-
-    # Ignore reserved attributes when checking equivalence of attributes
-    reserved = []
-    reserved.append('__RESERVED_ATTR_ORDER__')
-    reserved.append('__RESERVED_CP__')
-    reserved.append('__RESERVED_PAR__')
-    reserved.append('type')
-
-    attribT1 = dict(t1.attrib)
-    attribT2 = dict(t2.attrib)
-    for r in reserved:
-        attribT1.pop(r, None)
-        attribT2.pop(r, None)
-
-    t1Text = t1.text
-    t2Text = t2.text
-    if not t1Text:
-        t1Text = ''
-    if not t2Text:
-        t2Text = ''
-    t1Text = t1Text.strip()
-    t2Text = t2Text.strip()
-
-    return t1.tag == t2.tag and attribT1 == attribT2 and t1Text == t2Text
-
-# Copies each child from `src` to within `dest`. I.e. makes the children of
-# `src` into the children of `dest`.
-def shallowCopyChildren(src, dest):
-    for child in src:
-        dest.append(child)
-    return dest
-
-def sortSiblings(t, attrib):
-    t[:] = sorted(t, key=lambda n: getPositionOfNode(n, attrib))
-    for e in t:
-        e = sortSiblings(e, attrib)
-    return t
-
-def deleteAttribFromTree(attrib, t):
-    if t == None:
-        return t
-    if attrib in t.attrib:
-        del t.attrib[attrib]
-
-    for e in t:
-        deleteAttribFromTree(attrib, e)
-    return t
-
-def getPositionOfNode(n, attrib):
-    attrib = '__RESERVED_POS__'
-    if attrib in n.attrib:
-        return n.attrib[attrib]
-    else:
-        return sys.maxint
-
-# Nests the hierarchical vocab entries appropriately
-def arrangeTerms(t):
-    positionAttribute = '__RESERVED_PAR__'
-
-    # If there aren't an elements with a `positionAttribute`, there's nothing to
-    # do.
-    source = t.xpath('(//*[@%s])[1]' % positionAttribute)
-    if len(source) == 0:
-        return t
-    source = source[0]
-
-    # The desired parent node
-    destPath = '//ArchaeologicalElement[@name="%s"]/property[@name="%s"]//term[text()="%s"]' % arrangeTermsHelper(source)
-    dest = t.xpath(destPath)
-    if len(dest) < 1:
-        return t
-    dest = dest[0]
-
-    dest.append(source) # Move (not copy) source to dest
-    source = deleteAttribFromTree(positionAttribute, source)
-    return arrangeTerms(t)
-
-# Returns a tuple containing entries used to uniquely identify a child term's
-# proper parent.
-def arrangeTermsHelper(t):
-    positionAttribute = '__RESERVED_PAR__'
-
-    archentName  = t.xpath('ancestor::ArchaeologicalElement')[0].attrib['name']
-    propertyName = t.xpath('ancestor::property')[0].attrib['name']
-    text         = t.attrib[positionAttribute]
-    return archentName, propertyName, text
-
-def getRowValue(row, *columnNames):
-    for n in columnNames:
-        val = getRowValue_(row, n)
-        if val:
-            return val
-    return ''
-
-def getRowValue_(row, columnName):
-    columnName = columnName.lower()
-    columnName = 'gsx$%s' % columnName
-    if columnName in row:
-        return row[columnName]['$t'].encode('utf-8').strip()
-    return ''
-
 ################################################################################
 #                                     MAIN                                     #
 ################################################################################
@@ -316,11 +187,8 @@ if len(sys.argv) < 2:
     exit()
 
 # Download the spreadsheet and interpret as JSON object
-sheet_id = sys.argv[1]
-url      = 'https://spreadsheets.google.com/feeds/list/' + sheet_id + '/1/public/values?prettyprint=true&alt=json';
-response = urllib2.urlopen(url)
-html     = response.read()
-html     = json.loads(html)
+sheetId = sys.argv[1]
+html = sheets.id2Html(sheetId)
 
 # Read each row into an XML tree which represents the data schema
 dataSchema = makeTree()
@@ -328,15 +196,15 @@ for row in html['feed']['entry']:
     dataSchema = insertIntoTree(row, dataSchema)
 
 # Make terms hierarchical where needed and remove temporary attribute
-dataSchema = arrangeTerms(dataSchema)
+dataSchema = xmltools.nestTerms(dataSchema)
 
 # Sort entries and remove the attribute used to temporarily store ordering
 sortBy = []
 sortBy.append('__RESERVED_POS__')
 sortBy.append('__RESERVED_ATTR_ORDER__')
 for s in sortBy:
-    dataSchema = sortSiblings(dataSchema, s)
-    dataSchema = deleteAttribFromTree(s, dataSchema)
+    dataSchema = xmltools.sortSiblings(dataSchema, s)
+    dataSchema = xmltools.deleteAttribFromTree(s, dataSchema)
 
 # Gimme dat data schema, blood
 print etree.tostring(dataSchema, pretty_print=True, xml_declaration=True, encoding='utf-8')
