@@ -79,7 +79,7 @@
     <hr/>
 </div>
 ]]></description></term></term>
-        <term>{boneAndOtherMaterial}<term __RESERVED_CP__="true">{inistAndOth}</term><term __RESERVED_CP__="true">{surfAndOth}</term><term __RESERVED_CP__="true">{bothAndOth}</term></term>
+        <term>{boneAndOtherMaterial}<term>{inistAndOth}</term><term>{surfAndOth}</term><term>{bothAndOth}</term></term>
       </lookup>
     </property>
     <property name="OldBone_-_Proportion_of_material_that_remains_in_situ">
@@ -217,7 +217,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
         <term>{unident}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{unident}</h2>
@@ -757,8 +757,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{indet}</term>
+        <term>{other}</term>
         <term>{orgstain}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{orgstain}</h2>
@@ -964,8 +964,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{other}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Topographic_Setting">
@@ -1547,8 +1547,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{gravelbeach}</term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{gravelbeach}</term>
+        <term>{other}</term>
         <term pictureURL="files/data/gallery/36_white_sand_exposure_LABEL.jpg">{whitesand}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{whitesand}</h2>
@@ -1676,19 +1676,19 @@
     </property>
     <property name="OldBone_-_Stratigraphic_Unit">
       <lookup>
-        <term __RESERVED_CP__="true">{Golgol}</term>
-        <term __RESERVED_CP__="true">{H}</term>
-        <term __RESERVED_CP__="true">{I}</term>
-        <term __RESERVED_CP__="true">{other}</term>
-        <term __RESERVED_CP__="true">{indet}</term>
-        <term __RESERVED_CP__="true">{ggC}</term>
-        <term __RESERVED_CP__="true">{gglag}</term>
-        <term __RESERVED_CP__="true">{B}</term>
-        <term __RESERVED_CP__="true">{C}</term>
-        <term __RESERVED_CP__="true">{D}</term>
-        <term __RESERVED_CP__="true">{E}</term>
-        <term __RESERVED_CP__="true">{F}</term>
-        <term __RESERVED_CP__="true">{G}</term>
+        <term>{Golgol}</term>
+        <term>{H}</term>
+        <term>{I}</term>
+        <term>{other}</term>
+        <term>{indet}</term>
+        <term>{ggC}</term>
+        <term>{gglag}</term>
+        <term>{B}</term>
+        <term>{C}</term>
+        <term>{D}</term>
+        <term>{E}</term>
+        <term>{F}</term>
+        <term>{G}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Vulnerability_To_Erosion">
@@ -1868,7 +1868,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{spit}</term>
+        <term>{spit}</term>
         <term pictureURL="files/data/gallery/124_alluvial_fan_lake_floor.jpg">{allfan}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{allfan}</h2>
@@ -1902,7 +1902,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
         <term pictureURL="files/data/gallery/126_indet___backdune.jpg">{indet}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{indet}</h2>
@@ -2071,7 +2071,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Associated_Hearth_Material">
@@ -2088,7 +2088,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
         <term>{hsclay}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{hsclay}</h2>
@@ -2290,7 +2290,7 @@
     </property>
     <property name="OldBone_-_Associated_Stone_Artefacts">
       <lookup>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{cs}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{cs}</h2>
@@ -2500,7 +2500,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Associated_Unmodified_Stone">
@@ -2550,8 +2550,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{all}</term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{all}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Ground_Stone_Types_Present">
@@ -2646,8 +2646,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{indet}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Ground_Stone_Status">
@@ -2815,8 +2815,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Unmodified_Stone_Raw_Material">
@@ -2839,8 +2839,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{unident}</term>
+        <term>{indet}</term>
         <term>{silcmed}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{silcmed}</h2>
@@ -3081,8 +3081,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Associated_Other_Artefacts">
@@ -3356,7 +3356,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Associated_Hearth_Material">
@@ -3373,7 +3373,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
         <term>{hsclay}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{hsclay}</h2>
@@ -3575,7 +3575,7 @@
     </property>
     <property name="OldBone_-_Associated_Stone_Artefacts">
       <lookup>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{cs}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{cs}</h2>
@@ -3785,7 +3785,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Associated_Unmodified_Stone">
@@ -3835,8 +3835,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{all}</term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{all}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Ground_Stone_Types_Present">
@@ -3931,8 +3931,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{indet}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Ground_Stone_Status">
@@ -4100,8 +4100,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Unmodified_Stone_Raw_Material">
@@ -4124,8 +4124,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{unident}</term>
+        <term>{indet}</term>
         <term>{silcmed}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{silcmed}</h2>
@@ -4366,8 +4366,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Associated_Other_Artefacts">
@@ -4982,7 +4982,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{polish}</term>
+        <term>{polish}</term>
         <term>{other}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{other}</h2>
@@ -5029,7 +5029,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
         <term>{weather}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{weather}</h2>
@@ -5713,8 +5713,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{gravelbeach}</term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{gravelbeach}</term>
+        <term>{other}</term>
         <term pictureURL="files/data/gallery/36_white_sand_exposure_LABEL.jpg">{whitesand}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{whitesand}</h2>
@@ -5842,16 +5842,16 @@
     </property>
     <property name="Hearth_-_Stratigraphic_Unit">
       <lookup>
-        <term __RESERVED_CP__="true">{Golgol}</term>
-        <term __RESERVED_CP__="true">{H}</term>
-        <term __RESERVED_CP__="true">{I}</term>
-        <term __RESERVED_CP__="true">{indet}</term>
-        <term __RESERVED_CP__="true">{other}</term>
-        <term __RESERVED_CP__="true">{ggC}</term>
-        <term __RESERVED_CP__="true">{gglag}</term>
-        <term __RESERVED_CP__="true">{B}</term>
-        <term __RESERVED_CP__="true">{C}</term>
-        <term __RESERVED_CP__="true">{D}</term>
+        <term>{Golgol}</term>
+        <term>{H}</term>
+        <term>{I}</term>
+        <term>{indet}</term>
+        <term>{other}</term>
+        <term>{ggC}</term>
+        <term>{gglag}</term>
+        <term>{B}</term>
+        <term>{C}</term>
+        <term>{D}</term>
         <term pictureURL="files/data/gallery/124_alluvial_fan_lake_floor.jpg">{allfan}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{allfan}</h2>
@@ -5873,9 +5873,9 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{E}</term>
-        <term __RESERVED_CP__="true">{F}</term>
-        <term __RESERVED_CP__="true">{G}</term>
+        <term>{E}</term>
+        <term>{F}</term>
+        <term>{G}</term>
       </lookup>
     </property>
     <property name="Hearth_-_Vulnerability_To_Erosion">
@@ -6055,7 +6055,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{spit}</term>
+        <term>{spit}</term>
         <term pictureURL="files/data/gallery/125_lakebed.jpg">{lakebed}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{lakebed}</h2>
@@ -6080,7 +6080,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Hearth_-_Photos">
@@ -6293,7 +6293,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="HearthAssoc_-_Burnt_lacustrine_material">
@@ -6325,7 +6325,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="HearthAssoc_-_Associated_terrestrial_bone">
@@ -6676,7 +6676,7 @@
     </property>
     <property name="HearthAssoc_-_Associated_stone_artefacts">
       <lookup>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{cs}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{cs}</h2>
@@ -6901,7 +6901,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="HearthAssoc_-_Associated_unmodified_stone">
@@ -6936,12 +6936,12 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="HearthAssoc_-_Ground_stone_types_present">
       <lookup>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{millstone}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{millstone}</h2>
@@ -7032,7 +7032,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="HearthAssoc_-_Ground_stone_status">
@@ -7080,7 +7080,7 @@
     </property>
     <property name="HearthAssoc_-_Chipped_Stone_Raw_Material">
       <lookup>
-        <term __RESERVED_CP__="true">{unident}</term>
+        <term>{unident}</term>
         <term>{silcfine}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{silcfine}</h2>
@@ -7201,12 +7201,12 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="HearthAssoc_-_Unmodified_Raw_Material">
       <lookup>
-        <term __RESERVED_CP__="true">{unident}</term>
+        <term>{unident}</term>
         <term>{silcfine}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{silcfine}</h2>
@@ -7225,7 +7225,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{silcmed}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{silcmed}</h2>
@@ -7406,7 +7406,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
+        <term>{unident}</term>
         <term>{sandst}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{sandst}</h2>
@@ -7467,7 +7467,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="HearthAssoc_-_Associated_other_worked_(or_transported)_material">
@@ -7817,7 +7817,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_PAR__="{Faunal_Remains}" __RESERVED_CP__="true">{indet}</term>
+        <term __RESERVED_PAR__="{Faunal_Remains}">{indet}</term>
         <term __RESERVED_PAR__="{Other_Worked_Material}">{ochrediss}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{ochrediss}</h2>
@@ -8233,7 +8233,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{Faunal_Remains}</term>
+        <term>{Faunal_Remains}</term>
         <term __RESERVED_PAR__="{Other_Artefacts}">{eggmod}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{eggmod}</h2>
@@ -8421,8 +8421,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{unident}</term>
+        <term>{indet}</term>
         <term>{silcfine}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{silcfine}</h2>
@@ -8838,7 +8838,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Isolated_-_Modification_to_Stone_Material">
@@ -8858,7 +8858,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{algal}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{algal}</h2>
@@ -8919,7 +8919,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Isolated_-_Topographic_Setting">
@@ -9624,8 +9624,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{gravelbeach}</term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{gravelbeach}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Isolated_-_Vulnerability_to_Erosion">
@@ -9838,7 +9838,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{spit}</term>
+        <term>{spit}</term>
         <term pictureURL="files/data/gallery/126_indet___backdune.jpg">{indet}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{indet}</h2>
@@ -9851,7 +9851,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Isolated_-_Photos">
@@ -9944,7 +9944,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{extthick}</term>
+        <term>{extthick}</term>
       </lookup>
     </property>
     <property name="Shell_-_Continuity">
@@ -10786,8 +10786,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{gravelbeach}</term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{gravelbeach}</term>
+        <term>{other}</term>
         <term pictureURL="files/data/gallery/36_white_sand_exposure_LABEL.jpg">{whitesand}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{whitesand}</h2>
@@ -10915,19 +10915,19 @@
     </property>
     <property name="Shell_-_Stratigraphic_Unit">
       <lookup>
-        <term __RESERVED_CP__="true">{unident}</term>
-        <term __RESERVED_CP__="true">{Golgol}</term>
-        <term __RESERVED_CP__="true">{H}</term>
-        <term __RESERVED_CP__="true">{I}</term>
-        <term __RESERVED_CP__="true">{other}</term>
-        <term __RESERVED_CP__="true">{ggC}</term>
-        <term __RESERVED_CP__="true">{gglag}</term>
-        <term __RESERVED_CP__="true">{B}</term>
-        <term __RESERVED_CP__="true">{C}</term>
-        <term __RESERVED_CP__="true">{D}</term>
-        <term __RESERVED_CP__="true">{E}</term>
-        <term __RESERVED_CP__="true">{F}</term>
-        <term __RESERVED_CP__="true">{G}</term>
+        <term>{unident}</term>
+        <term>{Golgol}</term>
+        <term>{H}</term>
+        <term>{I}</term>
+        <term>{other}</term>
+        <term>{ggC}</term>
+        <term>{gglag}</term>
+        <term>{B}</term>
+        <term>{C}</term>
+        <term>{D}</term>
+        <term>{E}</term>
+        <term>{F}</term>
+        <term>{G}</term>
       </lookup>
     </property>
     <property name="Shell_-_Vulnerability_To_Erosion">
@@ -11140,7 +11140,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{spit}</term>
+        <term>{spit}</term>
         <term pictureURL="files/data/gallery/125_lakebed.jpg">{lakebed}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{lakebed}</h2>
@@ -11153,7 +11153,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Shell_-_Photos">
@@ -11378,7 +11378,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="ShellAssoc_-_Burnt_lacustrine_material">
@@ -11407,7 +11407,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="ShellAssoc_-_Associated_terrestrial_bone">
@@ -11686,7 +11686,7 @@
     </property>
     <property name="ShellAssoc_-_Associated_stone_artefacts">
       <lookup>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{cs}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{cs}</h2>
@@ -11896,12 +11896,12 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="ShellAssoc_-_Associated_unmodified_stone">
       <lookup>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{nodule}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{nodule}</h2>
@@ -11951,7 +11951,7 @@
     </property>
     <property name="ShellAssoc_-_Ground_stone_types_present">
       <lookup>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{millstone}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{millstone}</h2>
@@ -12042,7 +12042,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="ShellAssoc_-_Ground_stone_status">
@@ -12159,7 +12159,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
+        <term>{unident}</term>
         <term>{sandst}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{sandst}</h2>
@@ -12205,12 +12205,12 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="ShellAssoc_-_Chipped_Stone_Raw_Material">
       <lookup>
-        <term __RESERVED_CP__="true">{unident}</term>
+        <term>{unident}</term>
         <term>{silcfine}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{silcfine}</h2>
@@ -12331,7 +12331,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="ShellAssoc_-_Unmodified_Raw_Material">
@@ -12372,7 +12372,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
+        <term>{unident}</term>
         <term>{silcfine}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{silcfine}</h2>
@@ -12478,12 +12478,12 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="ShellAssoc_-_Unmodified_Stone_Types">
       <lookup>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
         <term>{nodule}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{nodule}</h2>
@@ -12662,7 +12662,7 @@
   <ArchaeologicalElement name="Stone Artefact Clusters">
     <property name="Stone_-_Cluster_Type">
       <lookup>
-        <term __RESERVED_CP__="true">{Stone_artefacts_only}</term>
+        <term>{Stone_artefacts_only}</term>
         <term __RESERVED_PAR__="{Stone_artefacts_only}">{insitu}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{insitu}</h2>
@@ -12678,8 +12678,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_PAR__="{Stone_artefacts_and_other_material}" __RESERVED_CP__="true">{insit_oth}</term>
-        <term __RESERVED_CP__="true">{Stone_artefacts_and_other_material}</term>
+        <term __RESERVED_PAR__="{Stone_artefacts_and_other_material}">{insit_oth}</term>
+        <term>{Stone_artefacts_and_other_material}</term>
         <term __RESERVED_PAR__="{Stone_artefacts_only}">{surf}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{surf}</h2>
@@ -12707,7 +12707,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_PAR__="{Stone_artefacts_and_other_material}" __RESERVED_CP__="true">{surf_oth}</term>
+        <term __RESERVED_PAR__="{Stone_artefacts_and_other_material}">{surf_oth}</term>
         <term __RESERVED_PAR__="{Stone_artefacts_only}">{both}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{both}</h2>
@@ -12754,7 +12754,7 @@
     </property>
     <property name="Stone_-_In_Situ_-_Stone_Artefacts">
       <lookup>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{cs}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{cs}</h2>
@@ -12964,12 +12964,12 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
+        <term>{unident}</term>
       </lookup>
     </property>
     <property name="Stone_-_In_Situ_-_Unmodified_Stone_Types">
       <lookup>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{nodule}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{nodule}</h2>
@@ -13109,8 +13109,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{unident}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_In_Situ_-_Ground_Stone_Status">
@@ -13212,7 +13212,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
+        <term>{unident}</term>
         <term>{sandst}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{sandst}</h2>
@@ -13273,7 +13273,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="Stone_-_In_Situ_-_Surface_Modification">
@@ -13365,12 +13365,12 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_In_Situ_-_Chipped_Stone_Raw_Material">
       <lookup>
-        <term __RESERVED_CP__="true">{unident}</term>
+        <term>{unident}</term>
         <term>{silcfine}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{silcfine}</h2>
@@ -13491,7 +13491,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="Stone_-_In_Situ_-_Unmodified_Stone_Raw_Material">
@@ -13532,7 +13532,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
+        <term>{unident}</term>
         <term __RESERVED_PAR__="amend label and glossary header: Raw materiald for in situ  unmodified rocks">{silcfine}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{silcfine}</h2>
@@ -13638,7 +13638,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="Stone_-_In_Situ_-_Unmodified_Raw_Materials">
@@ -13784,12 +13784,12 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="Stone_-_Surface_-_Stone_Artefacts">
       <lookup>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{cs}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{cs}</h2>
@@ -13918,7 +13918,7 @@
     </property>
     <property name="Stone_-_Surface_-_Retouched_Artefacts">
       <lookup>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{notch}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{notch}</h2>
@@ -14004,7 +14004,7 @@
     </property>
     <property name="Stone_-_Surface_-_Unmodified_Stone_Types">
       <lookup>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
         <term>{nodule}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{nodule}</h2>
@@ -14144,8 +14144,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{unident}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_Surface_-_Ground_Stone_Status">
@@ -14280,12 +14280,12 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_Surface_-_Chipped_Stone_Raw_Material">
       <lookup>
-        <term __RESERVED_CP__="true">{unident}</term>
+        <term>{unident}</term>
         <term>{silcfine}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{silcfine}</h2>
@@ -14406,7 +14406,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="Stone_-_Surface_-_Unmodified_Stone_Raw_Material">
@@ -14447,7 +14447,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
+        <term>{unident}</term>
         <term>{silcfine}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{silcfine}</h2>
@@ -14553,7 +14553,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="Stone_-_Surface_-_Ground_Stone_Raw_Material">
@@ -14612,7 +14612,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{unident}</term>
+        <term>{unident}</term>
         <term>{sandst}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{sandst}</h2>
@@ -14673,7 +14673,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{indet}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="Stone_-_Surface_-_Surface_Modification">
@@ -14765,7 +14765,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_Topographic_Setting">
@@ -15347,8 +15347,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{gravelbeach}</term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{gravelbeach}</term>
+        <term>{other}</term>
         <term pictureURL="files/data/gallery/36_white_sand_exposure_LABEL.jpg">{whitesand}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{whitesand}</h2>
@@ -15476,19 +15476,19 @@
     </property>
     <property name="Stone_-_Stratigraphic_Unit">
       <lookup>
-        <term __RESERVED_CP__="true">{unident}</term>
-        <term __RESERVED_CP__="true">{Golgol}</term>
-        <term __RESERVED_CP__="true">{H}</term>
-        <term __RESERVED_CP__="true">{I}</term>
-        <term __RESERVED_CP__="true">{other}</term>
-        <term __RESERVED_CP__="true">{ggC}</term>
-        <term __RESERVED_CP__="true">{gglag}</term>
-        <term __RESERVED_CP__="true">{B}</term>
-        <term __RESERVED_CP__="true">{C}</term>
-        <term __RESERVED_CP__="true">{D}</term>
-        <term __RESERVED_CP__="true">{E}</term>
-        <term __RESERVED_CP__="true">{F}</term>
-        <term __RESERVED_CP__="true">{G}</term>
+        <term>{unident}</term>
+        <term>{Golgol}</term>
+        <term>{H}</term>
+        <term>{I}</term>
+        <term>{other}</term>
+        <term>{ggC}</term>
+        <term>{gglag}</term>
+        <term>{B}</term>
+        <term>{C}</term>
+        <term>{D}</term>
+        <term>{E}</term>
+        <term>{F}</term>
+        <term>{G}</term>
       </lookup>
     </property>
     <property name="Stone_-_Vulnerability_To_Erosion">
@@ -15689,7 +15689,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{spit}</term>
+        <term>{spit}</term>
         <term pictureURL="files/data/gallery/125_lakebed.jpg">{lakebed}<description __RESERVED_CP__="true"><![CDATA[
 <div>
     <h2>{lakebed}</h2>
@@ -15714,7 +15714,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_Photos">
@@ -16051,7 +16051,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_Lacustrine">
@@ -16152,7 +16152,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_Terrestrial">
@@ -16824,7 +16824,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_Lacustrine">
@@ -16925,7 +16925,7 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_CP__="true">{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_Terrestrial">

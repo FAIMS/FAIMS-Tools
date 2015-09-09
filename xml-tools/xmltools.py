@@ -66,20 +66,21 @@ def getPositionOfNode(n, attrib):
         return sys.maxint
 
 # Returns true iff the roots of the trees share the same names and attributes.
-def isEquivalent(t1, t2):
+def isEquivalent(t1, t2, ignoreText=False):
     if t1 == None or t2 == None:
         return t1 == t2
 
-    # Ignore reserved attributes when checking equivalence of attributes
-    reserved = []
-    reserved.append('__RESERVED_ATTR_ORDER__')
-    reserved.append('__RESERVED_CP__')
-    reserved.append('__RESERVED_PAR__')
-    reserved.append('type')
+    ignored = []
+    ignored.append('__RESERVED_ATTR_ORDER__')
+    ignored.append('__RESERVED_CP__')
+    ignored.append('__RESERVED_PAR__')
+    ignored.append('file')
+    ignored.append('thumbnail')
+    ignored.append('type')
 
     attribT1 = dict(t1.attrib)
     attribT2 = dict(t2.attrib)
-    for r in reserved:
+    for r in ignored:
         attribT1.pop(r, None)
         attribT2.pop(r, None)
 
@@ -92,7 +93,10 @@ def isEquivalent(t1, t2):
     t1Text = t1Text.strip()
     t2Text = t2Text.strip()
 
-    return t1.tag == t2.tag and attribT1 == attribT2 and t1Text == t2Text
+    if ignoreText:
+        return t1.tag == t2.tag and attribT1 == attribT2
+    else:
+        return t1.tag == t2.tag and attribT1 == attribT2 and t1Text == t2Text
 
 def markNodesToCopy(tree, xPathExpr):
     ns = tree.xpath(xPathExpr)
