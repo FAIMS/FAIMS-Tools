@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 # Copy the attributeLocation from draft3.csv to attributes.csv.  Output to
 # stdout.
 # TODO specify which column to join on

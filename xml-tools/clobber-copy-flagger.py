@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 import sys
 from   lxml import etree
 from   copy import deepcopy
