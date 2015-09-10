@@ -1,0 +1,152 @@
+faimsAttributeID,faimsEntityAttributeName,attributeorder,AttributeDescription
+1.69E+11,OldBone_-_Grid_Square,1,Letter code as marked in south-west corner of square
+1.69E+11,OldBone_-_ID_Number,2,Feature identification code as marked on tag
+1.69E+11,OldBone_-_Cluster_Type,3,
+1.69E+11,OldBone_-_Proportion_of_material_that_remains_in_situ,4,Select the proportion of visible bone that remains insitu
+1.69E+11,OldBone_-_Body_Parts_Identifed,5,"Select those of the following that have been observed, both in situ and on the surface"
+1.69E+11,OldBone_-_Taxon_Identified,6,Select those of the following that can be identified:
+1.69E+11,OldBone_-_Bone_Preservation,7,Select those types of modification that are common on the visible bone:
+1.69E+11,OldBone_-_Deliberate_Surface_Modification,8,Select those types of deliberate modification that occur in any proportion on the visible bone:
+1.69E+11,OldBone_-_Topographic_Setting,9,Where on the lunette exposure is the old bone located?
+1.69E+11,OldBone_-_Sediment_Type,10,"What are the sediments that encase the old bone, or upon which they are immediately lying?"
+1.69E+11,OldBone_-_Stratigraphic_Unit,11,
+1.69E+11,OldBone_-_Vulnerability_To_Erosion,12,"Based on the cluster type and its topographic setting, how vulnerable is the old bone?"
+1.69E+11,OldBone_-_Palaeotopographic_Setting,13,Where is the old bone cluster located in relation to the original dune morphology?
+1.69E+11,OldBone_-_Photos,14,"Take 2 images: 1. landscape/stratigraphic setting (to aid re-location), include horizon and nearby landmarks that will have some longevity 2. the feature itself (to aid identification) -- include the critical components of the feature like the in situ portion of a hearth or bone cluster"
+1.69E+11,OldBone_-_Notes,15,Any additional information worth noting that has not been covered by the recording
+1.69E+11,OldBone_-_Associated_in_situ_material,1,Select those of the following that have been observed in situ
+1.69E+11,OldBone_-_Associated_surface_material,1,Select those of the following that have been observed on the surface
+1.69E+11,OldBone_-_Bivalve_preservation,2; 2,
+1.69E+11,OldBone_-_Burned_Mussel,3; 3,
+1.69E+11,OldBone_-_Associated_Hearth_Material,4; 4,Select those of the following that have been observed:
+1.69E+11,OldBone_-_Associated_Eggshell,5; 5,Select those of the following that have been observed:
+1.69E+11,OldBone_-_Burned_Eggshel,6; 6,
+1.69E+11,OldBone_-_Associated_Stone_Artefacts,7; 7,Select those of the following that have been observed
+1.69E+11,OldBone_-_Associated_Chipped_Stone_Artefacts,8; 8,Select those of the following that have been observed:
+1.69E+11,OldBone_-_Associated_Retouched_Artefacts,9; 9,
+1.69E+11,OldBone_-_Associated_Unmodified_Stone,10; 10,Select those of the following that have been observed:
+1.69E+11,OldBone_-_Ground_Stone_Types_Present,11; 11,Select those of the following that have been observed:
+1.69E+11,OldBone_-_Ground_Stone_Status,12; 12,Is the ground material...:
+1.69E+11,OldBone_-_Chipped_Stone_Raw_Material,13; 13,Select those types of raw material that have been observed:
+1.69E+11,OldBone_-_Unmodified_Stone_Raw_Material,14; 14,Select those types of raw material that have been observed:
+1.69E+11,OldBone_-_Ground_Stone_Raw_Material,15; 15,Select those types of raw material that have been observed:
+1.69E+11,OldBone_-_Associated_Other_Artefacts,16; 16,Select those of the following that have been observed:
+1.69E+11,Hearth_-_Grid_Square,1,Letter code as marked in south-west corner of square
+1.69E+11,Hearth_-_ID_Number,2,Feature identification code as marked on tag
+1.69E+11,Hearth_-_Hearth_Type,3,
+1.69E+11,Hearth_-_Brief_description,4,"A few word description of an 'other' type of hearth or hearthstone, e.g. fish hearth, emu eggshell hearth, silcrete hearthstones"
+1.69E+11,Hearth_-_Charcoal,5,
+1.69E+11,Hearth_-_Proportion_of_material_that_remains_in_situ,6,Select the proportion of visible hearth material that remains in situ
+1.69E+11,Hearth_-_Modification_of_heat-retainer_hearths,7,Select the degree of post-exposure modification of the heat-retainer hearth:
+1.69E+11,Hearth_-_Modification_of_non-heat_retainer_hearths,8,Select the extent of post-exposure modification to non- heat retainer hearths:
+1.69E+11,Hearth_-_Topographic_Setting,9,Where on the lunette exposure is the hearth located?
+1.69E+11,Hearth_-_Sediment_Type,10,"What are the sediments that encase the hearth, or upon which they are immediately lying?"
+1.69E+11,Hearth_-_Stratigraphic_Unit,11,
+1.69E+11,Hearth_-_Vulnerability_To_Erosion,12,"Based on the cluster type and its topographic setting, how vulnerable is the hearth?"
+1.69E+11,Hearth_-_Palaeotopographic_Setting,13,Where is the hearth cluster located in relation to the original dune morphology?
+1.69E+11,Hearth_-_Photos,14,"Take 2 images: 1. landscape/stratigraphic setting (to aid re-location), include horizon and nearby landmarks that will have some longevity 2. the feature itself (to aid identification) -- include the critical components of the feature like the in situ portion of a hearth or bone cluster"
+1.69E+11,Hearth_-_Notes,15,Any additional information worth noting that has not been covered by the recording
+1.69E+11,HearthAssoc_-_Associated_material,1,
+1.69E+11,HearthAssoc_-_Associated_lacustrine_material,2,Select those of the following that have been observed
+1.69E+11,HearthAssoc_-_Burnt_lacustrine_material,3,Is any of it burnt?
+1.69E+11,HearthAssoc_-_Associated_terrestrial_bone,4,Select those of the following that have been identified (see Old Bone Reference Manual for more illustrations)
+1.69E+11,HearthAssoc_-_Burnt_terrestrial_bone,5,Is any of it burnt?
+1.69E+11,HearthAssoc_-_Associated_eggshell,6,Select those of the following that have been observed
+1.69E+11,HearthAssoc_-_Burnt_eggshell,7,Is any of it burnt?
+1.69E+11,HearthAssoc_-_Associated_stone_artefacts,8,Select those of the following that have been observed
+1.69E+11,HearthAssoc_-_Associated_chipped_stone_artefacts,9,Select those of the following that have been observed
+1.69E+11,HearthAssoc_-_Associated_retouched_artefacts,10,Select those of the following that have been observed
+1.69E+11,HearthAssoc_-_Associated_unmodified_stone,11,Select those of the following that have been observed
+1.69E+11,HearthAssoc_-_Ground_stone_types_present,12,Select those of the following that have been observed
+1.69E+11,HearthAssoc_-_Ground_stone_status,13,"If ground stone is present, is the ground material..."
+1.69E+11,HearthAssoc_-_Chipped_Stone_Raw_Material,14,Select those types of raw material that have been observed
+1.69E+11,HearthAssoc_-_Unmodified_Raw_Material,15,Select those types of raw material that have been observed
+1.69E+11,HearthAssoc_-_Ground_stone_raw_material,16,
+1.69E+11,HearthAssoc_-_Associated_other_worked_(or_transported)_material,17,Select those of the following that have been observed
+1.69E+11,Isolated_-_Grid_Square,1,
+1.69E+11,Isolated_-_ID_Number,2,
+1.69E+11,Isolated_-_In_Situ_or_Surface,3,"Note: only rare surface finds are recorded (modified bone, shell or eggshell, grindstones, crystal quartz); all other finds are recorded only if in situ"
+1.69E+11,Isolated_-_Occurrence_Type,4,
+1.69E+11,Isolated_-_Stone_Raw_Material_Type,5,
+1.69E+11,Isolated_-_Modification_to_Organic_Material,6,
+1.69E+11,Isolated_-_Modification_to_Stone_Material,7,
+1.69E+11,Isolated_-_Topographic_Setting,8,
+1.69E+11,Isolated_-_Sediment_Type,9,
+1.69E+11,Isolated_-_Vulnerability_to_Erosion,10,
+1.69E+11,Isolated_-_Palaeotopographic_Setting,11,
+1.69E+11,Isolated_-_Notes,12,Any additional information worth noting that has not been covered by the recording
+1.69E+11,Isolated_-_Photos,13,"Take 2 images: 1. landscape/stratigraphic setting (to aid re-location), include horizon and nearby landmarks that will have some longevity 2. the feature itself (to aid identification) -- include the critical components of the feature like the in situ portion of a hearth or bone cluster"
+1.69E+11,Shell_-_Grid_Square,1,Letter code as marked in south-west corner of square
+1.69E+11,Shell_-_ID_Number,2,Feature identification code as marked on tag
+1.69E+11,Shell_-_Shell_Type,3,
+1.69E+11,Shell_-_Continuity,4,Does it form a continuous blanket or is it patchy?
+1.69E+11,Shell_-_Presence_of_charcoal,5,Select the type of charcoal visible in the shell midden
+1.69E+11,Shell_-_Proportion_of_material_that_remains_in_situ,6,Select the proportion of visible shell material that remains in situ
+1.69E+11,Shell_-_Bivalve_preservation,7,Select the degree of preservation of the shell material
+1.69E+11,Shell_-_Bivalve_dispersal,8,
+1.69E+11,Shell_-_Topographic_Setting,9,Where on the lunette exposure is the object located?
+1.69E+11,Shell_-_Sediment_Type,10,"What are the sediments that encase the midden, or upon which they are immediately lying?"
+1.69E+11,Shell_-_Stratigraphic_Unit,11,
+1.69E+11,Shell_-_Vulnerability_To_Erosion,12,"Based on the cluster type and its topographic setting, how vulnerable is the midden?"
+1.69E+11,Shell_-_Palaeotopographic_Setting,13,Where is the object cluster located in relation to the original dune morphology?
+1.69E+11,Shell_-_Photos,14,"Take 2 images: 1. landscape/stratigraphic setting (to aid re-location), include horizon and nearby landmarks that will have some longevity 2. the feature itself (to aid identification) -- include the critical components of the feature like the in situ portion of a hearth or bone cluster"
+1.69E+11,Shell_-_Notes,15,Any additional information worth noting that has not been covered by the recording
+1.69E+11,ShellAssoc_-_Associated_material,1,Select those of the following that have been observed
+1.69E+11,ShellAssoc_-_Associated_lacustrine_material,2,Select those of the following that have been observed
+1.69E+11,ShellAssoc_-_Burnt_lacustrine_material,3,Is any of it burnt?
+1.69E+11,ShellAssoc_-_Associated_terrestrial_bone,4,"If the bones of terrestrial animals are present in the midden, select which of those have been identified (refer to Bone module for more illustrations)"
+1.69E+11,ShellAssoc_-_Burnt_terrestrial_bone,5,Is any of it burnt?
+1.69E+11,ShellAssoc_-_Associated_eggshell,6,Select those of the following that have been observed
+1.69E+11,ShellAssoc_-_Burnt_eggshell,7,Is any of it burnt?
+1.69E+11,ShellAssoc_-_Associated_stone_artefacts,8,Select those of the following that have been observed
+1.69E+11,ShellAssoc_-_Associated_chipped_stone_artefacts,9,Select those of the following that have been observed
+1.69E+11,ShellAssoc_-_Associated_retouched_artefacts,10,Select those of the following that have been observed
+1.69E+11,ShellAssoc_-_Associated_unmodified_stone,11,Select those of the following that have been observed
+1.69E+11,ShellAssoc_-_Ground_stone_types_present,12,Select those of the following that have been observed
+1.69E+11,ShellAssoc_-_Ground_stone_status,13,"If ground stone is present, is the ground material..."
+1.69E+11,ShellAssoc_-_Ground_stone_raw_material,14,
+1.69E+11,ShellAssoc_-_Chipped_Stone_Raw_Material,15,Select those types of raw material that have been observed
+1.69E+11,ShellAssoc_-_Unmodified_Raw_Material,16,Select those types of raw material that have been observed
+1.69E+11,ShellAssoc_-_Unmodified_Stone_Types,17,
+1.69E+11,ShellAssoc_-_Associated_other_worked_(or_transported)_material,18,Select those of the following that have been observed
+1.69E+11,Stone_-_Grid_Square,1,Letter code as marked in south-west corner of square
+1.69E+11,Stone_-_ID_Number,2,Artefact identification code as marked on tag
+1.69E+11,Stone_-_Cluster_Type,3,
+1.69E+11,Stone_-_In_Situ_-_Stone_Artefacts,4,In situ stone artefacts present
+1.69E+11,Stone_-_In_Situ_-_Chipped_Stone_Artefacts,5,In situ chipped stone artefacts present
+1.69E+11,Stone_-_In_Situ_-_Retouched_Artefacts,6,In situ retouched artefacts present
+1.69E+11,Stone_-_In_Situ_-_Unmodified_Stone_Types,7,
+1.69E+11,Stone_-_In_Situ_-_Ground_Stone_Types,8,
+1.69E+11,Stone_-_In_Situ_-_Ground_Stone_Status,9,Status of in situ ground stone artefacts
+1.69E+11,Stone_-_In_Situ_-_Ground_Stone_Raw_Material,10,Raw materials for in situ ground stone artefacts
+1.69E+11,Stone_-_In_Situ_-_Surface_Modification,11,Surface modification on in situ artefacts
+1.69E+11,Stone_-_In_Situ_-_Potential_Refits,12,"List the number of refits for each raw material, or the number of artefacts likely to have been struck from the same core."
+1.69E+11,Stone_-_In_Situ_-_Chipped_Stone_Raw_Material,13,Raw materials for in situ chipped stone artefacts
+1.69E+11,Stone_-_In_Situ_-_Unmodified_Stone_Raw_Material,14,Select those types of raw material that have been observed:
+1.69E+11,Stone_-_In_Situ_-_Unmodified_Raw_Materials,15,Select those types of raw material that have been observed:
+1.69E+11,Stone_-_Surface_-_Potential_Refits,16,Indicate the number of artefact present that may have been derived from the same piece of stone
+1.69E+11,Stone_-_Surface_-_Stone_Artefacts,17,Surface stone artefacts present
+1.69E+11,Stone_-_Surface_-_Chipped_Stone_Artefacts,18,Surface chipped stone artefacts present
+1.69E+11,Stone_-_Surface_-_Retouched_Artefacts,19,Surface retouched artefacts present
+1.69E+11,Stone_-_Surface_-_Unmodified_Stone_Types,20,Surface unmodified rocks present
+1.69E+11,Stone_-_Surface_-_Ground_Stone_Types,21,Surface ground stone types present
+1.69E+11,Stone_-_Surface_-_Ground_Stone_Status,22,Status of surface ground stone artefacts
+1.69E+11,Stone_-_Surface_-_Surface_-_Modification,23,Surface modifications observed on surface artefacts
+1.69E+11,Stone_-_Surface_-_Chipped_Stone_Raw_Material,24,Raw materials for surface chipped stone artefacts
+1.69E+11,Stone_-_Surface_-_Unmodified_Stone_Raw_Material,25,Raw materials for surface unmodified rocks
+1.69E+11,Stone_-_Surface_-_Ground_Stone_Raw_Material,26,Raw materials for surface ground stone
+1.69E+11,Stone_-_Surface_-_Surface_Modification,27,
+1.69E+11,Stone_-_Topographic_Setting,28,Where on the lunette exposure is the artefact cluster located?
+1.69E+11,Stone_-_Sediment_Type,29,"What are the sediments that encase the object, or upon which they are immediately lying?"
+1.69E+11,Stone_-_Stratigraphic_Unit,30,
+1.69E+11,Stone_-_Vulnerability_To_Erosion,31,"Based on the cluster type and its topographic setting, how vulnerable is the object?"
+1.69E+11,Stone_-_Palaeotopographic_Setting,32,Where is the object cluster located in relation to the original dune morphology?
+1.69E+11,Stone_-_Photos,33,"Take 2 images: 1. landscape/stratigraphic setting (to aid re-location), include horizon and nearby landmarks that will have some longevity 2. the feature itself (to aid identification) -- include the critical components of the feature like the in situ portion of a hearth or bone cluster"
+1.69E+11,Stone_-_Notes,34,Any additional information worth noting that has not been covered by the recording
+1.69E+11,Stone_-_In_Situ,1; 1,
+1.69E+11,Stone_-_Surface,2; 2,
+1.69E+11,Stone_-_Hearth,3; 3,
+1.69E+11,Stone_-_Lacustrine,4; 4,
+1.69E+11,Stone_-_Terrestrial,5; 5,
+1.69E+11,Stone_-_Eggshell,6; 6,
+1.69E+11,Stone_-_Other_Worked_or_Transported_Material,7; 7,

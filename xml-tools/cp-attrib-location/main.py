@@ -1,9 +1,13 @@
 #! /usr/bin/env python
 
-# Copy the attributeLocation from draft3.csv to attributes.csv.  Output to
-# stdout.
-# TODO specify which column to join on
+# Copy the attributeLocation from SOURCE to TARGET. Output to stdout.
+
 import sys
+
+def addToEntNames(prop2EntNames, prop, entName):
+    if prop not in prop2EntNames:
+        prop2EntNames[prop] = set()
+    prop2EntNames[prop].add(entName)
 
 if len(sys.argv) < 3:
     sys.stderr.write('SYNOPSIS\n')
@@ -13,34 +17,45 @@ if len(sys.argv) < 3:
 source = sys.argv[1]
 target = sys.argv[2]
 
-id2EntName = {}
+prop2EntNames = {}
 
+# Read CSV's into lists
 with open(source) as f:
     linesS = f.read().splitlines()
 with open(target) as f:
     linesT = f.read().splitlines()
 
+# Transform each CSV row to a list too
 for i in range(len(linesS)):
     linesS[i] = linesS[i].split(',')
 for i in range(len(linesT)):
     linesT[i] = linesT[i].split(',')
 
+# Extract the faimsEntityAttributeName/attributeLocation pairs from the source
 for i in range(len(linesS)):
-    idS   = linesS[i][0]
-    nameS = linesS[i][2]
-    id2EntName[idS] = nameS
+    propS    = linesS[i][3]
+    entNameS = linesS[i][5]
+    addToEntNames(prop2EntNames, propS, entNameS)
 
-linesT[0].insert(2, 'attributeLocation')
+# Transform prop2EntNames from a string -> set() map to a string -> string map
+for k in prop2EntNames.iterkeys():
+    prop2EntNames[k] = ';'.join(prop2EntNames[k])
+
+# Augment the target CSV to include attributeLocations which were extracted
+insertionPos = 2
+linesT[0].insert(insertionPos, 'attributeLocation')
 for i in range(1, len(linesT)):
-    idT = linesT[i][0]
-    if idT in id2EntName:
-        nameS = id2EntName[idT]
-        linesT[i].insert(2, nameS)
+    propT = linesT[i][1]
+    if propT in prop2EntNames:
+        entName = prop2EntNames[propT]
+        linesT[i].insert(insertionPos, entName)
     else:
-        linesT[i].insert(2, '')
+        linesT[i].insert(insertionPos, '')
 
+# Transform each list representing a row in the target to a string
 for i in range(len(linesT)):
     linesT[i] = ','.join(linesT[i])
 
+# Print the result: the transformed target
 for i in range(len(linesT)):
     sys.stdout.write(linesT[i] + '\n')

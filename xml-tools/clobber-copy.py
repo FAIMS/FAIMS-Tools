@@ -37,19 +37,19 @@ def getSourceNodes(sourceTree):
 # function.
 def clobber(sourceNode, targetNode):
     for i in range(len(targetNode)):
-        if xmltools.isEquivalent(targetNode[i], sourceNode, True):
+        if xmltools.isEquivalent(targetNode[i], sourceNode):
             targetNode[i] = sourceNode
             return
     targetNode.append(sourceNode)
 
 # Returns true iff `t1` and `t2` have equivalent paths.
-def isEquivalentPathwise(t1, t2, ignoreText=True):
+def isEquivalentPathwise(t1, t2):
     p1 = t1.getparent()
     p2 = t2.getparent()
 
     if p1 == None or p2 == None:
-        return xmltools.isEquivalent(p1, p2, ignoreText) and xmltools.isEquivalent(t1, t2, ignoreText)
-    return isEquivalentPathwise(p1, p2) and xmltools.isEquivalent(t1, t2, ignoreText)
+        return xmltools.isEquivalent(p1, p2) and xmltools.isEquivalent(t1, t2)
+    return isEquivalentPathwise(p1, p2) and xmltools.isEquivalent(t1, t2)
 
 def copyPathwise(n, target):
     result = xmltools.deepCopyNoChildren(n)

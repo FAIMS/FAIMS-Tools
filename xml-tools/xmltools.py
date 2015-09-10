@@ -61,12 +61,19 @@ def deleteAttribFromTree(attrib, t):
 
 def getPositionOfNode(n, attrib):
     if attrib in n.attrib:
-        return n.attrib[attrib]
+        return parseIntSilent(n.attrib[attrib])
     else:
         return sys.maxint
 
+def parseIntSilent(str):
+    try:
+        i = int(str)
+        return i
+    except ValueError:
+        return sys.maxint
+
 # Returns true iff the roots of the trees share the same names and attributes.
-def isEquivalent(t1, t2, ignoreText=False):
+def isEquivalent(t1, t2):
     if t1 == None or t2 == None:
         return t1 == t2
 
@@ -75,6 +82,7 @@ def isEquivalent(t1, t2, ignoreText=False):
     ignored.append('__RESERVED_CP__')
     ignored.append('__RESERVED_PAR__')
     ignored.append('file')
+    ignored.append('isIdentifier')
     ignored.append('thumbnail')
     ignored.append('type')
 
@@ -93,7 +101,7 @@ def isEquivalent(t1, t2, ignoreText=False):
     t1Text = t1Text.strip()
     t2Text = t2Text.strip()
 
-    if ignoreText:
+    if t1.tag == 'description':
         return t1.tag == t2.tag and attribT1 == attribT2
     else:
         return t1.tag == t2.tag and attribT1 == attribT2 and t1Text == t2Text

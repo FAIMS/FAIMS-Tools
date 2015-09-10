@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 
 from   lxml import etree
+import urllib           as urllib
+import xml.sax.saxutils as saxutils
 import spreadsheettools as sheets
 import sys
 import xmltools
@@ -25,8 +27,8 @@ def normaliseUrls(urls):
     prefix = 'files/data/gallery/'
 
     if   isinstance(urls, str):
-        urls = urls.replace('&', '_')
-        urls = urls.replace(' ', '_')
+        urls = urllib.quote(urls)
+        urls = saxutils.escape(urls)
         return prefix + urls
     elif isinstance(urls, list):
         for i in range(len(urls)):
@@ -146,7 +148,7 @@ def rowToNode(row):
         )
         s  =     '\n'
         s +=     '<div>\n'
-        s +=     '    <h2>' + arch16nKey + '</h2>\n'
+        #s +=     '    <h2>' + arch16nKey + '</h2>\n'
         for src in infoPictures:
             s += '    <div>\n'
             s += '        <img style="width:100%" src="' + src + '" alt="' + src + '" />\n'
