@@ -1,6 +1,9 @@
 #! /usr/bin/env python
 
 from   lxml import etree
+import re
+import os
+import glob
 import urllib           as urllib
 import xml.sax.saxutils as saxutils
 import spreadsheettools as sheets
@@ -20,14 +23,91 @@ def insertIntoTree(row, xmlTree):
 
     return xmlTree
 
-def normaliseUrls(urls):
+def computeMostSimilar(word, candidates):
+    if len(candidates) == 0:
+        return word
+
+    min = sys.maxint
+    minIdx = -1
+    for i in range(len(candidates)):
+        d = minEditDist(word, candidates[i])
+        if d < min:
+            min    = d
+            minIdx = i
+    mostSimilar = candidates[minIdx]
+
+    if min >= 1:
+        formatStr = "Edit dist:{0: >2}    Given word: {1: <50} Closest candidate: {2: <50}"
+        sys.stderr.write(formatStr.format(min, word, mostSimilar) + '\n')
+    return mostSimilar
+
+# Minimum edit distance. Source:
+# http://www.cs.colorado.edu/~martin/csci5832/edit-dist-blurb.html
+def  minEditDist(target, source):
+    ''' Computes the min edit distance from target to source. Figure 3.25 '''
+
+    n = len(target)
+    m = len(source)
+
+    distance = [[0 for i in range(m+1)] for j in range(n+1)]
+
+    for i in range(1,n+1):
+        distance[i][0] = distance[i-1][0] + 1
+
+    for j in range(1,m+1):
+        distance[0][j] = distance[0][j-1] + 1
+
+    for i in range(1,n+1):
+        for j in range(1,m+1):
+           distance[i][j] = min(distance[i-1][j]+1,
+                                distance[i][j-1]+1,
+                                distance[i-1][j-1]+substCost(source[j-1],target[i-1]))
+    return distance[n][m]
+
+def substCost(s1, s2):
+    if s1 == s2:
+        return 0
+    return 1
+
+def correctUrls(urls):
+    if   isinstance(urls, str):
+        return correctUrl(urls)
+    elif isinstance(urls, list):
+        for i in range(len(urls)):
+            urls[i] = correctUrl(urls[i])
+        return urls
+    else:
+        return ''
+
+def getImageNamesOnDisk():
+    filenames = glob.glob(IMAGE_DIR_ON_DISK + '*.*')
+
+    # Consider only the basenames
+    for i in range(len(filenames)):
+        filenames[i] = os.path.basename(filenames[i])
+
+    return filenames
+
+def correctUrl(url):
+    if not url:
+        return ''
+
+    urlDir  = os.path.dirname(url)
+    urlBase = os.path.basename(url)
+    correctUrlBase = computeMostSimilar(urlBase, IMAGE_NAMES_ON_DISK)
+    correctedUrl   = urlDir + correctUrlBase
+    return correctedUrl
+
+def normaliseUrls(urls, doPercentEncode=True):
     if not urls:
         return ''
 
     prefix = 'files/data/gallery/'
 
     if   isinstance(urls, str):
-        urls = urllib.quote(urls)
+        #urls = re.sub('[^a-zA-Z0-9 \\.\\-+_]', '_', urls)
+        if doPercentEncode:
+            urls = urllib.quote(urls)
         urls = saxutils.escape(urls)
         return prefix + urls
     elif isinstance(urls, list):
@@ -63,7 +143,7 @@ def parseListAttributeCountOrderNormaliser(parsedList):
 
     elementsAreEqual = len(set(parsedList)) <= 1
     if containsOnlyDigits and not elementsAreEqual:
-        sys.stderr('attributeCountOrder contains semi-colon delimited list whose elements differ.\n')
+        sys.stderr.write('attributeCountOrder contains semi-colon delimited list whose elements differ.\n')
 
     if   containsOnlyDigits and len(parsedList) == 0:
         return ''
@@ -89,8 +169,11 @@ def rowToNode(row):
     countOrder   = parseList(countOrder)
     infoPictures = parseList(infoPictures)
 
+    infoPictures = correctUrls(infoPictures)
+    pictureUrl   = correctUrls(pictureUrl)
+
     infoPictures = normaliseUrls(infoPictures)
-    pictureUrl   = normaliseUrls(pictureUrl)
+    pictureUrl   = normaliseUrls(pictureUrl, False)
 
     root = makeTree()
     for n in archentNames:
@@ -187,6 +270,10 @@ def rowToNode(row):
 if len(sys.argv) < 2:
     sys.stderr.write('Specify Google Spreadsheet ID as argument\n')
     exit()
+
+# If I just use this two itty-bitty globals, I can improve performance a lot
+IMAGE_DIR_ON_DISK   = 'images/all photos 1-542 for all modules/'
+IMAGE_NAMES_ON_DISK = getImageNamesOnDisk()
 
 # Download the spreadsheet and interpret as JSON object
 sheetId = sys.argv[1]
