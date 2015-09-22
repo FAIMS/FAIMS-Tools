@@ -2,6 +2,9 @@ TODO Include buttons in map
 TODO 'Take Picture' buttons don't work
 
 TODO Warn about duplicate archents
+TODO Consider adding <logic> tags so that an arbitrary module can be specified
+     without having to modify the generated code.
+TODO There should be a way of specifying dynamic UI fields like in Lake Mungo
 TODO There should be a way of specifying webviews' text
 TODO Automate regression tests
 ________________________________________________________________________________

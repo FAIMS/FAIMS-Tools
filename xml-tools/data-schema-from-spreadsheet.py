@@ -10,6 +10,15 @@ import spreadsheettools as sheets
 import sys
 import xmltools
 
+def getImageNamesOnDisk():
+    filenames = glob.glob(IMAGE_DIR_ON_DISK + '*.*')
+
+    # Consider only the basenames
+    for i in range(len(filenames)):
+        filenames[i] = os.path.basename(filenames[i])
+
+    return filenames
+
 def makeTree():
     root = etree.Element('dataSchema')
     return root
@@ -37,8 +46,8 @@ def computeMostSimilar(word, candidates):
     mostSimilar = candidates[minIdx]
 
     if min >= 1:
-        formatStr = "Edit dist:{0: >2}    Given word: {1: <50} Closest candidate: {2: <50}"
-        sys.stderr.write(formatStr.format(min, word, mostSimilar) + '\n')
+        formatStr = 'Edit dist:{0: >2}    Given word: {1: <50} Closest candidate: {2: <50}\n'
+        sys.stderr.write(formatStr.format(min, word, mostSimilar))
     return mostSimilar
 
 # Minimum edit distance. Source:
@@ -59,8 +68,8 @@ def  minEditDist(target, source):
 
     for i in range(1,n+1):
         for j in range(1,m+1):
-           distance[i][j] = min(distance[i-1][j]+1,
-                                distance[i][j-1]+1,
+           distance[i][j] = min(distance[i-1][j  ]+1,
+                                distance[i  ][j-1]+1,
                                 distance[i-1][j-1]+substCost(source[j-1],target[i-1]))
     return distance[n][m]
 
@@ -79,15 +88,6 @@ def correctUrls(urls):
     else:
         return ''
 
-def getImageNamesOnDisk():
-    filenames = glob.glob(IMAGE_DIR_ON_DISK + '*.*')
-
-    # Consider only the basenames
-    for i in range(len(filenames)):
-        filenames[i] = os.path.basename(filenames[i])
-
-    return filenames
-
 def correctUrl(url):
     if not url:
         return ''
@@ -98,6 +98,9 @@ def correctUrl(url):
     correctedUrl   = urlDir + correctUrlBase
     return correctedUrl
 
+def correctCountOrder():
+    pass
+
 def normaliseUrls(urls, doPercentEncode=True):
     if not urls:
         return ''
@@ -105,7 +108,6 @@ def normaliseUrls(urls, doPercentEncode=True):
     prefix = 'files/data/gallery/'
 
     if   isinstance(urls, str):
-        #urls = re.sub('[^a-zA-Z0-9 \\.\\-+_]', '_', urls)
         if doPercentEncode:
             urls = urllib.quote(urls)
         urls = saxutils.escape(urls)
@@ -169,8 +171,8 @@ def rowToNode(row):
     countOrder   = parseList(countOrder)
     infoPictures = parseList(infoPictures)
 
-    infoPictures = correctUrls(infoPictures)
-    pictureUrl   = correctUrls(pictureUrl)
+    #infoPictures = correctUrls(infoPictures)
+    #pictureUrl   = correctUrls(pictureUrl)
 
     infoPictures = normaliseUrls(infoPictures)
     pictureUrl   = normaliseUrls(pictureUrl, False)
@@ -264,6 +266,32 @@ def rowToNode(row):
 
     return root
 
+# http://stackoverflow.com/questions/7423118/python-list-for-each-access-find-replace-in-built-in-list
+def normaliseHtml(html):
+    lastCountOrder   = ''
+    lastPropertyName = ''
+    for i in range(len(html['feed']['entry'])):
+        row = html['feed']['entry'][i]
+        sheets.setRowValue(row, 'VocabCountOrder', '1')
+        continue
+        thisCountOrder   = sheets.getRowValue(row, 'VocabCountOrder')
+        thisPropertyName = sheets.getRowValue(row, 'faimsEntityAttributeName')
+
+        # Skip rows with VocabCountOrder already provided
+        if thisCountOrder:
+            lastCountOrder   = thisCountOrder
+            lastPropertyName = thisPropertyName
+            continue
+
+        # Set VocabCountOrder to 1 for first entry in each vocab
+        if thisPropertyName != lastPropertyName:
+            thisCountOrder   = '1'
+            lastCountOrder   = thisCountOrder
+            lastPropertyName = thisPropertyName
+
+        sheets.setRowValue(row, 'VocabCountOrder', lastCountOrder)
+    return html
+
 ################################################################################
 #                                     MAIN                                     #
 ################################################################################
@@ -271,13 +299,14 @@ if len(sys.argv) < 2:
     sys.stderr.write('Specify Google Spreadsheet ID as argument\n')
     exit()
 
-# If I just use this two itty-bitty globals, I can improve performance a lot
+# If I just use these two itty-bitty globals, I can improve performance a lot
 IMAGE_DIR_ON_DISK   = 'images/all photos 1-542 for all modules/'
 IMAGE_NAMES_ON_DISK = getImageNamesOnDisk()
 
 # Download the spreadsheet and interpret as JSON object
 sheetId = sys.argv[1]
 html = sheets.id2Html(sheetId)
+html = normaliseHtml(html)
 
 # Read each row into an XML tree which represents the data schema
 dataSchema = makeTree()
@@ -293,7 +322,7 @@ sortBy.append('__RESERVED_POS__')
 sortBy.append('__RESERVED_ATTR_ORDER__')
 for s in sortBy:
     dataSchema = xmltools.sortSiblings(dataSchema, s)
-    dataSchema = xmltools.deleteAttribFromTree(s, dataSchema)
+    #dataSchema = xmltools.deleteAttribFromTree(s, dataSchema)
 
 # Gimme dat data schema, blood
 print etree.tostring(dataSchema, pretty_print=True, xml_declaration=True, encoding='utf-8')

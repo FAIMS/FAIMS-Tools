@@ -4,6 +4,16 @@ import json
 import sys
 import urllib2
 
+def setRowValue(row, columnName, value):
+    columnName = columnName.lower()
+    columnName = 'gsx$%s' % columnName
+    if columnName not in row:
+        return False
+
+    value = value.encode('utf-8')
+    row[columnName]['$t'] = value
+    return True
+
 def getRowValue(row, *columnNames):
     for n in columnNames:
         val = getRowValue_(row, n)
