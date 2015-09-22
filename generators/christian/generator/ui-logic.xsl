@@ -1263,6 +1263,9 @@ fillInGPS(String tabgroup) {
 </xsl:text>
     </xsl:if>
 
+    <xsl:if test="//*[contains(@f, 'autonum')] and not(//autonum)">
+      <xsl:text>// ERROR: field(s) flagged with 'autonum' but no autonum tag exists</xsl:text>
+    </xsl:if>
     <xsl:if test="//autonum">
 <xsl:text>
 /******************************************************************************/
