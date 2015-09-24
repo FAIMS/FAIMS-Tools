@@ -1,15 +1,15 @@
 <?xml version="1.0" ?>
 <module suppressWarnings="false">
-
 <User f="nodata">
-  <User f="noscroll">
-    <Select_User t="list" f="user" l="Control"/>
+  <User>
+    <Select_User t="dropdown" f="user"/>
+    <Login t="button" l="Control"/>
   </User>
 </User>
-
 <Control f="nodata">
   <Main>
-    <Take_Feature t="button" l="Burial_Mound"/>
+    <New_Epigraphic_record t="button" l="Epigraphic_record"/>
+    <New_Diary t="button" l="Diary"/>
     <autonum/>
     <GPS_Diagnostics t="gpsdiag"/>
   </Main>
@@ -20,280 +20,537 @@
     <Map t="map"/>
   </Map>
 </Control>
-
-<Burial_Mound>
-  <General>
-    <Object_ID f="id notnull autonum"/>
-    <timestamp/>
-    <author/>
-    <Type>
-      <opts>
-        <opt>Burial mound</opt>
-        <opt>Surface concentration</opt>
-        <opt>Special find</opt>
-        <opt>Standing masonry</opt>
-        <opt>Earthwork</opt>
-        <opt>Unknown</opt>
-        <opt>Other</opt>
-      </opts>
-    </Type>
-    <Site_Significance>
-      <desc>Assess the site's potential for our research objectives or for excavation. Add details in Recommendation at the end of this module.</desc>
-      <opts>
-        <opt>None</opt>
-        <opt>Low</opt>
-        <opt>Medium</opt>
-        <opt>High</opt>
-      </opts>
-    </Site_Significance>
-    <Name/>
-    <Description/>
-    <Source>
-      <opts>
-        <opt>Survey</opt>
-        <opt>Remote sensing</opt>
-        <opt>Informant</opt>
-        <opt>Legacy verification</opt>
-        <opt>Bibliography</opt>
-        <opt>Other</opt>
-      </opts>
-    </Source>
-    <Exists_in_Legacy t="checkbox">
-      <opts>
-        <opt>Topo</opt>
-        <opt>Satellite Image</opt>
-        <opt>Other</opt>
-      </opts>
-    </Exists_in_Legacy>
-    <Surrounding_Landuse>
-      <opts>
-        <opt>Annual agriculture
-          <opt>Ploughed</opt>
-          <opt>Harrowed</opt>
-          <opt>Seedlings</opt>
-          <opt>Mature crop</opt>
-          <opt>Harvested</opt>
-        </opt>
-        <opt>Perennial
-          <opt>Orchard</opt>
-          <opt>Lavender</opt>
-          <opt>Vineyard</opt>
-        </opt>
-        <opt>Other
-          <opt>Meadow</opt>
-          <opt>Beach</opt>
-          <opt>Scrub</opt>
-          <opt>Forest</opt>
+<Diary>
+	<Fieldwork_Diary>
+		<Diary_ID t="input" f="id"/>
+		<timestamp/>
+		<author/>
+		<Diary_Text t="input"/>
+	</Fieldwork_Diary>	
+</Diary>	
+<Epigraphic_record>
+   	<Admin>
+		<Inscription_ID b="decimal" f="id notnull autonum" t="input">
+			<desc>Unique automatically incremented number of recorded inscription. Do not change.</desc>
+		</Inscription_ID>
+		<timestamp/>
+		<author/>
+	</Admin>
+	<Geography>
+		<gps/>
+		<Modern_name f="id notnull">
+			<desc>Modern name of the site</desc>
+		</Modern_name>
+		<Ancient_name>
+			<desc>Known ancient name of the site</desc>
+		</Ancient_name>
+		<Archaeological_Context t="dropdown" f="notnull">
+			<desc>Known archaeological context</desc>
+			<opts>
+				<opt>Funerary</opt>
+				<opt>Religious</opt>
+				<opt>Habitation</opt>
+				<opt>Commerce</opt>
+				<opt>Production</opt>
+				<opt>Transport</opt>
+				<opt>Surface find</opt>
+				<opt>Freestanding object</opt>
+				<opt>Other</opt>
+				<opt>N/A</opt>
+			</opts>
+		</Archaeological_Context>
+		<Reuse t="radio" f="notnull">
+			<desc> Reused in secondary context, such as modern building, deposited in non-correposnding location. Used for different purpose that originally designed for.</desc>
+			<opts>
+				<opt>Yes</opt>
+				<opt>No</opt>
+			</opts>
+		</Reuse>
+		<Notes>
+			<desc>Notes to the findspot of the inscription.</desc>
+		</Notes>
+		<Location_Accessibility t="dropdown" f="notnull">
+			<desc>Accessibility of the findspot, e. g. how difficult it was to reach the findspot</desc>
+			<opts>
+				<opt>Easy</opt>
+				<opt>Moderate</opt>
+				<opt>Difficult</opt>
+				<opt>Almost Inaccessible</opt>
+				<opt>N/A</opt>
+			</opts>
+		</Location_Accessibility>
+		<Inscription_Accessibility t="dropdown" f="notnull">
+			<desc>Accessibility of the inscription. Define how was the inscription visible in terms of accessing it and being able to see it.</desc>
+			<opts>
+				<opt>Accessible</opt>
+				<opt>Partially Accessible</opt>
+				<opt>Visible from distance</opt>
+				<opt>Inaccessible</opt>
+				<opt>N/A</opt>
+				</opts>
+		</Inscription_Accessibility>
+		<Light_conditions t="dropdown" f="notnull">
+			<desc>Light conditions when recording was made. The source of light may affect the outcome of observations.</desc>
+			<opts>
+				<opt>Bright sunshine</opt>
+				<opt>Moderate daylight</opt>
+				<opt>Cloudy</opt>
+				<opt>Dark</opt>
+				<opt>Artificial yellow light</opt>
+				<opt>Artificial white light</opt>
+				<opt>LED</opt>
+				<opt>Firelight</opt>
+				<opt>Other</opt>
+				<opt>N/A</opt>
+			</opts>
+		</Light_conditions>
+		<Location_Photo t="camera"/>
+		<Location_Sketch t="file"/>
+	</Geography>
+	<Object>
+		<Material t="dropdown" f="notnull">
+			<desc>The type of inscribed material.</desc>
+			<opts>
+				<opt>Stone</opt>
+				<opt>Timber</opt>
+				<opt>Metal</opt>
+				<opt>Terracotta</opt>
+				<opt>Glass</opt>
+				<opt>Other</opt>
+				<opt>N/A</opt>
+			</opts>
+			</Material>  
+			<Stone t="dropdown">
+				<desc>The type of inscribed stone. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Marble</opt>
+					<opt>Limestone</opt>
+					<opt>Syenite</opt>
+					<opt>Poros</opt>
+					<opt>Tufa</opt>
+					<opt>Granite</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Stone>  
+			<Metal t="dropdown">
+				<desc>The type of inscribed metal. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Silver</opt>
+					<opt>Gold</opt>
+					<opt>Bronze</opt>
+					<opt>Alloy</opt>
+					<opt>Lead</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Metal> 
+			<Origin_Material/>
+			<Description_Material/>
+			<Colour t="dropdown">
+				<desc>The prevailing colour of inscribed material. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>White</opt>
+					<opt>Grey</opt>
+					<opt>Brown</opt>
+					<opt>Black</opt>
+					<opt>Pink</opt>
+					<opt>Red</opt>
+					<opt>Yellow</opt>
+					<opt>Orange</opt>
+					<opt>Green</opt>
+					<opt>Blue</opt>
+					<opt>Transparent</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Colour> 
+			<Object_Type t="dropdown">
+				<desc>The type of inscribed object. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Stele</opt>
+					<opt>Vessel</opt>
+					<opt>Architectural part</opt>
+					<opt>Sculpture</opt>
+					<opt>Personal object</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Object_Type> 
+			<Stele_Type t="dropdown">
+				<desc>The type of inscribed stele. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Simple</opt>
+					<opt>Naiskos</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Stele_Type> 
+			<Vessel_Type t="dropdown">
+				<desc>The inscribed part of the vessel.If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Body fragment</opt>
+					<opt>Bottom</opt>
+					<opt>Handle</opt>
+					<opt>Rim</opt>
+					<opt>Whole vessel</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Vessel_Type> 
+			<Architecture_Type t="dropdown">
+				<desc>The type of inscribed architectural part. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Column</opt>
+					<opt>Altar</opt>
+					<opt>Architrave</opt>
+					<opt>Capital</opt>
+					<opt>Wall</opt>
+					<opt>Floor</opt>
+					<opt>Door</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Architecture_Type> 
+			<Sculpure_Type t="radio">
+				<desc> The inscribed part of the sculpture. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Fragment</opt>
+					<opt>Whole</opt>
+				</opts>
+			</Sculpure_Type>
+			<Personalia_Type t="dropdown">
+				<desc>The type of inscribed personal object. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Jewellery</opt>
+					<opt>Weapon</opt>
+					<opt>Plaque</opt>
+					<opt>Tool</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Personalia_Type> 
+			<Number_fragments b="decimal" f="notnull" t="input">
+			<desc>Number of fragments belonging to the same inscribed object, e. g. the stele has broken off into three fragments that may or may not join together.</desc>
+		</Number_fragments>
+			<Preservation t="dropdown" f="notnull">
+				<desc>State of current preservation of the inscribed monument. 100% = intact, 75-99 % = slightly damaged, 50-74 % = heavily damaged, 25-49 % = almost destroyed, 24-1 % = fragmentary</desc>
+				<opts>
+					<opt>100 %</opt>
+					<opt>75 - 99 %</opt>
+					<opt>50 - 74 %</opt>
+					<opt>25 - 49 %</opt>
+					<opt>24 - 1 %</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Preservation> 
+			<cols>
+			<col>
+			<Object_Length_Min b="decimal" t="input">
+				<desc>Minimal length of inscribed object</desc>
+			</Object_Length_Min>
+			<Object_Width_Min b="decimal" t="input">
+				<desc>Minimal width of inscribed object</desc>
+			</Object_Width_Min>
+			<Object_Thickness_Min b="decimal" t="input">
+				<desc>Minimal thickness of inscribed object</desc>
+			</Object_Thickness_Min>
+			</col>
+			<col>
+			<Object_Length_Max b="decimal" t="input">
+				<desc>Maximal length of inscribed object</desc>
+			</Object_Length_Max>
+			<Object_Width_Max b="decimal" t="input">
+				<desc>Maximal width of inscribed object</desc>
+			</Object_Width_Max>
+			<Object_Thickness_Max b="decimal" t="input">
+				<desc>Maximal thickness of inscribed object</desc>
+			</Object_Thickness_Max>
+			</col>
+			</cols>
+			<Overview_Photo t="camera">
+				<desc>Overview photo of the whole object. Please make sure the whole object is on the photo. If possible include scale.</desc>
+			</Overview_Photo>	
+			<Audio_Record t="audio">
+			<desc>If you want, you can record your notes and description of the inscribed object.</desc>
+			</Audio_Record>
+			<Video_Record t="video">
+				<desc>If you want, you can record video record of the inscribed object.</desc>
+			</Video_Record>
+		</Object>
+		<Decoration>
+			<Decoration_Technique t="checkbox">
+				<desc>List the used technique of decoration. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Relief</opt>
+					<opt>Painted</opt>
+					<opt>Incised</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Decoration_Technique> 
+			<Decoration_Type t="checkbox">
+				<desc>List the decoration type. If not sure or Other, make an Annotation.</desc>
+					<opts>
+					<opt>Architectural</opt>
+					<opt>Figural</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Decoration_Type> 
+			<Architectural_Decor_Type t="checkbox">
+				<desc>List the architectural decoration type. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Moulding</opt>
+					<opt>Floral</opt>
+					<opt>Geometric</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Architectural_Decor_Type>
+			<Figural_Decor_Type t="checkbox">
+				<desc>List the figural decoration type. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Anthropomorphic</opt>
+					<opt>Animal</opt>
+					<opt>Inanimate object</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Figural_Decor_Type>
+			<Number_Figures b="decimal" t="input"/>
+			<Anthropomorphic_Figure t="checkbox">
+				<desc>List the anthropomorphic figural decoration type. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Aclepius</opt>
+					<opt>Dioskouroi</opt>
+					<opt>Heracles</opt>
+					<opt>Zeus</opt>
+					<opt>Hera</opt>
+					<opt>Nymphs</opt>
+					<opt>Artemis</opt>
+					<opt>Horse Rider</opt>
+					<opt>Nemesis</opt>
+					<opt>Symposion</opt>
+					<opt>Funerary portrait</opt>
+					<opt>Hunt</opt>
+					<opt>War scene</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Anthropomorphic_Figure>
+			<Animal_Figure t="checkbox">
+				<desc>List the animal figural decoration type. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Horse</opt>
+					<opt>Dog</opt>
+					<opt>Snake</opt>
+					<opt>Lion</opt>
+					<opt>Deer</opt>
+					<opt>Boar</opt>
+					<opt>Bear</opt>
+					<opt>Bird</opt>
+					<opt>Fish</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Animal_Figure>
+			<Inanimate_Figure t="checkbox">
+				<desc>List the inanimate figural decoration type. If not sure or Other, make an Annotation.</desc>
+				<opts>
+					<opt>Furniture</opt>
+					<opt>Vessel</opt>
+					<opt>Weapon</opt>
+					<opt>Building</opt>
+					<opt>Tree</opt>
+					<opt>Landscape</opt>
+					<opt>Crown</opt>
+					<opt>Grave</opt>
+					<opt>Ship</opt>
+					<opt>Music instrument</opt>
+					<opt>Tool</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Inanimate_Figure>
+			<Size_Decor t="radio">
+				<desc>Size of the decoration compared to the rest of the inscribed object. The proportion of the object covered by decoration.</desc>
+				<opts>
+					<opt>100 %</opt>
+					<opt>75 %</opt>
+					<opt>50 %</opt>
+					<opt>25 %</opt>
+				</opts>
+			</Size_Decor>
+			<Decor_Description/>
+			<cols>
+			<col>
+			<Decor_Length_Max b="decimal" t="input"/>
+			<Decor_Width_Max b="decimal" t="input"/>
+			</col>
+			<col>
+			<Decor_Height_Max b="decimal" t="input"/>
+			<Thick_Relief_Max b="decimal" t="input"/>
+			</col>
+			</cols>
+			<Add_External_Records t="button" lc="External_Records"/>
+			<Photo_Decoration t="camera"/>
+			<Sketch_Decoration t="file"/>
+		</Decoration>
+		<Lettering>
+      <Script t="picture">
+        <desc>Type of used script.</desc>
+        <opts>
+          <opt>Archaic-Epichoric
+            <opt>A specific type of archaic-epichoric script
+              <opt p="file.jpg">An even more specific type of archaic-epichoric script</opt>
+            </opt>
+            <opt>Another type of archaic-epichoric script</opt>
+          </opt>
+          <opt>Old-Attic</opt>
+          <opt>Ionic</opt>
+          <opt>Roman</opt>
+          <opt>Indistinguishable</opt>
           <opt>Other</opt>
-        </opt>
-      </opts>
-    </Surrounding_Landuse>
-    <Surface_Landuse>
-      <opts>
-        <opt>Annual agriculture
-          <opt>Ploughed</opt>
-          <opt>Harrowed</opt>
-          <opt>Seedlings</opt>
-          <opt>Mature crop</opt>
-          <opt>Harvested</opt>
-        </opt>
-        <opt>Perennial
-          <opt>Orchard</opt>
-          <opt>Lavender</opt>
-          <opt>Vineyard</opt>
-        </opt>
-        <opt>Other
-          <opt>Meadow</opt>
-          <opt>Beach</opt>
-          <opt>Scrub</opt>
-          <opt>Forest</opt>
-          <opt>Other</opt>
-        </opt>
-      </opts>
-    </Surface_Landuse>
-    <Visibility>
-      <opts>
-        <opt>0-20%</opt>
-        <opt>20-40%</opt>
-        <opt>40-60%</opt>
-        <opt>60-80%</opt>
-        <opt>80-100%</opt>
-      </opts>
-    </Visibility>
-    <gps/>
-    <Elevation b="decimal">
-      Elevation (MASL)
-    </Elevation>
-    <General_Notes/>
-    <Create_Shapefile t="button" l="Control/Map"/>
-    <General_Photo t="camera">
-      <desc>Take 1 general overview shot that includes the complete feature profile, and a scale. Include direction in the Annotation (from which direction was the image taken)</desc>
-    </General_Photo>
-  </General>
-  <Dimensions>
-    <Profile t="picture">
-      <opts>
-        <opt>No Observation</opt>
-      </opts>
-    </Profile>
-    <Plan t="picture">
-      <opts>
-        <opt>Circular</opt>
-        <opt>Elipsoid</opt>
-        <opt>Uneven</opt>
-      </opts>
-    </Plan>
-    <cols>
-      <col>
-        <Length_Max/>
-        <Width_Max/>
-        <Height_Max/>
-        <Area_Max/>
-      </col>
-      <col>
-        <Length_Min/>
-        <Width_Min/>
-        <Height_Min/>
-        <Area_Min/>
-      </col>
-    </cols>
-    <Other_Dimension/>
-    <Dimensions_Notes/>
-    <Attach_A_Sketch t="file"/>
-    <Sketch_Photo t="camera"/>
-  </Dimensions>
-  <Material>
-    <Stone_Feature_Present_And_Visible t="radio">
-      Stone Feature Present And Visible?
-      <opts>
-        <opt>Yes</opt>
-        <opt>No</opt>
-      </opts>
-    </Stone_Feature_Present_And_Visible>
-    <Stone_Feature_Description/>
-    <Surface_Material_Density>
-      <opts>
-        <opt>zero</opt>
-        <opt>scarce</opt>
-        <opt>medium</opt>
-        <opt>high</opt>
-      </opts>
-    </Surface_Material_Density>
-    <Surface_Material_Description/>
-    <Sample_Collected t="radio">
-      Sample Collected?
-      <opts>
-        <opt>Yes</opt>
-        <opt>No</opt>
-      </opts>
-    </Sample_Collected>
-    <Material_Photo t="camera"/>
-  </Material>
-  <CRM>
-    <Disturbance_Kind>
-      <opts>
-        <opt>undisturbed</opt>
-        <opt>surface sediment disturbed</opt>
-        <opt>subsurface disturbed</opt>
-        <opt>totally disturbed</opt>
-        <opt>unknown</opt>
-      </opts>
-    </Disturbance_Kind>
-    <Disturbance_Factors t="checkbox">
-      <opts>
-        <opt>anthropic</opt>
-        <opt>animal activity</opt>
-        <opt>post depositional</opt>
-        <opt>topographic</opt>
-      </opts>
-    </Disturbance_Factors>
-    <Principal_Factors>
-      <desc>Select one factor that contributes to most visible damage</desc>
-      <opts>
-        <opt>Anthropic
-          <opt>Agricultural</opt>
-          <opt>Looting</opt>
-          <opt>Development</opt>
-        </opt>
-        <opt>Post-depositional
-          <opt>Mound geomorphology</opt>
-          <opt>Erosion</opt>
-          <opt>Wind damage</opt>
-          <opt>Water damage</opt>
-          <opt>Age</opt>
-        </opt>
-        <opt>Topographic
-          <opt>Aspect</opt>
-          <opt>Slope</opt>
-          <opt>Exposure</opt>
-          <opt>Hydrology</opt>
-        </opt>
-      </opts>
-    </Principal_Factors>
-    <Age_of_Damage t="checkbox">
-      <opts>
-        <opt>Remote</opt>
-        <opt>Recent</opt>
-        <opt>Fresh</opt>
-      </opts>
-    </Age_of_Damage>
-    <Disturbance_Description/>
-    <RT_Kind t="checkbox">
-      <opts>
-        <opt>Basic pit</opt>
-        <opt>Trench</opt>
-        <opt>Tunnel</opt>
-      </opts>
-    </RT_Kind>
-    <RT_Method t="checkbox">
-      <opts>
-        <opt>Manual</opt>
-        <opt>Mechanized</opt>
-      </opts>
-    </RT_Method>
-    <RT_Frequency t="picture">
-      <opts>
-        <opt>No Observation</opt>
-      </opts>
-    </RT_Frequency>
-    <RT_Description/>
-    <Volume_of_Soil_Removed_via_RT>
-      <opts>
-        <opt>&lt;10%</opt>
-        <opt>10-20%</opt>
-        <opt>20-30%</opt>
-        <opt>30-40%</opt>
-        <opt>40-40%</opt>
-        <opt>50-40%</opt>
-        <opt>60-40%</opt>
-        <opt>70-40%</opt>
-        <opt>80-40%</opt>
-        <opt>90-100%</opt>
-      </opts>
-    </Volume_of_Soil_Removed_via_RT>
-    <Affect>
-      <desc>1=0-20% of the entire feature is missing or disrupted, 5= 80-100% of the feature's surface is missing or disrupted</desc>
-      <opts>
-        <opt>1</opt>
-        <opt>2</opt>
-        <opt>3</opt>
-        <opt>4</opt>
-        <opt>5</opt>
-      </opts>
-    </Affect>
-    <Impact>
-      <desc>1= context is nearly intact; 5 = original context of the feature is nearly all destroyed</desc>
-      <opts>
-        <opt>1</opt>
-        <opt>2</opt>
-        <opt>3</opt>
-        <opt>4</opt>
-        <opt>5</opt>
-      </opts>
-    </Impact>
-    <Comments_and_Recommendations/>
-    <CRM_Photo t="camera"/>
-  </CRM>
-</Burial_Mound>
-
+        </opts>
+      </Script>
+			<State_of_Wear t="radio">
+				<desc> State of wear of the lettering. According to your personal impression.</desc>
+				<opts>
+					<opt>Clearly visible</opt>
+					<opt>Visible</opt>
+					<opt>Slightly worn out</opt>
+					<opt>Worn out</opt>
+					<opt>Illegible</opt>
+					<opt>N/A</opt>
+				</opts>
+			</State_of_Wear>
+			<Number_of_Rows b="decimal" t="input">
+				<desc>Maximal number of rows</desc>
+			</Number_of_Rows>	
+			<Number_of_letters b="decimal" t="input">
+				<desc> Maximal number of letters per row.</desc>
+			</Number_of_letters>
+			<Script_Type t="dropdown">
+				<desc>The type of used script.</desc>
+				<opts>
+					<opt>Archaic-Epichoric</opt>
+					<opt>Old-Attic</opt>
+					<opt>Ionic</opt>
+					<opt>Roman</opt>
+					<opt>Indistinguishable</opt>
+					<opt>Other</opt>
+				</opts>
+			</Script_Type> 
+			<Layout t="dropdown">
+				<desc>Prevailing layout of the text.</desc>
+				<opts>
+					<opt>Irregular</opt>
+					<opt>Stoichedon</opt>
+					<opt>Boustrophedon</opt>
+					<opt>Retrograde</opt>
+					<opt>Vertical</opt>
+					<opt>Combined</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Layout> 
+			<Transcription>
+				<desc>Please insert your transcription of the text</desc>
+			</Transcription>
+			<Stoichos_Length b="decimal" t="input">
+				<desc>Average length of stoichos, e. g. between the middle of the left letter to the middle of the right letter. Applicable only for stoichedon type of layout.</desc>
+			</Stoichos_Length>
+			<Stoichos_Height b="decimal" t="input">
+			<desc>Average height of stoichos, e. g. between the middle of the top letter to the middle of the bottom letter. Applicable only for stoichedon type of layout.</desc>
+			</Stoichos_Height>
+			<Lettering_Description/>
+			<Layout_Description/>
+			<Photo_Lettering t="camera"/>
+			<Sketch_Lettering t="file"/>
+		</Lettering>
+		<Interpretation>
+			<Date t="dropdown">
+				<desc>Chronological period. Archaic = 800-480 BC, Classical = 479-338 BC, Hellenistic = 337-30 BC, Principate = 30 BC-284 AD, Dominate = 284-476 AD, Early Medieval = 476-800, Modern = 800+, if unsure, plase make an Annotation.</desc>
+				<opts>
+					<opt>Archaic</opt>
+					<opt>Classical</opt>
+					<opt>Hellenistic</opt>
+					<opt>Principate</opt>
+					<opt>Dominate</opt>
+					<opt>Early Medieval</opt>
+					<opt>Modern</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Date>
+			<Start_Year b="decimal" t="input"/>
+			<End_Year b="decimal" t="input"/>
+			<Note_to_Date/>
+			<Language_Type t="checkbox">
+				<desc>Language of the inscription.</desc>
+				<opts>
+					<opt>Greek</opt>
+					<opt>Latin</opt>
+					<opt>Other</opt>
+					<opt>Unclear</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Language_Type>
+			<Language_Form t="radio">
+				<desc>Form of the language of the inscription.</desc>
+				<opts>
+					<opt>Verse</opt>
+					<opt>Prose</opt>
+					<opt>Too fragmentary</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Language_Form>
+			<Inscription_Typology t="dropdown" f="notnull">
+				<desc>Standard typology of inscriptions.</desc>
+				<opts>
+					<opt>Private</opt>
+					<opt>Official</opt>
+					<opt>Too fragmentary</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Inscription_Typology>
+			<Private_Typology t="dropdown">
+				<desc>Standard typology of private inscriptions.</desc>
+				<opts>
+					<opt>Funerary</opt>
+					<opt>Honorific</opt>
+					<opt>Ownership</opt>
+					<opt>Utilitarian</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Private_Typology>
+			<Official_Typology t="dropdown">
+			<desc>Standard typology of official inscriptions.</desc>
+				<opts>
+					<opt>Milestone</opt>
+					<opt>Decree</opt>
+					<opt>Account</opt>
+					<opt>List</opt>
+					<opt>Other</opt>
+					<opt>N/A</opt>
+				</opts>
+			</Official_Typology>
+			<Document_Typology_Notes/>
+		</Interpretation>
+</Epigraphic_record>
+<External_Records>
+	<External_Record>			
+		<External_File_Type t="dropdown" f="notnull">
+			<desc>The type of external file, such as photo, squeeze, sketch.</desc>
+			<opts>
+				<opt>Photo</opt>
+				<opt>Squeeze</opt>
+				<opt>Sketch</opt>
+				<opt>3D image</opt>
+			</opts>	
+		</External_File_Type>
+		<External_File_Name t="input" f="id"/>
+	</External_Record>
+</External_Records>
 </module>

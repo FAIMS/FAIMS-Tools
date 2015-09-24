@@ -280,7 +280,7 @@ populateListForUsers(){
 
   fetchAll(getNonDeletedUsersQuery, new FetchCallback() {
     onFetch(result) {
-      populateList(userMenuPath, result);
+      populateDropDown(userMenuPath, result, true);
     }
   });
 }
@@ -288,7 +288,10 @@ populateListForUsers(){
 String username = "";
 
 selectUser () {
-  String userVocabId  = getListItemValue();
+  String userVocabId  = getFieldValue(userMenuPath);
+  if (isNull(userVocabId))
+    return;
+
   String userQ        = "SELECT userid,fname,lname,email FROM user " +
                         "WHERE  userid='" + userVocabId + "';";
   FetchCallback callback = new FetchCallback() {
@@ -405,28 +408,41 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
       }
     });
 }
-makeVocab("DropDown", "Burial_Mound/General/Type", "Type");
-makeVocab("DropDown", "Burial_Mound/General/Site_Significance", "Site Significance");
-makeVocab("DropDown", "Burial_Mound/General/Source", "Source");
-makeVocab("CheckBoxGroup", "Burial_Mound/General/Exists_in_Legacy", "Exists in Legacy");
-makeVocab("HierarchicalDropDown", "Burial_Mound/General/Surrounding_Landuse", "Surrounding Landuse");
-makeVocab("HierarchicalDropDown", "Burial_Mound/General/Surface_Landuse", "Surface Landuse");
-makeVocab("DropDown", "Burial_Mound/General/Visibility", "Visibility");
-makeVocab("PictureGallery", "Burial_Mound/Dimensions/Profile", "Profile");
-makeVocab("PictureGallery", "Burial_Mound/Dimensions/Plan", "Plan");
-makeVocab("RadioGroup", "Burial_Mound/Material/Stone_Feature_Present_And_Visible", "Stone Feature Present And Visible");
-makeVocab("DropDown", "Burial_Mound/Material/Surface_Material_Density", "Surface Material Density");
-makeVocab("RadioGroup", "Burial_Mound/Material/Sample_Collected", "Sample Collected");
-makeVocab("DropDown", "Burial_Mound/CRM/Disturbance_Kind", "Disturbance Kind");
-makeVocab("CheckBoxGroup", "Burial_Mound/CRM/Disturbance_Factors", "Disturbance Factors");
-makeVocab("HierarchicalDropDown", "Burial_Mound/CRM/Principal_Factors", "Principal Factors");
-makeVocab("CheckBoxGroup", "Burial_Mound/CRM/Age_of_Damage", "Age of Damage");
-makeVocab("CheckBoxGroup", "Burial_Mound/CRM/RT_Kind", "RT Kind");
-makeVocab("CheckBoxGroup", "Burial_Mound/CRM/RT_Method", "RT Method");
-makeVocab("PictureGallery", "Burial_Mound/CRM/RT_Frequency", "RT Frequency");
-makeVocab("DropDown", "Burial_Mound/CRM/Volume_of_Soil_Removed_via_RT", "Volume of Soil Removed via RT");
-makeVocab("DropDown", "Burial_Mound/CRM/Affect", "Affect");
-makeVocab("DropDown", "Burial_Mound/CRM/Impact", "Impact");
+makeVocab("DropDown", "Epigraphic_record/Geography/Archaeological_Context", "Archaeological Context");
+makeVocab("RadioGroup", "Epigraphic_record/Geography/Reuse", "Reuse");
+makeVocab("DropDown", "Epigraphic_record/Geography/Location_Accessibility", "Location Accessibility");
+makeVocab("DropDown", "Epigraphic_record/Geography/Inscription_Accessibility", "Inscription Accessibility");
+makeVocab("DropDown", "Epigraphic_record/Geography/Light_conditions", "Light conditions");
+makeVocab("DropDown", "Epigraphic_record/Object/Material", "Material");
+makeVocab("DropDown", "Epigraphic_record/Object/Stone", "Stone");
+makeVocab("DropDown", "Epigraphic_record/Object/Metal", "Metal");
+makeVocab("DropDown", "Epigraphic_record/Object/Colour", "Colour");
+makeVocab("DropDown", "Epigraphic_record/Object/Object_Type", "Object Type");
+makeVocab("DropDown", "Epigraphic_record/Object/Stele_Type", "Stele Type");
+makeVocab("DropDown", "Epigraphic_record/Object/Vessel_Type", "Vessel Type");
+makeVocab("DropDown", "Epigraphic_record/Object/Architecture_Type", "Architecture Type");
+makeVocab("RadioGroup", "Epigraphic_record/Object/Sculpure_Type", "Sculpure Type");
+makeVocab("DropDown", "Epigraphic_record/Object/Personalia_Type", "Personalia Type");
+makeVocab("DropDown", "Epigraphic_record/Object/Preservation", "Preservation");
+makeVocab("CheckBoxGroup", "Epigraphic_record/Decoration/Decoration_Technique", "Decoration Technique");
+makeVocab("CheckBoxGroup", "Epigraphic_record/Decoration/Decoration_Type", "Decoration Type");
+makeVocab("CheckBoxGroup", "Epigraphic_record/Decoration/Architectural_Decor_Type", "Architectural Decor Type");
+makeVocab("CheckBoxGroup", "Epigraphic_record/Decoration/Figural_Decor_Type", "Figural Decor Type");
+makeVocab("CheckBoxGroup", "Epigraphic_record/Decoration/Anthropomorphic_Figure", "Anthropomorphic Figure");
+makeVocab("CheckBoxGroup", "Epigraphic_record/Decoration/Animal_Figure", "Animal Figure");
+makeVocab("CheckBoxGroup", "Epigraphic_record/Decoration/Inanimate_Figure", "Inanimate Figure");
+makeVocab("RadioGroup", "Epigraphic_record/Decoration/Size_Decor", "Size Decor");
+makeVocab("HierarchicalPictureGallery", "Epigraphic_record/Lettering/Script", "Script");
+makeVocab("RadioGroup", "Epigraphic_record/Lettering/State_of_Wear", "State of Wear");
+makeVocab("DropDown", "Epigraphic_record/Lettering/Script_Type", "Script Type");
+makeVocab("DropDown", "Epigraphic_record/Lettering/Layout", "Layout");
+makeVocab("DropDown", "Epigraphic_record/Interpretation/Date", "Date");
+makeVocab("CheckBoxGroup", "Epigraphic_record/Interpretation/Language_Type", "Language Type");
+makeVocab("RadioGroup", "Epigraphic_record/Interpretation/Language_Form", "Language Form");
+makeVocab("DropDown", "Epigraphic_record/Interpretation/Inscription_Typology", "Inscription Typology");
+makeVocab("DropDown", "Epigraphic_record/Interpretation/Private_Typology", "Private Typology");
+makeVocab("DropDown", "Epigraphic_record/Interpretation/Official_Typology", "Official Typology");
+makeVocab("DropDown", "External_Records/External_Record/External_File_Type", "External File Type");
 
 
 /******************************************************************************/
@@ -495,10 +511,27 @@ validateFields(List fields, String format) {
   return out;
 }
 
-validateBurialMound() {
+validateEpigraphicrecord() {
   List f = new ArrayList(); // Fields to be validated
 
-  f.add(fieldPair("Burial_Mound/General/Object_ID", "{Object_ID}"));
+  f.add(fieldPair("Epigraphic_record/Admin/Inscription_ID", "{Inscription_ID}"));
+  f.add(fieldPair("Epigraphic_record/Geography/Modern_name", "{Modern_name}"));
+  f.add(fieldPair("Epigraphic_record/Geography/Archaeological_Context", "{Archaeological_Context}"));
+  f.add(fieldPair("Epigraphic_record/Geography/Reuse", "{Reuse}"));
+  f.add(fieldPair("Epigraphic_record/Geography/Location_Accessibility", "{Location_Accessibility}"));
+  f.add(fieldPair("Epigraphic_record/Geography/Inscription_Accessibility", "{Inscription_Accessibility}"));
+  f.add(fieldPair("Epigraphic_record/Geography/Light_conditions", "{Light_conditions}"));
+  f.add(fieldPair("Epigraphic_record/Object/Material", "{Material}"));
+  f.add(fieldPair("Epigraphic_record/Object/Number_fragments", "{Number_fragments}"));
+  f.add(fieldPair("Epigraphic_record/Object/Preservation", "{Preservation}"));
+  f.add(fieldPair("Epigraphic_record/Interpretation/Inscription_Typology", "{Inscription_Typology}"));
+
+  String validationMessage = validateFields(f, "PLAINTEXT");
+  showWarning("Validation Results", validationMessage);
+}validateExternalRecords() {
+  List f = new ArrayList(); // Fields to be validated
+
+  f.add(fieldPair("External_Records/External_Record/External_File_Type", "{External_File_Type}"));
 
   String validationMessage = validateFields(f, "PLAINTEXT");
   showWarning("Validation Results", validationMessage);
@@ -561,8 +594,10 @@ saveTabGroup(String tabgroup, String callback) {
 populateAuthorAndTimestamp(String tabgroup) {
   Map tabgroupToAuthor    = new HashMap();
   Map tabgroupToTimestamp = new HashMap();
-  tabgroupToAuthor.put("Burial_Mound", "Burial_Mound/General/Author");
-  tabgroupToTimestamp.put("Burial_Mound", "Burial_Mound/General/Timestamp");
+  tabgroupToAuthor.put("Diary", "Diary/Fieldwork_Diary/Author");
+  tabgroupToAuthor.put("Epigraphic_record", "Epigraphic_record/Admin/Author");
+  tabgroupToTimestamp.put("Diary", "Diary/Fieldwork_Diary/Timestamp");
+  tabgroupToTimestamp.put("Epigraphic_record", "Epigraphic_record/Admin/Timestamp");
 
   String uuid          = getUuid(tabgroup);
   String authorPath    = tabgroupToAuthor.get(tabgroup);
@@ -590,39 +625,64 @@ populateAuthorAndTimestamp(String tabgroup) {
   fetchOne(q, callback);
 }
 
-onShowBurialMound () {
+onShowDiary () {
   // TODO: Add some things which should happen when this tab group is shown
-  saveTabGroup("Burial_Mound");
+  saveTabGroup("Diary");
+}
+onShowEpigraphicrecord () {
+  // TODO: Add some things which should happen when this tab group is shown
+  saveTabGroup("Epigraphic_record");
+}
+onShowExternalRecords () {
+  // TODO: Add some things which should happen when this tab group is shown
+  saveTabGroup("External_Records");
 }
 
-addOnEvent("Burial_Mound", "show", "onShowBurialMound()");
+addOnEvent("Diary", "show", "onShowDiary()");
+addOnEvent("Epigraphic_record", "show", "onShowEpigraphicrecord()");
+addOnEvent("External_Records", "show", "onShowExternalRecords()");
 
-onClickUserSelectUser () {
+onClickUserLogin () {
   // TODO: Add some things which should happen when this element is clicked
   newTab("Control", true);
 }
-onClickControlTakeFeature () {
+onClickControlNewEpigraphicrecord () {
   // TODO: Add some things which should happen when this element is clicked
-  newBurialMound();
+  newEpigraphicrecord();
 }
-onClickBurialMoundCreateShapefile () {
+onClickControlNewDiary () {
   // TODO: Add some things which should happen when this element is clicked
-  newTab("Control/Map", true);
+  newDiary();
+}
+onClickEpigraphicrecordAddExternalRecords () {
+  // TODO: Add some things which should happen when this element is clicked
+  String tabgroup = "Epigraphic_record";
+  if (isNull(getUuid(tabgroup))){
+    showToast("{You_must_save_this_tabgroup_first}");
+    return;
+  }
+  parentTabgroup = tabgroup;
+  newExternalRecords();
 }
 
-addOnEvent("User/User/Select_User", "click", "onClickUserSelectUser()");
-addOnEvent("Control/Main/Take_Feature", "click", "onClickControlTakeFeature()");
-addOnEvent("Burial_Mound/General/Create_Shapefile", "click", "onClickBurialMoundCreateShapefile()");
+addOnEvent("User/User/Login", "click", "onClickUserLogin()");
+addOnEvent("Control/Main/New_Epigraphic_record", "click", "onClickControlNewEpigraphicrecord()");
+addOnEvent("Control/Main/New_Diary", "click", "onClickControlNewDiary()");
+addOnEvent("Epigraphic_record/Decoration/Add_External_Records", "click", "onClickEpigraphicrecordAddExternalRecords()");
 
 
 /******************************************************************************/
 /*                   AUDIO, CAMERA, FILE AND VIDEO BINDINGS                   */
 /******************************************************************************/
-addOnEvent("Burial_Mound/General/Button_General_Photo", "click", "attachPictureTo(\"Burial_Mound/General/General_Photo\")");
-addOnEvent("Burial_Mound/Dimensions/Button_Sketch_Photo", "click", "attachPictureTo(\"Burial_Mound/Dimensions/Sketch_Photo\")");
-addOnEvent("Burial_Mound/Material/Button_Material_Photo", "click", "attachPictureTo(\"Burial_Mound/Material/Material_Photo\")");
-addOnEvent("Burial_Mound/CRM/Button_CRM_Photo", "click", "attachPictureTo(\"Burial_Mound/CRM/CRM_Photo\")");
-addOnEvent("Burial_Mound/Dimensions/Button_Attach_A_Sketch", "click", "attachFileTo(\"Burial_Mound/Dimensions/Attach_A_Sketch\")");
+addOnEvent("Epigraphic_record/Object/Button_Audio_Record", "click", "attachAudioTo(\"Epigraphic_record/Object/Audio_Record\")");
+addOnEvent("Epigraphic_record/Geography/Button_Location_Photo", "click", "attachPictureTo(\"Epigraphic_record/Geography/Location_Photo\")");
+addOnEvent("Epigraphic_record/Object/Button_Overview_Photo", "click", "attachPictureTo(\"Epigraphic_record/Object/Overview_Photo\")");
+addOnEvent("Epigraphic_record/Decoration/Button_Photo_Decoration", "click", "attachPictureTo(\"Epigraphic_record/Decoration/Photo_Decoration\")");
+addOnEvent("Epigraphic_record/Lettering/Button_Photo_Lettering", "click", "attachPictureTo(\"Epigraphic_record/Lettering/Photo_Lettering\")");
+addOnEvent("Epigraphic_record/Geography/Button_Location_Sketch", "click", "attachFileTo(\"Epigraphic_record/Geography/Location_Sketch\")");
+addOnEvent("Epigraphic_record/Decoration/Button_Sketch_Decoration", "click", "attachFileTo(\"Epigraphic_record/Decoration/Sketch_Decoration\")");
+addOnEvent("Epigraphic_record/Lettering/Button_Sketch_Lettering", "click", "attachFileTo(\"Epigraphic_record/Lettering/Sketch_Lettering\")");
+addOnEvent("Epigraphic_record/Object/Button_Video_Record", "click", "attachVideoTo(\"Epigraphic_record/Object/Video_Record\")");
 
 /******************************************************************************/
 /*                             NAVIGATION DRAWER                              */
@@ -637,7 +697,8 @@ removeNavigationButtons() {
 addNavigationButtons(String tabgroup) {
   removeNavigationButtons();
   List tabgroupsToValidate = new ArrayList();
-  tabgroupsToValidate.add("Burial_Mound");
+  tabgroupsToValidate.add("Epigraphic_record");
+  tabgroupsToValidate.add("External_Records");
 
   addNavigationButton("new", new ActionButtonCallback() {
     actionOnLabel() {
@@ -824,39 +885,22 @@ loadEntityFrom(String entityID) {
   });
 }
 
-newBurialMound(){
-  String tabgroup = "Burial_Mound";
+newDiary(){
+  String tabgroup = "Diary";
 
-  String autoNumSource = "";
-  autoNumSource = getFieldValue("Control/Main/Next_Object_ID");
-  if (isNull(autoNumSource)) {
-    showWarning("{Alert}","{A_next_ID_has_not_been_entered_please_provide_one}");
-    return;
-  }
 
   setUuid(tabgroup, null);
   newTabGroup(tabgroup);
 
-  String autoNumDest = "";
-  autoNumDest = "Burial_Mound/General/Object_ID";
-  incAutoNum(autoNumDest);
 }
 
-duplicateBurialMound(){
-  String tabgroup = "Burial_Mound";
+duplicateDiary(){
+  String tabgroup = "Diary";
   String uuidOld = getUuid(tabgroup);
 
   disableAutoSave(tabgroup);
 
-  String autoNumDest = "";
-  autoNumDest = "Burial_Mound/General/Object_ID";
-  incAutoNum(autoNumDest);
 
-  populateCameraPictureGallery("Burial_Mound/General/General_Photo", new ArrayList());
-  populateFileList("Burial_Mound/Dimensions/Attach_A_Sketch", new ArrayList());
-  populateCameraPictureGallery("Burial_Mound/Dimensions/Sketch_Photo", new ArrayList());
-  populateCameraPictureGallery("Burial_Mound/Material/Material_Photo", new ArrayList());
-  populateCameraPictureGallery("Burial_Mound/CRM/CRM_Photo", new ArrayList());
 
 
   saveCallback = new SaveCallback() {
@@ -887,29 +931,190 @@ duplicateBurialMound(){
   fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
     onFetch(result) {
       excludeAttributes = new ArrayList();
-      excludeAttributes.add("General Photo");
-      excludeAttributes.add("Attach A Sketch");
-      excludeAttributes.add("Sketch Photo");
-      excludeAttributes.add("Material Photo");
-      excludeAttributes.add("CRM Photo");
 
       duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
     }
   });
 }
 
-deleteBurialMound(){
-  String tabgroup = "Burial_Mound";
+deleteDiary(){
+  String tabgroup = "Diary";
 
   if (isNull(getUuid(tabgroup))) {
     cancelTabGroup(tabgroup, true);
   } else {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteBurialMound()", "doNotDelete()");
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteDiary()", "doNotDelete()");
   }
 }
 
-reallyDeleteBurialMound(){
-  String tabgroup = "Burial_Mound";
+reallyDeleteDiary(){
+  String tabgroup = "Diary";
+  deleteArchEnt(getUuid(tabgroup));
+  cancelTabGroup(tabgroup, false);
+}
+
+newEpigraphicrecord(){
+  String tabgroup = "Epigraphic_record";
+
+  String autoNumSource = "";
+  autoNumSource = getFieldValue("Control/Main/Next_Inscription_ID");
+  if (isNull(autoNumSource)) {
+    showWarning("{Alert}","{A_next_ID_has_not_been_entered_please_provide_one}");
+    return;
+  }
+
+  setUuid(tabgroup, null);
+  newTabGroup(tabgroup);
+
+  String autoNumDest = "";
+  autoNumDest = "Epigraphic_record/Admin/Inscription_ID";
+  incAutoNum(autoNumDest);
+}
+
+duplicateEpigraphicrecord(){
+  String tabgroup = "Epigraphic_record";
+  String uuidOld = getUuid(tabgroup);
+
+  disableAutoSave(tabgroup);
+
+  String autoNumDest = "";
+  autoNumDest = "Epigraphic_record/Admin/Inscription_ID";
+  incAutoNum(autoNumDest);
+
+  populateCameraPictureGallery("Epigraphic_record/Geography/Location_Photo", new ArrayList());
+  populateFileList("Epigraphic_record/Geography/Location_Sketch", new ArrayList());
+  populateCameraPictureGallery("Epigraphic_record/Object/Overview_Photo", new ArrayList());
+  populateFileList("Epigraphic_record/Object/Audio_Record", new ArrayList());
+  populateVideoGallery("Epigraphic_record/Object/Video_Record", new ArrayList());
+  populateCameraPictureGallery("Epigraphic_record/Decoration/Photo_Decoration", new ArrayList());
+  populateFileList("Epigraphic_record/Decoration/Sketch_Decoration", new ArrayList());
+  populateCameraPictureGallery("Epigraphic_record/Lettering/Photo_Lettering", new ArrayList());
+  populateFileList("Epigraphic_record/Lettering/Sketch_Lettering", new ArrayList());
+
+
+  saveCallback = new SaveCallback() {
+    onSave(uuid, newRecord) {
+      setUuid(tabgroup, uuid);
+      populateAuthorAndTimestamp(tabgroup);
+
+      Boolean enable_autosave = true;
+
+      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
+        onFetch(result) {
+          Log.e("Module", result.toString());
+          makeDuplicateRelationships(result, getUuid(tabgroup));
+          showToast("{Duplicated_record}");
+          dialog.dismiss();
+        }
+      });
+
+      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
+        onSave(autosaveUuid, autosaveNewRecord) {
+          setUuid(tabgroup, autosaveUuid);
+        }
+      }, enable_autosave);
+    }
+  };
+
+  String extraDupeAttributes = "";
+  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
+    onFetch(result) {
+      excludeAttributes = new ArrayList();
+      excludeAttributes.add("Location Photo");
+      excludeAttributes.add("Location Sketch");
+      excludeAttributes.add("Overview Photo");
+      excludeAttributes.add("Audio Record");
+      excludeAttributes.add("Video Record");
+      excludeAttributes.add("Photo Decoration");
+      excludeAttributes.add("Sketch Decoration");
+      excludeAttributes.add("Photo Lettering");
+      excludeAttributes.add("Sketch Lettering");
+
+      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
+    }
+  });
+}
+
+deleteEpigraphicrecord(){
+  String tabgroup = "Epigraphic_record";
+
+  if (isNull(getUuid(tabgroup))) {
+    cancelTabGroup(tabgroup, true);
+  } else {
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteEpigraphicrecord()", "doNotDelete()");
+  }
+}
+
+reallyDeleteEpigraphicrecord(){
+  String tabgroup = "Epigraphic_record";
+  deleteArchEnt(getUuid(tabgroup));
+  cancelTabGroup(tabgroup, false);
+}
+
+newExternalRecords(){
+  String tabgroup = "External_Records";
+
+
+  setUuid(tabgroup, null);
+  newTabGroup(tabgroup);
+
+}
+
+duplicateExternalRecords(){
+  String tabgroup = "External_Records";
+  String uuidOld = getUuid(tabgroup);
+
+  disableAutoSave(tabgroup);
+
+
+
+
+  saveCallback = new SaveCallback() {
+    onSave(uuid, newRecord) {
+      setUuid(tabgroup, uuid);
+      populateAuthorAndTimestamp(tabgroup);
+
+      Boolean enable_autosave = true;
+
+      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
+        onFetch(result) {
+          Log.e("Module", result.toString());
+          makeDuplicateRelationships(result, getUuid(tabgroup));
+          showToast("{Duplicated_record}");
+          dialog.dismiss();
+        }
+      });
+
+      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
+        onSave(autosaveUuid, autosaveNewRecord) {
+          setUuid(tabgroup, autosaveUuid);
+        }
+      }, enable_autosave);
+    }
+  };
+
+  String extraDupeAttributes = "";
+  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
+    onFetch(result) {
+      excludeAttributes = new ArrayList();
+
+      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
+    }
+  });
+}
+
+deleteExternalRecords(){
+  String tabgroup = "External_Records";
+
+  if (isNull(getUuid(tabgroup))) {
+    cancelTabGroup(tabgroup, true);
+  } else {
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteExternalRecords()", "doNotDelete()");
+  }
+}
+
+reallyDeleteExternalRecords(){
+  String tabgroup = "External_Records";
   deleteArchEnt(getUuid(tabgroup));
   cancelTabGroup(tabgroup, false);
 }
@@ -920,7 +1125,9 @@ doNotDelete(){
 }
 addOnEvent("User", "show", "removeNavigationButtons()");
 addOnEvent("Control", "show", "removeNavigationButtons()");
-addOnEvent("Burial_Mound", "show", "addNavigationButtons(\"Burial_Mound\")");
+addOnEvent("Diary", "show", "addNavigationButtons(\"Diary\")");
+addOnEvent("Epigraphic_record", "show", "addNavigationButtons(\"Epigraphic_record\")");
+addOnEvent("External_Records", "show", "addNavigationButtons(\"External_Records\")");
 
 /******************************************************************************/
 /*                                   SEARCH                                   */
@@ -929,6 +1136,14 @@ addOnEvent("Control/Search"               , "show"  , "search();");
 addOnEvent("Control/Search/Entity_List"   , "click" , "loadEntity();");
 addOnEvent("Control/Search/Search_Button" , "click" , "search()");
 addOnEvent("Control/Search/Search_Term"   , "click" , "clearSearch()");
+addOnEvent("Control/Search/Entity_Types"  , "click" , "search()");
+
+entityTypes = new ArrayList();
+entityTypes.add(new NameValuePair("{All}", ""));
+entityTypes.add(new NameValuePair("{Diary}", "Diary"));
+entityTypes.add(new NameValuePair("{Epigraphic_record}", "Epigraphic record"));
+entityTypes.add(new NameValuePair("{External_Records}", "External Records"));
+populateDropDown("Control/Search/Entity_Types", entityTypes);
 
 clearSearch(){
   setFieldValue("Control/Search/Search_Term","");
@@ -940,7 +1155,7 @@ search(){
   String refSearchTerm  = tabgroup + "/Search/Search_Term";
   String refEntityTypes = tabgroup + "/Search/Entity_Types";
 
-  String type = "";
+  String type = getFieldValue(refEntityTypes);
   String term = getFieldValue(refSearchTerm);
   String searchQuery = "SELECT uuid, response "+
                        "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
@@ -959,8 +1174,24 @@ search(){
   Log.d("Module", "Search query: " + searchQuery);
 }
 
-loadBurialMoundFrom(String uuid) {
-  String tabgroup = "Burial_Mound";
+loadDiaryFrom(String uuid) {
+  String tabgroup = "Diary";
+  setUuid(tabgroup, uuid);
+  if (isNull(uuid)) return;
+
+  showTabGroup(tabgroup, uuid);
+}
+
+loadEpigraphicrecordFrom(String uuid) {
+  String tabgroup = "Epigraphic_record";
+  setUuid(tabgroup, uuid);
+  if (isNull(uuid)) return;
+
+  showTabGroup(tabgroup, uuid);
+}
+
+loadExternalRecordsFrom(String uuid) {
+  String tabgroup = "External_Records";
   setUuid(tabgroup, uuid);
   if (isNull(uuid)) return;
 
@@ -971,7 +1202,7 @@ loadBurialMoundFrom(String uuid) {
 /******************************************************************************/
 /*                          TAKE FROM GPS BUTTON(S)                           */
 /******************************************************************************/
-addOnEvent("Burial_Mound/General/Take_From_GPS", "click", "takePoint(\"Burial_Mound\")");
+addOnEvent("Epigraphic_record/Geography/Take_From_GPS", "click", "takePoint(\"Epigraphic_record\")");
 
 /* Takes the current point using gps. */
 takePoint(String tabgroup) {
@@ -1011,7 +1242,7 @@ takePoint(String tabgroup) {
 /* Sets the value of GPS views for the given tab path. */
 fillInGPS(String tabgroup) {
   Map tabgroupToTabRef = new HashMap();
-  tabgroupToTabRef.put("Burial_Mound", "Burial_Mound/General/");
+  tabgroupToTabRef.put("Epigraphic_record", "Epigraphic_record/Geography/");
 
   String currentUuid = getUuid(tabgroup);
   if (isNull(currentUuid)) {
@@ -1082,7 +1313,7 @@ addOnEvent("Control", "load", "onLoadControl()");
  */
 onLoadControl() {
   List l = new ArrayList();
-  l.add("Control/Main/Next_Object_ID");
+  l.add("Control/Main/Next_Inscription_ID");
 
 
   for (ref : l) {
@@ -1108,7 +1339,7 @@ loadStartingId(String ref) {
 
 incAutoNum(String destPath) {
   Map destToSource = new HashMap();
-  destToSource.put("Burial_Mound/General/Object_ID", "Control/Main/Next_Object_ID");
+  destToSource.put("Epigraphic_record/Admin/Inscription_ID", "Control/Main/Next_Inscription_ID");
 
   String sourcePath = destToSource.get(destPath);
   String destVal    = getFieldValue(sourcePath);

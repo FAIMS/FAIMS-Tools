@@ -1,9 +1,67 @@
 <?xml version="1.0"?>
 <ValidationSchema>
-  <ArchaeologicalElement name="Burial_Mound">
-    <property name="Object ID">
+  <ArchaeologicalElement name="Diary"/>
+  <ArchaeologicalElement name="Epigraphic_record">
+    <property name="Inscription ID">
       <validator type="blankchecker">
         <param value="measure" type="field"/>
+      </validator>
+    </property>
+    <property name="Modern name">
+      <validator type="blankchecker">
+        <param value="measure" type="field"/>
+      </validator>
+    </property>
+    <property name="Archaeological Context">
+      <validator type="blankchecker">
+        <param value="vocab" type="field"/>
+      </validator>
+    </property>
+    <property name="Reuse">
+      <validator type="blankchecker">
+        <param value="vocab" type="field"/>
+      </validator>
+    </property>
+    <property name="Location Accessibility">
+      <validator type="blankchecker">
+        <param value="vocab" type="field"/>
+      </validator>
+    </property>
+    <property name="Inscription Accessibility">
+      <validator type="blankchecker">
+        <param value="vocab" type="field"/>
+      </validator>
+    </property>
+    <property name="Light conditions">
+      <validator type="blankchecker">
+        <param value="vocab" type="field"/>
+      </validator>
+    </property>
+    <property name="Material">
+      <validator type="blankchecker">
+        <param value="vocab" type="field"/>
+      </validator>
+    </property>
+    <property name="Number fragments">
+      <validator type="blankchecker">
+        <param value="measure" type="field"/>
+      </validator>
+    </property>
+    <property name="Preservation">
+      <validator type="blankchecker">
+        <param value="vocab" type="field"/>
+      </validator>
+    </property>
+    <property name="Inscription Typology">
+      <validator type="blankchecker">
+        <param value="vocab" type="field"/>
+      </validator>
+    </property>
+  </ArchaeologicalElement>
+  <ArchaeologicalElement name="External_Records">
+    <property name="External File Type">
+      <validator type="blankchecker">
+        <param value="vocab" type="field"/>
       </validator>
     </property>
   </ArchaeologicalElement>

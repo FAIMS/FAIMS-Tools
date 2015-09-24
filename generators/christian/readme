@@ -1,5 +1,6 @@
 TODO Include buttons in map
 TODO 'Take Picture' buttons don't work
+TODO Warn about unexpected flags for tabgroups
 
 TODO Warn about duplicate archents
 TODO Consider adding <logic> tags so that an arbitrary module can be specified

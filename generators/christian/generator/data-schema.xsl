@@ -213,7 +213,10 @@
   <xsl:template name="opt">
     <term>
       <xsl:if test="@p">
-        <xsl:attribute name="pictureURL"><xsl:value-of select="normalize-space(@p)"/></xsl:attribute>
+        <xsl:attribute name="pictureURL">
+          <xsl:text>files/data/</xsl:text>
+          <xsl:value-of select="normalize-space(@p)"/>
+        </xsl:attribute>
       </xsl:if>
       <xsl:if test="normalize-space(text()) = ''">
         <xsl:comment>ERROR: Option is missing a name</xsl:comment>
