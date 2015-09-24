@@ -589,7 +589,7 @@
           </item>
         </xsl:element>
       </xsl:when>
-      <xsl:when test="normalize-space(@t)='dropdown' or (not(@t) and ./opts)">
+      <xsl:when test="normalize-space(@t)='dropdown' or (not(@t) and ./opts and not(.//@p))">
         <xsl:element name="select1">
           <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')]) and not(@e) and not(@ec)">
             <xsl:attribute name="faims_attribute_type">vocab</xsl:attribute>
@@ -668,13 +668,16 @@
           <xsl:call-template name="body-expand-view-standard-nodes" />
         </xsl:element>
       </xsl:when>
-      <xsl:when test="normalize-space(@t)='picture'">
+      <xsl:when test="normalize-space(@t)='picture' or (not(@t) and .//@p)">
         <xsl:element name="select1">
           <xsl:attribute name="type">image</xsl:attribute>
           <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')])">
             <xsl:attribute name="faims_attribute_type">vocab</xsl:attribute>
           </xsl:if>
           <xsl:call-template name="body-expand-view-standard-nodes" />
+          <xsl:if test="$doWarn and not(@t)">
+            <xsl:comment>WARNING: No type t was given for this view; assuming it is a picture gallery</xsl:comment>
+          </xsl:if>
           <item>
             <label>Options not loaded</label>
             <value>0</value>

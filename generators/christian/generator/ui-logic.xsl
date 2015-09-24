@@ -423,7 +423,7 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
           <xsl:call-template name="complete-makevocab" />
         </xsl:when>
         <xsl:when test="normalize-space(@t) = 'dropdown' or
-          (not(@t) and ./opts)">
+          (not(@t) and ./opts and not(.//@p))">
           <xsl:choose>
             <xsl:when test="$is-hierarchical = '1'">
               <xsl:text>makeVocab("HierarchicalDropDown", "</xsl:text>
@@ -439,7 +439,8 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
           <xsl:text>makeVocab("List", "</xsl:text>
           <xsl:call-template name="complete-makevocab" />
         </xsl:when>
-        <xsl:when test="normalize-space(@t) = 'picture'">
+        <xsl:when test="normalize-space(@t) = 'picture' or
+          (not(@t) and .//@p)">
           <xsl:choose>
             <xsl:when test="$is-hierarchical = '1'">
               <xsl:text>makeVocab("HierarchicalPictureGallery", "</xsl:text>
