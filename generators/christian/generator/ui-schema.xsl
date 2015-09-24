@@ -429,6 +429,7 @@
     <input ref="Author" faims_read_only="true" faims_annotation="false" faims_certainty="false">
       <xsl:call-template name="label" />
       <xsl:call-template name="warn-unexpected-attr" />
+      <xsl:call-template name="warn-unexpected-flags" />
     </input>
   </xsl:template>
 
@@ -436,6 +437,7 @@
     <input ref="Timestamp" faims_read_only="true" faims_annotation="false" faims_certainty="false">
       <xsl:call-template name="label" />
       <xsl:call-template name="warn-unexpected-attr" />
+      <xsl:call-template name="warn-unexpected-flags" />
     </input>
   </xsl:template>
 
@@ -1000,6 +1002,12 @@
     </xsl:variable>
     <xsl:if test="$doWarn and $v16 != ''">
       <xsl:comment>WARNING: Unexpected flag(s) "<xsl:value-of select="$v16" />"</xsl:comment>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="warn-unexpected-flags">
+    <xsl:if test="@f">
+      <xsl:comment>WARNING: Flags ignored</xsl:comment>
     </xsl:if>
   </xsl:template>
 
