@@ -10,6 +10,7 @@ def setRowValue(row, columnName, value):
     if columnName not in row:
         return False
 
+    value = str(value)
     value = value.encode('utf-8')
     row[columnName]['$t'] = value
     return True

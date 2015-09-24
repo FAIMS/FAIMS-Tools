@@ -171,8 +171,8 @@ def rowToNode(row):
     countOrder   = parseList(countOrder)
     infoPictures = parseList(infoPictures)
 
-    #infoPictures = correctUrls(infoPictures)
-    #pictureUrl   = correctUrls(pictureUrl)
+    infoPictures = correctUrls(infoPictures)
+    pictureUrl   = correctUrls(pictureUrl)
 
     infoPictures = normaliseUrls(infoPictures)
     pictureUrl   = normaliseUrls(pictureUrl, False)
@@ -266,31 +266,37 @@ def rowToNode(row):
 
     return root
 
-# http://stackoverflow.com/questions/7423118/python-list-for-each-access-find-replace-in-built-in-list
+# Just numbers the vocab entries according to their row number
 def normaliseHtml(html):
-    lastCountOrder   = ''
-    lastPropertyName = ''
     for i in range(len(html['feed']['entry'])):
         row = html['feed']['entry'][i]
-        sheets.setRowValue(row, 'VocabCountOrder', '1')
-        continue
-        thisCountOrder   = sheets.getRowValue(row, 'VocabCountOrder')
-        thisPropertyName = sheets.getRowValue(row, 'faimsEntityAttributeName')
-
-        # Skip rows with VocabCountOrder already provided
-        if thisCountOrder:
-            lastCountOrder   = thisCountOrder
-            lastPropertyName = thisPropertyName
-            continue
-
-        # Set VocabCountOrder to 1 for first entry in each vocab
-        if thisPropertyName != lastPropertyName:
-            thisCountOrder   = '1'
-            lastCountOrder   = thisCountOrder
-            lastPropertyName = thisPropertyName
-
-        sheets.setRowValue(row, 'VocabCountOrder', lastCountOrder)
+        if sheets.getRowValue(row, 'faimsVocab'):
+            sheets.setRowValue(row, 'VocabCountOrder', i)
     return html
+
+#def normaliseHtml(html):
+    #lastCountOrder   = ''
+    #lastPropertyName = ''
+    #for i in range(len(html['feed']['entry'])):
+        #row = html['feed']['entry'][i]
+
+        #thisCountOrder   = sheets.getRowValue(row, 'VocabCountOrder')
+        #thisPropertyName = sheets.getRowValue(row, 'faimsEntityAttributeName')
+
+        ## Skip rows with VocabCountOrder already provided
+        #if thisCountOrder:
+            #lastCountOrder   = thisCountOrder
+            #lastPropertyName = thisPropertyName
+            #continue
+
+        ## Set VocabCountOrder to 1 for first entry in each vocab
+        #if thisPropertyName != lastPropertyName:
+            #thisCountOrder   = '1'
+            #lastCountOrder   = thisCountOrder
+            #lastPropertyName = thisPropertyName
+
+        #sheets.setRowValue(row, 'VocabCountOrder', lastCountOrder)
+    #return html
 
 ################################################################################
 #                                     MAIN                                     #
@@ -322,7 +328,7 @@ sortBy.append('__RESERVED_POS__')
 sortBy.append('__RESERVED_ATTR_ORDER__')
 for s in sortBy:
     dataSchema = xmltools.sortSiblings(dataSchema, s)
-    #dataSchema = xmltools.deleteAttribFromTree(s, dataSchema)
+    dataSchema = xmltools.deleteAttribFromTree(s, dataSchema)
 
 # Gimme dat data schema, blood
 print etree.tostring(dataSchema, pretty_print=True, xml_declaration=True, encoding='utf-8')

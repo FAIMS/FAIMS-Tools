@@ -1901,6 +1901,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{good}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/282_good.jpg" alt="files/data/gallery/282_good.jpg" />
+    </div>
+    <div>
+        <p>Majority of shell is whole or near whole, or articulated</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{moderate}<description><![CDATA[
 <div>
     <div>
@@ -1911,6 +1922,34 @@
     </div>
     <div>
         <p>Mixture of fragmented and near whole shell</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{moderate}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/271_none.jpg" alt="files/data/gallery/271_none.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/529_moderate.jpg" alt="files/data/gallery/529_moderate.jpg" />
+    </div>
+    <div>
+        <p>Mixture of fragmented and near whole shell</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{poor}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/284_poor.jpg" alt="files/data/gallery/284_poor.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/520_poor%20shell%20no%20charcoal.jpg" alt="files/data/gallery/520_poor%20shell%20no%20charcoal.jpg" />
+    </div>
+    <div>
+        <p>Majority of shell is highly fragmented</p>
     </div>
     <hr/>
 </div>
@@ -1974,6 +2013,20 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{hsclay}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/295_hsclay.jpg" alt="files/data/gallery/295_hsclay.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/296_hsclay.jpg" alt="files/data/gallery/296_hsclay.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from clay or sandy clay</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{hscarb}<description><![CDATA[
 <div>
     <div>
@@ -1981,6 +2034,34 @@
     </div>
     <div>
         <p>Heat retainers made from carbonate nodules</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hscarb}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/293_hscarb%20burned%20_%20unburned.jpg" alt="files/data/gallery/293_hscarb%20burned%20_%20unburned.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from carbonate nodules</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hsterm}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/257_none.jpg" alt="files/data/gallery/257_none.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/289_hsterm_plan.jpg" alt="files/data/gallery/289_hsterm_plan.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/290_hsterm_section.jpg" alt="files/data/gallery/290_hsterm_section.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from termite nest -  sandy with visible voids and channels</p>
     </div>
     <hr/>
 </div>
@@ -2013,6 +2094,28 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{hsother}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/297_hsother_silcrete.jpg" alt="files/data/gallery/297_hsother_silcrete.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from other material, e.g. silcrete nodules (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hsindet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/298_hsindet.jpg" alt="files/data/gallery/298_hsindet.jpg" />
+    </div>
+    <div>
+        <p>Too deeply buried or encrusted to determine type</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{hsindet}<description><![CDATA[
 <div>
     <div>
@@ -2031,6 +2134,28 @@
     </div>
     <div>
         <p>Thin layer or small lumps of burnt clay, orange in colour when freshly exposed, broken surfaces may be smooth</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{bakedclay}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/305_bakedclay_pieces.jpg" alt="files/data/gallery/305_bakedclay_pieces.jpg" />
+    </div>
+    <div>
+        <p>Thin layer or small lumps of burnt clay, orange in colour when freshly exposed, broken surfaces may be smooth</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{bakedsed}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/487_hearth%20material_baked%20sed.JPG" alt="files/data/gallery/487_hearth%20material_baked%20sed.JPG" />
+    </div>
+    <div>
+        <p>Ashy sediment, baked hard</p>
     </div>
     <hr/>
 </div>
@@ -2058,10 +2183,25 @@
 </div>
 ]]></description></term>
         <term>{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Associated_Eggshell">
       <lookup __RESERVED_CP__="true">
+        <term>{emu}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/324_other_emuegg.jpg" alt="files/data/gallery/324_other_emuegg.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/141_emu.jpg" alt="files/data/gallery/141_emu.jpg" />
+    </div>
+    <div>
+        <p>Shell with 3-layered structure and orange-peel texture; texture disappears only when weathering reduces shell thickness to < 0.8mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{emu}<description><![CDATA[
 <div>
     <div>
@@ -2087,6 +2227,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{genyo}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/143_genyo.jpg" alt="files/data/gallery/143_genyo.jpg" />
+    </div>
+    <div>
+        <p>Shell with single layer, pores appear as short, parallel groove-like pin pricks</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{other}<description><![CDATA[
 <div>
     <div>
@@ -2097,6 +2248,31 @@
     </div>
     <div>
         <p>Other eggshell, clearly not emu or Genyornis</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/144_other.jpg" alt="files/data/gallery/144_other.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/145_other.jpg" alt="files/data/gallery/145_other.jpg" />
+    </div>
+    <div>
+        <p>Other eggshell, clearly not emu or Genyornis</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{indet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/146_indet.jpg" alt="files/data/gallery/146_indet.jpg" />
+    </div>
+    <div>
+        <p>Features unclear due to surface modification or shell is smooth and < 0.8mm thick</p>
     </div>
     <hr/>
 </div>
@@ -2170,6 +2346,28 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{cs}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/168_cs.jpg" alt="files/data/gallery/168_cs.jpg" />
+    </div>
+    <div>
+        <p>Chipped stone</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{um}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/169_um.jpg" alt="files/data/gallery/169_um.jpg" />
+    </div>
+    <div>
+        <p>Unmodified stone</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{um}<description><![CDATA[
 <div>
     <div>
@@ -2192,6 +2390,18 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{ground}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/170_ground.jpg" alt="files/data/gallery/170_ground.jpg" />
+    </div>
+    <div>
+        <p>Ground stone</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{indet}</term>
         <term>{indet}</term>
       </lookup>
     </property>
@@ -2794,6 +3004,56 @@
     </property>
     <property name="OldBone_-_Ground_Stone_Raw_Material">
       <lookup __RESERVED_CP__="true">
+        <term>{silcrete}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/228_silcfine.jpg" alt="files/data/gallery/228_silcfine.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are < 0.25 mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{sandst}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/215_silcmed.jpg" alt="files/data/gallery/215_silcmed.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/231_silcmed.jpg" alt="files/data/gallery/231_silcmed.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are 0.25 -- 0.5 mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{qtzite}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/235_silccoarse.jpg" alt="files/data/gallery/235_silccoarse.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/236_silccoarse.jpg" alt="files/data/gallery/236_silccoarse.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are greater than 0.5mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{silcrete}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/218_silcmicroxtal.jpg" alt="files/data/gallery/218_silcmicroxtal.jpg" />
+    </div>
+    <div>
+        <p>Naked eye cannot identify grains in the matrix</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{sandst}<description><![CDATA[
 <div>
     <div>
@@ -2852,45 +3112,6 @@
 ]]></description></term>
         <term>{unident}</term>
         <term>{indet}</term>
-        <term>{silcrete}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/228_silcfine.jpg" alt="files/data/gallery/228_silcfine.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are < 0.25 mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{sandst}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/215_silcmed.jpg" alt="files/data/gallery/215_silcmed.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/231_silcmed.jpg" alt="files/data/gallery/231_silcmed.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are 0.25 -- 0.5 mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{qtzite}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/235_silccoarse.jpg" alt="files/data/gallery/235_silccoarse.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/236_silccoarse.jpg" alt="files/data/gallery/236_silccoarse.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are greater than 0.5mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
       </lookup>
     </property>
     <property name="OldBone_-_Associated_Other_Artefacts">
@@ -2905,6 +3126,37 @@
     </div>
     <div>
         <p>Bone with a smoothed, ground surface which is pointed or bevelled at one or both ends; striations may be visible</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{bonemod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/127_bonemod.jpg" alt="files/data/gallery/127_bonemod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
+    </div>
+    <div>
+        <p>Bone with a smoothed, ground surface which is pointed or bevelled at one or both ends; striations may be visible</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{shellmod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/129_shellmod.jpg" alt="files/data/gallery/129_shellmod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/130_shellmod.jpg" alt="files/data/gallery/130_shellmod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/131_shellmod.jpg" alt="files/data/gallery/131_shellmod.jpg" />
+    </div>
+    <div>
+        <p>Thick fragment of shell with notches or other evidence of working or use along one or more margins</p>
     </div>
     <hr/>
 </div>
@@ -2937,6 +3189,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{eggmod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/132_eggmod.jpg" alt="files/data/gallery/132_eggmod.jpg" />
+    </div>
+    <div>
+        <p>Eggshell with modified surface, e.g. tooth mark or drill hole</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{ochrediss}<description><![CDATA[
 <div>
     <div>
@@ -2944,6 +3207,31 @@
     </div>
     <div>
         <p>Flecks or fragments of ochre disseminated through the sediment</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{ochrediss}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/133_ochrediss.jpg" alt="files/data/gallery/133_ochrediss.jpg" />
+    </div>
+    <div>
+        <p>Flecks or fragments of ochre disseminated through the sediment</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{ochrenod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/134_ochrenod.jpg" alt="files/data/gallery/134_ochrenod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/135_ochre%20nodule.jpg" alt="files/data/gallery/135_ochre%20nodule.jpg" />
+    </div>
+    <div>
+        <p>Small nodule of ochre</p>
     </div>
     <hr/>
 </div>
@@ -2973,6 +3261,28 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{ochrefacet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/136_ochrefacet.jpg" alt="files/data/gallery/136_ochrefacet.jpg" />
+    </div>
+    <div>
+        <p>Ochre with facets, indicating use as crayon</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{qtzxtal}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/137_qtzxal.jpg" alt="files/data/gallery/137_qtzxal.jpg" />
+    </div>
+    <div>
+        <p>Worked or unworked quartz crystal</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{qtzxtal}<description><![CDATA[
 <div>
     <div>
@@ -2994,6 +3304,31 @@
     </div>
     <div>
         <p>Marine gastropod up to 4cm long, with white zigzag stripes</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{turbo}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/138_turbo_fragment.jpg" alt="files/data/gallery/138_turbo_fragment.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/139_turbo_whole.jpg" alt="files/data/gallery/139_turbo_whole.jpg" />
+    </div>
+    <div>
+        <p>Marine gastropod up to 4cm long, with white zigzag stripes</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/140_other_glass.jpg" alt="files/data/gallery/140_other_glass.jpg" />
+    </div>
+    <div>
+        <p>Any other worked, utilised or transported material not listed above (record in annotations)</p>
     </div>
     <hr/>
 </div>
@@ -3091,6 +3426,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{good}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/282_good.jpg" alt="files/data/gallery/282_good.jpg" />
+    </div>
+    <div>
+        <p>Majority of shell is whole or near whole, or articulated</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{moderate}<description><![CDATA[
 <div>
     <div>
@@ -3101,6 +3447,34 @@
     </div>
     <div>
         <p>Mixture of fragmented and near whole shell</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{moderate}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/271_none.jpg" alt="files/data/gallery/271_none.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/529_moderate.jpg" alt="files/data/gallery/529_moderate.jpg" />
+    </div>
+    <div>
+        <p>Mixture of fragmented and near whole shell</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{poor}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/284_poor.jpg" alt="files/data/gallery/284_poor.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/520_poor%20shell%20no%20charcoal.jpg" alt="files/data/gallery/520_poor%20shell%20no%20charcoal.jpg" />
+    </div>
+    <div>
+        <p>Majority of shell is highly fragmented</p>
     </div>
     <hr/>
 </div>
@@ -3164,6 +3538,20 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{hsclay}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/295_hsclay.jpg" alt="files/data/gallery/295_hsclay.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/296_hsclay.jpg" alt="files/data/gallery/296_hsclay.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from clay or sandy clay</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{hscarb}<description><![CDATA[
 <div>
     <div>
@@ -3171,6 +3559,34 @@
     </div>
     <div>
         <p>Heat retainers made from carbonate nodules</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hscarb}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/293_hscarb%20burned%20_%20unburned.jpg" alt="files/data/gallery/293_hscarb%20burned%20_%20unburned.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from carbonate nodules</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hsterm}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/257_none.jpg" alt="files/data/gallery/257_none.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/289_hsterm_plan.jpg" alt="files/data/gallery/289_hsterm_plan.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/290_hsterm_section.jpg" alt="files/data/gallery/290_hsterm_section.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from termite nest -  sandy with visible voids and channels</p>
     </div>
     <hr/>
 </div>
@@ -3203,6 +3619,28 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{hsother}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/297_hsother_silcrete.jpg" alt="files/data/gallery/297_hsother_silcrete.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from other material, e.g. silcrete nodules (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hsindet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/298_hsindet.jpg" alt="files/data/gallery/298_hsindet.jpg" />
+    </div>
+    <div>
+        <p>Too deeply buried or encrusted to determine type</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{hsindet}<description><![CDATA[
 <div>
     <div>
@@ -3221,6 +3659,28 @@
     </div>
     <div>
         <p>Thin layer or small lumps of burnt clay, orange in colour when freshly exposed, broken surfaces may be smooth</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{bakedclay}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/305_bakedclay_pieces.jpg" alt="files/data/gallery/305_bakedclay_pieces.jpg" />
+    </div>
+    <div>
+        <p>Thin layer or small lumps of burnt clay, orange in colour when freshly exposed, broken surfaces may be smooth</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{bakedsed}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/487_hearth%20material_baked%20sed.JPG" alt="files/data/gallery/487_hearth%20material_baked%20sed.JPG" />
+    </div>
+    <div>
+        <p>Ashy sediment, baked hard</p>
     </div>
     <hr/>
 </div>
@@ -3248,10 +3708,25 @@
 </div>
 ]]></description></term>
         <term>{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="OldBone_-_Associated_Eggshell">
       <lookup __RESERVED_CP__="true">
+        <term>{emu}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/324_other_emuegg.jpg" alt="files/data/gallery/324_other_emuegg.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/141_emu.jpg" alt="files/data/gallery/141_emu.jpg" />
+    </div>
+    <div>
+        <p>Shell with 3-layered structure and orange-peel texture; texture disappears only when weathering reduces shell thickness to < 0.8mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{emu}<description><![CDATA[
 <div>
     <div>
@@ -3277,6 +3752,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{genyo}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/143_genyo.jpg" alt="files/data/gallery/143_genyo.jpg" />
+    </div>
+    <div>
+        <p>Shell with single layer, pores appear as short, parallel groove-like pin pricks</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{other}<description><![CDATA[
 <div>
     <div>
@@ -3287,6 +3773,31 @@
     </div>
     <div>
         <p>Other eggshell, clearly not emu or Genyornis</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/144_other.jpg" alt="files/data/gallery/144_other.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/145_other.jpg" alt="files/data/gallery/145_other.jpg" />
+    </div>
+    <div>
+        <p>Other eggshell, clearly not emu or Genyornis</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{indet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/146_indet.jpg" alt="files/data/gallery/146_indet.jpg" />
+    </div>
+    <div>
+        <p>Features unclear due to surface modification or shell is smooth and < 0.8mm thick</p>
     </div>
     <hr/>
 </div>
@@ -3360,6 +3871,28 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{cs}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/168_cs.jpg" alt="files/data/gallery/168_cs.jpg" />
+    </div>
+    <div>
+        <p>Chipped stone</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{um}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/169_um.jpg" alt="files/data/gallery/169_um.jpg" />
+    </div>
+    <div>
+        <p>Unmodified stone</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{um}<description><![CDATA[
 <div>
     <div>
@@ -3382,6 +3915,18 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{ground}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/170_ground.jpg" alt="files/data/gallery/170_ground.jpg" />
+    </div>
+    <div>
+        <p>Ground stone</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{indet}</term>
         <term>{indet}</term>
       </lookup>
     </property>
@@ -3984,6 +4529,56 @@
     </property>
     <property name="OldBone_-_Ground_Stone_Raw_Material">
       <lookup __RESERVED_CP__="true">
+        <term>{silcrete}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/228_silcfine.jpg" alt="files/data/gallery/228_silcfine.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are < 0.25 mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{sandst}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/215_silcmed.jpg" alt="files/data/gallery/215_silcmed.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/231_silcmed.jpg" alt="files/data/gallery/231_silcmed.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are 0.25 -- 0.5 mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{qtzite}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/235_silccoarse.jpg" alt="files/data/gallery/235_silccoarse.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/236_silccoarse.jpg" alt="files/data/gallery/236_silccoarse.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are greater than 0.5mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{silcrete}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/218_silcmicroxtal.jpg" alt="files/data/gallery/218_silcmicroxtal.jpg" />
+    </div>
+    <div>
+        <p>Naked eye cannot identify grains in the matrix</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{sandst}<description><![CDATA[
 <div>
     <div>
@@ -4042,45 +4637,6 @@
 ]]></description></term>
         <term>{unident}</term>
         <term>{indet}</term>
-        <term>{silcrete}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/228_silcfine.jpg" alt="files/data/gallery/228_silcfine.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are < 0.25 mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{sandst}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/215_silcmed.jpg" alt="files/data/gallery/215_silcmed.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/231_silcmed.jpg" alt="files/data/gallery/231_silcmed.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are 0.25 -- 0.5 mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{qtzite}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/235_silccoarse.jpg" alt="files/data/gallery/235_silccoarse.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/236_silccoarse.jpg" alt="files/data/gallery/236_silccoarse.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are greater than 0.5mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
       </lookup>
     </property>
     <property name="OldBone_-_Associated_Other_Artefacts">
@@ -4095,6 +4651,37 @@
     </div>
     <div>
         <p>Bone with a smoothed, ground surface which is pointed or bevelled at one or both ends; striations may be visible</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{bonemod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/127_bonemod.jpg" alt="files/data/gallery/127_bonemod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
+    </div>
+    <div>
+        <p>Bone with a smoothed, ground surface which is pointed or bevelled at one or both ends; striations may be visible</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{shellmod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/129_shellmod.jpg" alt="files/data/gallery/129_shellmod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/130_shellmod.jpg" alt="files/data/gallery/130_shellmod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/131_shellmod.jpg" alt="files/data/gallery/131_shellmod.jpg" />
+    </div>
+    <div>
+        <p>Thick fragment of shell with notches or other evidence of working or use along one or more margins</p>
     </div>
     <hr/>
 </div>
@@ -4127,6 +4714,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{eggmod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/132_eggmod.jpg" alt="files/data/gallery/132_eggmod.jpg" />
+    </div>
+    <div>
+        <p>Eggshell with modified surface, e.g. tooth mark or drill hole</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{ochrediss}<description><![CDATA[
 <div>
     <div>
@@ -4134,6 +4732,31 @@
     </div>
     <div>
         <p>Flecks or fragments of ochre disseminated through the sediment</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{ochrediss}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/133_ochrediss.jpg" alt="files/data/gallery/133_ochrediss.jpg" />
+    </div>
+    <div>
+        <p>Flecks or fragments of ochre disseminated through the sediment</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{ochrenod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/134_ochrenod.jpg" alt="files/data/gallery/134_ochrenod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/135_ochre%20nodule.jpg" alt="files/data/gallery/135_ochre%20nodule.jpg" />
+    </div>
+    <div>
+        <p>Small nodule of ochre</p>
     </div>
     <hr/>
 </div>
@@ -4163,6 +4786,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{ochrefacet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/136_ochrefacet.jpg" alt="files/data/gallery/136_ochrefacet.jpg" />
+    </div>
+    <div>
+        <p>Ochre with facets, indicating use as crayon</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{qtzxtal}<description><![CDATA[
 <div>
     <div>
@@ -4170,6 +4804,31 @@
     </div>
     <div>
         <p>Worked or unworked quartz crystal</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{qtzxtal}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/137_qtzxal.jpg" alt="files/data/gallery/137_qtzxal.jpg" />
+    </div>
+    <div>
+        <p>Worked or unworked quartz crystal</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{turbo}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/138_turbo_fragment.jpg" alt="files/data/gallery/138_turbo_fragment.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/139_turbo_whole.jpg" alt="files/data/gallery/139_turbo_whole.jpg" />
+    </div>
+    <div>
+        <p>Marine gastropod up to 4cm long, with white zigzag stripes</p>
     </div>
     <hr/>
 </div>
@@ -4199,31 +4858,33 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/140_other_glass.jpg" alt="files/data/gallery/140_other_glass.jpg" />
+    </div>
+    <div>
+        <p>Any other worked, utilised or transported material not listed above (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
       </lookup>
     </property>
   </ArchaeologicalElement>
   <ArchaeologicalElement name="Hearth">
     <property name="Hearth_-_Hearth_Type">
       <lookup __RESERVED_CP__="true">
-        <term>{Hearths_with_heat-retainer_hearthstones}<term>{hsterm}<description><![CDATA[
+        <term>{Hearths_with_heat-retainer_hearthstones}<term>{hsclay}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/340_dispers.JPG" alt="files/data/gallery/340_dispers.JPG" />
+        <img style="width:100%" src="files/data/gallery/295_hsclay.jpg" alt="files/data/gallery/295_hsclay.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/328_most.JPG" alt="files/data/gallery/328_most.JPG" />
+        <img style="width:100%" src="files/data/gallery/296_hsclay.jpg" alt="files/data/gallery/296_hsclay.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/289_hsterm_plan.jpg" alt="files/data/gallery/289_hsterm_plan.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/290_hsterm_section.jpg" alt="files/data/gallery/290_hsterm_section.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/257_none.jpg" alt="files/data/gallery/257_none.jpg" />
-    </div>
-    <div>
-        <p>Heat retainers made from termite nest -  sandy with visible voids and channels</p>
+        <p>Heat retainers made from clay or sandy clay</p>
     </div>
     <hr/>
 </div>
@@ -4246,16 +4907,25 @@
     </div>
     <hr/>
 </div>
-]]></description></term><term>{hsclay}<description><![CDATA[
+]]></description></term><term>{hsterm}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/295_hsclay.jpg" alt="files/data/gallery/295_hsclay.jpg" />
+        <img style="width:100%" src="files/data/gallery/340_dispers.JPG" alt="files/data/gallery/340_dispers.JPG" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/296_hsclay.jpg" alt="files/data/gallery/296_hsclay.jpg" />
+        <img style="width:100%" src="files/data/gallery/328_most.JPG" alt="files/data/gallery/328_most.JPG" />
     </div>
     <div>
-        <p>Heat retainers made from clay or sandy clay</p>
+        <img style="width:100%" src="files/data/gallery/289_hsterm_plan.jpg" alt="files/data/gallery/289_hsterm_plan.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/290_hsterm_section.jpg" alt="files/data/gallery/290_hsterm_section.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/257_none.jpg" alt="files/data/gallery/257_none.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from termite nest -  sandy with visible voids and channels</p>
     </div>
     <hr/>
 </div>
@@ -4473,17 +5143,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{indet}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/276_indet.jpg" alt="files/data/gallery/276_indet.jpg" />
-    </div>
-    <div>
-        <p>Dark particles or flecks visible, but origin indeterminate</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{lumps}<description><![CDATA[
 <div>
     <div>
@@ -4491,6 +5150,17 @@
     </div>
     <div>
         <p>Large lumps of charcoal within the hearth or its sedimentary matrix</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{indet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/276_indet.jpg" alt="files/data/gallery/276_indet.jpg" />
+    </div>
+    <div>
+        <p>Dark particles or flecks visible, but origin indeterminate</p>
     </div>
     <hr/>
 </div>
@@ -4630,18 +5300,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{polish}</term>
-        <term>{other}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/344_rill.JPG" alt="files/data/gallery/344_rill.JPG" />
-    </div>
-    <div>
-        <p>Modification not described by any of the above (record in annotations)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{fragdispers}<description><![CDATA[
 <div>
     <div>
@@ -4666,6 +5324,18 @@
     </div>
     <div>
         <p>Surface is coverd with a deposit of calcium carbonate</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{polish}</term>
+        <term>{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/344_rill.JPG" alt="files/data/gallery/344_rill.JPG" />
+    </div>
+    <div>
+        <p>Modification not described by any of the above (record in annotations)</p>
     </div>
     <hr/>
 </div>
@@ -5472,6 +6142,13 @@
         <term>{B}</term>
         <term>{C}</term>
         <term>{D}</term>
+        <term>{E}</term>
+        <term>{F}</term>
+        <term>{G}</term>
+        <term>{H}</term>
+        <term>{I}</term>
+        <term>{other}</term>
+        <term>{indet}</term>
         <term pictureURL="files/data/gallery/124_alluvial fan lake floor.jpg">{allfan}<description><![CDATA[
 <div>
     <div>
@@ -5492,13 +6169,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{E}</term>
-        <term>{F}</term>
-        <term>{G}</term>
-        <term>{H}</term>
-        <term>{I}</term>
-        <term>{indet}</term>
-        <term>{other}</term>
       </lookup>
     </property>
     <property name="Hearth_-_Vulnerability_To_Erosion">
@@ -5682,6 +6352,7 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{other}</term>
         <term pictureURL="files/data/gallery/126_indet _ backdune.jpg">{indet}<description><![CDATA[
 <div>
     <div>
@@ -5693,7 +6364,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{other}</term>
       </lookup>
     </property>
     <property name="Hearth_-_Photos">
@@ -5739,6 +6409,17 @@
     </div>
     <div>
         <p>Terrestrial bone material</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{unidentbone}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
+    </div>
+    <div>
+        <p>Potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but could not be identified by recorder</p>
     </div>
     <hr/>
 </div>
@@ -5792,17 +6473,6 @@
     </div>
     <div>
         <p>Other worked or transported material</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{unidentbone}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
-    </div>
-    <div>
-        <p>Potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but could not be identified by recorder</p>
     </div>
     <hr/>
 </div>
@@ -5881,7 +6551,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{other}</term>
         <term>{scute}<description><![CDATA[
 <div>
     <div>
@@ -5893,6 +6562,7 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="HearthAssoc_-_Burnt_lacustrine_material">
@@ -5927,111 +6597,6 @@
     </property>
     <property name="HearthAssoc_-_Associated_terrestrial_bone">
       <lookup __RESERVED_CP__="true">
-        <term>{mammal}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/365_insitbo_section.JPG" alt="files/data/gallery/365_insitbo_section.JPG" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/501_unidentbone.jpg" alt="files/data/gallery/501_unidentbone.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/499_terrbone.jpg" alt="files/data/gallery/499_terrbone.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/514_mammal%20bone.jpg" alt="files/data/gallery/514_mammal%20bone.jpg" />
-    </div>
-    <div>
-        <p>characteristic of terrestrial mammal bone but more precise taxonomic identification not made</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{birdbone}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/450_birdother.jpg" alt="files/data/gallery/450_birdother.jpg" />
-    </div>
-    <div>
-        <p>bird other than emu; many bird bones are hollow, others have air pockets within semi-hollow bones</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{reptile}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/382_most_snake.jpg" alt="files/data/gallery/382_most_snake.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/444_reptile_small.jpg" alt="files/data/gallery/444_reptile_small.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/445_reptile_large.jpg" alt="files/data/gallery/445_reptile_large.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/513_reptile%20jaw.jpg" alt="files/data/gallery/513_reptile%20jaw.jpg" />
-    </div>
-    <div>
-        <p>turtles, snakes and lizards</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{other}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/438_carnivore_Thylacine.jpg" alt="files/data/gallery/438_carnivore_Thylacine.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/440_carnivore_TasmanianDevil.jpg" alt="files/data/gallery/440_carnivore_TasmanianDevil.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/443_mega.jpg" alt="files/data/gallery/443_mega.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/530_Other_echidna.jpg" alt="files/data/gallery/530_Other_echidna.jpg" />
-    </div>
-    <div>
-        <p>megafauna, amphibian, carnivore or a more precise taxonomic identification not listed above (record in annotations)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{unident}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/426_unident_teeth.jpg" alt="files/data/gallery/426_unident_teeth.jpg" />
-    </div>
-    <div>
-        <p>potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but could not be identified by recorder</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{undiag}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/427_undiag.jpg" alt="files/data/gallery/427_undiag.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/428_undiag.jpg" alt="files/data/gallery/428_undiag.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/430_undiag.jpg" alt="files/data/gallery/430_undiag.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/527_undiag%20bone%201.jpg" alt="files/data/gallery/527_undiag%20bone%201.jpg" />
-    </div>
-    <div>
-        <p>shape and size are not diagnostic of taxon and no other diagnostic features are preserved (teeth, muscle markings, articular ends)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{wombat}<description><![CDATA[
 <div>
     <div>
@@ -6093,6 +6658,46 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{mammal}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/365_insitbo_section.JPG" alt="files/data/gallery/365_insitbo_section.JPG" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/501_unidentbone.jpg" alt="files/data/gallery/501_unidentbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/499_terrbone.jpg" alt="files/data/gallery/499_terrbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/514_mammal%20bone.jpg" alt="files/data/gallery/514_mammal%20bone.jpg" />
+    </div>
+    <div>
+        <p>characteristic of terrestrial mammal bone but more precise taxonomic identification not made</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{reptile}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/382_most_snake.jpg" alt="files/data/gallery/382_most_snake.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/444_reptile_small.jpg" alt="files/data/gallery/444_reptile_small.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/445_reptile_large.jpg" alt="files/data/gallery/445_reptile_large.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/513_reptile%20jaw.jpg" alt="files/data/gallery/513_reptile%20jaw.jpg" />
+    </div>
+    <div>
+        <p>turtles, snakes and lizards</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{emu}<description><![CDATA[
 <div>
     <div>
@@ -6106,6 +6711,71 @@
     </div>
     <div>
         <p>most emu bones are heavy and solid in contrast to those of flying birds which are lightweight & hollow</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{birdbone}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/450_birdother.jpg" alt="files/data/gallery/450_birdother.jpg" />
+    </div>
+    <div>
+        <p>bird other than emu; many bird bones are hollow, others have air pockets within semi-hollow bones</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/438_carnivore_Thylacine.jpg" alt="files/data/gallery/438_carnivore_Thylacine.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/440_carnivore_TasmanianDevil.jpg" alt="files/data/gallery/440_carnivore_TasmanianDevil.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/443_mega.jpg" alt="files/data/gallery/443_mega.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/530_Other_echidna.jpg" alt="files/data/gallery/530_Other_echidna.jpg" />
+    </div>
+    <div>
+        <p>megafauna, amphibian, carnivore or a more precise taxonomic identification not listed above (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{unident}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/426_unident_teeth.jpg" alt="files/data/gallery/426_unident_teeth.jpg" />
+    </div>
+    <div>
+        <p>potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but could not be identified by recorder</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{undiag}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/427_undiag.jpg" alt="files/data/gallery/427_undiag.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/428_undiag.jpg" alt="files/data/gallery/428_undiag.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/430_undiag.jpg" alt="files/data/gallery/430_undiag.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/527_undiag%20bone%201.jpg" alt="files/data/gallery/527_undiag%20bone%201.jpg" />
+    </div>
+    <div>
+        <p>shape and size are not diagnostic of taxon and no other diagnostic features are preserved (teeth, muscle markings, articular ends)</p>
     </div>
     <hr/>
 </div>
@@ -6303,17 +6973,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{notch}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/184_notch.jpg" alt="files/data/gallery/184_notch.jpg" />
-    </div>
-    <div>
-        <p>Retouch that creates one or more concavities along the margin of the tool</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{co}<description><![CDATA[
 <div>
     <div>
@@ -6379,24 +7038,21 @@
     <hr/>
 </div>
 ]]></description></term>
-      </lookup>
-    </property>
-    <property name="HearthAssoc_-_Associated_retouched_artefacts">
-      <lookup __RESERVED_CP__="true">
-        <term>{nodule}<description><![CDATA[
+        <term>{notch}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/191_nodule.jpg" alt="files/data/gallery/191_nodule.jpg" />
+        <img style="width:100%" src="files/data/gallery/184_notch.jpg" alt="files/data/gallery/184_notch.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/192_nodule.jpg" alt="files/data/gallery/192_nodule.jpg" />
-    </div>
-    <div>
-        <p>A large, nodular or rounded cobble (>64 mm maximum dimension)</p>
+        <p>Retouch that creates one or more concavities along the margin of the tool</p>
     </div>
     <hr/>
 </div>
 ]]></description></term>
+      </lookup>
+    </property>
+    <property name="HearthAssoc_-_Associated_retouched_artefacts">
+      <lookup __RESERVED_CP__="true">
         <term>{scraper}<description><![CDATA[
 <div>
     <div>
@@ -6462,6 +7118,20 @@
 </div>
 ]]></description></term>
         <term>{indet}</term>
+        <term>{nodule}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/191_nodule.jpg" alt="files/data/gallery/191_nodule.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/192_nodule.jpg" alt="files/data/gallery/192_nodule.jpg" />
+    </div>
+    <div>
+        <p>A large, nodular or rounded cobble (>64 mm maximum dimension)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
       </lookup>
     </property>
     <property name="HearthAssoc_-_Associated_unmodified_stone">
@@ -6741,8 +7411,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{indet}</term>
         <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="HearthAssoc_-_Unmodified_Raw_Material">
@@ -6879,12 +7549,62 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{indet}</term>
         <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="HearthAssoc_-_Ground_stone_raw_material">
       <lookup __RESERVED_CP__="true">
+        <term>{silcrete}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/228_silcfine.jpg" alt="files/data/gallery/228_silcfine.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are < 0.25 mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{sandst}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/215_silcmed.jpg" alt="files/data/gallery/215_silcmed.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/231_silcmed.jpg" alt="files/data/gallery/231_silcmed.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are 0.25 -- 0.5 mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{qtzite}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/235_silccoarse.jpg" alt="files/data/gallery/235_silccoarse.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/236_silccoarse.jpg" alt="files/data/gallery/236_silccoarse.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are greater than 0.5mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{silcrete}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/218_silcmicroxtal.jpg" alt="files/data/gallery/218_silcmicroxtal.jpg" />
+    </div>
+    <div>
+        <p>Naked eye cannot identify grains in the matrix</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{sandst}<description><![CDATA[
 <div>
     <div>
@@ -6941,47 +7661,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{indet}</term>
-        <term>{silcrete}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/228_silcfine.jpg" alt="files/data/gallery/228_silcfine.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are < 0.25 mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{sandst}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/215_silcmed.jpg" alt="files/data/gallery/215_silcmed.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/231_silcmed.jpg" alt="files/data/gallery/231_silcmed.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are 0.25 -- 0.5 mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{qtzite}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/235_silccoarse.jpg" alt="files/data/gallery/235_silccoarse.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/236_silccoarse.jpg" alt="files/data/gallery/236_silccoarse.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are greater than 0.5mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="HearthAssoc_-_Associated_other_worked_(or_transported)_material">
@@ -7335,6 +8016,49 @@
     <hr/>
 </div>
 ]]></description></term></term>
+        <term>{Faunal_Remains}</term>
+        <term __RESERVED_PAR__="{Other_Artefacts}">{bonemod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/127_bonemod.jpg" alt="files/data/gallery/127_bonemod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
+    </div>
+    <div>
+        <p>Bone with a smoothed, ground surface which is pointed or bevelled at one or both ends; striations may be visible</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Other_Artefacts}">{shellmod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/129_shellmod.jpg" alt="files/data/gallery/129_shellmod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/130_shellmod.jpg" alt="files/data/gallery/130_shellmod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/131_shellmod.jpg" alt="files/data/gallery/131_shellmod.jpg" />
+    </div>
+    <div>
+        <p>Thick fragment of shell with notches or other evidence of working or use along one or more margins</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Other_Artefacts}">{eggmod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/132_eggmod.jpg" alt="files/data/gallery/132_eggmod.jpg" />
+    </div>
+    <div>
+        <p>Eggshell with modified surface, e.g. tooth mark or drill hole</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term __RESERVED_PAR__="{Faunal_Remains}">{wombat}<description><![CDATA[
 <div>
     <div>
@@ -7361,34 +8085,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_PAR__="{Hearthstones}">{hscarb}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/293_hscarb%20burned%20_%20unburned.jpg" alt="files/data/gallery/293_hscarb%20burned%20_%20unburned.jpg" />
-    </div>
-    <div>
-        <p>Heat retainers made from carbonate nodules</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term __RESERVED_PAR__="{Other_Artefacts}">{shellmod}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/129_shellmod.jpg" alt="files/data/gallery/129_shellmod.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/130_shellmod.jpg" alt="files/data/gallery/130_shellmod.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/131_shellmod.jpg" alt="files/data/gallery/131_shellmod.jpg" />
-    </div>
-    <div>
-        <p>Thick fragment of shell with notches or other evidence of working or use along one or more margins</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term __RESERVED_PAR__="{Faunal_Remains}">{bettong}<description><![CDATA[
 <div>
     <div>
@@ -7399,29 +8095,6 @@
     </div>
     <div>
         <p>Small burrowing marsupial with a distinctive, crested pre-molar, common in the record</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term __RESERVED_PAR__="{Hearthstones}">{hsterm}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/257_none.jpg" alt="files/data/gallery/257_none.jpg" />
-    </div>
-    <div>
-        <p>Heat retainers made from termite nest -  sandy with visible voids and channels</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{Faunal_Remains}</term>
-        <term __RESERVED_PAR__="{Other_Artefacts}">{eggmod}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/132_eggmod.jpg" alt="files/data/gallery/132_eggmod.jpg" />
-    </div>
-    <div>
-        <p>Eggshell with modified surface, e.g. tooth mark or drill hole</p>
     </div>
     <hr/>
 </div>
@@ -7446,28 +8119,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_PAR__="{Other_Worked_Material}">{qtzxtal}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/137_qtzxal.jpg" alt="files/data/gallery/137_qtzxal.jpg" />
-    </div>
-    <div>
-        <p>Worked or unworked quartz crystal</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term __RESERVED_PAR__="{Hearthstones}">{hsclay}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/296_hsclay.jpg" alt="files/data/gallery/296_hsclay.jpg" />
-    </div>
-    <div>
-        <p>Heat retainers made from clay or sandy clay</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term __RESERVED_PAR__="{Faunal_Remains}">{smallmars}<description><![CDATA[
 <div>
     <div>
@@ -7479,13 +8130,13 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_PAR__="{Hearthstones}">{hsother}<description><![CDATA[
+        <term __RESERVED_PAR__="{Faunal_Remains}">{scat}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/297_hsother_silcrete.jpg" alt="files/data/gallery/297_hsother_silcrete.jpg" />
+        <img style="width:100%" src="files/data/gallery/505_scat.jpg" alt="files/data/gallery/505_scat.jpg" />
     </div>
     <div>
-        <p>Heat retainers made from other material, e.g. silcrete nodules (record in annotations)</p>
+        <p>ancient faecal pellet (note: modern scats may contain fur, ligaments or seeds)</p>
     </div>
     <hr/>
 </div>
@@ -7519,6 +8170,71 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term __RESERVED_PAR__="{Faunal_Remains}">{rodent}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/441_rodent.jpg" alt="files/data/gallery/441_rodent.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/442_rodent.jpg" alt="files/data/gallery/442_rodent.jpg" />
+    </div>
+    <div>
+        <p>Small mammal with distinctive incisors in upper & lower jaws</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Faunal_Remains}">{mega}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/443_mega.jpg" alt="files/data/gallery/443_mega.jpg" />
+    </div>
+    <div>
+        <p>Remains of megafauna, recognized on basis of large size compared to extant relatives</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Faunal_Remains}">{mammal}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/365_insitbo_section.JPG" alt="files/data/gallery/365_insitbo_section.JPG" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/369_in%20sit%20bone%204.JPG" alt="files/data/gallery/369_in%20sit%20bone%204.JPG" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/514_mammal%20bone.jpg" alt="files/data/gallery/514_mammal%20bone.jpg" />
+    </div>
+    <div>
+        <p>Characteristic of terrestrial mammal bone but more precise taxonomic identification not made</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Faunal_Remains}">{reptile}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/382_most_snake.jpg" alt="files/data/gallery/382_most_snake.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/444_reptile_small.jpg" alt="files/data/gallery/444_reptile_small.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/445_reptile_large.jpg" alt="files/data/gallery/445_reptile_large.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/424_scute.jpg" alt="files/data/gallery/424_scute.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/513_reptile%20jaw.jpg" alt="files/data/gallery/513_reptile%20jaw.jpg" />
+    </div>
+    <div>
+        <p>Turtles, snakes and lizards (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term __RESERVED_PAR__="{Faunal_Remains}">{emu}<description><![CDATA[
 <div>
     <div>
@@ -7543,20 +8259,6 @@
     </div>
     <div>
         <p>Bird other than emu; most bones are hollow, others are semi-hollow with air pockets</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term __RESERVED_PAR__="{Faunal_Remains}">{rodent}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/441_rodent.jpg" alt="files/data/gallery/441_rodent.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/442_rodent.jpg" alt="files/data/gallery/442_rodent.jpg" />
-    </div>
-    <div>
-        <p>Small mammal with distinctive incisors in upper & lower jaws</p>
     </div>
     <hr/>
 </div>
@@ -7614,6 +8316,52 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term __RESERVED_PAR__="{Faunal_Remains}">{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/530_Other_echidna.jpg" alt="files/data/gallery/530_Other_echidna.jpg" />
+    </div>
+    <div>
+        <p>Amphibian, echidna or a more precise taxonomic identification not listed above (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Faunal_Remains}">{unident}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/426_unident_teeth.jpg" alt="files/data/gallery/426_unident_teeth.jpg" />
+    </div>
+    <div>
+        <p>Potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but not identified by the recorder</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Faunal_Remains}">{undiag}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/427_undiag.jpg" alt="files/data/gallery/427_undiag.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/428_undiag.jpg" alt="files/data/gallery/428_undiag.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/430_undiag.jpg" alt="files/data/gallery/430_undiag.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/527_undiag%20bone%201.jpg" alt="files/data/gallery/527_undiag%20bone%201.jpg" />
+    </div>
+    <div>
+        <p>Shape and size are not diagnostic of taxon and no other diagnostic features are preserved (teeth, muscle markings, articular ends)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Faunal_Remains}">{indet}</term>
         <term __RESERVED_PAR__="{Faunal_Remains}">{eggemu}<description><![CDATA[
 <div>
     <div>
@@ -7664,128 +8412,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_PAR__="{Other_Artefacts}">{bonemod}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/127_bonemod.jpg" alt="files/data/gallery/127_bonemod.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
-    </div>
-    <div>
-        <p>Bone with a smoothed, ground surface which is pointed or bevelled at one or both ends; striations may be visible</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term __RESERVED_PAR__="{Faunal_Remains}">{scat}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/505_scat.jpg" alt="files/data/gallery/505_scat.jpg" />
-    </div>
-    <div>
-        <p>ancient faecal pellet (note: modern scats may contain fur, ligaments or seeds)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term __RESERVED_PAR__="{Faunal_Remains}">{mega}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/443_mega.jpg" alt="files/data/gallery/443_mega.jpg" />
-    </div>
-    <div>
-        <p>Remains of megafauna, recognized on basis of large size compared to extant relatives</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term __RESERVED_PAR__="{Faunal_Remains}">{mammal}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/365_insitbo_section.JPG" alt="files/data/gallery/365_insitbo_section.JPG" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/369_in%20sit%20bone%204.JPG" alt="files/data/gallery/369_in%20sit%20bone%204.JPG" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/514_mammal%20bone.jpg" alt="files/data/gallery/514_mammal%20bone.jpg" />
-    </div>
-    <div>
-        <p>Characteristic of terrestrial mammal bone but more precise taxonomic identification not made</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term __RESERVED_PAR__="{Faunal_Remains}">{reptile}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/382_most_snake.jpg" alt="files/data/gallery/382_most_snake.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/444_reptile_small.jpg" alt="files/data/gallery/444_reptile_small.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/445_reptile_large.jpg" alt="files/data/gallery/445_reptile_large.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/424_scute.jpg" alt="files/data/gallery/424_scute.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/513_reptile%20jaw.jpg" alt="files/data/gallery/513_reptile%20jaw.jpg" />
-    </div>
-    <div>
-        <p>Turtles, snakes and lizards (record in annotations)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term __RESERVED_PAR__="{Faunal_Remains}">{other}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/530_Other_echidna.jpg" alt="files/data/gallery/530_Other_echidna.jpg" />
-    </div>
-    <div>
-        <p>Amphibian, echidna or a more precise taxonomic identification not listed above (record in annotations)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term __RESERVED_PAR__="{Faunal_Remains}">{unident}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/426_unident_teeth.jpg" alt="files/data/gallery/426_unident_teeth.jpg" />
-    </div>
-    <div>
-        <p>Potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but not identified by the recorder</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term __RESERVED_PAR__="{Faunal_Remains}">{undiag}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/427_undiag.jpg" alt="files/data/gallery/427_undiag.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/428_undiag.jpg" alt="files/data/gallery/428_undiag.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/430_undiag.jpg" alt="files/data/gallery/430_undiag.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/527_undiag%20bone%201.jpg" alt="files/data/gallery/527_undiag%20bone%201.jpg" />
-    </div>
-    <div>
-        <p>Shape and size are not diagnostic of taxon and no other diagnostic features are preserved (teeth, muscle markings, articular ends)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term __RESERVED_PAR__="{Faunal_Remains}">{indet}</term>
         <term __RESERVED_PAR__="{Other_Worked_Material}">{ochrediss}<description><![CDATA[
 <div>
     <div>
@@ -7822,6 +8448,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term __RESERVED_PAR__="{Other_Worked_Material}">{qtzxtal}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/137_qtzxal.jpg" alt="files/data/gallery/137_qtzxal.jpg" />
+    </div>
+    <div>
+        <p>Worked or unworked quartz crystal</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term __RESERVED_PAR__="{Other_Worked_Material}">{turbo}<description><![CDATA[
 <div>
     <div>
@@ -7832,6 +8469,61 @@
     </div>
     <div>
         <p>Marine gastropod up to 4cm long, with white zigzag stripes</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Other_Worked_Material}">{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/140_other_glass.jpg" alt="files/data/gallery/140_other_glass.jpg" />
+    </div>
+    <div>
+        <p>Any other worked, utilised or transported material not listed above (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Hearthstones}">{hsclay}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/296_hsclay.jpg" alt="files/data/gallery/296_hsclay.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from clay or sandy clay</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Hearthstones}">{hscarb}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/293_hscarb%20burned%20_%20unburned.jpg" alt="files/data/gallery/293_hscarb%20burned%20_%20unburned.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from carbonate nodules</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Hearthstones}">{hsterm}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/257_none.jpg" alt="files/data/gallery/257_none.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from termite nest -  sandy with visible voids and channels</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Hearthstones}">{hsother}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/297_hsother_silcrete.jpg" alt="files/data/gallery/297_hsother_silcrete.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from other material, e.g. silcrete nodules (record in annotations)</p>
     </div>
     <hr/>
 </div>
@@ -7876,6 +8568,17 @@
     </div>
     <div>
         <p>Quartz grains in the matrix are < 0.25 mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{silcmed}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/215_silcmed.jpg" alt="files/data/gallery/215_silcmed.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are 0.25 -- 0.5 mm</p>
     </div>
     <hr/>
 </div>
@@ -7948,20 +8651,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{ironst}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/242_ironst.jpg" alt="files/data/gallery/242_ironst.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/243_ironst.jpg" alt="files/data/gallery/243_ironst.jpg" />
-    </div>
-    <div>
-        <p>Sedimentary rock containing iron rich minerals</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{sandst}<description><![CDATA[
 <div>
     <div>
@@ -7985,6 +8674,20 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{ironst}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/242_ironst.jpg" alt="files/data/gallery/242_ironst.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/243_ironst.jpg" alt="files/data/gallery/243_ironst.jpg" />
+    </div>
+    <div>
+        <p>Sedimentary rock containing iron rich minerals</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{other}<description><![CDATA[
 <div>
     <div>
@@ -7998,17 +8701,6 @@
     </div>
     <div>
         <p>For example, carbonate (record in annotations)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{silcmed}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/215_silcmed.jpg" alt="files/data/gallery/215_silcmed.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are 0.25 -- 0.5 mm</p>
     </div>
     <hr/>
 </div>
@@ -8030,78 +8722,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{indet}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/182_indet.jpg" alt="files/data/gallery/182_indet.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/183_indet.jpg" alt="files/data/gallery/183_indet.jpg" />
-    </div>
-    <div>
-        <p>Object is too deeply buried or to assess modification</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{carb}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/463_carb.jpg" alt="files/data/gallery/463_carb.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/464_carb.jpg" alt="files/data/gallery/464_carb.jpg" />
-    </div>
-    <div>
-        <p>Surface is covered with a deposit of calcium carbonate</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{abraded}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/427_undiag.jpg" alt="files/data/gallery/427_undiag.jpg" />
-    </div>
-    <div>
-        <p>Scored or scratched surface, muted, rounded edges and/or muscle markings and attachments</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{burned}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/473_burned.jpg" alt="files/data/gallery/473_burned.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/474_burned.jpg" alt="files/data/gallery/474_burned.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/475_burned.jpg" alt="files/data/gallery/475_burned.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/476_burned.jpg" alt="files/data/gallery/476_burned.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/477_burnt%20_%20Unburnt.jpg" alt="files/data/gallery/477_burnt%20_%20Unburnt.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/451_fishbone%20otoliths.jpg" alt="files/data/gallery/451_fishbone%20otoliths.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/148_yes.jpg" alt="files/data/gallery/148_yes.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/147_yes.jpg" alt="files/data/gallery/147_yes.jpg" />
-    </div>
-    <div>
-        <p>Charred or calcined</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{other}</term>
         <term>{orgstain}<description><![CDATA[
 <div>
     <div>
@@ -8143,6 +8763,20 @@
     </div>
     <div>
         <p>Organic material (e.g. bone, egg, gastrolith) is soft and friable</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{carb}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/463_carb.jpg" alt="files/data/gallery/463_carb.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/464_carb.jpg" alt="files/data/gallery/464_carb.jpg" />
+    </div>
+    <div>
+        <p>Surface is covered with a deposit of calcium carbonate</p>
     </div>
     <hr/>
 </div>
@@ -8217,6 +8851,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{abraded}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/427_undiag.jpg" alt="files/data/gallery/427_undiag.jpg" />
+    </div>
+    <div>
+        <p>Scored or scratched surface, muted, rounded edges and/or muscle markings and attachments</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{toothmarks}<description><![CDATA[
 <div>
     <div>
@@ -8227,6 +8872,38 @@
     </div>
     <div>
         <p>Puncture or gnaw marks left by carnivores, snakes or rodents</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{burned}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/473_burned.jpg" alt="files/data/gallery/473_burned.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/474_burned.jpg" alt="files/data/gallery/474_burned.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/475_burned.jpg" alt="files/data/gallery/475_burned.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/476_burned.jpg" alt="files/data/gallery/476_burned.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/477_burnt%20_%20Unburnt.jpg" alt="files/data/gallery/477_burnt%20_%20Unburnt.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/451_fishbone%20otoliths.jpg" alt="files/data/gallery/451_fishbone%20otoliths.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/148_yes.jpg" alt="files/data/gallery/148_yes.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/147_yes.jpg" alt="files/data/gallery/147_yes.jpg" />
+    </div>
+    <div>
+        <p>Charred or calcined</p>
     </div>
     <hr/>
 </div>
@@ -8256,11 +8933,39 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{other}</term>
+        <term>{indet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/182_indet.jpg" alt="files/data/gallery/182_indet.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/183_indet.jpg" alt="files/data/gallery/183_indet.jpg" />
+    </div>
+    <div>
+        <p>Object is too deeply buried or to assess modification</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
       </lookup>
     </property>
     <property name="Isolated_-_Modification_to_Stone_Material">
       <lookup __RESERVED_CP__="true">
-        <term>{indet}</term>
+        <term>{none}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/248_none.jpg" alt="files/data/gallery/248_none.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/257_none.jpg" alt="files/data/gallery/257_none.jpg" />
+    </div>
+    <div>
+        <p>Fresh, unaltered surfaces</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{algal}<description><![CDATA[
 <div>
     <div>
@@ -8318,24 +9023,25 @@
 </div>
 ]]></description></term>
         <term>{other}</term>
-        <term>{none}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/248_none.jpg" alt="files/data/gallery/248_none.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/257_none.jpg" alt="files/data/gallery/257_none.jpg" />
-    </div>
-    <div>
-        <p>Fresh, unaltered surfaces</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="Isolated_-_Topographic_Setting">
       <lookup __RESERVED_CP__="true">
+        <term pictureURL="files/data/gallery/2_platform2.jpg">{platform}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/2_platform2.jpg" alt="files/data/gallery/2_platform2.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/3_platform_resid.jpg" alt="files/data/gallery/3_platform_resid.jpg" />
+    </div>
+    <div>
+        <p>Broad, flat platform exposure</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term pictureURL="files/data/gallery/4_slope _6.jpg">{Lessthan_Six_Degrees}<description><![CDATA[
 <div>
     <div>
@@ -8576,20 +9282,6 @@
     </div>
     <div>
         <p>topographic setting not described above, eg. Lake floor (record in annotations)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term pictureURL="files/data/gallery/2_platform2.jpg">{platform}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/2_platform2.jpg" alt="files/data/gallery/2_platform2.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/3_platform_resid.jpg" alt="files/data/gallery/3_platform_resid.jpg" />
-    </div>
-    <div>
-        <p>Broad, flat platform exposure</p>
     </div>
     <hr/>
 </div>
@@ -9133,31 +9825,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term pictureURL="files/data/gallery/120_beach section.jpg">{beach}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/119_beach3.jpg" alt="files/data/gallery/119_beach3.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/120_beach%20section.jpg" alt="files/data/gallery/120_beach%20section.jpg" />
-    </div>
-    <div>
-        <p>An area of rounded cobbles or gravels in distinct horizon</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term pictureURL="files/data/gallery/125_lakebed.jpg">{lakebed}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/125_lakebed.jpg" alt="files/data/gallery/125_lakebed.jpg" />
-    </div>
-    <div>
-        <p>Lakebed sediments</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term pictureURL="files/data/gallery/118_crest 7.jpg">{crest}<description><![CDATA[
 <div>
     <div>
@@ -9178,19 +9845,21 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{spit}</term>
-        <term pictureURL="files/data/gallery/126_indet _ backdune.jpg">{indet}<description><![CDATA[
+        <term pictureURL="files/data/gallery/120_beach section.jpg">{beach}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/126_indet%20_%20backdune.jpg" alt="files/data/gallery/126_indet%20_%20backdune.jpg" />
+        <img style="width:100%" src="files/data/gallery/119_beach3.jpg" alt="files/data/gallery/119_beach3.jpg" />
     </div>
     <div>
-        <p>Indeterminate</p>
+        <img style="width:100%" src="files/data/gallery/120_beach%20section.jpg" alt="files/data/gallery/120_beach%20section.jpg" />
+    </div>
+    <div>
+        <p>An area of rounded cobbles or gravels in distinct horizon</p>
     </div>
     <hr/>
 </div>
 ]]></description></term>
-        <term>{other}</term>
+        <term>{spit}</term>
         <term pictureURL="files/data/gallery/124_alluvial fan lake floor.jpg">{allfan}<description><![CDATA[
 <div>
     <div>
@@ -9207,6 +9876,29 @@
     </div>
     <div>
         <p>ancient alluvial fan</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term pictureURL="files/data/gallery/125_lakebed.jpg">{lakebed}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/125_lakebed.jpg" alt="files/data/gallery/125_lakebed.jpg" />
+    </div>
+    <div>
+        <p>Lakebed sediments</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}</term>
+        <term pictureURL="files/data/gallery/126_indet _ backdune.jpg">{indet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/126_indet%20_%20backdune.jpg" alt="files/data/gallery/126_indet%20_%20backdune.jpg" />
+    </div>
+    <div>
+        <p>Indeterminate</p>
     </div>
     <hr/>
 </div>
@@ -10395,18 +11087,6 @@
 </div>
 ]]></description></term>
         <term>{spit}</term>
-        <term pictureURL="files/data/gallery/125_lakebed.jpg">{lakebed}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/125_lakebed.jpg" alt="files/data/gallery/125_lakebed.jpg" />
-    </div>
-    <div>
-        <p>Lakebed sediments</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{other}</term>
         <term pictureURL="files/data/gallery/124_alluvial fan lake floor.jpg">{allfan}<description><![CDATA[
 <div>
     <div>
@@ -10427,6 +11107,18 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term pictureURL="files/data/gallery/125_lakebed.jpg">{lakebed}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/125_lakebed.jpg" alt="files/data/gallery/125_lakebed.jpg" />
+    </div>
+    <div>
+        <p>Lakebed sediments</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}</term>
         <term pictureURL="files/data/gallery/126_indet _ backdune.jpg">{indet}<description><![CDATA[
 <div>
     <div>
@@ -10454,6 +11146,34 @@
   <ArchaeologicalElement name="Shell Associated Materials">
     <property name="ShellAssoc_-_Associated_material">
       <lookup __RESERVED_CP__="true">
+        <term>{none}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/266_smallclust.jpg" alt="files/data/gallery/266_smallclust.jpg" />
+    </div>
+    <div>
+        <p>there are no associated finds within the shell cluster</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hearthmaterial}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/257_none.jpg" alt="files/data/gallery/257_none.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/487_hearth%20material_baked%20sed.JPG" alt="files/data/gallery/487_hearth%20material_baked%20sed.JPG" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/320_staining_burnt%20bone.jpg" alt="files/data/gallery/320_staining_burnt%20bone.jpg" />
+    </div>
+    <div>
+        <p>Hearthstones, baked or ashy sediment or dark staining (charcoal/organics)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{lacust}<description><![CDATA[
 <div>
     <div>
@@ -10475,6 +11195,31 @@
     </div>
     <div>
         <p>Terrestrial bone material</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{unidentbone}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/501_unidentbone.jpg" alt="files/data/gallery/501_unidentbone.jpg" />
+    </div>
+    <div>
+        <p>Potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but could not be identified by recorder</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{undiagbone}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/430_undiag.jpg" alt="files/data/gallery/430_undiag.jpg" />
+    </div>
+    <div>
+        <p>Shape and size are not diagnostic of taxon and no other diagnostic features are preserved (teeth, muscle markings, articular ends)</p>
     </div>
     <hr/>
 </div>
@@ -10508,59 +11253,6 @@
     </div>
     <div>
         <p>Other worked or transported material</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{none}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/266_smallclust.jpg" alt="files/data/gallery/266_smallclust.jpg" />
-    </div>
-    <div>
-        <p>there are no associated finds within the shell cluster</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{hearthmaterial}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/257_none.jpg" alt="files/data/gallery/257_none.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/487_hearth%20material_baked%20sed.JPG" alt="files/data/gallery/487_hearth%20material_baked%20sed.JPG" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/320_staining_burnt%20bone.jpg" alt="files/data/gallery/320_staining_burnt%20bone.jpg" />
-    </div>
-    <div>
-        <p>Hearthstones, baked or ashy sediment or dark staining (charcoal/organics)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{unidentbone}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/501_unidentbone.jpg" alt="files/data/gallery/501_unidentbone.jpg" />
-    </div>
-    <div>
-        <p>Potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but could not be identified by recorder</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{undiagbone}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/430_undiag.jpg" alt="files/data/gallery/430_undiag.jpg" />
-    </div>
-    <div>
-        <p>Shape and size are not diagnostic of taxon and no other diagnostic features are preserved (teeth, muscle markings, articular ends)</p>
     </div>
     <hr/>
 </div>
@@ -10622,7 +11314,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{other}</term>
         <term>{scute}<description><![CDATA[
 <div>
     <div>
@@ -10648,6 +11339,7 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="ShellAssoc_-_Burnt_lacustrine_material">
@@ -10719,6 +11411,34 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{emu}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/449_emu%20skeleton.jpg" alt="files/data/gallery/449_emu%20skeleton.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/447_emu_Skull.jpg" alt="files/data/gallery/447_emu_Skull.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/446_emu_PelvicGirdle.jpg" alt="files/data/gallery/446_emu_PelvicGirdle.jpg" />
+    </div>
+    <div>
+        <p>Most emu bones are heavy and solid in contrast to those of flying birds which are lightweight & hollow</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{birdother}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/450_birdother.jpg" alt="files/data/gallery/450_birdother.jpg" />
+    </div>
+    <div>
+        <p>Bird othe than emu;  most bones are hollow, others are semi-hollow with air pockets</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{other}<description><![CDATA[
 <div>
     <div>
@@ -10763,34 +11483,6 @@
     </div>
     <div>
         <p>Shape and size are not diagnostic of taxon and no other diagnostic features are preserved (teeth, muscle markings, articular ends)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{emu}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/449_emu%20skeleton.jpg" alt="files/data/gallery/449_emu%20skeleton.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/447_emu_Skull.jpg" alt="files/data/gallery/447_emu_Skull.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/446_emu_PelvicGirdle.jpg" alt="files/data/gallery/446_emu_PelvicGirdle.jpg" />
-    </div>
-    <div>
-        <p>Most emu bones are heavy and solid in contrast to those of flying birds which are lightweight & hollow</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{birdother}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/450_birdother.jpg" alt="files/data/gallery/450_birdother.jpg" />
-    </div>
-    <div>
-        <p>Bird othe than emu;  most bones are hollow, others are semi-hollow with air pockets</p>
     </div>
     <hr/>
 </div>
@@ -11313,49 +12005,6 @@
     </property>
     <property name="ShellAssoc_-_Ground_stone_raw_material">
       <lookup __RESERVED_CP__="true">
-        <term>{sandst}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/202_amorph.jpg" alt="files/data/gallery/202_amorph.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/204_amorph.jpg" alt="files/data/gallery/204_amorph.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/245_sandst.jpg" alt="files/data/gallery/245_sandst.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/246_sandst.jpg" alt="files/data/gallery/246_sandst.jpg" />
-    </div>
-    <div>
-        <p>A clastic sedimentary rock made up of sand-sized minerals or grains</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{ironst}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/243_ironst.jpg" alt="files/data/gallery/243_ironst.jpg" />
-    </div>
-    <div>
-        <p>Sedimentary rock containing iron-rich minerals</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{other}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/517_gs%20raw%20material%20other_carb.jpg" alt="files/data/gallery/517_gs%20raw%20material%20other_carb.jpg" />
-    </div>
-    <div>
-        <p>For example, carbonate (record in annotations)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{indet}</term>
         <term>{silcfine}<description><![CDATA[
 <div>
     <div>
@@ -11406,6 +12055,26 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{sandst}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/202_amorph.jpg" alt="files/data/gallery/202_amorph.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/204_amorph.jpg" alt="files/data/gallery/204_amorph.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/245_sandst.jpg" alt="files/data/gallery/245_sandst.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/246_sandst.jpg" alt="files/data/gallery/246_sandst.jpg" />
+    </div>
+    <div>
+        <p>A clastic sedimentary rock made up of sand-sized minerals or grains</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{qtzite}<description><![CDATA[
 <div>
     <div>
@@ -11420,7 +12089,30 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{ironst}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/243_ironst.jpg" alt="files/data/gallery/243_ironst.jpg" />
+    </div>
+    <div>
+        <p>Sedimentary rock containing iron-rich minerals</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/517_gs%20raw%20material%20other_carb.jpg" alt="files/data/gallery/517_gs%20raw%20material%20other_carb.jpg" />
+    </div>
+    <div>
+        <p>For example, carbonate (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="ShellAssoc_-_Chipped_Stone_Raw_Material">
@@ -11538,8 +12230,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{indet}</term>
         <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="ShellAssoc_-_Unmodified_Raw_Material">
@@ -11606,6 +12298,40 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{qtzite}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/220_qtzite.jpg" alt="files/data/gallery/220_qtzite.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/237_qtzite.jpg" alt="files/data/gallery/237_qtzite.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/238_qtzite.jpg" alt="files/data/gallery/238_qtzite.jpg" />
+    </div>
+    <div>
+        <p>Sugary texture, variable grain size and colour</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{qtz}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/239_qtz.jpg" alt="files/data/gallery/239_qtz.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/240_qtz.jpg" alt="files/data/gallery/240_qtz.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/241_qtz.jpg" alt="files/data/gallery/241_qtz.jpg" />
+    </div>
+    <div>
+        <p>A clear, white, milky white or rose coloured mineral</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{ironst}<description><![CDATA[
 <div>
     <div>
@@ -11642,42 +12368,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{indet}</term>
-        <term>{qtzite}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/220_qtzite.jpg" alt="files/data/gallery/220_qtzite.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/237_qtzite.jpg" alt="files/data/gallery/237_qtzite.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/238_qtzite.jpg" alt="files/data/gallery/238_qtzite.jpg" />
-    </div>
-    <div>
-        <p>Sugary texture, variable grain size and colour</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{qtz}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/239_qtz.jpg" alt="files/data/gallery/239_qtz.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/240_qtz.jpg" alt="files/data/gallery/240_qtz.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/241_qtz.jpg" alt="files/data/gallery/241_qtz.jpg" />
-    </div>
-    <div>
-        <p>A clear, white, milky white or rose coloured mineral</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="ShellAssoc_-_Unmodified_Stone_Types">
@@ -11850,6 +12542,7 @@
     <property name="Stone_-_Cluster_Type">
       <lookup __RESERVED_CP__="true">
         <term>{Stone_artefacts_only}</term>
+        <term>{Stone_artefacts_and_other_material}</term>
         <term __RESERVED_PAR__="{Stone_artefacts_only}">{insitu}<description><![CDATA[
 <div>
     <div>
@@ -11864,8 +12557,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_PAR__="{Stone_artefacts_and_other_material}">{insit_oth}</term>
-        <term>{Stone_artefacts_and_other_material}</term>
         <term __RESERVED_PAR__="{Stone_artefacts_only}">{surf}<description><![CDATA[
 <div>
     <div>
@@ -11892,7 +12583,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_PAR__="{Stone_artefacts_and_other_material}">{surf_oth}</term>
         <term __RESERVED_PAR__="{Stone_artefacts_only}">{both}<description><![CDATA[
 <div>
     <div>
@@ -11907,17 +12597,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term __RESERVED_PAR__="{Stone_artefacts_and_other_material}">{both_oth}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/521_stone%20_%20other.jpg" alt="files/data/gallery/521_stone%20_%20other.jpg" />
-    </div>
-    <div>
-        <p>Both' in situ and surface artefacts (as defined above), associated with material other than stone artefacts, either in situ or on the surface</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term __RESERVED_PAR__="{Stone_artefacts_only}">{surfrefit}<description><![CDATA[
 <div>
     <div>
@@ -11928,6 +12607,19 @@
     </div>
     <div>
         <p>a collection of surface artefacts of the same raw material that contains 1 or more refits</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term __RESERVED_PAR__="{Stone_artefacts_and_other_material}">{insit_oth}</term>
+        <term __RESERVED_PAR__="{Stone_artefacts_and_other_material}">{surf_oth}</term>
+        <term __RESERVED_PAR__="{Stone_artefacts_and_other_material}">{both_oth}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/521_stone%20_%20other.jpg" alt="files/data/gallery/521_stone%20_%20other.jpg" />
+    </div>
+    <div>
+        <p>Both' in situ and surface artefacts (as defined above), associated with material other than stone artefacts, either in situ or on the surface</p>
     </div>
     <hr/>
 </div>
@@ -12267,8 +12959,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{unident}</term>
         <term>{other}</term>
+        <term>{unident}</term>
       </lookup>
     </property>
     <property name="Stone_-_In_Situ_-_Ground_Stone_Status">
@@ -12313,6 +13005,56 @@
     </property>
     <property name="Stone_-_In_Situ_-_Ground_Stone_Raw_Material">
       <lookup __RESERVED_CP__="true">
+        <term>{silcfine}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/228_silcfine.jpg" alt="files/data/gallery/228_silcfine.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are less than 0.25 mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{silcmed}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/215_silcmed.jpg" alt="files/data/gallery/215_silcmed.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/231_silcmed.jpg" alt="files/data/gallery/231_silcmed.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are 0.25 -- 0.5 mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{silccoarse}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/235_silccoarse.jpg" alt="files/data/gallery/235_silccoarse.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/236_silccoarse.jpg" alt="files/data/gallery/236_silccoarse.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are greater than 0.5mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{silcmicroxtal}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/218_silcmicroxtal.jpg" alt="files/data/gallery/218_silcmicroxtal.jpg" />
+    </div>
+    <div>
+        <p>Naked eye cannot identify grains in the matrix</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{sandst}<description><![CDATA[
 <div>
     <div>
@@ -12369,62 +13111,23 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{indet}</term>
-        <term>{silcfine}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/228_silcfine.jpg" alt="files/data/gallery/228_silcfine.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are less than 0.25 mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{silcmed}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/215_silcmed.jpg" alt="files/data/gallery/215_silcmed.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/231_silcmed.jpg" alt="files/data/gallery/231_silcmed.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are 0.25 -- 0.5 mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{silccoarse}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/235_silccoarse.jpg" alt="files/data/gallery/235_silccoarse.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/236_silccoarse.jpg" alt="files/data/gallery/236_silccoarse.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are greater than 0.5mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{silcmicroxtal}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/218_silcmicroxtal.jpg" alt="files/data/gallery/218_silcmicroxtal.jpg" />
-    </div>
-    <div>
-        <p>Naked eye cannot identify grains in the matrix</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="Stone_-_In_Situ_-_Surface_Modification">
       <lookup __RESERVED_CP__="true">
+        <term>{none}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/248_none.jpg" alt="files/data/gallery/248_none.jpg" />
+    </div>
+    <div>
+        <p>Fresh, unaltered surfaces</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{algal}<description><![CDATA[
 <div>
     <div>
@@ -12482,17 +13185,6 @@
 </div>
 ]]></description></term>
         <term>{other}</term>
-        <term>{none}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/248_none.jpg" alt="files/data/gallery/248_none.jpg" />
-    </div>
-    <div>
-        <p>Fresh, unaltered surfaces</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{indet}<description><![CDATA[
 <div>
     <div>
@@ -12624,8 +13316,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{indet}</term>
         <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="Stone_-_In_Situ_-_Unmodified_Stone_Raw_Material">
@@ -12692,6 +13384,40 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{qtzite}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/220_qtzite.jpg" alt="files/data/gallery/220_qtzite.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/237_qtzite.jpg" alt="files/data/gallery/237_qtzite.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/238_qtzite.jpg" alt="files/data/gallery/238_qtzite.jpg" />
+    </div>
+    <div>
+        <p>Sugary texture, variable grain size and colour</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{qtz}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/239_qtz.jpg" alt="files/data/gallery/239_qtz.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/240_qtz.jpg" alt="files/data/gallery/240_qtz.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/241_qtz.jpg" alt="files/data/gallery/241_qtz.jpg" />
+    </div>
+    <div>
+        <p>A clear, white, milky white or rose coloured mineral</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{ironst}<description><![CDATA[
 <div>
     <div>
@@ -12728,41 +13454,8 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{unident}</term>
         <term>{indet}</term>
-        <term>{qtzite}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/220_qtzite.jpg" alt="files/data/gallery/220_qtzite.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/237_qtzite.jpg" alt="files/data/gallery/237_qtzite.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/238_qtzite.jpg" alt="files/data/gallery/238_qtzite.jpg" />
-    </div>
-    <div>
-        <p>Sugary texture, variable grain size and colour</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{qtz}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/239_qtz.jpg" alt="files/data/gallery/239_qtz.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/240_qtz.jpg" alt="files/data/gallery/240_qtz.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/241_qtz.jpg" alt="files/data/gallery/241_qtz.jpg" />
-    </div>
-    <div>
-        <p>A clear, white, milky white or rose coloured mineral</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{unident}</term>
       </lookup>
     </property>
@@ -12830,6 +13523,40 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{qtzite}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/220_qtzite.jpg" alt="files/data/gallery/220_qtzite.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/237_qtzite.jpg" alt="files/data/gallery/237_qtzite.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/238_qtzite.jpg" alt="files/data/gallery/238_qtzite.jpg" />
+    </div>
+    <div>
+        <p>Sugary texture, variable grain size and colour</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{qtz}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/239_qtz.jpg" alt="files/data/gallery/239_qtz.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/240_qtz.jpg" alt="files/data/gallery/240_qtz.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/241_qtz.jpg" alt="files/data/gallery/241_qtz.jpg" />
+    </div>
+    <div>
+        <p>A clear, white, milky white or rose coloured mineral</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{ironst}<description><![CDATA[
 <div>
     <div>
@@ -12867,40 +13594,6 @@
 </div>
 ]]></description></term>
         <term>{indet}</term>
-        <term>{qtzite}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/220_qtzite.jpg" alt="files/data/gallery/220_qtzite.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/237_qtzite.jpg" alt="files/data/gallery/237_qtzite.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/238_qtzite.jpg" alt="files/data/gallery/238_qtzite.jpg" />
-    </div>
-    <div>
-        <p>Sugary texture, variable grain size and colour</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{qtz}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/239_qtz.jpg" alt="files/data/gallery/239_qtz.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/240_qtz.jpg" alt="files/data/gallery/240_qtz.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/241_qtz.jpg" alt="files/data/gallery/241_qtz.jpg" />
-    </div>
-    <div>
-        <p>A clear, white, milky white or rose coloured mineral</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
       </lookup>
     </property>
     <property name="Stone_-_Surface_-_Stone_Artefacts">
@@ -13236,8 +13929,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{unident}</term>
         <term>{other}</term>
+        <term>{unident}</term>
       </lookup>
     </property>
     <property name="Stone_-_Surface_-_Ground_Stone_Status">
@@ -13282,6 +13975,17 @@
     </property>
     <property name="Stone_-_Surface_-_Surface_-_Modification">
       <lookup __RESERVED_CP__="true">
+        <term>{none}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/248_none.jpg" alt="files/data/gallery/248_none.jpg" />
+    </div>
+    <div>
+        <p>Fresh, unaltered surfaces</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{algal}<description><![CDATA[
 <div>
     <div>
@@ -13324,18 +14028,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{other}</term>
-        <term>{none}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/248_none.jpg" alt="files/data/gallery/248_none.jpg" />
-    </div>
-    <div>
-        <p>Fresh, unaltered surfaces</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{polish}<description><![CDATA[
 <div>
     <div>
@@ -13350,6 +14042,7 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{other}</term>
         <term>{indet}<description><![CDATA[
 <div>
     <div>
@@ -13481,8 +14174,8 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{indet}</term>
         <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="Stone_-_Surface_-_Unmodified_Stone_Raw_Material">
@@ -13549,6 +14242,40 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{qtzite}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/220_qtzite.jpg" alt="files/data/gallery/220_qtzite.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/237_qtzite.jpg" alt="files/data/gallery/237_qtzite.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/238_qtzite.jpg" alt="files/data/gallery/238_qtzite.jpg" />
+    </div>
+    <div>
+        <p>Sugary texture, variable grain size and colour</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{qtz}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/239_qtz.jpg" alt="files/data/gallery/239_qtz.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/240_qtz.jpg" alt="files/data/gallery/240_qtz.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/241_qtz.jpg" alt="files/data/gallery/241_qtz.jpg" />
+    </div>
+    <div>
+        <p>A clear, white, milky white or rose coloured mineral</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{ironst}<description><![CDATA[
 <div>
     <div>
@@ -13585,46 +14312,62 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{indet}</term>
-        <term>{qtzite}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/220_qtzite.jpg" alt="files/data/gallery/220_qtzite.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/237_qtzite.jpg" alt="files/data/gallery/237_qtzite.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/238_qtzite.jpg" alt="files/data/gallery/238_qtzite.jpg" />
-    </div>
-    <div>
-        <p>Sugary texture, variable grain size and colour</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{qtz}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/239_qtz.jpg" alt="files/data/gallery/239_qtz.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/240_qtz.jpg" alt="files/data/gallery/240_qtz.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/241_qtz.jpg" alt="files/data/gallery/241_qtz.jpg" />
-    </div>
-    <div>
-        <p>A clear, white, milky white or rose coloured mineral</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="Stone_-_Surface_-_Ground_Stone_Raw_Material">
       <lookup __RESERVED_CP__="true">
+        <term>{silcfine}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/228_silcfine.jpg" alt="files/data/gallery/228_silcfine.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are < 0.25 mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{silcmed}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/215_silcmed.jpg" alt="files/data/gallery/215_silcmed.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/231_silcmed.jpg" alt="files/data/gallery/231_silcmed.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are 0.25 -- 0.5 mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{silccoarse}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/235_silccoarse.jpg" alt="files/data/gallery/235_silccoarse.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/236_silccoarse.jpg" alt="files/data/gallery/236_silccoarse.jpg" />
+    </div>
+    <div>
+        <p>Quartz grains in the matrix are greater than 0.5mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{silcmicroxtal}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/218_silcmicroxtal.jpg" alt="files/data/gallery/218_silcmicroxtal.jpg" />
+    </div>
+    <div>
+        <p>Naked eye cannot identify grains in the matrix</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{sandst}<description><![CDATA[
 <div>
     <div>
@@ -13681,62 +14424,23 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{indet}</term>
-        <term>{silcfine}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/228_silcfine.jpg" alt="files/data/gallery/228_silcfine.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are < 0.25 mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{silcmed}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/215_silcmed.jpg" alt="files/data/gallery/215_silcmed.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/231_silcmed.jpg" alt="files/data/gallery/231_silcmed.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are 0.25 -- 0.5 mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{silccoarse}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/235_silccoarse.jpg" alt="files/data/gallery/235_silccoarse.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/236_silccoarse.jpg" alt="files/data/gallery/236_silccoarse.jpg" />
-    </div>
-    <div>
-        <p>Quartz grains in the matrix are greater than 0.5mm</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{silcmicroxtal}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/218_silcmicroxtal.jpg" alt="files/data/gallery/218_silcmicroxtal.jpg" />
-    </div>
-    <div>
-        <p>Naked eye cannot identify grains in the matrix</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{unident}</term>
+        <term>{indet}</term>
       </lookup>
     </property>
     <property name="Stone_-_Surface_-_Surface_Modification">
       <lookup __RESERVED_CP__="true">
+        <term>{none}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/248_none.jpg" alt="files/data/gallery/248_none.jpg" />
+    </div>
+    <div>
+        <p>Fresh, unaltered surfaces</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{algal}<description><![CDATA[
 <div>
     <div>
@@ -13794,17 +14498,6 @@
 </div>
 ]]></description></term>
         <term>{other}</term>
-        <term>{none}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/248_none.jpg" alt="files/data/gallery/248_none.jpg" />
-    </div>
-    <div>
-        <p>Fresh, unaltered surfaces</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{indet}<description><![CDATA[
 <div>
     <div>
@@ -14672,29 +15365,6 @@
 </div>
 ]]></description></term>
         <term>{spit}</term>
-        <term pictureURL="files/data/gallery/125_lakebed.jpg">{lakebed}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/125_lakebed.jpg" alt="files/data/gallery/125_lakebed.jpg" />
-    </div>
-    <div>
-        <p>Lakebed sediments</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term pictureURL="files/data/gallery/126_indet _ backdune.jpg">{indet}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/126_indet%20_%20backdune.jpg" alt="files/data/gallery/126_indet%20_%20backdune.jpg" />
-    </div>
-    <div>
-        <p>Indeterminate</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{other}</term>
         <term pictureURL="files/data/gallery/124_alluvial fan lake floor.jpg">{allfan}<description><![CDATA[
 <div>
     <div>
@@ -14715,6 +15385,29 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term pictureURL="files/data/gallery/125_lakebed.jpg">{lakebed}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/125_lakebed.jpg" alt="files/data/gallery/125_lakebed.jpg" />
+    </div>
+    <div>
+        <p>Lakebed sediments</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}</term>
+        <term pictureURL="files/data/gallery/126_indet _ backdune.jpg">{indet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/126_indet%20_%20backdune.jpg" alt="files/data/gallery/126_indet%20_%20backdune.jpg" />
+    </div>
+    <div>
+        <p>Indeterminate</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
       </lookup>
     </property>
     <property name="Stone_-_Photos">
@@ -14731,53 +15424,6 @@
   <ArchaeologicalElement name="Stone Associated Insitu">
     <property name="Stone_-_In_Situ">
       <lookup __RESERVED_CP__="true">
-        <term>{lacust}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/498_lacust_otoliths.jpg" alt="files/data/gallery/498_lacust_otoliths.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/500_lacust_fishbone.jpg" alt="files/data/gallery/500_lacust_fishbone.jpg" />
-    </div>
-    <div>
-        <p>Lacustrine material (mussel, fishbone, otoliths)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{terrbo}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/499_terrbone.jpg" alt="files/data/gallery/499_terrbone.jpg" />
-    </div>
-    <div>
-        <p>Terrestrial bone</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{eggshell}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/324_other_emuegg.jpg" alt="files/data/gallery/324_other_emuegg.jpg" />
-    </div>
-    <div>
-        <p>Emu, Genyornis or other eggshell</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{otherwork}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
-    </div>
-    <div>
-        <p>Other worked or transported material</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{none}<description><![CDATA[
 <div>
     <div>
@@ -14802,6 +15448,31 @@
     </div>
     <div>
         <p>Associated hearthstones, baked or ashy sediment, dark staining (organics and/or charcoal)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{lacust}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/498_lacust_otoliths.jpg" alt="files/data/gallery/498_lacust_otoliths.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/500_lacust_fishbone.jpg" alt="files/data/gallery/500_lacust_fishbone.jpg" />
+    </div>
+    <div>
+        <p>Lacustrine material (mussel, fishbone, otoliths)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{terrbo}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/499_terrbone.jpg" alt="files/data/gallery/499_terrbone.jpg" />
+    </div>
+    <div>
+        <p>Terrestrial bone</p>
     </div>
     <hr/>
 </div>
@@ -14831,10 +15502,43 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{eggshell}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/324_other_emuegg.jpg" alt="files/data/gallery/324_other_emuegg.jpg" />
+    </div>
+    <div>
+        <p>Emu, Genyornis or other eggshell</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{otherwork}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
+    </div>
+    <div>
+        <p>Other worked or transported material</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
       </lookup>
     </property>
     <property name="Stone_-_Surface">
       <lookup __RESERVED_CP__="true">
+        <term>{none}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/153_insitu.JPG" alt="files/data/gallery/153_insitu.JPG" />
+    </div>
+    <div>
+        <p>there is no material on the surface that is unambiguouslly associated with the artefacts</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{hearthmaterial}<description><![CDATA[
 <div>
     <div>
@@ -14877,39 +15581,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{eggshell}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/324_other_emuegg.jpg" alt="files/data/gallery/324_other_emuegg.jpg" />
-    </div>
-    <div>
-        <p>Emu, Genyornis or other eggshell</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{otherwork}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
-    </div>
-    <div>
-        <p>Other worked or transported material</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{none}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/153_insitu.JPG" alt="files/data/gallery/153_insitu.JPG" />
-    </div>
-    <div>
-        <p>there is no material on the surface that is unambiguouslly associated with the artefacts</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{unidentbone}<description><![CDATA[
 <div>
     <div>
@@ -14935,6 +15606,28 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{eggshell}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/324_other_emuegg.jpg" alt="files/data/gallery/324_other_emuegg.jpg" />
+    </div>
+    <div>
+        <p>Emu, Genyornis or other eggshell</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{otherwork}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
+    </div>
+    <div>
+        <p>Other worked or transported material</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
       </lookup>
     </property>
     <property name="Stone_-_Hearth">
@@ -14946,6 +15639,28 @@
     </div>
     <div>
         <p>Heat retainers made from clay or sandy clay</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hsclay}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/296_hsclay.jpg" alt="files/data/gallery/296_hsclay.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from clay or sandy clay</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hscarb}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/293_hscarb%20burned%20_%20unburned.jpg" alt="files/data/gallery/293_hscarb%20burned%20_%20unburned.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from carbonate nodules</p>
     </div>
     <hr/>
 </div>
@@ -14972,6 +15687,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{hsterm}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/257_none.jpg" alt="files/data/gallery/257_none.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from termite nest -  sandy with visible voids and channels</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{hsother}<description><![CDATA[
 <div>
     <div>
@@ -14979,6 +15705,28 @@
     </div>
     <div>
         <p>Heat retainers made from other material, e.g. silcrete nodules (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hsother}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/297_hsother_silcrete.jpg" alt="files/data/gallery/297_hsother_silcrete.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from other material, e.g. silcrete nodules (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hsindet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/298_hsindet.jpg" alt="files/data/gallery/298_hsindet.jpg" />
+    </div>
+    <div>
+        <p>Too deeply buried or encrusted to determine type</p>
     </div>
     <hr/>
 </div>
@@ -15005,6 +15753,28 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{bakedclay}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/305_bakedclay_pieces.jpg" alt="files/data/gallery/305_bakedclay_pieces.jpg" />
+    </div>
+    <div>
+        <p>Thin layer or small lumps of burnt clay, orange in colour when freshly exposed, broken surfaces may be smooth</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{bakedsed}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/487_hearth%20material_baked%20sed.JPG" alt="files/data/gallery/487_hearth%20material_baked%20sed.JPG" />
+    </div>
+    <div>
+        <p>Ashy sediment, baked hard</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{bakedsed}<description><![CDATA[
 <div>
     <div>
@@ -15027,11 +15797,34 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{staining}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/320_staining_burnt%20bone.jpg" alt="files/data/gallery/320_staining_burnt%20bone.jpg" />
+    </div>
+    <div>
+        <p>in situ sediment exhibits organic staining with or without charcoal (do not select if associated hearth material is only surface)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}</term>
         <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_Lacustrine">
       <lookup __RESERVED_CP__="true">
+        <term>{mussel}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/492_no.jpg" alt="files/data/gallery/492_no.jpg" />
+    </div>
+    <div>
+        <p>Mussel shell or shell fragment</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{mussel}<description><![CDATA[
 <div>
     <div>
@@ -15053,6 +15846,65 @@
     </div>
     <div>
         <p>Common taxa are Golden Perch, Silver Perch & Murray Cod but other taxa could be present; identified on basis of otoliths</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{fishbone}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/453_fish_skeleton.jpg" alt="files/data/gallery/453_fish_skeleton.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/452_fish.jpg" alt="files/data/gallery/452_fish.jpg" />
+    </div>
+    <div>
+        <p>Common taxa are Golden Perch, Silver Perch & Murray Cod but other taxa could be present; identified on basis of otoliths</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{otoliths}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/417_otoliths_golden%20perch.jpg" alt="files/data/gallery/417_otoliths_golden%20perch.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/418_otoliths_silverperch.jpg" alt="files/data/gallery/418_otoliths_silverperch.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/419_otoliths_murraycod.jpg" alt="files/data/gallery/419_otoliths_murraycod.jpg" />
+    </div>
+    <div>
+        <p>Fish ear bone, diagnostic of taxon; common taxa are Golden Perch, Silver Perch, Murray Cod (if identified, record taxon in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{otoliths}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/417_otoliths_golden%20perch.jpg" alt="files/data/gallery/417_otoliths_golden%20perch.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/418_otoliths_silverperch.jpg" alt="files/data/gallery/418_otoliths_silverperch.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/419_otoliths_murraycod.jpg" alt="files/data/gallery/419_otoliths_murraycod.jpg" />
+    </div>
+    <div>
+        <p>Fish ear bone, diagnostic of taxon; common taxa are Golden Perch, Silver Perch, Murray Cod (if identified, record taxon in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{glith}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/422_glith.jpg" alt="files/data/gallery/422_glith.jpg" />
+    </div>
+    <div>
+        <p>Crustacean gastrolith</p>
     </div>
     <hr/>
 </div>
@@ -15079,6 +15931,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{exoskel}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/423_exoskel.jpg" alt="files/data/gallery/423_exoskel.jpg" />
+    </div>
+    <div>
+        <p>Crustacean exoskeleton</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{scute}<description><![CDATA[
 <div>
     <div>
@@ -15090,20 +15953,13 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{other}</term>
-        <term>{otoliths}<description><![CDATA[
+        <term>{scute}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/417_otoliths_golden%20perch.jpg" alt="files/data/gallery/417_otoliths_golden%20perch.jpg" />
+        <img style="width:100%" src="files/data/gallery/424_scute.jpg" alt="files/data/gallery/424_scute.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/418_otoliths_silverperch.jpg" alt="files/data/gallery/418_otoliths_silverperch.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/419_otoliths_murraycod.jpg" alt="files/data/gallery/419_otoliths_murraycod.jpg" />
-    </div>
-    <div>
-        <p>Fish ear bone, diagnostic of taxon; common taxa are Golden Perch, Silver Perch, Murray Cod (if identified, record taxon in annotations)</p>
+        <p>Bony plate from the shell of a turtle</p>
     </div>
     <hr/>
 </div>
@@ -15122,10 +15978,66 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{boneandotol}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/451_fishbone%20otoliths.jpg" alt="files/data/gallery/451_fishbone%20otoliths.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/454_otoliths%20_%20fishbone.jpg" alt="files/data/gallery/454_otoliths%20_%20fishbone.jpg" />
+    </div>
+    <div>
+        <p>Both fish bone and otoliths present (if otoliths identified to taxon, record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_Terrestrial">
       <lookup __RESERVED_CP__="true">
+        <term>{mammal}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/499_terrbone.jpg" alt="files/data/gallery/499_terrbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/493_terrbone.jpg" alt="files/data/gallery/493_terrbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/501_unidentbone.jpg" alt="files/data/gallery/501_unidentbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/514_mammal%20bone.jpg" alt="files/data/gallery/514_mammal%20bone.jpg" />
+    </div>
+    <div>
+        <p>Record more detailed taxonomic information in annotations (eg. large or small macropod, bettong or other small marsupial, carnivore, rodent, mega-fauna)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{mammal}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/499_terrbone.jpg" alt="files/data/gallery/499_terrbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/493_terrbone.jpg" alt="files/data/gallery/493_terrbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/501_unidentbone.jpg" alt="files/data/gallery/501_unidentbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/514_mammal%20bone.jpg" alt="files/data/gallery/514_mammal%20bone.jpg" />
+    </div>
+    <div>
+        <p>Record more detailed taxonomic information in annotations (eg. large or small macropod, bettong or other small marsupial, carnivore, rodent, mega-fauna)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{emu}<description><![CDATA[
 <div>
     <div>
@@ -15139,6 +16051,34 @@
     </div>
     <div>
         <p>Most emu bones are heavy and solid in contrast to those of flying birds which are lightweight & hollow</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{emu}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/449_emu%20skeleton.jpg" alt="files/data/gallery/449_emu%20skeleton.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/447_emu_Skull.jpg" alt="files/data/gallery/447_emu_Skull.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/446_emu_PelvicGirdle.jpg" alt="files/data/gallery/446_emu_PelvicGirdle.jpg" />
+    </div>
+    <div>
+        <p>Most emu bones are heavy and solid in contrast to those of flying birds which are lightweight & hollow</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{birdother}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/450_birdother.jpg" alt="files/data/gallery/450_birdother.jpg" />
+    </div>
+    <div>
+        <p>Amend glossary entry; bird other than emu;  most bones are hollow, others are semi-hollow with air pockets</p>
     </div>
     <hr/>
 </div>
@@ -15171,6 +16111,51 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{carnivore}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/438_carnivore_Thylacine.jpg" alt="files/data/gallery/438_carnivore_Thylacine.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/439_carnivore_dog.jpg" alt="files/data/gallery/439_carnivore_dog.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/440_carnivore_TasmanianDevil.jpg" alt="files/data/gallery/440_carnivore_TasmanianDevil.jpg" />
+    </div>
+    <div>
+        <p>Carnivores have long, sharp teeth designed for ripping, tearing or cutting  flesh, for example, Thylacine (Tasmanian tiger), Sarcophilus (Tasmanian Devil)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{rodent}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/441_rodent.jpg" alt="files/data/gallery/441_rodent.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/442_rodent.jpg" alt="files/data/gallery/442_rodent.jpg" />
+    </div>
+    <div>
+        <p>Small mammal with distinctive incisors in upper & lower jaws</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{rodent}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/441_rodent.jpg" alt="files/data/gallery/441_rodent.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/442_rodent.jpg" alt="files/data/gallery/442_rodent.jpg" />
+    </div>
+    <div>
+        <p>Small mammal with distinctive incisors in upper & lower jaws</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{reptile}<description><![CDATA[
 <div>
     <div>
@@ -15191,16 +16176,50 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{unident}<description><![CDATA[
+        <term>{reptile}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
+        <img style="width:100%" src="files/data/gallery/382_most_snake.jpg" alt="files/data/gallery/382_most_snake.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/426_unident_teeth.jpg" alt="files/data/gallery/426_unident_teeth.jpg" />
+        <img style="width:100%" src="files/data/gallery/444_reptile_small.jpg" alt="files/data/gallery/444_reptile_small.jpg" />
     </div>
     <div>
-        <p>Potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but have not been identified by the recorder</p>
+        <img style="width:100%" src="files/data/gallery/445_reptile_large.jpg" alt="files/data/gallery/445_reptile_large.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/513_reptile%20jaw.jpg" alt="files/data/gallery/513_reptile%20jaw.jpg" />
+    </div>
+    <div>
+        <p>Snakes and lizards (record in annotations); note that turtle is included with the lacustrine bone</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/443_mega.jpg" alt="files/data/gallery/443_mega.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/530_Other_echidna.jpg" alt="files/data/gallery/530_Other_echidna.jpg" />
+    </div>
+    <div>
+        <p>megafauna, amphibian, echidna or a more prescise taxanomic identification not listed above (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/443_mega.jpg" alt="files/data/gallery/443_mega.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/530_Other_echidna.jpg" alt="files/data/gallery/530_Other_echidna.jpg" />
+    </div>
+    <div>
+        <p>megafauna, amphibian, echidna or a more prescise taxanomic identification not listed above (record in annotations)</p>
     </div>
     <hr/>
 </div>
@@ -15225,50 +16244,50 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{other}<description><![CDATA[
+        <term>{unidiag}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/443_mega.jpg" alt="files/data/gallery/443_mega.jpg" />
+        <img style="width:100%" src="files/data/gallery/427_undiag.jpg" alt="files/data/gallery/427_undiag.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/530_Other_echidna.jpg" alt="files/data/gallery/530_Other_echidna.jpg" />
+        <img style="width:100%" src="files/data/gallery/428_undiag.jpg" alt="files/data/gallery/428_undiag.jpg" />
     </div>
     <div>
-        <p>megafauna, amphibian, echidna or a more prescise taxanomic identification not listed above (record in annotations)</p>
+        <img style="width:100%" src="files/data/gallery/430_undiag.jpg" alt="files/data/gallery/430_undiag.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/527_undiag%20bone%201.jpg" alt="files/data/gallery/527_undiag%20bone%201.jpg" />
+    </div>
+    <div>
+        <p>Shape and size are not diagnostic of taxon and no other diagnostic features are preserved (teeth, muscle markings, articular ends)</p>
     </div>
     <hr/>
 </div>
 ]]></description></term>
-        <term>{mammal}<description><![CDATA[
+        <term>{unident}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/499_terrbone.jpg" alt="files/data/gallery/499_terrbone.jpg" />
+        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/493_terrbone.jpg" alt="files/data/gallery/493_terrbone.jpg" />
+        <img style="width:100%" src="files/data/gallery/426_unident_teeth.jpg" alt="files/data/gallery/426_unident_teeth.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/501_unidentbone.jpg" alt="files/data/gallery/501_unidentbone.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/514_mammal%20bone.jpg" alt="files/data/gallery/514_mammal%20bone.jpg" />
-    </div>
-    <div>
-        <p>Record more detailed taxonomic information in annotations (eg. large or small macropod, bettong or other small marsupial, carnivore, rodent, mega-fauna)</p>
+        <p>Potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but have not been identified by the recorder</p>
     </div>
     <hr/>
 </div>
 ]]></description></term>
-        <term>{rodent}<description><![CDATA[
+        <term>{unident}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/441_rodent.jpg" alt="files/data/gallery/441_rodent.jpg" />
+        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/442_rodent.jpg" alt="files/data/gallery/442_rodent.jpg" />
+        <img style="width:100%" src="files/data/gallery/426_unident_teeth.jpg" alt="files/data/gallery/426_unident_teeth.jpg" />
     </div>
     <div>
-        <p>Small mammal with distinctive incisors in upper & lower jaws</p>
+        <p>Potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but have not been identified by the recorder</p>
     </div>
     <hr/>
 </div>
@@ -15277,6 +16296,20 @@
     </property>
     <property name="Stone_-_Eggshell">
       <lookup __RESERVED_CP__="true">
+        <term>{emu}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/324_other_emuegg.jpg" alt="files/data/gallery/324_other_emuegg.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/141_emu.jpg" alt="files/data/gallery/141_emu.jpg" />
+    </div>
+    <div>
+        <p>Shell has a 3-layered structure & orange-peel texture; texture disappears only when weathering reduces shell thickness to < 0.8mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{emu}<description><![CDATA[
 <div>
     <div>
@@ -15302,6 +16335,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{genyo}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/143_genyo.jpg" alt="files/data/gallery/143_genyo.jpg" />
+    </div>
+    <div>
+        <p>Shell has a single layer; pores appear as short, parallel, groove-like pin pricks</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{other}<description><![CDATA[
 <div>
     <div>
@@ -15312,6 +16356,31 @@
     </div>
     <div>
         <p>Other eggshell, clearly not emu or Genyornis (e.g. duck or swan)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/144_other.jpg" alt="files/data/gallery/144_other.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/145_other.jpg" alt="files/data/gallery/145_other.jpg" />
+    </div>
+    <div>
+        <p>Other eggshell, clearly not emu or Genyornis (e.g. duck or swan)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{indet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/146_indet.jpg" alt="files/data/gallery/146_indet.jpg" />
+    </div>
+    <div>
+        <p>Features unclear due to surface modification or shell is smooth and < 0.8mm thick</p>
     </div>
     <hr/>
 </div>
@@ -15345,6 +16414,20 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{bonemod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/127_bonemod.jpg" alt="files/data/gallery/127_bonemod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
+    </div>
+    <div>
+        <p>Bone with a smoothed, ground surface which is pointed or bevelled at one or both ends; striations may be visible</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{shellmod}<description><![CDATA[
 <div>
     <div>
@@ -15358,6 +16441,56 @@
     </div>
     <div>
         <p>Thick fragment of shell with notches or other evidence of working or use along one or more margins</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{shellmod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/129_shellmod.jpg" alt="files/data/gallery/129_shellmod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/130_shellmod.jpg" alt="files/data/gallery/130_shellmod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/131_shellmod.jpg" alt="files/data/gallery/131_shellmod.jpg" />
+    </div>
+    <div>
+        <p>Thick fragment of shell with notches or other evidence of working or use along one or more margins</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{eggmod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/132_eggmod.jpg" alt="files/data/gallery/132_eggmod.jpg" />
+    </div>
+    <div>
+        <p>Eggshell with modified surface, e.g. tooth mark or drill hole</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{eggmod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/132_eggmod.jpg" alt="files/data/gallery/132_eggmod.jpg" />
+    </div>
+    <div>
+        <p>Eggshell with modified surface, e.g. tooth mark or drill hole</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{ochrediss}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/133_ochrediss.jpg" alt="files/data/gallery/133_ochrediss.jpg" />
+    </div>
+    <div>
+        <p>Flecks or fragments of ochre disseminated through the sediment</p>
     </div>
     <hr/>
 </div>
@@ -15387,6 +16520,20 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{ochrenod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/134_ochrenod.jpg" alt="files/data/gallery/134_ochrenod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/135_ochre%20nodule.jpg" alt="files/data/gallery/135_ochre%20nodule.jpg" />
+    </div>
+    <div>
+        <p>Small nodule of ochre</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{ochrefacet}<description><![CDATA[
 <div>
     <div>
@@ -15394,6 +16541,28 @@
     </div>
     <div>
         <p>Ochre with facets, indicating use as crayon</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{ochrefacet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/136_ochrefacet.jpg" alt="files/data/gallery/136_ochrefacet.jpg" />
+    </div>
+    <div>
+        <p>Ochre with facets, indicating use as crayon</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{qtzxal}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/137_qtzxal.jpg" alt="files/data/gallery/137_qtzxal.jpg" />
+    </div>
+    <div>
+        <p>Worked or unworked quartz crystal</p>
     </div>
     <hr/>
 </div>
@@ -15423,6 +16592,20 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{turbo}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/138_turbo_fragment.jpg" alt="files/data/gallery/138_turbo_fragment.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/139_turbo_whole.jpg" alt="files/data/gallery/139_turbo_whole.jpg" />
+    </div>
+    <div>
+        <p>Marine gastropod up to 4cm long, with white, zig-zag stripes</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{other}<description><![CDATA[
 <div>
     <div>
@@ -15434,13 +16617,13 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{eggmod}<description><![CDATA[
+        <term>{other}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/132_eggmod.jpg" alt="files/data/gallery/132_eggmod.jpg" />
+        <img style="width:100%" src="files/data/gallery/140_other_glass.jpg" alt="files/data/gallery/140_other_glass.jpg" />
     </div>
     <div>
-        <p>Eggshell with modified surface, e.g. tooth mark or drill hole</p>
+        <p>Any other worked, utilised or transported material not listed above (record in annotations)</p>
     </div>
     <hr/>
 </div>
@@ -15451,53 +16634,6 @@
   <ArchaeologicalElement name="Stone Associated Surface">
     <property name="Stone_-_In_Situ">
       <lookup __RESERVED_CP__="true">
-        <term>{lacust}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/498_lacust_otoliths.jpg" alt="files/data/gallery/498_lacust_otoliths.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/500_lacust_fishbone.jpg" alt="files/data/gallery/500_lacust_fishbone.jpg" />
-    </div>
-    <div>
-        <p>Lacustrine material (mussel, fishbone, otoliths)</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{terrbo}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/499_terrbone.jpg" alt="files/data/gallery/499_terrbone.jpg" />
-    </div>
-    <div>
-        <p>Terrestrial bone</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{eggshell}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/324_other_emuegg.jpg" alt="files/data/gallery/324_other_emuegg.jpg" />
-    </div>
-    <div>
-        <p>Emu, Genyornis or other eggshell</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{otherwork}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
-    </div>
-    <div>
-        <p>Other worked or transported material</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{none}<description><![CDATA[
 <div>
     <div>
@@ -15522,6 +16658,31 @@
     </div>
     <div>
         <p>Associated hearthstones, baked or ashy sediment, dark staining (organics and/or charcoal)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{lacust}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/498_lacust_otoliths.jpg" alt="files/data/gallery/498_lacust_otoliths.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/500_lacust_fishbone.jpg" alt="files/data/gallery/500_lacust_fishbone.jpg" />
+    </div>
+    <div>
+        <p>Lacustrine material (mussel, fishbone, otoliths)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{terrbo}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/499_terrbone.jpg" alt="files/data/gallery/499_terrbone.jpg" />
+    </div>
+    <div>
+        <p>Terrestrial bone</p>
     </div>
     <hr/>
 </div>
@@ -15551,10 +16712,43 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{eggshell}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/324_other_emuegg.jpg" alt="files/data/gallery/324_other_emuegg.jpg" />
+    </div>
+    <div>
+        <p>Emu, Genyornis or other eggshell</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{otherwork}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
+    </div>
+    <div>
+        <p>Other worked or transported material</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
       </lookup>
     </property>
     <property name="Stone_-_Surface">
       <lookup __RESERVED_CP__="true">
+        <term>{none}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/153_insitu.JPG" alt="files/data/gallery/153_insitu.JPG" />
+    </div>
+    <div>
+        <p>there is no material on the surface that is unambiguouslly associated with the artefacts</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{hearthmaterial}<description><![CDATA[
 <div>
     <div>
@@ -15597,39 +16791,6 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{eggshell}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/324_other_emuegg.jpg" alt="files/data/gallery/324_other_emuegg.jpg" />
-    </div>
-    <div>
-        <p>Emu, Genyornis or other eggshell</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{otherwork}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
-    </div>
-    <div>
-        <p>Other worked or transported material</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
-        <term>{none}<description><![CDATA[
-<div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/153_insitu.JPG" alt="files/data/gallery/153_insitu.JPG" />
-    </div>
-    <div>
-        <p>there is no material on the surface that is unambiguouslly associated with the artefacts</p>
-    </div>
-    <hr/>
-</div>
-]]></description></term>
         <term>{unidentbone}<description><![CDATA[
 <div>
     <div>
@@ -15655,6 +16816,28 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{eggshell}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/324_other_emuegg.jpg" alt="files/data/gallery/324_other_emuegg.jpg" />
+    </div>
+    <div>
+        <p>Emu, Genyornis or other eggshell</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{otherwork}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
+    </div>
+    <div>
+        <p>Other worked or transported material</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
       </lookup>
     </property>
     <property name="Stone_-_Hearth">
@@ -15666,6 +16849,28 @@
     </div>
     <div>
         <p>Heat retainers made from clay or sandy clay</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hsclay}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/296_hsclay.jpg" alt="files/data/gallery/296_hsclay.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from clay or sandy clay</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hscarb}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/293_hscarb%20burned%20_%20unburned.jpg" alt="files/data/gallery/293_hscarb%20burned%20_%20unburned.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from carbonate nodules</p>
     </div>
     <hr/>
 </div>
@@ -15692,6 +16897,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{hsterm}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/257_none.jpg" alt="files/data/gallery/257_none.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from termite nest -  sandy with visible voids and channels</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{hsother}<description><![CDATA[
 <div>
     <div>
@@ -15699,6 +16915,28 @@
     </div>
     <div>
         <p>Heat retainers made from other material, e.g. silcrete nodules (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hsother}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/297_hsother_silcrete.jpg" alt="files/data/gallery/297_hsother_silcrete.jpg" />
+    </div>
+    <div>
+        <p>Heat retainers made from other material, e.g. silcrete nodules (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{hsindet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/298_hsindet.jpg" alt="files/data/gallery/298_hsindet.jpg" />
+    </div>
+    <div>
+        <p>Too deeply buried or encrusted to determine type</p>
     </div>
     <hr/>
 </div>
@@ -15725,6 +16963,28 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{bakedclay}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/305_bakedclay_pieces.jpg" alt="files/data/gallery/305_bakedclay_pieces.jpg" />
+    </div>
+    <div>
+        <p>Thin layer or small lumps of burnt clay, orange in colour when freshly exposed, broken surfaces may be smooth</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{bakedsed}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/487_hearth%20material_baked%20sed.JPG" alt="files/data/gallery/487_hearth%20material_baked%20sed.JPG" />
+    </div>
+    <div>
+        <p>Ashy sediment, baked hard</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{bakedsed}<description><![CDATA[
 <div>
     <div>
@@ -15747,11 +17007,34 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{staining}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/320_staining_burnt%20bone.jpg" alt="files/data/gallery/320_staining_burnt%20bone.jpg" />
+    </div>
+    <div>
+        <p>in situ sediment exhibits organic staining with or without charcoal (do not select if associated hearth material is only surface)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}</term>
         <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_Lacustrine">
       <lookup __RESERVED_CP__="true">
+        <term>{mussel}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/492_no.jpg" alt="files/data/gallery/492_no.jpg" />
+    </div>
+    <div>
+        <p>Mussel shell or shell fragment</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{mussel}<description><![CDATA[
 <div>
     <div>
@@ -15773,6 +17056,65 @@
     </div>
     <div>
         <p>Common taxa are Golden Perch, Silver Perch & Murray Cod but other taxa could be present; identified on basis of otoliths</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{fishbone}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/453_fish_skeleton.jpg" alt="files/data/gallery/453_fish_skeleton.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/452_fish.jpg" alt="files/data/gallery/452_fish.jpg" />
+    </div>
+    <div>
+        <p>Common taxa are Golden Perch, Silver Perch & Murray Cod but other taxa could be present; identified on basis of otoliths</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{otoliths}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/417_otoliths_golden%20perch.jpg" alt="files/data/gallery/417_otoliths_golden%20perch.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/418_otoliths_silverperch.jpg" alt="files/data/gallery/418_otoliths_silverperch.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/419_otoliths_murraycod.jpg" alt="files/data/gallery/419_otoliths_murraycod.jpg" />
+    </div>
+    <div>
+        <p>Fish ear bone, diagnostic of taxon; common taxa are Golden Perch, Silver Perch, Murray Cod (if identified, record taxon in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{otoliths}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/417_otoliths_golden%20perch.jpg" alt="files/data/gallery/417_otoliths_golden%20perch.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/418_otoliths_silverperch.jpg" alt="files/data/gallery/418_otoliths_silverperch.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/419_otoliths_murraycod.jpg" alt="files/data/gallery/419_otoliths_murraycod.jpg" />
+    </div>
+    <div>
+        <p>Fish ear bone, diagnostic of taxon; common taxa are Golden Perch, Silver Perch, Murray Cod (if identified, record taxon in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{glith}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/422_glith.jpg" alt="files/data/gallery/422_glith.jpg" />
+    </div>
+    <div>
+        <p>Crustacean gastrolith</p>
     </div>
     <hr/>
 </div>
@@ -15799,6 +17141,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{exoskel}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/423_exoskel.jpg" alt="files/data/gallery/423_exoskel.jpg" />
+    </div>
+    <div>
+        <p>Crustacean exoskeleton</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{scute}<description><![CDATA[
 <div>
     <div>
@@ -15810,20 +17163,13 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{other}</term>
-        <term>{otoliths}<description><![CDATA[
+        <term>{scute}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/417_otoliths_golden%20perch.jpg" alt="files/data/gallery/417_otoliths_golden%20perch.jpg" />
+        <img style="width:100%" src="files/data/gallery/424_scute.jpg" alt="files/data/gallery/424_scute.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/418_otoliths_silverperch.jpg" alt="files/data/gallery/418_otoliths_silverperch.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/419_otoliths_murraycod.jpg" alt="files/data/gallery/419_otoliths_murraycod.jpg" />
-    </div>
-    <div>
-        <p>Fish ear bone, diagnostic of taxon; common taxa are Golden Perch, Silver Perch, Murray Cod (if identified, record taxon in annotations)</p>
+        <p>Bony plate from the shell of a turtle</p>
     </div>
     <hr/>
 </div>
@@ -15842,10 +17188,66 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{boneandotol}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/451_fishbone%20otoliths.jpg" alt="files/data/gallery/451_fishbone%20otoliths.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/454_otoliths%20_%20fishbone.jpg" alt="files/data/gallery/454_otoliths%20_%20fishbone.jpg" />
+    </div>
+    <div>
+        <p>Both fish bone and otoliths present (if otoliths identified to taxon, record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}</term>
+        <term>{other}</term>
       </lookup>
     </property>
     <property name="Stone_-_Terrestrial">
       <lookup __RESERVED_CP__="true">
+        <term>{mammal}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/499_terrbone.jpg" alt="files/data/gallery/499_terrbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/493_terrbone.jpg" alt="files/data/gallery/493_terrbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/501_unidentbone.jpg" alt="files/data/gallery/501_unidentbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/514_mammal%20bone.jpg" alt="files/data/gallery/514_mammal%20bone.jpg" />
+    </div>
+    <div>
+        <p>Record more detailed taxonomic information in annotations (eg. large or small macropod, bettong or other small marsupial, carnivore, rodent, mega-fauna)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{mammal}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/499_terrbone.jpg" alt="files/data/gallery/499_terrbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/493_terrbone.jpg" alt="files/data/gallery/493_terrbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/501_unidentbone.jpg" alt="files/data/gallery/501_unidentbone.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/514_mammal%20bone.jpg" alt="files/data/gallery/514_mammal%20bone.jpg" />
+    </div>
+    <div>
+        <p>Record more detailed taxonomic information in annotations (eg. large or small macropod, bettong or other small marsupial, carnivore, rodent, mega-fauna)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{emu}<description><![CDATA[
 <div>
     <div>
@@ -15859,6 +17261,34 @@
     </div>
     <div>
         <p>Most emu bones are heavy and solid in contrast to those of flying birds which are lightweight & hollow</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{emu}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/449_emu%20skeleton.jpg" alt="files/data/gallery/449_emu%20skeleton.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/447_emu_Skull.jpg" alt="files/data/gallery/447_emu_Skull.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/446_emu_PelvicGirdle.jpg" alt="files/data/gallery/446_emu_PelvicGirdle.jpg" />
+    </div>
+    <div>
+        <p>Most emu bones are heavy and solid in contrast to those of flying birds which are lightweight & hollow</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{birdother}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/450_birdother.jpg" alt="files/data/gallery/450_birdother.jpg" />
+    </div>
+    <div>
+        <p>Amend glossary entry; bird other than emu;  most bones are hollow, others are semi-hollow with air pockets</p>
     </div>
     <hr/>
 </div>
@@ -15891,6 +17321,51 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{carnivore}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/438_carnivore_Thylacine.jpg" alt="files/data/gallery/438_carnivore_Thylacine.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/439_carnivore_dog.jpg" alt="files/data/gallery/439_carnivore_dog.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/440_carnivore_TasmanianDevil.jpg" alt="files/data/gallery/440_carnivore_TasmanianDevil.jpg" />
+    </div>
+    <div>
+        <p>Carnivores have long, sharp teeth designed for ripping, tearing or cutting  flesh, for example, Thylacine (Tasmanian tiger), Sarcophilus (Tasmanian Devil)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{rodent}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/441_rodent.jpg" alt="files/data/gallery/441_rodent.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/442_rodent.jpg" alt="files/data/gallery/442_rodent.jpg" />
+    </div>
+    <div>
+        <p>Small mammal with distinctive incisors in upper & lower jaws</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{rodent}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/441_rodent.jpg" alt="files/data/gallery/441_rodent.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/442_rodent.jpg" alt="files/data/gallery/442_rodent.jpg" />
+    </div>
+    <div>
+        <p>Small mammal with distinctive incisors in upper & lower jaws</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{reptile}<description><![CDATA[
 <div>
     <div>
@@ -15911,16 +17386,50 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{unident}<description><![CDATA[
+        <term>{reptile}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
+        <img style="width:100%" src="files/data/gallery/382_most_snake.jpg" alt="files/data/gallery/382_most_snake.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/426_unident_teeth.jpg" alt="files/data/gallery/426_unident_teeth.jpg" />
+        <img style="width:100%" src="files/data/gallery/444_reptile_small.jpg" alt="files/data/gallery/444_reptile_small.jpg" />
     </div>
     <div>
-        <p>Potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but have not been identified by the recorder</p>
+        <img style="width:100%" src="files/data/gallery/445_reptile_large.jpg" alt="files/data/gallery/445_reptile_large.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/513_reptile%20jaw.jpg" alt="files/data/gallery/513_reptile%20jaw.jpg" />
+    </div>
+    <div>
+        <p>Snakes and lizards (record in annotations); note that turtle is included with the lacustrine bone</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/443_mega.jpg" alt="files/data/gallery/443_mega.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/530_Other_echidna.jpg" alt="files/data/gallery/530_Other_echidna.jpg" />
+    </div>
+    <div>
+        <p>megafauna, amphibian, echidna or a more prescise taxanomic identification not listed above (record in annotations)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/443_mega.jpg" alt="files/data/gallery/443_mega.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/530_Other_echidna.jpg" alt="files/data/gallery/530_Other_echidna.jpg" />
+    </div>
+    <div>
+        <p>megafauna, amphibian, echidna or a more prescise taxanomic identification not listed above (record in annotations)</p>
     </div>
     <hr/>
 </div>
@@ -15945,50 +17454,50 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{other}<description><![CDATA[
+        <term>{unidiag}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/443_mega.jpg" alt="files/data/gallery/443_mega.jpg" />
+        <img style="width:100%" src="files/data/gallery/427_undiag.jpg" alt="files/data/gallery/427_undiag.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/530_Other_echidna.jpg" alt="files/data/gallery/530_Other_echidna.jpg" />
+        <img style="width:100%" src="files/data/gallery/428_undiag.jpg" alt="files/data/gallery/428_undiag.jpg" />
     </div>
     <div>
-        <p>megafauna, amphibian, echidna or a more prescise taxanomic identification not listed above (record in annotations)</p>
+        <img style="width:100%" src="files/data/gallery/430_undiag.jpg" alt="files/data/gallery/430_undiag.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/527_undiag%20bone%201.jpg" alt="files/data/gallery/527_undiag%20bone%201.jpg" />
+    </div>
+    <div>
+        <p>Shape and size are not diagnostic of taxon and no other diagnostic features are preserved (teeth, muscle markings, articular ends)</p>
     </div>
     <hr/>
 </div>
 ]]></description></term>
-        <term>{mammal}<description><![CDATA[
+        <term>{unident}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/499_terrbone.jpg" alt="files/data/gallery/499_terrbone.jpg" />
+        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/493_terrbone.jpg" alt="files/data/gallery/493_terrbone.jpg" />
+        <img style="width:100%" src="files/data/gallery/426_unident_teeth.jpg" alt="files/data/gallery/426_unident_teeth.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/501_unidentbone.jpg" alt="files/data/gallery/501_unidentbone.jpg" />
-    </div>
-    <div>
-        <img style="width:100%" src="files/data/gallery/514_mammal%20bone.jpg" alt="files/data/gallery/514_mammal%20bone.jpg" />
-    </div>
-    <div>
-        <p>Record more detailed taxonomic information in annotations (eg. large or small macropod, bettong or other small marsupial, carnivore, rodent, mega-fauna)</p>
+        <p>Potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but have not been identified by the recorder</p>
     </div>
     <hr/>
 </div>
 ]]></description></term>
-        <term>{rodent}<description><![CDATA[
+        <term>{unident}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/441_rodent.jpg" alt="files/data/gallery/441_rodent.jpg" />
+        <img style="width:100%" src="files/data/gallery/425_unident_long%20bone%20elements.jpg" alt="files/data/gallery/425_unident_long%20bone%20elements.jpg" />
     </div>
     <div>
-        <img style="width:100%" src="files/data/gallery/442_rodent.jpg" alt="files/data/gallery/442_rodent.jpg" />
+        <img style="width:100%" src="files/data/gallery/426_unident_teeth.jpg" alt="files/data/gallery/426_unident_teeth.jpg" />
     </div>
     <div>
-        <p>Small mammal with distinctive incisors in upper & lower jaws</p>
+        <p>Potentially diagnostic features are present (articular ends, muscle markings, teeth, distinctive size/shape) but have not been identified by the recorder</p>
     </div>
     <hr/>
 </div>
@@ -15997,6 +17506,20 @@
     </property>
     <property name="Stone_-_Eggshell">
       <lookup __RESERVED_CP__="true">
+        <term>{emu}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/324_other_emuegg.jpg" alt="files/data/gallery/324_other_emuegg.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/141_emu.jpg" alt="files/data/gallery/141_emu.jpg" />
+    </div>
+    <div>
+        <p>Shell has a 3-layered structure & orange-peel texture; texture disappears only when weathering reduces shell thickness to < 0.8mm</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{emu}<description><![CDATA[
 <div>
     <div>
@@ -16022,6 +17545,17 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{genyo}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/143_genyo.jpg" alt="files/data/gallery/143_genyo.jpg" />
+    </div>
+    <div>
+        <p>Shell has a single layer; pores appear as short, parallel, groove-like pin pricks</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{other}<description><![CDATA[
 <div>
     <div>
@@ -16032,6 +17566,31 @@
     </div>
     <div>
         <p>Other eggshell, clearly not emu or Genyornis (e.g. duck or swan)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{other}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/144_other.jpg" alt="files/data/gallery/144_other.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/145_other.jpg" alt="files/data/gallery/145_other.jpg" />
+    </div>
+    <div>
+        <p>Other eggshell, clearly not emu or Genyornis (e.g. duck or swan)</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{indet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/146_indet.jpg" alt="files/data/gallery/146_indet.jpg" />
+    </div>
+    <div>
+        <p>Features unclear due to surface modification or shell is smooth and < 0.8mm thick</p>
     </div>
     <hr/>
 </div>
@@ -16065,6 +17624,20 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{bonemod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/127_bonemod.jpg" alt="files/data/gallery/127_bonemod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/128_bonemod.jpg" alt="files/data/gallery/128_bonemod.jpg" />
+    </div>
+    <div>
+        <p>Bone with a smoothed, ground surface which is pointed or bevelled at one or both ends; striations may be visible</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{shellmod}<description><![CDATA[
 <div>
     <div>
@@ -16078,6 +17651,56 @@
     </div>
     <div>
         <p>Thick fragment of shell with notches or other evidence of working or use along one or more margins</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{shellmod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/129_shellmod.jpg" alt="files/data/gallery/129_shellmod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/130_shellmod.jpg" alt="files/data/gallery/130_shellmod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/131_shellmod.jpg" alt="files/data/gallery/131_shellmod.jpg" />
+    </div>
+    <div>
+        <p>Thick fragment of shell with notches or other evidence of working or use along one or more margins</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{eggmod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/132_eggmod.jpg" alt="files/data/gallery/132_eggmod.jpg" />
+    </div>
+    <div>
+        <p>Eggshell with modified surface, e.g. tooth mark or drill hole</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{eggmod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/132_eggmod.jpg" alt="files/data/gallery/132_eggmod.jpg" />
+    </div>
+    <div>
+        <p>Eggshell with modified surface, e.g. tooth mark or drill hole</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{ochrediss}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/133_ochrediss.jpg" alt="files/data/gallery/133_ochrediss.jpg" />
+    </div>
+    <div>
+        <p>Flecks or fragments of ochre disseminated through the sediment</p>
     </div>
     <hr/>
 </div>
@@ -16107,6 +17730,20 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{ochrenod}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/134_ochrenod.jpg" alt="files/data/gallery/134_ochrenod.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/135_ochre%20nodule.jpg" alt="files/data/gallery/135_ochre%20nodule.jpg" />
+    </div>
+    <div>
+        <p>Small nodule of ochre</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{ochrefacet}<description><![CDATA[
 <div>
     <div>
@@ -16114,6 +17751,28 @@
     </div>
     <div>
         <p>Ochre with facets, indicating use as crayon</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{ochrefacet}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/136_ochrefacet.jpg" alt="files/data/gallery/136_ochrefacet.jpg" />
+    </div>
+    <div>
+        <p>Ochre with facets, indicating use as crayon</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
+        <term>{qtzxal}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/137_qtzxal.jpg" alt="files/data/gallery/137_qtzxal.jpg" />
+    </div>
+    <div>
+        <p>Worked or unworked quartz crystal</p>
     </div>
     <hr/>
 </div>
@@ -16143,6 +17802,20 @@
     <hr/>
 </div>
 ]]></description></term>
+        <term>{turbo}<description><![CDATA[
+<div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/138_turbo_fragment.jpg" alt="files/data/gallery/138_turbo_fragment.jpg" />
+    </div>
+    <div>
+        <img style="width:100%" src="files/data/gallery/139_turbo_whole.jpg" alt="files/data/gallery/139_turbo_whole.jpg" />
+    </div>
+    <div>
+        <p>Marine gastropod up to 4cm long, with white, zig-zag stripes</p>
+    </div>
+    <hr/>
+</div>
+]]></description></term>
         <term>{other}<description><![CDATA[
 <div>
     <div>
@@ -16154,13 +17827,13 @@
     <hr/>
 </div>
 ]]></description></term>
-        <term>{eggmod}<description><![CDATA[
+        <term>{other}<description><![CDATA[
 <div>
     <div>
-        <img style="width:100%" src="files/data/gallery/132_eggmod.jpg" alt="files/data/gallery/132_eggmod.jpg" />
+        <img style="width:100%" src="files/data/gallery/140_other_glass.jpg" alt="files/data/gallery/140_other_glass.jpg" />
     </div>
     <div>
-        <p>Eggshell with modified surface, e.g. tooth mark or drill hole</p>
+        <p>Any other worked, utilised or transported material not listed above (record in annotations)</p>
     </div>
     <hr/>
 </div>
