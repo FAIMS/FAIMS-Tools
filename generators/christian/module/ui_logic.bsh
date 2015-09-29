@@ -472,15 +472,6 @@ validateFields(List fields, String format) {
   return out;
 }
 
-validateEnt() {
-  List f = new ArrayList(); // Fields to be validated
-
-  f.add(fieldPair("Ent/Tab/ID", "{ID}"));
-
-  String validationMessage = validateFields(f, "PLAINTEXT");
-  showWarning("Validation Results", validationMessage);
-}
-
 
 
 /******************************************************************************/
@@ -605,7 +596,6 @@ removeNavigationButtons() {
 addNavigationButtons(String tabgroup) {
   removeNavigationButtons();
   List tabgroupsToValidate = new ArrayList();
-  tabgroupsToValidate.add("Ent");
 
   addNavigationButton("new", new ActionButtonCallback() {
     actionOnLabel() {
@@ -996,6 +986,8 @@ loadlogicFrom(String uuid) {
 /******************************************************************************/
 
   
+  String capturingDevice = null;
+
   addOnEvent("Ent/Tab/Device_List",  "click", "onClickDeviceList()");
   addOnEvent("Ent/Tab/Device_List",  "show",  "refreshList()");
   addOnEvent("Ent/Tab/Refresh_List", "click", "refreshList()");

@@ -35,6 +35,7 @@
 <arch16n k="{Internal_GPS}"><![CDATA[Internal GPS]]></arch16n>
 <arch16n k="{Latitude}"><![CDATA[Latitude]]></arch16n>
 <arch16n k="{Longitude}"><![CDATA[Longitude]]></arch16n>
+<arch16n k="{Muh_Table}"><![CDATA[Muh Table]]></arch16n>
 <arch16n k="{New_Ent}"><![CDATA[New Ent]]></arch16n>
 <arch16n k="{New}"><![CDATA[New]]></arch16n>
 <arch16n k="{New_record_created}"><![CDATA[New record created]]></arch16n>

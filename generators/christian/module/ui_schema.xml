@@ -40,6 +40,7 @@
           <Ent>
             <Tab>
               <ID/>
+              <Muh_Table/>
               <Device_List/>
               <Refresh_List/>
             </Tab>
@@ -122,9 +123,12 @@
       <label>{Ent}</label>
       <group ref="Tab">
         <label>{Tab}</label>
-        <input faims_attribute_type="measure" ref="ID" faims_attribute_name="ID" faims_style_class="required">
+        <input faims_attribute_type="measure" ref="ID" faims_attribute_name="ID">
           <label>{ID}</label>
           <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <input faims_table="true" ref="Muh_Table">
+          <label>{Muh_Table}</label>
         </input>
         <select1 ref="Device_List" faims_certainty="false" faims_annotation="false">
           <label>{Device_List}</label>
@@ -139,7 +143,7 @@
       </group>
     </group>
     <group ref="logic" faims_archent_type="logic">
-      <label>{addOnEvent__Ent_Tab_Device_List____click____onClickDeviceList______addOnEvent__Ent_Tab_Device_List____show____refreshList______addOnEvent__Ent_Tab_Refresh_List____click____refreshList______refreshList_____l___getHardwareDevices____pl___listToPairList_l___populateDropDown__Ent_Tab_Device_List___pl____onClickDeviceList_____String_s___getFieldValue__Ent_Tab_Device_List____showToast_s____listToPairList_List_l____List_pl___new_ArrayList____for__String_s__l____pladd_new_NameValuePair_s__s_____return_pl__}</label>
+      <label>{String_capturingDevice___null__addOnEvent__Ent_Tab_Device_List____click____onClickDeviceList______addOnEvent__Ent_Tab_Device_List____show____refreshList______addOnEvent__Ent_Tab_Refresh_List____click____refreshList______refreshList_____l___getHardwareDevices____pl___listToPairList_l___populateDropDown__Ent_Tab_Device_List___pl____onClickDeviceList_____String_s___getFieldValue__Ent_Tab_Device_List____showToast_s____listToPairList_List_l____List_pl___new_ArrayList____for__String_s__l____pladd_new_NameValuePair_s__s_____return_pl__}</label>
     </group>
   </h:body>
 </h:html>

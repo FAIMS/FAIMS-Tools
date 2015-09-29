@@ -700,7 +700,7 @@
         </xsl:element>
       </xsl:when>
       <xsl:when test="normalize-space(@t)='table'">
-        <xsl:element name="{normalize-space(@t)}">
+        <xsl:element name="input">
           <xsl:attribute name="faims_table">true</xsl:attribute>
           <xsl:call-template name="body-expand-view-standard-nodes" />
         </xsl:element>

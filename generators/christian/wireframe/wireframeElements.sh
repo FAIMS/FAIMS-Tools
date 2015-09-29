@@ -19,7 +19,9 @@ mkdir -p wireframeImages
   
   ./makeElement.sh Control_Search_Entity_List "Entity List" list 1 false false false false false wireframeImages/
   
-  ./makeElement.sh Ent_Tab_ID "ID" input 1 false false true true false wireframeImages/
+  ./makeElement.sh Ent_Tab_ID "ID" input 1 false false true false false wireframeImages/
+  
+  ./makeElement.sh Ent_Tab_Muh_Table "Muh Table" table 1 false false false false false wireframeImages/
   
   ./makeElement.sh Ent_Tab_Device_List "Device List" dropdown 1 false false false false false wireframeImages/
   
