@@ -25,9 +25,9 @@
     not(normalize-space(@t) = 'button') and
     not(normalize-space(@t) = 'gpsdiag') and
     not(normalize-space(@t) = 'group') and
-    not(normalize-space(@t) = 'map')
+    not(normalize-space(@t) = 'map') and
     not(normalize-space(@t) = 'table') and
-    not(normalize-space(@t) = 'viewfiles') and
+    not(normalize-space(@t) = 'viewfiles')
     ]"
     use="concat(name(ancestor::*[last()-1]), name(.))"/>
 

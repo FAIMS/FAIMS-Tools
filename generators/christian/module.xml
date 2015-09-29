@@ -14,6 +14,7 @@
   <Ent>
     <Tab>
       <ID f="id"/>
+      <Muh_Table t="table"/>
       <Device_List f="nodata" t="dropdown"/>
       <Refresh_List t="button"/>
     </Tab>
