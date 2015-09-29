@@ -556,6 +556,8 @@ validateFields(List fields, String format) {
       <xsl:text>  showWarning("Validation Results", validationMessage);</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:text>}</xsl:text>
+      <xsl:value-of select="$newline" />
+      <xsl:value-of select="$newline" />
     </xsl:for-each>
 
     <xsl:value-of select="$newline" />
@@ -1161,10 +1163,10 @@ search(){
   String refEntityTypes = tabgroup + "/Search/Entity_Types";
 
 </xsl:text>
-<xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &lt; 2">
+<xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and not(name() = 'logic') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'table') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &lt; 2">
   <xsl:text>  String type = "";</xsl:text>
 </xsl:if>
-<xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
+<xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and not(name() = 'logic') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'table') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
   <xsl:text>  String type = getFieldValue(refEntityTypes);</xsl:text>
 </xsl:if>
 <xsl:text>
@@ -1439,6 +1441,15 @@ menus = new ArrayList();
 }
 </xsl:text>
       <xsl:call-template name="entity-loading" />
+    </xsl:if>
+
+    <xsl:if test="/module/logic">
+      <xsl:text>
+/******************************************************************************/
+/*                             HANDWRITTEN LOGIC                              */
+/******************************************************************************/
+</xsl:text>
+      <xsl:value-of select="/module/logic/text()"/>
     </xsl:if>
 
   </xsl:template>
@@ -2085,7 +2096,7 @@ addOnEvent(userMenuPath, "click", "selectUser()");
   </xsl:template>
 
   <xsl:template name="search-entities">
-    <xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
+    <xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and not(name() = 'logic') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'table') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]) &gt;= 2">
       <xsl:text>addOnEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Entity_Types"  , "click" , "search()");</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:value-of select="$newline" />

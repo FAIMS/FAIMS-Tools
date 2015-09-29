@@ -13,7 +13,7 @@
 
   <!-- ArchaeologicalElement -->
   <xsl:template name="arch-el">
-    <xsl:for-each select="/module/*[not(contains(@f, 'nodata')) and not(contains(@f, 'noui')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]">
+    <xsl:for-each select="/module/*[not(contains(@f, 'nodata')) and not(contains(@f, 'noui')) and not(name() = 'rels') and not(name() = 'logic') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'table') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button')])]">
       <ArchaeologicalElement name="{name(.)}">
         <xsl:call-template name="properties"/>
       </ArchaeologicalElement>
@@ -22,7 +22,7 @@
 
   <!-- property -->
   <xsl:template name="properties">
-    <xsl:for-each select="./*//*[contains(@f, 'notnull') and not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(name() = 'str') and not(name() = 'pos') and not(name() = 'fmt') and not(name() = 'app')]">
+    <xsl:for-each select="./*//*[contains(@f, 'notnull') and not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels)  and not(ancestor-or-self::logic) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'table') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(name() = 'str') and not(name() = 'pos') and not(name() = 'fmt') and not(name() = 'app')]">
       <xsl:variable name="faims-attribute-name">
         <xsl:call-template name="string-replace-all">
           <xsl:with-param name="text" select="name(.)" />

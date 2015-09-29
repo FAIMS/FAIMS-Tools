@@ -19,16 +19,12 @@
           <User>
             <User>
               <Select_User/>
-              <Login/>
             </User>
           </User>
           <Control>
-            <Main>
-              <New_Epigraphic_record/>
-              <New_Diary/>
-              <Next_Inscription_ID/>
-              <GPS_Diagnostics/>
-            </Main>
+            <Control>
+              <New_Ent/>
+            </Control>
             <Search>
               <Colgroup_0>
                 <Col_0>
@@ -38,173 +34,19 @@
                   <Search_Button/>
                 </Col_1>
               </Colgroup_0>
-              <Entity_Types/>
               <Entity_List/>
             </Search>
-            <Map>
-              <Map/>
-            </Map>
           </Control>
-          <Diary>
-            <Fieldwork_Diary>
-              <Diary_ID/>
-              <Timestamp/>
-              <Author/>
-              <Diary_Text/>
-            </Fieldwork_Diary>
-          </Diary>
-          <Epigraphic_record>
-            <Admin>
-              <Inscription_ID/>
-              <Timestamp/>
-              <Author/>
-            </Admin>
-            <Geography>
-              <Colgroup_GPS>
-                <Col_0>
-                  <Latitude/>
-                  <Northing/>
-                </Col_0>
-                <Col_1>
-                  <Longitude/>
-                  <Easting/>
-                </Col_1>
-              </Colgroup_GPS>
-              <Take_From_GPS/>
-              <Modern_name/>
-              <Ancient_name/>
-              <Archaeological_Context/>
-              <Reuse/>
-              <Notes/>
-              <Location_Accessibility/>
-              <Inscription_Accessibility/>
-              <Light_conditions/>
-              <Location_Photo/>
-              <Button_Location_Photo/>
-              <Location_Sketch/>
-              <Button_Location_Sketch/>
-            </Geography>
-            <Object>
-              <Material/>
-              <Stone/>
-              <Metal/>
-              <Origin_Material/>
-              <Description_Material/>
-              <Colour/>
-              <Object_Type/>
-              <Stele_Type/>
-              <Vessel_Type/>
-              <Architecture_Type/>
-              <Sculpure_Type/>
-              <Personalia_Type/>
-              <Number_fragments/>
-              <Preservation/>
-              <Colgroup_0>
-                <Col_0>
-                  <Object_Length_Min/>
-                  <Object_Width_Min/>
-                  <Object_Thickness_Min/>
-                </Col_0>
-                <Col_1>
-                  <Object_Length_Max/>
-                  <Object_Width_Max/>
-                  <Object_Thickness_Max/>
-                </Col_1>
-              </Colgroup_0>
-              <Overview_Photo/>
-              <Button_Overview_Photo/>
-              <Audio_Record/>
-              <Button_Audio_Record/>
-              <Video_Record/>
-              <Button_Video_Record/>
-            </Object>
-            <Decoration>
-              <Decoration_Technique/>
-              <Decoration_Type/>
-              <Architectural_Decor_Type/>
-              <Figural_Decor_Type/>
-              <Number_Figures/>
-              <Anthropomorphic_Figure/>
-              <Animal_Figure/>
-              <Inanimate_Figure/>
-              <Size_Decor/>
-              <Decor_Description/>
-              <Colgroup_0>
-                <Col_0>
-                  <Decor_Length_Max/>
-                  <Decor_Width_Max/>
-                </Col_0>
-                <Col_1>
-                  <Decor_Height_Max/>
-                  <Thick_Relief_Max/>
-                </Col_1>
-              </Colgroup_0>
-              <Add_External_Records/>
-              <Photo_Decoration/>
-              <Button_Photo_Decoration/>
-              <Sketch_Decoration/>
-              <Button_Sketch_Decoration/>
-            </Decoration>
-            <Lettering>
-              <Script/>
-              <State_of_Wear/>
-              <Number_of_Rows/>
-              <Number_of_letters/>
-              <Script_Type/>
-              <Layout/>
-              <Transcription/>
-              <Stoichos_Length/>
-              <Stoichos_Height/>
-              <Lettering_Description/>
-              <Layout_Description/>
-              <Photo_Lettering/>
-              <Button_Photo_Lettering/>
-              <Sketch_Lettering/>
-              <Button_Sketch_Lettering/>
-            </Lettering>
-            <Interpretation>
-              <Date/>
-              <Start_Year/>
-              <End_Year/>
-              <Note_to_Date/>
-              <Language_Type/>
-              <Language_Form/>
-              <Inscription_Typology/>
-              <Private_Typology/>
-              <Official_Typology/>
-              <Document_Typology_Notes/>
-            </Interpretation>
-          </Epigraphic_record>
-          <External_Records>
-            <External_Record>
-              <External_File_Type/>
-              <External_File_Name/>
-            </External_Record>
-          </External_Records>
+          <Ent>
+            <Tab>
+              <ID/>
+              <Device_List/>
+              <Refresh_List/>
+            </Tab>
+          </Ent>
+          <logic/>
         </faims>
       </instance>
-      <bind type="decimal" nodeset="/faims/Control/Main/Next_Inscription_ID"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Admin/Inscription_ID"/>
-      <!--WARNING: Binding in b attribute ignored; use of "autonum" flag forces decimal binding-->
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Admin/Inscription_ID"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Object/Number_fragments"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Object/Colgroup_0/Col_0/Object_Length_Min"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Object/Colgroup_0/Col_0/Object_Width_Min"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Object/Colgroup_0/Col_0/Object_Thickness_Min"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Object/Colgroup_0/Col_1/Object_Length_Max"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Object/Colgroup_0/Col_1/Object_Width_Max"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Object/Colgroup_0/Col_1/Object_Thickness_Max"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Decoration/Number_Figures"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Decoration/Colgroup_0/Col_0/Decor_Length_Max"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Decoration/Colgroup_0/Col_0/Decor_Width_Max"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Decoration/Colgroup_0/Col_1/Decor_Height_Max"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Decoration/Colgroup_0/Col_1/Thick_Relief_Max"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Lettering/Number_of_Rows"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Lettering/Number_of_letters"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Lettering/Stoichos_Length"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Lettering/Stoichos_Height"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Interpretation/Start_Year"/>
-      <bind type="decimal" nodeset="/faims/Epigraphic_record/Interpretation/End_Year"/>
     </model>
   </h:head>
   <h:body>
@@ -233,37 +75,25 @@
       <label>{User}</label>
       <group ref="User">
         <label>{User}</label>
-        <select1 ref="Select_User">
+        <select1 appearance="compact" ref="Select_User">
           <label>{Select_User}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <trigger ref="Login">
-          <label>{Login}</label>
-        </trigger>
       </group>
     </group>
     <group ref="Control">
       <label>{Control}</label>
-      <group ref="Main">
-        <label>{Main}</label>
-        <trigger ref="New_Epigraphic_record">
-          <label>{New_Epigraphic_record}</label>
+      <group ref="Control">
+        <label>{Control}</label>
+        <trigger ref="New_Ent">
+          <label>{New_Ent}</label>
         </trigger>
-        <trigger ref="New_Diary">
-          <label>{New_Diary}</label>
-        </trigger>
-        <input ref="Next_Inscription_ID" faims_style_class="required">
-          <label>{Next_Inscription_ID}</label>
-        </input>
-        <input faims_read_only="true" ref="GPS_Diagnostics">
-          <label>{GPS_Diagnostics}</label>
-        </input>
       </group>
       <group ref="Search" faims_scrollable="false">
-        <label>{Records}</label>
+        <label>{search}</label>
         <group faims_style="orientation" ref="Colgroup_0">
           <label/>
           <group faims_style="even" ref="Col_0">
@@ -279,13 +109,6 @@
             </trigger>
           </group>
         </group>
-        <select1 ref="Entity_Types">
-          <label>{Entity_Types}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>Options not loaded</value>
-          </item>
-        </select1>
         <select1 appearance="compact" ref="Entity_List">
           <label>{Entity_List}</label>
           <item>
@@ -294,547 +117,29 @@
           </item>
         </select1>
       </group>
-      <group ref="Map" faims_scrollable="false">
-        <label>{Map}</label>
-        <input faims_map="true" ref="Map">
-          <label>{Map}</label>
+    </group>
+    <group ref="Ent" faims_archent_type="Ent">
+      <label>{Ent}</label>
+      <group ref="Tab">
+        <label>{Tab}</label>
+        <input faims_attribute_type="measure" ref="ID" faims_attribute_name="ID" faims_style_class="required">
+          <label>{ID}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
+        <select1 ref="Device_List" faims_certainty="false" faims_annotation="false">
+          <label>{Device_List}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <trigger ref="Refresh_List">
+          <label>{Refresh_List}</label>
+        </trigger>
       </group>
     </group>
-    <group ref="Diary" faims_archent_type="Diary">
-      <label>{Diary}</label>
-      <group ref="Fieldwork_Diary">
-        <label>{Fieldwork_Diary}</label>
-        <input faims_attribute_type="measure" ref="Diary_ID" faims_attribute_name="Diary ID">
-          <label>{Diary_ID}</label>
-        </input>
-        <input ref="Timestamp" faims_read_only="true" faims_annotation="false" faims_certainty="false">
-          <label>{timestamp}</label>
-        </input>
-        <input ref="Author" faims_read_only="true" faims_annotation="false" faims_certainty="false">
-          <label>{author}</label>
-        </input>
-        <input faims_attribute_type="measure" ref="Diary_Text" faims_attribute_name="Diary Text">
-          <label>{Diary_Text}</label>
-        </input>
-      </group>
-    </group>
-    <group ref="Epigraphic_record" faims_archent_type="Epigraphic record">
-      <label>{Epigraphic_record}</label>
-      <group ref="Admin">
-        <label>{Admin}</label>
-        <input faims_attribute_type="measure" ref="Inscription_ID" faims_attribute_name="Inscription ID" faims_style_class="required">
-          <label>{Inscription_ID}</label>
-        </input>
-        <input ref="Timestamp" faims_read_only="true" faims_annotation="false" faims_certainty="false">
-          <label>{timestamp}</label>
-        </input>
-        <input ref="Author" faims_read_only="true" faims_annotation="false" faims_certainty="false">
-          <label>{author}</label>
-        </input>
-      </group>
-      <group ref="Geography">
-        <label>{Geography}</label>
-        <group ref="Colgroup_GPS" faims_style="orientation">
-          <label/>
-          <group ref="Col_0" faims_style="even">
-            <label/>
-            <input ref="Latitude" faims_attribute_name="Latitude" faims_attribute_type="measure" faims_read_only="true">
-              <label>{Latitude}</label>
-            </input>
-            <input ref="Northing" faims_attribute_name="Northing" faims_attribute_type="measure" faims_read_only="true">
-              <label>{Northing}</label>
-            </input>
-          </group>
-          <group ref="Col_1" faims_style="even">
-            <label/>
-            <input ref="Longitude" faims_attribute_name="Longitude" faims_attribute_type="measure" faims_read_only="true">
-              <label>{Longitude}</label>
-            </input>
-            <input ref="Easting" faims_attribute_name="Easting" faims_attribute_type="measure" faims_read_only="true">
-              <label>{Easting}</label>
-            </input>
-          </group>
-        </group>
-        <trigger ref="Take_From_GPS">
-          <label>{Take_From_GPS}</label>
-        </trigger>
-        <input faims_attribute_type="measure" ref="Modern_name" faims_attribute_name="Modern name" faims_style_class="required">
-          <label>{Modern_name}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
-        </input>
-        <input faims_attribute_type="measure" ref="Ancient_name" faims_attribute_name="Ancient name">
-          <label>{Ancient_name}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
-        </input>
-        <select1 faims_attribute_type="vocab" ref="Archaeological_Context" faims_attribute_name="Archaeological Context" faims_style_class="required">
-          <label>{Archaeological_Context}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 appearance="full" faims_attribute_type="vocab" ref="Reuse" faims_attribute_name="Reuse" faims_style_class="required">
-          <label>{Reuse}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <input faims_attribute_type="measure" ref="Notes" faims_attribute_name="Notes">
-          <label>{Notes}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
-        </input>
-        <select1 faims_attribute_type="vocab" ref="Location_Accessibility" faims_attribute_name="Location Accessibility" faims_style_class="required">
-          <label>{Location_Accessibility}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 faims_attribute_type="vocab" ref="Inscription_Accessibility" faims_attribute_name="Inscription Accessibility" faims_style_class="required">
-          <label>{Inscription_Accessibility}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 faims_attribute_type="vocab" ref="Light_conditions" faims_attribute_name="Light conditions" faims_style_class="required">
-          <label>{Light_conditions}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="Location_Photo" faims_attribute_name="Location Photo">
-          <label>{Location_Photo}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <trigger ref="Button_Location_Photo">
-          <label>{Button_Location_Photo}</label>
-        </trigger>
-        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="Location_Sketch" faims_attribute_name="Location Sketch">
-          <label>{Location_Sketch}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <trigger ref="Button_Location_Sketch">
-          <label>{Button_Location_Sketch}</label>
-        </trigger>
-      </group>
-      <group ref="Object">
-        <label>{Object}</label>
-        <select1 faims_attribute_type="vocab" ref="Material" faims_attribute_name="Material" faims_style_class="required">
-          <label>{Material}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 faims_attribute_type="vocab" ref="Stone" faims_attribute_name="Stone">
-          <label>{Stone}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 faims_attribute_type="vocab" ref="Metal" faims_attribute_name="Metal">
-          <label>{Metal}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <input faims_attribute_type="measure" ref="Origin_Material" faims_attribute_name="Origin Material">
-          <label>{Origin_Material}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
-        </input>
-        <input faims_attribute_type="measure" ref="Description_Material" faims_attribute_name="Description Material">
-          <label>{Description_Material}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
-        </input>
-        <select1 faims_attribute_type="vocab" ref="Colour" faims_attribute_name="Colour">
-          <label>{Colour}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 faims_attribute_type="vocab" ref="Object_Type" faims_attribute_name="Object Type">
-          <label>{Object_Type}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 faims_attribute_type="vocab" ref="Stele_Type" faims_attribute_name="Stele Type">
-          <label>{Stele_Type}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 faims_attribute_type="vocab" ref="Vessel_Type" faims_attribute_name="Vessel Type">
-          <label>{Vessel_Type}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 faims_attribute_type="vocab" ref="Architecture_Type" faims_attribute_name="Architecture Type">
-          <label>{Architecture_Type}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 appearance="full" faims_attribute_type="vocab" ref="Sculpure_Type" faims_attribute_name="Sculpure Type">
-          <label>{Sculpure_Type}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 faims_attribute_type="vocab" ref="Personalia_Type" faims_attribute_name="Personalia Type">
-          <label>{Personalia_Type}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <input faims_attribute_type="measure" ref="Number_fragments" faims_attribute_name="Number fragments" faims_style_class="required">
-          <label>{Number_fragments}</label>
-        </input>
-        <select1 faims_attribute_type="vocab" ref="Preservation" faims_attribute_name="Preservation" faims_style_class="required">
-          <label>{Preservation}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <group ref="Colgroup_0" faims_style="orientation">
-          <label/>
-          <group ref="Col_0" faims_style="even">
-            <label/>
-            <input faims_attribute_type="measure" ref="Object_Length_Min" faims_attribute_name="Object Length Min">
-              <label>{Object_Length_Min}</label>
-            </input>
-            <input faims_attribute_type="measure" ref="Object_Width_Min" faims_attribute_name="Object Width Min">
-              <label>{Object_Width_Min}</label>
-            </input>
-            <input faims_attribute_type="measure" ref="Object_Thickness_Min" faims_attribute_name="Object Thickness Min">
-              <label>{Object_Thickness_Min}</label>
-            </input>
-          </group>
-          <group ref="Col_1" faims_style="even">
-            <label/>
-            <input faims_attribute_type="measure" ref="Object_Length_Max" faims_attribute_name="Object Length Max">
-              <label>{Object_Length_Max}</label>
-            </input>
-            <input faims_attribute_type="measure" ref="Object_Width_Max" faims_attribute_name="Object Width Max">
-              <label>{Object_Width_Max}</label>
-            </input>
-            <input faims_attribute_type="measure" ref="Object_Thickness_Max" faims_attribute_name="Object Thickness Max">
-              <label>{Object_Thickness_Max}</label>
-            </input>
-          </group>
-        </group>
-        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="Overview_Photo" faims_attribute_name="Overview Photo">
-          <label>{Overview_Photo}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <trigger ref="Button_Overview_Photo">
-          <label>{Button_Overview_Photo}</label>
-        </trigger>
-        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="Audio_Record" faims_attribute_name="Audio Record">
-          <label>{Audio_Record}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <trigger ref="Button_Audio_Record">
-          <label>{Button_Audio_Record}</label>
-        </trigger>
-        <select type="video" faims_attribute_type="measure" faims_sync="true" ref="Video_Record" faims_attribute_name="Video Record">
-          <label>{Video_Record}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <trigger ref="Button_Video_Record">
-          <label>{Button_Video_Record}</label>
-        </trigger>
-      </group>
-      <group ref="Decoration">
-        <label>{Decoration}</label>
-        <select faims_attribute_type="vocab" ref="Decoration_Technique" faims_attribute_name="Decoration Technique">
-          <label>{Decoration_Technique}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <select faims_attribute_type="vocab" ref="Decoration_Type" faims_attribute_name="Decoration Type">
-          <label>{Decoration_Type}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <select faims_attribute_type="vocab" ref="Architectural_Decor_Type" faims_attribute_name="Architectural Decor Type">
-          <label>{Architectural_Decor_Type}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <select faims_attribute_type="vocab" ref="Figural_Decor_Type" faims_attribute_name="Figural Decor Type">
-          <label>{Figural_Decor_Type}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <input faims_attribute_type="measure" ref="Number_Figures" faims_attribute_name="Number Figures">
-          <label>{Number_Figures}</label>
-        </input>
-        <select faims_attribute_type="vocab" ref="Anthropomorphic_Figure" faims_attribute_name="Anthropomorphic Figure">
-          <label>{Anthropomorphic_Figure}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <select faims_attribute_type="vocab" ref="Animal_Figure" faims_attribute_name="Animal Figure">
-          <label>{Animal_Figure}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <select faims_attribute_type="vocab" ref="Inanimate_Figure" faims_attribute_name="Inanimate Figure">
-          <label>{Inanimate_Figure}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <select1 appearance="full" faims_attribute_type="vocab" ref="Size_Decor" faims_attribute_name="Size Decor">
-          <label>{Size_Decor}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <input faims_attribute_type="measure" ref="Decor_Description" faims_attribute_name="Decor Description">
-          <label>{Decor_Description}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
-        </input>
-        <group ref="Colgroup_0" faims_style="orientation">
-          <label/>
-          <group ref="Col_0" faims_style="even">
-            <label/>
-            <input faims_attribute_type="measure" ref="Decor_Length_Max" faims_attribute_name="Decor Length Max">
-              <label>{Decor_Length_Max}</label>
-            </input>
-            <input faims_attribute_type="measure" ref="Decor_Width_Max" faims_attribute_name="Decor Width Max">
-              <label>{Decor_Width_Max}</label>
-            </input>
-          </group>
-          <group ref="Col_1" faims_style="even">
-            <label/>
-            <input faims_attribute_type="measure" ref="Decor_Height_Max" faims_attribute_name="Decor Height Max">
-              <label>{Decor_Height_Max}</label>
-            </input>
-            <input faims_attribute_type="measure" ref="Thick_Relief_Max" faims_attribute_name="Thick Relief Max">
-              <label>{Thick_Relief_Max}</label>
-            </input>
-          </group>
-        </group>
-        <trigger ref="Add_External_Records">
-          <label>{Add_External_Records}</label>
-        </trigger>
-        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="Photo_Decoration" faims_attribute_name="Photo Decoration">
-          <label>{Photo_Decoration}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <trigger ref="Button_Photo_Decoration">
-          <label>{Button_Photo_Decoration}</label>
-        </trigger>
-        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="Sketch_Decoration" faims_attribute_name="Sketch Decoration">
-          <label>{Sketch_Decoration}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <trigger ref="Button_Sketch_Decoration">
-          <label>{Button_Sketch_Decoration}</label>
-        </trigger>
-      </group>
-      <group ref="Lettering">
-        <label>{Lettering}</label>
-        <select1 type="image" faims_attribute_type="vocab" ref="Script" faims_attribute_name="Script">
-          <label>{Script}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 appearance="full" faims_attribute_type="vocab" ref="State_of_Wear" faims_attribute_name="State of Wear">
-          <label>{State_of_Wear}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <input faims_attribute_type="measure" ref="Number_of_Rows" faims_attribute_name="Number of Rows">
-          <label>{Number_of_Rows}</label>
-        </input>
-        <input faims_attribute_type="measure" ref="Number_of_letters" faims_attribute_name="Number of letters">
-          <label>{Number_of_letters}</label>
-        </input>
-        <select1 faims_attribute_type="vocab" ref="Script_Type" faims_attribute_name="Script Type">
-          <label>{Script_Type}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 faims_attribute_type="vocab" ref="Layout" faims_attribute_name="Layout">
-          <label>{Layout}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <input faims_attribute_type="measure" ref="Transcription" faims_attribute_name="Transcription">
-          <label>{Transcription}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
-        </input>
-        <input faims_attribute_type="measure" ref="Stoichos_Length" faims_attribute_name="Stoichos Length">
-          <label>{Stoichos_Length}</label>
-        </input>
-        <input faims_attribute_type="measure" ref="Stoichos_Height" faims_attribute_name="Stoichos Height">
-          <label>{Stoichos_Height}</label>
-        </input>
-        <input faims_attribute_type="measure" ref="Lettering_Description" faims_attribute_name="Lettering Description">
-          <label>{Lettering_Description}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
-        </input>
-        <input faims_attribute_type="measure" ref="Layout_Description" faims_attribute_name="Layout Description">
-          <label>{Layout_Description}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
-        </input>
-        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="Photo_Lettering" faims_attribute_name="Photo Lettering">
-          <label>{Photo_Lettering}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <trigger ref="Button_Photo_Lettering">
-          <label>{Button_Photo_Lettering}</label>
-        </trigger>
-        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="Sketch_Lettering" faims_attribute_name="Sketch Lettering">
-          <label>{Sketch_Lettering}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <trigger ref="Button_Sketch_Lettering">
-          <label>{Button_Sketch_Lettering}</label>
-        </trigger>
-      </group>
-      <group ref="Interpretation">
-        <label>{Interpretation}</label>
-        <select1 faims_attribute_type="vocab" ref="Date" faims_attribute_name="Date">
-          <label>{Date}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <input faims_attribute_type="measure" ref="Start_Year" faims_attribute_name="Start Year">
-          <label>{Start_Year}</label>
-        </input>
-        <input faims_attribute_type="measure" ref="End_Year" faims_attribute_name="End Year">
-          <label>{End_Year}</label>
-        </input>
-        <input faims_attribute_type="measure" ref="Note_to_Date" faims_attribute_name="Note to Date">
-          <label>{Note_to_Date}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
-        </input>
-        <select faims_attribute_type="vocab" ref="Language_Type" faims_attribute_name="Language Type">
-          <label>{Language_Type}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
-        <select1 appearance="full" faims_attribute_type="vocab" ref="Language_Form" faims_attribute_name="Language Form">
-          <label>{Language_Form}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 faims_attribute_type="vocab" ref="Inscription_Typology" faims_attribute_name="Inscription Typology" faims_style_class="required">
-          <label>{Inscription_Typology}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 faims_attribute_type="vocab" ref="Private_Typology" faims_attribute_name="Private Typology">
-          <label>{Private_Typology}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 faims_attribute_type="vocab" ref="Official_Typology" faims_attribute_name="Official Typology">
-          <label>{Official_Typology}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <input faims_attribute_type="measure" ref="Document_Typology_Notes" faims_attribute_name="Document Typology Notes">
-          <label>{Document_Typology_Notes}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
-        </input>
-      </group>
-    </group>
-    <group ref="External_Records" faims_archent_type="External Records">
-      <label>{External_Records}</label>
-      <group ref="External_Record">
-        <label>{External_Record}</label>
-        <select1 faims_attribute_type="vocab" ref="External_File_Type" faims_attribute_name="External File Type" faims_style_class="required">
-          <label>{External_File_Type}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <input faims_attribute_type="measure" ref="External_File_Name" faims_attribute_name="External File Name">
-          <label>{External_File_Name}</label>
-        </input>
-      </group>
+    <group ref="logic" faims_archent_type="logic">
+      <label>{addOnEvent__Ent_Tab_Device_List____click____onClickDeviceList______addOnEvent__Ent_Tab_Device_List____show____refreshList______addOnEvent__Ent_Tab_Refresh_List____click____refreshList______refreshList_____l___getHardwareDevices____pl___listToPairList_l___populateDropDown__Ent_Tab_Device_List___pl____onClickDeviceList_____String_s___getFieldValue__Ent_Tab_Device_List____showToast_s____listToPairList_List_l____List_pl___new_ArrayList____for__String_s__l____pladd_new_NameValuePair_s__s_____return_pl__}</label>
     </group>
   </h:body>
 </h:html>

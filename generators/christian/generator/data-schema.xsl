@@ -15,6 +15,7 @@
     not(name() = 'desc') and
     not(name() = 'fmt') and
     not(name() = 'gps') and
+    not(name() = 'logic') and
     not(name() = 'opt') and
     not(name() = 'opts') and
     not(name() = 'pos') and
@@ -22,10 +23,11 @@
     not(name() = 'timestamp') and
     not(ancestor-or-self::rels) and
     not(normalize-space(@t) = 'button') and
-    not(normalize-space(@t) = 'viewfiles') and
     not(normalize-space(@t) = 'gpsdiag') and
     not(normalize-space(@t) = 'group') and
     not(normalize-space(@t) = 'map')
+    not(normalize-space(@t) = 'table') and
+    not(normalize-space(@t) = 'viewfiles') and
     ]"
     use="concat(name(ancestor::*[last()-1]), name(.))"/>
 
@@ -67,7 +69,7 @@
 
   <!-- ArchaeologicalElement -->
   <xsl:template name="arch-el">
-    <xsl:for-each select="/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'gps') and not(name() = 'author') and not(name() = 'timestamp') and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(normalize-space(@t) = 'viewfiles')])]">
+    <xsl:for-each select="/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and not(name() = 'logic') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'gps') and not(name() = 'author') and not(name() = 'timestamp') and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'table') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(normalize-space(@t) = 'viewfiles')])]">
       <xsl:variable name="faims-archent-name">
         <xsl:call-template name="string-replace-all">
           <xsl:with-param name="text" select="name()" />
@@ -102,7 +104,7 @@
 
   <!-- property -->
   <xsl:template name="properties">
-    <xsl:for-each select="./*//*[not(@e) and not(@ec) and not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'gps') and not(name() = 'author') and not(name() = 'timestamp') and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(normalize-space(@t) = 'viewfiles') and not(name() = 'str') and not(name() = 'pos') and not(name() = 'fmt') and not(name() = 'app')]">
+    <xsl:for-each select="./*//*[not(@e) and not(@ec) and not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'gps') and not(name() = 'author') and not(name() = 'timestamp') and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(name() = 'logic') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'table') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and not(normalize-space(@t) = 'viewfiles') and not(name() = 'str') and not(name() = 'pos') and not(name() = 'fmt') and not(name() = 'app')]">
       <xsl:sort select="concat(str/pos/text(), substring('not-found', 1 div not(str/pos/text())))" />
 
       <xsl:variable name="faims-attribute-name">

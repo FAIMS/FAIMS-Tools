@@ -97,7 +97,7 @@
                   <Search_Button/>
                 </Col_1>
               </Colgroup_0>
-              <xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and  not(normalize-space(@t) = 'viewfiles')])]) &gt;= 2">
+              <xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and not(name() = 'logic') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'table') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and  not(normalize-space(@t) = 'viewfiles')])]) &gt;= 2">
                 <Entity_Types/>
               </xsl:if>
               <Entity_List/>
@@ -176,7 +176,7 @@
                   </trigger>
                 </group>
               </group>
-              <xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and  not(normalize-space(@t) = 'viewfiles')])]) &gt;= 2">
+              <xsl:if test="count(/module/*[not(contains(@f, 'nodata')) and not(name() = 'rels') and not(name() = 'logic') and (./*//*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'user')]) and not(name() = 'cols') and not(name() = 'col') and not(name() = 'desc') and not(name() = 'opt') and not(name() = 'opts') and not(ancestor-or-self::rels) and not(normalize-space(@t) = 'group') and not(normalize-space(@t) = 'table') and not(normalize-space(@t) = 'gpsdiag') and not(normalize-space(@t) = 'map') and not(normalize-space(@t) = 'button') and  not(normalize-space(@t) = 'viewfiles')])]) &gt;= 2">
                 <select1 ref="Entity_Types">
                   <label>{Entity_Types}</label>
                   <item>
@@ -699,6 +699,12 @@
           </item>
         </xsl:element>
       </xsl:when>
+      <xsl:when test="normalize-space(@t)='table'">
+        <xsl:element name="{normalize-space(@t)}">
+          <xsl:attribute name="faims_table">true</xsl:attribute>
+          <xsl:call-template name="body-expand-view-standard-nodes" />
+        </xsl:element>
+      </xsl:when>
       <xsl:when test="normalize-space(@t)='video'">
         <xsl:element name="select">
           <xsl:attribute name="type">video</xsl:attribute>
@@ -767,10 +773,12 @@
         <xsl:value-of select="@c"/>
       </xsl:attribute>
     </xsl:if>
-    <xsl:if test="normalize-space(@t) != 'group' and
+    <xsl:if test="
       normalize-space(@t) != 'button' and
       normalize-space(@t) != 'gpsdiag' and
+      normalize-space(@t) != 'group' and
       normalize-space(@t) != 'map' and
+      normalize-space(@t) != 'table' and
       normalize-space(@t) != 'viewfiles' and
       normalize-space(@t) != 'web' and
       normalize-space(@t) != 'webview' and

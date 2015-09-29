@@ -15,6 +15,7 @@
       not(name() = 'desc') and
       not(name() = 'module') and
       not(name() = 'opts') and
+      not(name() = 'logic') and
       not(ancestor-or-self::rels) and
       not(contains(@f, 'nolabel'))]">
         <xsl:variable name="arch16n-key">

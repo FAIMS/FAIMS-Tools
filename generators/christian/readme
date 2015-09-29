@@ -1,5 +1,8 @@
-TODO Include buttons in map
-TODO 'Take Picture' buttons don't work
+TODO Include buttons in map?
+TODO Move insertIntoLocalSettings functions so that they're included in all
+     modules. Write a getter function. (Must figure out how to block.)
+TODO Consider adding a map from a GUI element to its type
+TODO Tables
 
 TODO Warn about duplicate archents
 TODO Consider adding <logic> tags so that an arbitrary module can be specified
@@ -95,6 +98,7 @@ TYPES
     - map          <input faims_map="true"/>
     - picture      <select1 type="image"/>
     - radio        <select1 appearance="full"/>
+    - table        <input faims_table="true"/>
     - video        <select type="file" faims_sync=true/>
                    <trigger/>
     - viewfiles    <trigger/>
