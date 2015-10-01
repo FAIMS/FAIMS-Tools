@@ -48,7 +48,8 @@ ATTRIBUTES
   suppressWarnings   Prevents warnings from being shown when equal to "true" and
                      present in the <module> tag. Does not suppress errors.
   t                  Type of GUI element (See 'Types'). If this attribute is
-                     omitted from a view, t="input" is assumed.
+                     omitted, the autogenerator will attempt to infer it from
+                     the element's content. (See 'Type Guessing'.)
 ________________________________________________________________________________
 
 BINDINGS
@@ -81,6 +82,42 @@ FLAGS
   user            Used to indicate that a menu should contain a list of users.
   notnull         Adds client- and server-side validation specifying that the
                   field should not be left blank.
+________________________________________________________________________________
+
+TYPE GUESSING
+
+  The autogenerator will attempt to make a reasonable assumption about what the
+  t attribute should be set to if it is omitted from a GUI element's set of XML
+  tags.
+
+  If the XML tags do not contain a set of <opts> tags nor the f="user" flag,
+  t="input" is assumed. Example:
+
+      <Entity_Identifier f="id"/>          <!-- This'll be an input -->
+
+  If the XML tag is flagged with f="user", t="list" is assumed. Example:
+
+      <List_of_Users f="user"/>            <!-- This'll be a list -->
+
+  If the XML tags contain an <opts> element and no descendants with p
+  attributes, t="dropdown" is assumed. Example:
+
+      <Element>                            <!-- This'll be a dropdown -->
+        <opts>
+          <opt>Option 1</opt>
+          <opt>Option 2</opt>
+        </opts>
+      </Element>
+
+  If the XML tags contain an <opts> element and one or more descendants with p
+  attributes, t="picture" is assumed. Example:
+
+      <Element>                            <!-- This'll be a picture gallery -->
+        <opts>
+          <opt p="Lovey_Image.jpg>Option 1</opt>
+          <opt                   >Option 2</opt>
+        </opts>
+      </Element>
 ________________________________________________________________________________
 
 TYPES
