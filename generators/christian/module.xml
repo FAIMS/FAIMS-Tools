@@ -16,9 +16,14 @@
       <ID f="id"/>
       <Muh_Table t="table"/>
       <Device_List f="nodata" t="dropdown"/>
-      <Refresh_List t="button"/>
+      <Refresh_List t="button" lc="B"/>
     </Tab>
   </Ent>
+  <B>
+    <B>
+      <ID f="id" />
+    </B>
+  </B>
   <logic>
   <![CDATA[
   String capturingDevice = null;

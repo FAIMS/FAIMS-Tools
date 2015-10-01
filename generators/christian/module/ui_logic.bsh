@@ -562,13 +562,13 @@ onShowEnt () {
   // TODO: Add some things which should happen when this tab group is shown
   saveTabGroup("Ent");
 }
-onShowlogic () {
+onShowB () {
   // TODO: Add some things which should happen when this tab group is shown
-  saveTabGroup("logic");
+  saveTabGroup("B");
 }
 
 addOnEvent("Ent", "show", "onShowEnt()");
-addOnEvent("logic", "show", "onShowlogic()");
+addOnEvent("B", "show", "onShowB()");
 
 onClickUserSelectUser () {
   // TODO: Add some things which should happen when this element is clicked
@@ -578,9 +578,20 @@ onClickControlNewEnt () {
   // TODO: Add some things which should happen when this element is clicked
   newEnt();
 }
+onClickEntRefreshList () {
+  // TODO: Add some things which should happen when this element is clicked
+  String tabgroup = "Ent";
+  if (isNull(getUuid(tabgroup))){
+    showToast("{You_must_save_this_tabgroup_first}");
+    return;
+  }
+  parentTabgroup = tabgroup;
+  newB();
+}
 
 addOnEvent("User/User/Select_User", "click", "onClickUserSelectUser()");
 addOnEvent("Control/Control/New_Ent", "click", "onClickControlNewEnt()");
+addOnEvent("Ent/Tab/Refresh_List", "click", "onClickEntRefreshList()");
 
 
 /******************************************************************************/
@@ -850,8 +861,8 @@ reallyDeleteEnt(){
   cancelTabGroup(tabgroup, false);
 }
 
-newlogic(){
-  String tabgroup = "logic";
+newB(){
+  String tabgroup = "B";
 
 
   setUuid(tabgroup, null);
@@ -859,8 +870,8 @@ newlogic(){
 
 }
 
-duplicatelogic(){
-  String tabgroup = "logic";
+duplicateB(){
+  String tabgroup = "B";
   String uuidOld = getUuid(tabgroup);
 
   disableAutoSave(tabgroup);
@@ -902,18 +913,18 @@ duplicatelogic(){
   });
 }
 
-deletelogic(){
-  String tabgroup = "logic";
+deleteB(){
+  String tabgroup = "B";
 
   if (isNull(getUuid(tabgroup))) {
     cancelTabGroup(tabgroup, true);
   } else {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeletelogic()", "doNotDelete()");
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteB()", "doNotDelete()");
   }
 }
 
-reallyDeletelogic(){
-  String tabgroup = "logic";
+reallyDeleteB(){
+  String tabgroup = "B";
   deleteArchEnt(getUuid(tabgroup));
   cancelTabGroup(tabgroup, false);
 }
@@ -925,7 +936,7 @@ doNotDelete(){
 addOnEvent("User", "show", "removeNavigationButtons()");
 addOnEvent("Control", "show", "removeNavigationButtons()");
 addOnEvent("Ent", "show", "addNavigationButtons(\"Ent\")");
-addOnEvent("logic", "show", "addNavigationButtons(\"logic\")");
+addOnEvent("B", "show", "addNavigationButtons(\"B\")");
 
 /******************************************************************************/
 /*                                   SEARCH                                   */
@@ -934,6 +945,13 @@ addOnEvent("Control/Search"               , "show"  , "search();");
 addOnEvent("Control/Search/Entity_List"   , "click" , "loadEntity();");
 addOnEvent("Control/Search/Search_Button" , "click" , "search()");
 addOnEvent("Control/Search/Search_Term"   , "click" , "clearSearch()");
+addOnEvent("Control/Search/Entity_Types"  , "click" , "search()");
+
+entityTypes = new ArrayList();
+entityTypes.add(new NameValuePair("{All}", ""));
+entityTypes.add(new NameValuePair("{Ent}", "Ent"));
+entityTypes.add(new NameValuePair("{B}", "B"));
+populateDropDown("Control/Search/Entity_Types", entityTypes);
 
 clearSearch(){
   setFieldValue("Control/Search/Search_Term","");
@@ -945,7 +963,7 @@ search(){
   String refSearchTerm  = tabgroup + "/Search/Search_Term";
   String refEntityTypes = tabgroup + "/Search/Entity_Types";
 
-  String type = "";
+  String type = getFieldValue(refEntityTypes);
   String term = getFieldValue(refSearchTerm);
   String searchQuery = "SELECT uuid, response "+
                        "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
@@ -972,8 +990,8 @@ loadEntFrom(String uuid) {
   showTabGroup(tabgroup, uuid);
 }
 
-loadlogicFrom(String uuid) {
-  String tabgroup = "logic";
+loadBFrom(String uuid) {
+  String tabgroup = "B";
   setUuid(tabgroup, uuid);
   if (isNull(uuid)) return;
 

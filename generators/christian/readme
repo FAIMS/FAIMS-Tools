@@ -3,6 +3,12 @@ TODO Move insertIntoLocalSettings functions so that they're included in all
      modules. Write a getter function. (Must figure out how to block.)
 TODO Consider adding a map from a GUI element to its type
 TODO Tables
+       - type
+       - tag
+         - 
+TODO Users should be able to create populated lists and dropdowns even when
+     f="nodata" is used.
+TODO Options should link to tab (groups)
 
 TODO Warn about duplicate archents
 TODO Consider adding <logic> tags so that an arbitrary module can be specified

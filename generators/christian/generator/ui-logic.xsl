@@ -652,7 +652,11 @@ populateAuthorAndTimestamp(String tabgroup) {
 }
 
 </xsl:text>
-    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])]">
+<xsl:for-each select="/module/*[
+  not(name() = 'logic') and
+  not(name() = 'rels') and
+  not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])
+  ]">
       <xsl:text>onShow</xsl:text>
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text" select="name()" />
@@ -668,7 +672,11 @@ populateAuthorAndTimestamp(String tabgroup) {
       <xsl:value-of select="$newline" />
     </xsl:for-each>
     <xsl:value-of select="$newline" />
-    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])]">
+    <xsl:for-each select="/module/*[
+      not(name() = 'logic') and
+      not(name() = 'rels') and
+      not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])
+      ]">
       <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name()"/>
       <xsl:text>", "show", "onShow</xsl:text>
@@ -1110,7 +1118,11 @@ loadEntityFrom(String entityID) {
 }
 
 </xsl:text>
-    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])]">
+<xsl:for-each select="/module/*[
+  not(name() = 'logic') and
+  not(name() = 'rels') and
+  not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])
+  ]">
       <xsl:call-template name="tabgroup-new" />
       <xsl:call-template name="tabgroup-duplicate" />
       <xsl:call-template name="tabgroup-delete" />
@@ -1121,13 +1133,19 @@ doNotDelete(){
   showToast("{Delete_Cancelled}");
 }
 </xsl:text>
-    <xsl:for-each select="/module/*[ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')]]">
+<xsl:for-each select="/module/*[
+  ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')]
+  ]">
       <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name()"/>
       <xsl:text>", "show", "removeNavigationButtons()");</xsl:text>
       <xsl:value-of select="$newline"/>
     </xsl:for-each>
-    <xsl:for-each select="/module/*[not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])]">
+    <xsl:for-each select="/module/*[
+      not(name() = 'logic') and
+      not(name() = 'rels') and
+      not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])
+      ]">
       <xsl:text>addOnEvent("</xsl:text>
       <xsl:value-of select="name()"/>
       <xsl:text>", "show", "addNavigationButtons(\"</xsl:text>
@@ -1567,7 +1585,11 @@ menus = new ArrayList();
   </xsl:template>
 
   <xsl:template name="load-entity-functions">
-    <xsl:for-each select="/module/*[not(contains(@f, 'nodata'))]">
+    <xsl:for-each select="/module/*[
+      not(name() = 'logic') and
+      not(name() = 'rels') and
+      not(contains(@f, 'nodata'))
+      ]">
       <xsl:text>load</xsl:text>
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text" select="name()" />
@@ -2104,7 +2126,11 @@ addOnEvent(userMenuPath, "click", "selectUser()");
       <xsl:value-of select="$newline" />
       <xsl:text>entityTypes.add(new NameValuePair("{All}", ""));</xsl:text>
       <xsl:value-of select="$newline" />
-      <xsl:for-each select="/module/*[not(contains(@f, 'nodata'))]">
+      <xsl:for-each select="/module/*[
+        not(name() = 'logic') and
+        not(name() = 'rels') and
+        not(contains(@f, 'nodata'))
+        ]">
         <xsl:text>entityTypes.add(new NameValuePair("{</xsl:text>
         <xsl:value-of select="name()"/>
         <xsl:text>}", "</xsl:text>

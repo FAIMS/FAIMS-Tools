@@ -34,6 +34,7 @@
                   <Search_Button/>
                 </Col_1>
               </Colgroup_0>
+              <Entity_Types/>
               <Entity_List/>
             </Search>
           </Control>
@@ -45,6 +46,11 @@
               <Refresh_List/>
             </Tab>
           </Ent>
+          <B>
+            <B>
+              <ID/>
+            </B>
+          </B>
           <logic/>
         </faims>
       </instance>
@@ -110,6 +116,13 @@
             </trigger>
           </group>
         </group>
+        <select1 ref="Entity_Types">
+          <label>{Entity_Types}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>Options not loaded</value>
+          </item>
+        </select1>
         <select1 appearance="compact" ref="Entity_List">
           <label>{Entity_List}</label>
           <item>
@@ -140,6 +153,16 @@
         <trigger ref="Refresh_List">
           <label>{Refresh_List}</label>
         </trigger>
+      </group>
+    </group>
+    <group ref="B" faims_archent_type="B">
+      <label>{B}</label>
+      <group ref="B">
+        <label>{B}</label>
+        <input faims_attribute_type="measure" ref="ID" faims_attribute_name="ID">
+          <label>{ID}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
       </group>
     </group>
     <group ref="logic" faims_archent_type="logic">
