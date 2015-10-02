@@ -81,6 +81,7 @@ def isEquivalent(t1, t2):
     ignored.append('__RESERVED_ATTR_ORDER__')
     ignored.append('__RESERVED_CP__')
     ignored.append('__RESERVED_PAR__')
+    ignored.append('__RESERVED_POS__')
     ignored.append('file')
     ignored.append('isIdentifier')
     ignored.append('thumbnail')

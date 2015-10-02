@@ -45,8 +45,8 @@ def computeMostSimilar(word, candidates):
             minIdx = i
     mostSimilar = candidates[minIdx]
 
-    if min >= 1:
-        formatStr = 'Edit dist:{0: >2}    Given word: {1: <50} Closest candidate: {2: <50}\n'
+    if min > 0.0:
+        formatStr = 'Edit dist: {0: >2}    Given word: {1: <50} Closest candidate: {2: <50}\n'
         sys.stderr.write(formatStr.format(min, word, mostSimilar))
     return mostSimilar
 
@@ -58,25 +58,27 @@ def  minEditDist(target, source):
     n = len(target)
     m = len(source)
 
-    distance = [[0 for i in range(m+1)] for j in range(n+1)]
+    distance = [[0.0 for i in range(m+1)] for j in range(n+1)]
 
     for i in range(1,n+1):
-        distance[i][0] = distance[i-1][0] + 1
+        distance[i][0] = distance[i-1][0] + 1.0
 
     for j in range(1,m+1):
-        distance[0][j] = distance[0][j-1] + 1
+        distance[0][j] = distance[0][j-1] + 1.0
 
     for i in range(1,n+1):
         for j in range(1,m+1):
-           distance[i][j] = min(distance[i-1][j  ]+1,
-                                distance[i  ][j-1]+1,
+           distance[i][j] = min(distance[i-1][j  ]+1.0,
+                                distance[i  ][j-1]+1.0,
                                 distance[i-1][j-1]+substCost(source[j-1],target[i-1]))
     return distance[n][m]
 
 def substCost(s1, s2):
     if s1 == s2:
-        return 0
-    return 1
+        return 0.0
+    if s1.lower() == s2.lower():#.JPG -> .jpg should have low, but non-zero cost
+        return 0.1
+    return 1.0
 
 def correctUrls(urls):
     if   isinstance(urls, str):
