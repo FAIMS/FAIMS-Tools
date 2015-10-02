@@ -201,13 +201,19 @@ def rowToNode(row):
                 prop,
                 'description'
         )
-        s  = '\n'
-        s += '<div>\n'
-        #s += '    <h1>' + arch16nKey + '</h1>\n'
-        s += '    '     + desc
-        s += '    <hr/>\n'
-        s += '</div>\n'
-        if desc and not arch16nKey: # if this row is a property (instead of term)
+        s  =     '\n'
+        s +=     '<div>\n'
+        #s +=     '    <h2>' + arch16nKey + '</h2>\n'
+        s +=     '    <div>\n'
+        s +=     '        ' + desc
+        s +=     '    </div>\n'
+        for src in infoPictures:
+            s += '    <div>\n'
+            s += '        <img style="width:100%" src="' + src + '" alt="' + src + '" />\n'
+            s += '    </div>\n'
+        s +=     '    <hr/>\n'
+        s +=     '</div>\n'
+        if not arch16nKey and desc: # if this row is a property (instead of term)
             descPr.text = etree.CDATA(s)
 
         # Put lookup in property
@@ -234,16 +240,16 @@ def rowToNode(row):
         s  =     '\n'
         s +=     '<div>\n'
         #s +=     '    <h2>' + arch16nKey + '</h2>\n'
+        s +=     '    <div>\n'
+        s +=     '        ' + desc
+        s +=     '    </div>\n'
         for src in infoPictures:
             s += '    <div>\n'
             s += '        <img style="width:100%" src="' + src + '" alt="' + src + '" />\n'
             s += '    </div>\n'
-        s +=     '    <div>\n'
-        s +=     '        ' + desc
-        s +=     '    </div>\n'
         s +=     '    <hr/>\n'
         s +=     '</div>\n'
-        if desc and arch16nKey and len(infoPictures):
+        if arch16nKey and (desc or len(infoPictures)): # If is term & it contains descripion text or images
             descTe.text = etree.CDATA(s)
 
         # DO SOME CLEANUP
