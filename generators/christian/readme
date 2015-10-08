@@ -1,6 +1,24 @@
 TODO Include buttons in map?
 TODO Move insertIntoLocalSettings functions so that they're included in all
      modules. Write a getter function. (Must figure out how to block.)
+TODO Consider adding a Document Object Model (for static elements. It'll be
+     difficult to update for dynamic elements):
+     - Map from ref to:
+        - GUI element type
+        - entity uuid
+        - faims_archent_type
+        - faims_attribute_type
+        - faims_attribute_name
+        - Label
+        - Description
+        - Certainty (boolean)
+        - Annotation (boolean)
+        - Selected
+          - (List of selected items? Boolean for each?)
+          - (Update after each click?)
+          - Consider hierarchical entries
+        - Items in menu
+        - onEvent binding statement/string
 TODO Consider adding a map from a GUI element to its type
 TODO Tables
        - type
@@ -9,10 +27,10 @@ TODO Tables
 TODO Users should be able to create populated lists and dropdowns even when
      f="nodata" is used.
 TODO Options should link to tab (groups)
+TODO ui-schema.xsl:114 should prevent <search> tags from being properly
+     transformed. Find out why not and clean code for ignoring reserved tags.
 
 TODO Warn about duplicate archents
-TODO Consider adding <logic> tags so that an arbitrary module can be specified
-     without having to modify the generated code.
 TODO There should be a way of specifying dynamic UI fields like in Lake Mungo
 TODO There should be a way of specifying webviews' text
 TODO Automate regression tests
@@ -157,6 +175,7 @@ RESERVED ELEMENT NAMES AND RECOMMENDED NAMING CONVENTIONS
     - <col>        One column in a <cols> tag
     - <cols>       Columns
     - <desc>       Description to put in the data schema
+    - <logic>      UI logic which is appened to end of generated file.
     - <module>
     - <opt>        Option in <opts> tag
     - <opts>       Options for, say, a dropdown menu
