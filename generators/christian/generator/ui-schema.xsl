@@ -109,19 +109,17 @@
   </xsl:template>
 
   <xsl:template name="bindings">
-    <xsl:for-each select="/module/*">                                <!-- Iterate over tab group nodes -->
-      <xsl:for-each select="*">                                      <!-- Iterate over tab nodes -->
-        <xsl:if test="not(translate(name(), $smallcase, '') = '')"> <!-- Skip nodes with "reserved" names (i.e. all lower case letters -->
-          <xsl:for-each select="*">                                  <!-- Iterate over GUI elements -->
-            <xsl:call-template name="bind-expand-reserved-or-view"/>
-          </xsl:for-each>
-        </xsl:if>
+    <xsl:for-each     select="/module/*[not(translate(name(), $smallcase, '') = '')]"> <!-- Iterate over tab group nodes -->
+      <xsl:for-each   select="        *[not(translate(name(), $smallcase, '') = '')]"> <!-- Iterate over non-reserved tab nodes -->
+        <xsl:for-each select="*">                                                      <!-- Iterate over GUI elements -->
+          <xsl:call-template name="bind-expand-reserved-or-view"/>
+        </xsl:for-each>
       </xsl:for-each>
     </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="body">
-    <xsl:for-each select="/module/*">                                <!-- Iterate over tab group nodes -->
+    <xsl:for-each select="/module/*[not(translate(name(), $smallcase, '') = '')]">                                <!-- Iterate over tab group nodes -->
       <xsl:element name="group">
         <xsl:attribute name="ref">
           <xsl:value-of select="name()"/>

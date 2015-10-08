@@ -165,8 +165,5 @@
         </input>
       </group>
     </group>
-    <group ref="logic" faims_archent_type="logic">
-      <label>{String_capturingDevice___null__addOnEvent__Ent_Tab_Device_List____click____onClickDeviceList______addOnEvent__Ent_Tab_Device_List____show____refreshList______addOnEvent__Ent_Tab_Refresh_List____click____refreshList______refreshList_____l___getHardwareDevices____pl___listToPairList_l___populateDropDown__Ent_Tab_Device_List___pl____onClickDeviceList_____String_s___getFieldValue__Ent_Tab_Device_List____showToast_s____listToPairList_List_l____List_pl___new_ArrayList____for__String_s__l____pladd_new_NameValuePair_s__s_____return_pl__}</label>
-    </group>
   </h:body>
 </h:html>
