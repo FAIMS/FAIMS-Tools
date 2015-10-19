@@ -68,12 +68,13 @@ newTab(String tab, Boolean resolveTabGroups) {
 /* onEvent calls instead of having later calls override earlier ones.         */
 /******************************************************************************/
 Map events = new HashMap();
+String SEP = Character.toString ((char) 0); // Beanshell is stupid and won't let me write "\0"
 
 /* Returns the set of statements bound to an element at `ref` and occuring on
  * `event`.
  */
 getStatements(String ref, String event) {
-  String    key = ref + event;
+  String    key = ref + SEP + event;
   ArrayList val = (ArrayList) events.get(key);
   if (val == null) {
     val = new ArrayList();
@@ -103,6 +104,15 @@ bindOnEvent(String ref, String event) {
   }
 
   onEvent(ref, event, stmtsExpr);
+}
+
+bindOnEvents() {
+  for (String key : events.keySet()) {
+    refevent = key.split(SEP);
+    ref   = ref-event[0];
+    event = ref-event[1];
+    bindOnEvent(ref, event);
+  }
 }
 
 /******************************************************************************/
@@ -404,6 +414,62 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
       }
     });
 }
+makeVocab("DropDown", "Tomb/Tomb/Burial_Skeleton_Type", "Burial Skeleton Type");
+makeVocab("DropDown", "Burial/Description/Signalisation", "Signalisation");
+makeVocab("DropDown", "Burial/Description/Cover", "Cover");
+makeVocab("RadioGroup", "Burial/Skeleton/Burial", "Burial");
+makeVocab("DropDown", "Burial/Skeleton/Age_of_Bones", "Age of Bones");
+makeVocab("RadioGroup", "Burial/Skeleton/Sex", "Sex");
+makeVocab("DropDown", "Burial/Skeleton/Skeleton_Position", "Skeleton Position");
+makeVocab("RadioGroup", "Burial/Skeleton/Position_of_Hands", "Position of Hands");
+makeVocab("RadioGroup", "Burial/Skeleton/Position_of_Legs", "Position of Legs");
+makeVocab("RadioGroup", "Burial/State_of_Preservation/Skeleton", "Skeleton");
+makeVocab("RadioGroup", "Burial/State_of_Preservation/Bones", "Bones");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Occipital_-_Atlas_Joint", "Occipital - Atlas Joint");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Atlas_-_Axis_Joint", "Atlas - Axis Joint");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Joint_ATM", "Joint ATM");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Left_Clavicle", "Left Clavicle");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Right_Clavicle", "Right Clavicle");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Cervical_Spine", "Cervical Spine");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Left_Scapula", "Left Scapula");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Right_Scapula", "Right Scapula");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Thoracic_Spine", "Thoracic Spine");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Left_shoulder", "Left shoulder");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Right_shoulder", "Right shoulder");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Lumbar_Spine", "Lumbar Spine");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Left_elbow", "Left elbow");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Right_elbow", "Right elbow");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Sternum", "Sternum");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Articulation_of_left_wrist_bones", "Articulation of left wrist bones");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Articulation_of_right_wrist_bones", "Articulation of right wrist bones");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Manubrium", "Manubrium");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Articulation_of_left_metacarpals", "Articulation of left metacarpals");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Articulation_of_right_metacarpals", "Articulation of right metacarpals");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Left_ribs", "Left ribs");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Articulation_of_right_hand_fingers", "Articulation of right hand fingers");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Articulation_of_left_hand_fingers", "Articulation of left hand fingers");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Right_ribs", "Right ribs");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Left_Patella", "Left Patella");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Right_Patella", "Right Patella");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Coxo-femural_Right", "Coxo-femural Right");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Lombo-sacral", "Lombo-sacral");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Left_Hip_Joint", "Left Hip Joint");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Right_Sacro-illiac_Joint", "Right Sacro-illiac Joint");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Left_knee", "Left knee");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Right_knee", "Right knee");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Left_Sacro-illiac_Joint", "Left Sacro-illiac Joint");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Left_tarsals_ankle_bones", "Left tarsals ankle bones");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Right_tarsals_ankle_bones", "Right tarsals ankle bones");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Left_metatarsals", "Left metatarsals");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Right_metatarsals", "Right metatarsals");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Left_toe_bones", "Left toe bones");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Right_toe_bones", "Right toe bones");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Migrations_on_The_Interior_of_V.I.C.", "Migrations on The Interior of V.I.C.");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Migrations_on_The_Exterior_of_V.I.C.", "Migrations on The Exterior of V.I.C.");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Terrier", "Terrier");
+makeVocab("RadioGroup", "Burial/State_of_Joints/Place_of_Corpse_Decomposition", "Place of Corpse Decomposition");
+makeVocab("PictureGallery", "Burial/Position_of_Limbs/Position_of_Limbs", "Position of Limbs");
+makeVocab("RadioGroup", "Burial/Position_of_Limbs/Coxal_Position", "Coxal Position");
 
 
 /******************************************************************************/
@@ -472,6 +538,33 @@ validateFields(List fields, String format) {
   return out;
 }
 
+validateTomb() {
+  List f = new ArrayList(); // Fields to be validated
+
+  f.add(fieldPair("Tomb/Tomb/Tomb_ID", "{Tomb_ID}"));
+
+  String validationMessage = validateFields(f, "PLAINTEXT");
+  showWarning("Validation Results", validationMessage);
+}
+
+validateBurial() {
+  List f = new ArrayList(); // Fields to be validated
+
+  f.add(fieldPair("Burial/Description/Burial_ID", "{Burial_ID}"));
+
+  String validationMessage = validateFields(f, "PLAINTEXT");
+  showWarning("Validation Results", validationMessage);
+}
+
+validateImpact() {
+  List f = new ArrayList(); // Fields to be validated
+
+  f.add(fieldPair("Impact/Impact/Placement", "{Placement}"));
+
+  String validationMessage = validateFields(f, "PLAINTEXT");
+  showWarning("Validation Results", validationMessage);
+}
+
 
 
 /******************************************************************************/
@@ -531,6 +624,8 @@ saveTabGroup(String tabgroup, String callback) {
 populateAuthorAndTimestamp(String tabgroup) {
   Map tabgroupToAuthor    = new HashMap();
   Map tabgroupToTimestamp = new HashMap();
+  tabgroupToAuthor.put("Tomb", "Tomb/Tomb/Author");
+  tabgroupToTimestamp.put("Tomb", "Tomb/Tomb/Timestamp");
 
   String uuid          = getUuid(tabgroup);
   String authorPath    = tabgroupToAuthor.get(tabgroup);
@@ -558,41 +653,78 @@ populateAuthorAndTimestamp(String tabgroup) {
   fetchOne(q, callback);
 }
 
-onShowEnt () {
+onShowTomb () {
   // TODO: Add some things which should happen when this tab group is shown
-  saveTabGroup("Ent");
+  saveTabGroup("Tomb");
 }
-onShowB () {
+onShowBurial () {
   // TODO: Add some things which should happen when this tab group is shown
-  saveTabGroup("B");
+  saveTabGroup("Burial");
+}
+onShowImpact () {
+  // TODO: Add some things which should happen when this tab group is shown
+  saveTabGroup("Impact");
+}
+onShowBoneMigration () {
+  // TODO: Add some things which should happen when this tab group is shown
+  saveTabGroup("Bone_Migration");
 }
 
-addOnEvent("Ent", "show", "onShowEnt()");
-addOnEvent("B", "show", "onShowB()");
+addOnEvent("Tomb", "show", "onShowTomb()");
+addOnEvent("Burial", "show", "onShowBurial()");
+addOnEvent("Impact", "show", "onShowImpact()");
+addOnEvent("Bone_Migration", "show", "onShowBoneMigration()");
 
 onClickUserSelectUser () {
   // TODO: Add some things which should happen when this element is clicked
   newTab("Control", true);
 }
-onClickControlNewEnt () {
+onClickControlCreateNewTombRecord () {
   // TODO: Add some things which should happen when this element is clicked
-  newEnt();
+  newTomb();
 }
-onClickEntRefreshList () {
+onClickTombAddBurial () {
   // TODO: Add some things which should happen when this element is clicked
-  String tabgroup = "Ent";
+  String tabgroup = "Tomb";
   if (isNull(getUuid(tabgroup))){
     showToast("{You_must_save_this_tabgroup_first}");
     return;
   }
   parentTabgroup = tabgroup;
-  newB();
+  newBurial();
+}
+onClickBurialAddMigration () {
+  // TODO: Add some things which should happen when this element is clicked
+  String tabgroup = "Burial";
+  if (isNull(getUuid(tabgroup))){
+    showToast("{You_must_save_this_tabgroup_first}");
+    return;
+  }
+  parentTabgroup = tabgroup;
+  newBoneMigration();
+}
+onClickBurialAddImpact () {
+  // TODO: Add some things which should happen when this element is clicked
+  String tabgroup = "Burial";
+  if (isNull(getUuid(tabgroup))){
+    showToast("{You_must_save_this_tabgroup_first}");
+    return;
+  }
+  parentTabgroup = tabgroup;
+  newImpact();
 }
 
 addOnEvent("User/User/Select_User", "click", "onClickUserSelectUser()");
-addOnEvent("Control/Control/New_Ent", "click", "onClickControlNewEnt()");
-addOnEvent("Ent/Tab/Refresh_List", "click", "onClickEntRefreshList()");
+addOnEvent("Control/Main/Create_New_Tomb_Record", "click", "onClickControlCreateNewTombRecord()");
+addOnEvent("Tomb/Tomb/Add_Burial", "click", "onClickTombAddBurial()");
+addOnEvent("Burial/Bone_Migration/Add_Migration", "click", "onClickBurialAddMigration()");
+addOnEvent("Burial/Impact/Add_Impact", "click", "onClickBurialAddImpact()");
 
+
+/******************************************************************************/
+/*                   AUDIO, CAMERA, FILE AND VIDEO BINDINGS                   */
+/******************************************************************************/
+addOnEvent("Burial/Skeleton/Button_Position_of_Members", "click", "attachFileTo(\"Burial/Skeleton/Position_of_Members\")");
 
 /******************************************************************************/
 /*                             NAVIGATION DRAWER                              */
@@ -607,6 +739,9 @@ removeNavigationButtons() {
 addNavigationButtons(String tabgroup) {
   removeNavigationButtons();
   List tabgroupsToValidate = new ArrayList();
+  tabgroupsToValidate.add("Tomb");
+  tabgroupsToValidate.add("Burial");
+  tabgroupsToValidate.add("Impact");
 
   addNavigationButton("new", new ActionButtonCallback() {
     actionOnLabel() {
@@ -793,8 +928,8 @@ loadEntityFrom(String entityID) {
   });
 }
 
-newEnt(){
-  String tabgroup = "Ent";
+newTomb(){
+  String tabgroup = "Tomb";
 
 
   setUuid(tabgroup, null);
@@ -802,8 +937,8 @@ newEnt(){
 
 }
 
-duplicateEnt(){
-  String tabgroup = "Ent";
+duplicateTomb(){
+  String tabgroup = "Tomb";
   String uuidOld = getUuid(tabgroup);
 
   disableAutoSave(tabgroup);
@@ -845,24 +980,106 @@ duplicateEnt(){
   });
 }
 
-deleteEnt(){
-  String tabgroup = "Ent";
+deleteTomb(){
+  String tabgroup = "Tomb";
 
   if (isNull(getUuid(tabgroup))) {
     cancelTabGroup(tabgroup, true);
   } else {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteEnt()", "doNotDelete()");
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteTomb()", "doNotDelete()");
   }
 }
 
-reallyDeleteEnt(){
-  String tabgroup = "Ent";
+reallyDeleteTomb(){
+  String tabgroup = "Tomb";
   deleteArchEnt(getUuid(tabgroup));
   cancelTabGroup(tabgroup, false);
 }
 
-newB(){
-  String tabgroup = "B";
+newBurial(){
+  String tabgroup = "Burial";
+
+  String autoNumSource = "";
+  autoNumSource = getFieldValue("Tomb/Tomb/Next_Burial_ID");
+  if (isNull(autoNumSource)) {
+    showWarning("{Alert}","{A_next_ID_has_not_been_entered_please_provide_one}");
+    return;
+  }
+
+  setUuid(tabgroup, null);
+  newTabGroup(tabgroup);
+
+  String autoNumDest = "";
+  autoNumDest = "Burial/Description/Burial_ID";
+  incAutoNum(autoNumDest);
+}
+
+duplicateBurial(){
+  String tabgroup = "Burial";
+  String uuidOld = getUuid(tabgroup);
+
+  disableAutoSave(tabgroup);
+
+  String autoNumDest = "";
+  autoNumDest = "Burial/Description/Burial_ID";
+  incAutoNum(autoNumDest);
+
+  populateFileList("Burial/Skeleton/Position_of_Members", new ArrayList());
+
+
+  saveCallback = new SaveCallback() {
+    onSave(uuid, newRecord) {
+      setUuid(tabgroup, uuid);
+      populateAuthorAndTimestamp(tabgroup);
+
+      Boolean enable_autosave = true;
+
+      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
+        onFetch(result) {
+          Log.e("Module", result.toString());
+          makeDuplicateRelationships(result, getUuid(tabgroup));
+          showToast("{Duplicated_record}");
+          dialog.dismiss();
+        }
+      });
+
+      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
+        onSave(autosaveUuid, autosaveNewRecord) {
+          setUuid(tabgroup, autosaveUuid);
+        }
+      }, enable_autosave);
+    }
+  };
+
+  String extraDupeAttributes = "";
+  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
+    onFetch(result) {
+      excludeAttributes = new ArrayList();
+      excludeAttributes.add("Position of Members");
+
+      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
+    }
+  });
+}
+
+deleteBurial(){
+  String tabgroup = "Burial";
+
+  if (isNull(getUuid(tabgroup))) {
+    cancelTabGroup(tabgroup, true);
+  } else {
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteBurial()", "doNotDelete()");
+  }
+}
+
+reallyDeleteBurial(){
+  String tabgroup = "Burial";
+  deleteArchEnt(getUuid(tabgroup));
+  cancelTabGroup(tabgroup, false);
+}
+
+newImpact(){
+  String tabgroup = "Impact";
 
 
   setUuid(tabgroup, null);
@@ -870,8 +1087,8 @@ newB(){
 
 }
 
-duplicateB(){
-  String tabgroup = "B";
+duplicateImpact(){
+  String tabgroup = "Impact";
   String uuidOld = getUuid(tabgroup);
 
   disableAutoSave(tabgroup);
@@ -913,18 +1130,86 @@ duplicateB(){
   });
 }
 
-deleteB(){
-  String tabgroup = "B";
+deleteImpact(){
+  String tabgroup = "Impact";
 
   if (isNull(getUuid(tabgroup))) {
     cancelTabGroup(tabgroup, true);
   } else {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteB()", "doNotDelete()");
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteImpact()", "doNotDelete()");
   }
 }
 
-reallyDeleteB(){
-  String tabgroup = "B";
+reallyDeleteImpact(){
+  String tabgroup = "Impact";
+  deleteArchEnt(getUuid(tabgroup));
+  cancelTabGroup(tabgroup, false);
+}
+
+newBoneMigration(){
+  String tabgroup = "Bone_Migration";
+
+
+  setUuid(tabgroup, null);
+  newTabGroup(tabgroup);
+
+}
+
+duplicateBoneMigration(){
+  String tabgroup = "Bone_Migration";
+  String uuidOld = getUuid(tabgroup);
+
+  disableAutoSave(tabgroup);
+
+
+
+
+  saveCallback = new SaveCallback() {
+    onSave(uuid, newRecord) {
+      setUuid(tabgroup, uuid);
+      populateAuthorAndTimestamp(tabgroup);
+
+      Boolean enable_autosave = true;
+
+      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
+        onFetch(result) {
+          Log.e("Module", result.toString());
+          makeDuplicateRelationships(result, getUuid(tabgroup));
+          showToast("{Duplicated_record}");
+          dialog.dismiss();
+        }
+      });
+
+      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
+        onSave(autosaveUuid, autosaveNewRecord) {
+          setUuid(tabgroup, autosaveUuid);
+        }
+      }, enable_autosave);
+    }
+  };
+
+  String extraDupeAttributes = "";
+  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
+    onFetch(result) {
+      excludeAttributes = new ArrayList();
+
+      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
+    }
+  });
+}
+
+deleteBoneMigration(){
+  String tabgroup = "Bone_Migration";
+
+  if (isNull(getUuid(tabgroup))) {
+    cancelTabGroup(tabgroup, true);
+  } else {
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteBoneMigration()", "doNotDelete()");
+  }
+}
+
+reallyDeleteBoneMigration(){
+  String tabgroup = "Bone_Migration";
   deleteArchEnt(getUuid(tabgroup));
   cancelTabGroup(tabgroup, false);
 }
@@ -935,8 +1220,10 @@ doNotDelete(){
 }
 addOnEvent("User", "show", "removeNavigationButtons()");
 addOnEvent("Control", "show", "removeNavigationButtons()");
-addOnEvent("Ent", "show", "addNavigationButtons(\"Ent\")");
-addOnEvent("B", "show", "addNavigationButtons(\"B\")");
+addOnEvent("Tomb", "show", "addNavigationButtons(\"Tomb\")");
+addOnEvent("Burial", "show", "addNavigationButtons(\"Burial\")");
+addOnEvent("Impact", "show", "addNavigationButtons(\"Impact\")");
+addOnEvent("Bone_Migration", "show", "addNavigationButtons(\"Bone_Migration\")");
 
 /******************************************************************************/
 /*                                   SEARCH                                   */
@@ -949,8 +1236,10 @@ addOnEvent("Control/Search/Entity_Types"  , "click" , "search()");
 
 entityTypes = new ArrayList();
 entityTypes.add(new NameValuePair("{All}", ""));
-entityTypes.add(new NameValuePair("{Ent}", "Ent"));
-entityTypes.add(new NameValuePair("{B}", "B"));
+entityTypes.add(new NameValuePair("{Tomb}", "Tomb"));
+entityTypes.add(new NameValuePair("{Burial}", "Burial"));
+entityTypes.add(new NameValuePair("{Impact}", "Impact"));
+entityTypes.add(new NameValuePair("{Bone_Migration}", "Bone Migration"));
 populateDropDown("Control/Search/Entity_Types", entityTypes);
 
 clearSearch(){
@@ -982,16 +1271,32 @@ search(){
   Log.d("Module", "Search query: " + searchQuery);
 }
 
-loadEntFrom(String uuid) {
-  String tabgroup = "Ent";
+loadTombFrom(String uuid) {
+  String tabgroup = "Tomb";
   setUuid(tabgroup, uuid);
   if (isNull(uuid)) return;
 
   showTabGroup(tabgroup, uuid);
 }
 
-loadBFrom(String uuid) {
-  String tabgroup = "B";
+loadBurialFrom(String uuid) {
+  String tabgroup = "Burial";
+  setUuid(tabgroup, uuid);
+  if (isNull(uuid)) return;
+
+  showTabGroup(tabgroup, uuid);
+}
+
+loadImpactFrom(String uuid) {
+  String tabgroup = "Impact";
+  setUuid(tabgroup, uuid);
+  if (isNull(uuid)) return;
+
+  showTabGroup(tabgroup, uuid);
+}
+
+loadBoneMigrationFrom(String uuid) {
+  String tabgroup = "Bone_Migration";
   setUuid(tabgroup, uuid);
   if (isNull(uuid)) return;
 
@@ -1000,33 +1305,201 @@ loadBFrom(String uuid) {
 
 
 /******************************************************************************/
-/*                             HANDWRITTEN LOGIC                              */
+/*                       AUTONUMBERING HELPER FUNCTIONS                       */
 /******************************************************************************/
+insertIntoLocalSettings(String key, String val) {
+    fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
+}
 
-  
-  String capturingDevice = null;
+insertIntoLocalSettings(String key, Integer val) {
+    insertIntoLocalSettings(key, Integer.toString(val));
+}
 
-  addOnEvent("Ent/Tab/Device_List",  "click", "onClickDeviceList()");
-  addOnEvent("Ent/Tab/Device_List",  "show",  "refreshList()");
-  addOnEvent("Ent/Tab/Refresh_List", "click", "refreshList()");
+/*
+ * If value of field specified by `ref` is null, sets the field to `defaultVal`,
+ * otherwise increments its value.
+ *
+ * Returns the value the field was updated to.
+ */
+incField(String ref, Integer defaultVal) {
+  String val = getFieldValue(ref);
 
-  refreshList() {
-    l  = getHardwareDevices();
-    pl = listToPairList(l);
-    populateDropDown("Ent/Tab/Device_List", pl);
+  if (isNull(val)) {
+    setFieldValue(ref, defaultVal);
+    return defaultVal;
   }
 
-  onClickDeviceList() {
-    String s = getFieldValue("Ent/Tab/Device_List");
-    showToast(s);
-  }
+  Integer inc = Integer.parseInt(val) + 1;
+  setFieldValue(ref, inc);
+  insertIntoLocalSettings(ref, inc.toString());
 
-  listToPairList(List l) {
-    List pl = new ArrayList();
-    for (String s : l) {
-      pl.add(new NameValuePair(s, s));
+  return inc;
+}
+
+/* Increments the field at `ref` or returns null if it does not contain a
+ * number.
+ */
+incField(String ref) {
+  return incField(ref, 1);
+}
+
+addOnEvent("Control", "load", "onLoadControl()");
+
+/* This function should only be called once since it creates event handlers,
+ * otherwise multiple copies of the same handler will trigger with the event.
+ */
+onLoadControl() {
+  List l = new ArrayList();
+  l.add("Tomb/Tomb/Next_Burial_ID");
+
+
+  for (ref : l) {
+    loadStartingId(ref);
+  }
+  for (ref : l) {
+    onFocus(ref, null,  "insertIntoLocalSettings(\"" + ref + "\", getFieldValue(\"" + ref + "\"));");
+  }
+}
+
+loadStartingId(String ref) {
+  String idQ = "SELECT value FROM localSettings WHERE key = '" + ref + "';";
+  fetchOne(idQ, new FetchCallback() {
+    onFetch(result) {
+      if (!isNull(result)) {
+        setFieldValue(ref, result.get(0));
+      } else {
+        setFieldValue(ref, "1");
+      }
     }
-    return pl;
+  });
+}
+
+incAutoNum(String destPath) {
+  Map destToSource = new HashMap();
+  destToSource.put("Burial/Description/Burial_ID", "Tomb/Tomb/Next_Burial_ID");
+
+  String sourcePath = destToSource.get(destPath);
+  String destVal    = getFieldValue(sourcePath);
+  setFieldValue(destPath, destVal);
+  incField(sourcePath);
+}
+
+/******************************************************************************/
+/*                POPULATION OF ENTITY AND CHILD ENTITY LISTS                 */
+/******************************************************************************/
+/*
+ * `viewType`   the type of GUI element to be populated. It can either equal
+ *              "DropDown" or "List".
+ * `path`       the reference of the GUI element to be populated.
+ * `parentUuid` the parent in the relationship denoted by `relType`.
+ * `entType`    the type of the entities the menu will be populated with.
+ * `relType`    the name of the relationship the children are to be in with the
+ *              entity denoted by `parentUuid`.
+ */
+populateMenuWithEntities (
+  String viewType,
+  String path,
+  String parentUuid,
+  String entType,
+  String relType
+) {
+  String getChildEntitiesQ = "" +
+    "SELECT childuuid, response "+
+    "  FROM parentchild JOIN latestNonDeletedArchEntFormattedIdentifiers ON (childuuid = uuid) " +
+    "  JOIN createdmodifiedatby USING (uuid) " +
+    " WHERE relationshipid IN (SELECT relationshipid  " +
+    "                            FROM latestnondeletedrelationship JOIN relntype USING (relntypeid) " +
+    "                           WHERE relntypename = '"+relType+"') " +
+    "   AND parentuuid = " + parentUuid + " " +
+    "   AND (childaenttypename = '"+entType+"' OR '"+entType+"' = '') " +
+    " ORDER BY createdat DESC ";
+
+  String getEntitiesQ = "" +
+    "SELECT uuid, response "+
+    "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
+    " WHERE uuid in (SELECT uuid "+
+    "                  FROM latestNonDeletedArchEntIdentifiers "+
+    "                 WHERE aenttypename = '"+entType+"' OR '"+entType+"' = '' " +
+    "               )  "+
+    " ORDER BY response ";
+
+  String q = null;
+  if (relType.equals("")) {
+    q = getEntitiesQ;
+  } else {
+    q = getChildEntitiesQ;
   }
-  
-  
+
+  FetchCallback cbPopulateDropDown = new FetchCallback() {
+    onFetch(result) {
+      populateDropDown(path, result);
+    }
+  };
+
+  switch (viewType) {
+    case "DropDown":
+      fetchAll(q, cbPopulateDropDown);
+      break;
+    case "List":
+      q += " LIMIT ? OFFSET ? ";
+      populateCursorList(path, q, 25);
+      break;
+    default:
+      Log.e("populateMenuWithEntities ", "Unexpected type '" + viewType + "'");
+  }
+}
+
+menus = new ArrayList();
+menus.add(new String[] {
+  "List",
+  "Control/Main/Saved_Tomb_Records",
+  "getUuid(\"Control\")",
+  "Tomb",
+  ""
+});
+menus.add(new String[] {
+  "DropDown",
+  "Tomb/Tomb/Load_Burial",
+  "getUuid(\"Tomb\")",
+  "Burial",
+  "Tomb - Burial",
+});
+menus.add(new String[] {
+  "List",
+  "Burial/Bone_Migration/Load_Migration",
+  "getUuid(\"Burial\")",
+  "Bone Migration",
+  "Burial - Bone Migration",
+});
+menus.add(new String[] {
+  "List",
+  "Burial/Impact/Load_Impact",
+  "getUuid(\"Burial\")",
+  "Impact",
+  "Burial - Impact",
+});
+for (m : menus) {
+  String viewType       = m[0];
+  String path           = m[1];
+  String parentUuidCall = m[2];
+  String entType        = m[3];
+  String relType        = m[4];
+
+  String functionCall = "";
+  functionCall += "populateMenuWithEntities(";
+  functionCall += "\"" + viewType       + "\"";
+  functionCall += ", ";
+  functionCall += "\"" + path           + "\"";
+  functionCall += ", ";
+  functionCall +=        parentUuidCall       ;
+  functionCall += ", ";
+  functionCall += "\"" + entType        + "\"";
+  functionCall += ", ";
+  functionCall += "\"" + relType        + "\"";
+  functionCall += ")";
+
+  addOnEvent(path, "show", functionCall);
+}
+addOnEvent("Control/Main/Saved_Tomb_Records", "click", "loadEntity()");
+addOnEvent("Burial/Bone_Migration/Load_Migration", "click", "loadEntity()");
+addOnEvent("Burial/Impact/Load_Impact", "click", "loadEntity()");

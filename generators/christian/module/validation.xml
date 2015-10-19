@@ -1,5 +1,25 @@
 <?xml version="1.0"?>
 <ValidationSchema>
-  <ArchaeologicalElement name="Ent"/>
-  <ArchaeologicalElement name="B"/>
+  <ArchaeologicalElement name="Tomb">
+    <property name="Tomb ID">
+      <validator type="blankchecker">
+        <param value="measure" type="field"/>
+      </validator>
+    </property>
+  </ArchaeologicalElement>
+  <ArchaeologicalElement name="Burial">
+    <property name="Burial ID">
+      <validator type="blankchecker">
+        <param value="measure" type="field"/>
+      </validator>
+    </property>
+  </ArchaeologicalElement>
+  <ArchaeologicalElement name="Impact">
+    <property name="Placement">
+      <validator type="blankchecker">
+        <param value="measure" type="field"/>
+      </validator>
+    </property>
+  </ArchaeologicalElement>
+  <ArchaeologicalElement name="Bone_Migration"/>
 </ValidationSchema>

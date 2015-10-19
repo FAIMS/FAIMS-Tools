@@ -79,12 +79,13 @@ newTab(String tab, Boolean resolveTabGroups) {
 /* onEvent calls instead of having later calls override earlier ones.         */
 /******************************************************************************/
 Map events = new HashMap();
+String SEP = Character.toString ((char) 0); // Beanshell is stupid and won't let me write "\0"
 
 /* Returns the set of statements bound to an element at `ref` and occuring on
  * `event`.
  */
 getStatements(String ref, String event) {
-  String    key = ref + event;
+  String    key = ref + SEP + event;
   ArrayList val = (ArrayList) events.get(key);
   if (val == null) {
     val = new ArrayList();
@@ -114,6 +115,15 @@ bindOnEvent(String ref, String event) {
   }
 
   onEvent(ref, event, stmtsExpr);
+}
+
+bindOnEvents() {
+  for (String key : events.keySet()) {
+    refevent = key.split(SEP);
+    ref   = ref-event[0];
+    event = ref-event[1];
+    bindOnEvent(ref, event);
+  }
 }
 
 /******************************************************************************/
@@ -1468,6 +1478,14 @@ menus = new ArrayList();
 /******************************************************************************/
 </xsl:text>
       <xsl:value-of select="/module/logic/text()"/>
+      <xsl:text>
+/******************************************************************************/
+/*                                    INIT                                    */
+/*                                                                            */
+/* Stuff which needs to be done last.                                         */
+/******************************************************************************/
+bindOnEvents();
+</xsl:text>
     </xsl:if>
 
   </xsl:template>
