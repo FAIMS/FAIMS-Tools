@@ -108,15 +108,31 @@ bindOnEvent(String ref, String event) {
 }
 
 bindOnEvents() {
-  Log.e(".", "FUCK");
   for (String key : events.keySet()) {
-    Log.e(".", "NESTEDFUCK");
     refevent = key.split(SEP);
     ref   = refevent[0];
     event = refevent[1];
     bindOnEvent(ref, event);
   }
 }
+
+/******************************************************************************/
+/*                           DROPDOWN VALUE GETTER                            */
+/*                                                                            */
+/* For consistency with `getListItemValue()`.                                 */
+/******************************************************************************/
+String dropdownItemValue = null;
+
+getDropdownItemValue() {
+  return dropdownItemValue;
+}
+
+addOnEvent("Tomb/Tomb/Burial_Skeleton_Type", "click", "dropdownItemValue = getFieldValue(\"Tomb/Tomb/Burial_Skeleton_Type\")");
+addOnEvent("Tomb/Tomb/Load_Burial", "click", "dropdownItemValue = getFieldValue(\"Tomb/Tomb/Load_Burial\")");
+addOnEvent("Burial/Description/Signalisation", "click", "dropdownItemValue = getFieldValue(\"Burial/Description/Signalisation\")");
+addOnEvent("Burial/Description/Cover", "click", "dropdownItemValue = getFieldValue(\"Burial/Description/Cover\")");
+addOnEvent("Burial/Skeleton/Age_of_Bones", "click", "dropdownItemValue = getFieldValue(\"Burial/Skeleton/Age_of_Bones\")");
+addOnEvent("Burial/Skeleton/Skeleton_Position", "click", "dropdownItemValue = getFieldValue(\"Burial/Skeleton/Skeleton_Position\")");
 
 /******************************************************************************/
 /*                                 ACTION BAR                                 */
@@ -908,7 +924,14 @@ getExtraAttributes(fetchedAttributes) {
 }
 
 loadEntity() {
-  loadEntityFrom(getListItemValue());
+  loadEntity(false);
+}
+loadEntity(Boolean isDropdown) {
+  if (isDropdown) {
+    loadEntityFrom(getDropdownItemValue());
+  } else {
+    loadEntityFrom(getListItemValue());
+  }
 }
 
 loadEntityFrom(String entityID) {
@@ -1435,7 +1458,7 @@ populateMenuWithEntities (
 
   FetchCallback cbPopulateDropDown = new FetchCallback() {
     onFetch(result) {
-      populateDropDown(path, result);
+      populateDropDown(path, result, true);
     }
   };
 
@@ -1504,6 +1527,7 @@ for (m : menus) {
   addOnEvent(path, "show", functionCall);
 }
 addOnEvent("Control/Main/Saved_Tomb_Records", "click", "loadEntity()");
+addOnEvent("Tomb/Tomb/Load_Burial", "click", "loadEntity(true)");
 addOnEvent("Burial/Bone_Migration/Load_Migration", "click", "loadEntity()");
 addOnEvent("Burial/Impact/Load_Impact", "click", "loadEntity()");
 

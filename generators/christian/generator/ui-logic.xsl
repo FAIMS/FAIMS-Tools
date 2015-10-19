@@ -128,6 +128,28 @@ bindOnEvents() {
 }
 
 /******************************************************************************/
+/*                           DROPDOWN VALUE GETTER                            */
+/*                                                                            */
+/* For consistency with `getListItemValue()`.                                 */
+/******************************************************************************/
+String dropdownItemValue = null;
+
+getDropdownItemValue() {
+  return dropdownItemValue;
+}
+
+</xsl:text>
+    <xsl:for-each select="//*[normalize-space(@t) = 'dropdown' or
+          (not(@t) and ./opts and not(.//@p))]">
+      <xsl:text>addOnEvent("</xsl:text>
+      <xsl:call-template name="ref" />
+      <xsl:text>", "click", "dropdownItemValue = getFieldValue(\"</xsl:text>
+      <xsl:call-template name="ref" />
+      <xsl:text>\")");</xsl:text>
+      <xsl:value-of select="$newline" />
+    </xsl:for-each>
+<xsl:text>
+/******************************************************************************/
 /*                                 ACTION BAR                                 */
 /******************************************************************************/
 addActionBarItem("clean_synced_files", new ActionButtonCallback() {
@@ -1105,7 +1127,14 @@ getExtraAttributes(fetchedAttributes) {
 }
 
 loadEntity() {
-  loadEntityFrom(getListItemValue());
+  loadEntity(false);
+}
+loadEntity(Boolean isDropdown) {
+  if (isDropdown) {
+    loadEntityFrom(getDropdownItemValue());
+  } else {
+    loadEntityFrom(getListItemValue());
+  }
 }
 
 loadEntityFrom(String entityID) {
@@ -1425,7 +1454,7 @@ populateMenuWithEntities (
 
   FetchCallback cbPopulateDropDown = new FetchCallback() {
     onFetch(result) {
-      populateDropDown(path, result);
+      populateDropDown(path, result, true);
     }
   };
 
@@ -1982,10 +2011,17 @@ bindOnEvents();
   </xsl:template>
 
   <xsl:template name="entity-loading">
-    <xsl:for-each select="//*[(normalize-space(@t) = 'list' or normalize-space(@t) = '') and (@e or @ec)]">
+    <xsl:for-each select="//*[(normalize-space(@t) = 'list' or normalize-space(@t) = '' or normalize-space(@t) = 'dropdown') and (@e or @ec)]">
       <xsl:text>addOnEvent("</xsl:text>
       <xsl:call-template name="ref" />
-      <xsl:text>", "click", "loadEntity()");</xsl:text>
+      <xsl:choose>
+        <xsl:when test="normalize-space(@t) = 'dropdown'">
+          <xsl:text>", "click", "loadEntity(true)");</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>", "click", "loadEntity()");</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:value-of select="$newline" />
     </xsl:for-each>
   </xsl:template>
