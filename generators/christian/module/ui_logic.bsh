@@ -87,12 +87,10 @@ addOnEvent(String ref, String event, String statement) {
   // Calling `remove()` first ensures statement occurs once in the list, at the end.
   while(getStatements(ref, event).remove(statement));
   getStatements(ref, event).add(statement);
-  bindOnEvent(ref, event);
 }
 
 delOnEvent(String ref, String event, String statement) {
   while(getStatements(ref, event).remove(statement));
-  bindOnEvent(ref, event);
 }
 
 bindOnEvent(String ref, String event) {
@@ -103,14 +101,19 @@ bindOnEvent(String ref, String event) {
     stmtsExpr += "; ";
   }
 
+  Log.e(".", ref);
+  Log.e(".", event);
+  Log.e(".", stmtsExpr);
   onEvent(ref, event, stmtsExpr);
 }
 
 bindOnEvents() {
+  Log.e(".", "FUCK");
   for (String key : events.keySet()) {
+    Log.e(".", "NESTEDFUCK");
     refevent = key.split(SEP);
-    ref   = ref-event[0];
-    event = ref-event[1];
+    ref   = refevent[0];
+    event = refevent[1];
     bindOnEvent(ref, event);
   }
 }
@@ -654,19 +657,19 @@ populateAuthorAndTimestamp(String tabgroup) {
 }
 
 onShowTomb () {
-  // TODO: Add some things which should happen when this tab group is shown
+  // TODO: Add some things which should happen when this tabgroup is shown
   saveTabGroup("Tomb");
 }
 onShowBurial () {
-  // TODO: Add some things which should happen when this tab group is shown
+  // TODO: Add some things which should happen when this tabgroup is shown
   saveTabGroup("Burial");
 }
 onShowImpact () {
-  // TODO: Add some things which should happen when this tab group is shown
+  // TODO: Add some things which should happen when this tabgroup is shown
   saveTabGroup("Impact");
 }
 onShowBoneMigration () {
-  // TODO: Add some things which should happen when this tab group is shown
+  // TODO: Add some things which should happen when this tabgroup is shown
   saveTabGroup("Bone_Migration");
 }
 
@@ -1503,3 +1506,10 @@ for (m : menus) {
 addOnEvent("Control/Main/Saved_Tomb_Records", "click", "loadEntity()");
 addOnEvent("Burial/Bone_Migration/Load_Migration", "click", "loadEntity()");
 addOnEvent("Burial/Impact/Load_Impact", "click", "loadEntity()");
+
+/******************************************************************************/
+/*                                    INIT                                    */
+/*                                                                            */
+/* Stuff which needs to be done last.                                         */
+/******************************************************************************/
+bindOnEvents();
