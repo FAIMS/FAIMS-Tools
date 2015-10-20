@@ -1,3 +1,10 @@
 #!/bin/sh
 
-xmllint --noout --schema validator/module.xsd module.xml
+if [ -z $1 ]
+then
+    module="module.xml"
+else
+    module=$1
+fi
+
+python validator/module.py $module
