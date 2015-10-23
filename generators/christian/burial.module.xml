@@ -1,14 +1,14 @@
 <?xml version="1.0" ?>
-<module suppressWarnings="false">
+<module suppressWarnings="true">
 
-<User f="onlyui">
+<User f="nodata">
   <User>
     <Select_User t="dropdown" f="user"/>
     <Login t="button" l="Control"/>
   </User>
 </User>
 
-<Control f="onlyui">
+<Control f="nodata">
   <Main>
     <Take_Feature t="button" l="Burial_Mound"/>
     <autonum/>

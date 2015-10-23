@@ -132,7 +132,7 @@ TYPE GUESSING
 
       <Element>                            <!-- This'll be a picture gallery -->
         <opts>
-          <opt p="Lovey_Image.jpg>Option 1</opt>
+          <opt p="Lovely_Image.jpg>Option 1</opt>
           <opt                   >Option 2</opt>
         </opts>
       </Element>

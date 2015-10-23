@@ -1,862 +1,201 @@
 <?xml version="1.0"?>
 <dataSchema>
-  <RelationshipElement name="Tomb - Burial" type="hierarchical">
-    <description>A 1-to-n relationship between the parent and its children, respectively.</description>
-    <parent>Parent Of</parent>
-    <child>Child Of</child>
-  </RelationshipElement>
-  <RelationshipElement name="Burial - Bone Migration" type="hierarchical">
-    <description>A 1-to-n relationship between the parent and its children, respectively.</description>
-    <parent>Parent Of</parent>
-    <child>Child Of</child>
-  </RelationshipElement>
-  <RelationshipElement name="Burial - Impact" type="hierarchical">
-    <description>A 1-to-n relationship between the parent and its children, respectively.</description>
-    <parent>Parent Of</parent>
-    <child>Child Of</child>
-  </RelationshipElement>
-  <RelationshipElement name="Chronologically Precedes" type="hierarchical">
+  <ArchaeologicalElement name="Burial Mound">
     <description/>
-    <parent>Precedes</parent>
-    <child>Preceded By</child>
-  </RelationshipElement>
-  <RelationshipElement name="Fills" type="hierarchical">
-    <description/>
-    <parent>Fills</parent>
-    <child>Filled By</child>
-  </RelationshipElement>
-  <RelationshipElement name="Cuts" type="hierarchical">
-    <description/>
-    <parent>Cuts</parent>
-    <child>Cut By</child>
-  </RelationshipElement>
-  <RelationshipElement name="Covers" type="hierarchical">
-    <description/>
-    <parent>Covers</parent>
-    <child>Covered By</child>
-  </RelationshipElement>
-  <RelationshipElement name="Contemporary With" type="bidirectional">
-    <description/>
-  </RelationshipElement>
-  <RelationshipElement name="Relation Uncertain" type="bidirectional">
-    <description/>
-  </RelationshipElement>
-  <RelationshipElement name="Is Synchronous" type="bidirectional">
-    <description/>
-  </RelationshipElement>
-  <RelationshipElement name="Identic" type="bidirectional">
-    <description/>
-  </RelationshipElement>
-  <ArchaeologicalElement name="Tomb">
-    <description/>
-    <property name="Tomb ID" isIdentifier="true" type="measure">
+    <property name="Object ID" isIdentifier="true" type="measure">
       <description/>
       <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
       <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
     </property>
-    <property name="Site" type="measure">
-      <description/>
-    </property>
-    <property name="autonum" type="measure">
-      <description/>
-    </property>
-    <property name="Burial Skeleton Type" type="vocab">
+    <property name="Type" type="vocab">
       <description/>
       <lookup>
-        <term>{Primary_Individual}
+        <term>{Burial_mound}
 <description/></term>
-        <term>{Primary_Multiple}
+        <term>{Surface_concentration}
 <description/></term>
-        <term>{Primary_Associated_with_Reduction}
+        <term>{Special_find}
 <description/></term>
-        <term>{Secondary}
+        <term>{Standing_masonry}
 <description/></term>
-        <term>{Intact}
+        <term>{Earthwork}
 <description/></term>
-        <term>{Reworked}
-<description/></term>
-        <term>{Indeterminate}
-<description/></term>
-      </lookup>
-    </property>
-  </ArchaeologicalElement>
-  <ArchaeologicalElement name="Burial">
-    <description/>
-    <property name="Burial ID" isIdentifier="true" type="measure">
-      <description/>
-      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
-      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
-    </property>
-    <property name="Left Stratigraphy" type="measure">
-      <description/>
-    </property>
-    <property name="Right Stratigraphy" type="measure">
-      <description/>
-    </property>
-    <property name="Cut" type="measure">
-      <description/>
-    </property>
-    <property name="Signalisation" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Pavement}
-<description/></term>
-        <term>{Cubicle}
-<description/></term>
-        <term>{Mound_Stele}
-<description/></term>
-        <term>{Above_Layer}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Cover" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Perisheable_Cover}
-<description/></term>
-        <term>{Wooden_coffin}
-<description/></term>
-        <term>{Pot}
-<description/></term>
-        <term>{Perisheable_Coffin}
-<description/></term>
-        <term>{Terracotta_Coffin}
+        <term>{Unknown}
 <description/></term>
         <term>{Other}
 <description/></term>
       </lookup>
     </property>
-    <property name="Pit Length" type="measure">
-      <description/>
-    </property>
-    <property name="Pit Width" type="measure">
-      <description/>
-    </property>
-    <property name="Depth soil act" type="measure">
-      <description/>
-    </property>
-    <property name="Depth pit edge" type="measure">
-      <description/>
-    </property>
-    <property name="Burial" type="vocab">
-      <description/>
+    <property name="Site Significance" type="vocab">
+      <description>Assess the site's potential for our research objectives or for excavation. Add details in Recommendation at the end of this module.</description>
       <lookup>
-        <term>{Individual}
+        <term>{None}
 <description/></term>
-        <term>{Multiple}
+        <term>{Low}
+<description/></term>
+        <term>{Medium}
+<description/></term>
+        <term>{High}
 <description/></term>
       </lookup>
     </property>
-    <property name="Skeleton Orientation head-feet" type="measure">
+    <property name="Name" type="measure">
       <description/>
     </property>
-    <property name="Age of Bones" type="vocab">
+    <property name="Description" type="measure">
       <description/>
-      <lookup>
-        <term>{__0}
-<description/></term>
-        <term>{1_4_years}
-<description/></term>
-        <term>{5_9_years}
-<description/></term>
-        <term>{10_19_years}
-<description/></term>
-        <term>{20_29_years}
-<description/></term>
-        <term>{30_99_years}
-<description/></term>
-        <term>{Indeterminate}
-<description/></term>
-      </lookup>
     </property>
-    <property name="Sex" type="vocab">
+    <property name="Source" type="vocab">
       <description/>
       <lookup>
-        <term>{Male}
+        <term>{Survey}
 <description/></term>
-        <term>{Female}
+        <term>{Remote_sensing}
 <description/></term>
-      </lookup>
-    </property>
-    <property name="Skeleton Position" type="vocab">
-      <description/>
-      <lookup>
-        <term>{On_the_left_side}
+        <term>{Informant}
 <description/></term>
-        <term>{Hypercontracted_left}
+        <term>{Legacy_verification}
 <description/></term>
-        <term>{On_the_right_side}
-<description/></term>
-        <term>{Hypercontracted_right}
-<description/></term>
-        <term>{On_the_back}
-<description/></term>
-        <term>{Manipulated}
-<description/></term>
-        <term>{On_the_belly}
+        <term>{Bibliography}
 <description/></term>
         <term>{Other}
 <description/></term>
       </lookup>
     </property>
-    <property name="Position of Hands" type="vocab">
+    <property name="Exists in Legacy" type="vocab">
       <description/>
       <lookup>
-        <term>{Joining}
+        <term>{Topo}
 <description/></term>
-        <term>{Close}
+        <term>{Satellite_Image}
 <description/></term>
-        <term>{Missing}
+        <term>{Other}
 <description/></term>
       </lookup>
     </property>
-    <property name="Position of Legs" type="vocab">
+    <property name="Surrounding Landuse" type="vocab">
       <description/>
       <lookup>
-        <term>{Joining}
+        <term>{Annual_agriculture}
+<description/><term>{Ploughed}
+<description/></term><term>{Harrowed}
+<description/></term><term>{Seedlings}
+<description/></term><term>{Mature_crop}
+<description/></term><term>{Harvested}
+<description/></term></term>
+        <term>{Perennial}
+<description/><term>{Orchard}
+<description/></term><term>{Lavender}
+<description/></term><term>{Vineyard}
+<description/></term></term>
+        <term>{Other}
+<description/><term>{Meadow}
+<description/></term><term>{Beach}
+<description/></term><term>{Scrub}
+<description/></term><term>{Forest}
+<description/></term><term>{Other}
+<description/></term></term>
+      </lookup>
+    </property>
+    <property name="Surface Landuse" type="vocab">
+      <description/>
+      <lookup>
+        <term>{Annual_agriculture}
+<description/><term>{Ploughed}
+<description/></term><term>{Harrowed}
+<description/></term><term>{Seedlings}
+<description/></term><term>{Mature_crop}
+<description/></term><term>{Harvested}
+<description/></term></term>
+        <term>{Perennial}
+<description/><term>{Orchard}
+<description/></term><term>{Lavender}
+<description/></term><term>{Vineyard}
+<description/></term></term>
+        <term>{Other}
+<description/><term>{Meadow}
+<description/></term><term>{Beach}
+<description/></term><term>{Scrub}
+<description/></term><term>{Forest}
+<description/></term><term>{Other}
+<description/></term></term>
+      </lookup>
+    </property>
+    <property name="Visibility" type="vocab">
+      <description/>
+      <lookup>
+        <term>{0_20_}
 <description/></term>
-        <term>{Close}
+        <term>{20_40_}
 <description/></term>
-        <term>{Missing}
+        <term>{40_60_}
+<description/></term>
+        <term>{60_80_}
+<description/></term>
+        <term>{80_100_}
 <description/></term>
       </lookup>
     </property>
-    <property name="Position of Members" type="file" file="true" thumbnail="true">
+    <property name="Elevation" type="measure">
       <description/>
     </property>
-    <property name="Hum Left" type="measure">
+    <property name="General Notes" type="measure">
       <description/>
     </property>
-    <property name="Radius Left" type="measure">
+    <property name="General Photo" type="file" file="true" thumbnail="true">
+      <description>Take 1 general overview shot that includes the complete feature profile, and a scale. Include direction in the Annotation (from which direction was the image taken)</description>
+    </property>
+    <property name="Profile" type="vocab">
       <description/>
     </property>
-    <property name="Ulna Left" type="measure">
-      <description/>
-    </property>
-    <property name="Femur Left" type="measure">
-      <description/>
-    </property>
-    <property name="Tibia Left" type="measure">
-      <description/>
-    </property>
-    <property name="Fibula Left" type="measure">
-      <description/>
-    </property>
-    <property name="Hum Right" type="measure">
-      <description/>
-    </property>
-    <property name="Radius Right" type="measure">
-      <description/>
-    </property>
-    <property name="Ulna Right" type="measure">
-      <description/>
-    </property>
-    <property name="Femur Right" type="measure">
-      <description/>
-    </property>
-    <property name="Tibia Right" type="measure">
-      <description/>
-    </property>
-    <property name="Fibula Right" type="measure">
-      <description/>
-    </property>
-    <property name="Skeleton" type="vocab">
+    <property name="Plan" type="vocab">
       <description/>
       <lookup>
-        <term>{Complete}
+        <term>{Circular}
 <description/></term>
-        <term>{Partial}
+        <term>{Elipsoid}
 <description/></term>
-        <term>{Residual}
+        <term>{Uneven}
 <description/></term>
       </lookup>
     </property>
-    <property name="Bones" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Good}
-<description/></term>
-        <term>{Medium}
-<description/></term>
-        <term>{Bad}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Top of the Grave" type="measure">
+    <property name="Length Max" type="measure">
       <description/>
     </property>
-    <property name="Top of the Skeleton" type="measure">
+    <property name="Width Max" type="measure">
       <description/>
     </property>
-    <property name="Bottom of Skeleton" type="measure">
+    <property name="Height Max" type="measure">
       <description/>
     </property>
-    <property name="Grave Bottom Base" type="measure">
+    <property name="Area Max" type="measure">
       <description/>
     </property>
-    <property name="Other" type="measure">
+    <property name="Length Min" type="measure">
       <description/>
     </property>
-    <property name="Skull" type="measure">
+    <property name="Width Min" type="measure">
       <description/>
     </property>
-    <property name="Pelvis Coxxigis" type="measure">
+    <property name="Height Min" type="measure">
       <description/>
     </property>
-    <property name="Feet" type="measure">
+    <property name="Area Min" type="measure">
       <description/>
     </property>
-    <property name="Elevation Notes" type="measure">
+    <property name="Other Dimension" type="measure">
       <description/>
     </property>
-    <property name="Occipital - Atlas Joint" type="vocab">
+    <property name="Dimensions Notes" type="measure">
       <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
     </property>
-    <property name="Atlas - Axis Joint" type="vocab">
+    <property name="Attach A Sketch" type="file" file="true" thumbnail="true">
       <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
     </property>
-    <property name="Joint ATM" type="vocab">
+    <property name="Sketch Photo" type="file" file="true" thumbnail="true">
       <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
     </property>
-    <property name="Left Clavicle" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Horizontal}
-<description/></term>
-        <term>{Vertical}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Right Clavicle" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Horizontal}
-<description/></term>
-        <term>{Vertical}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Cervical Spine" type="vocab">
-      <description/>
-      <lookup>
-        <term>{In_one_piece}
-<description/></term>
-        <term>{Segmented}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Left Scapula" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Flat}
-<description/></term>
-        <term>{Slopping}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Right Scapula" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Flat}
-<description/></term>
-        <term>{Slopping}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Thoracic Spine" type="vocab">
-      <description/>
-      <lookup>
-        <term>{In_one_piece}
-<description/></term>
-        <term>{Segmented}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Left shoulder" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Right shoulder" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Lumbar Spine" type="vocab">
-      <description/>
-      <lookup>
-        <term>{In_one_piece}
-<description/></term>
-        <term>{Segmented}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Left elbow" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Right elbow" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Sternum" type="vocab">
-      <description/>
-      <lookup>
-        <term>{In_place}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{On_the_left}
-<description/></term>
-        <term>{On_the_right}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Articulation of left wrist bones" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Articulation of right wrist bones" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Manubrium" type="vocab">
-      <description/>
-      <lookup>
-        <term>{In_place}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{On_the_left}
-<description/></term>
-        <term>{On_the_right}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Articulation of left metacarpals" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Articulation of right metacarpals" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Left ribs" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Raised}
-<description/></term>
-        <term>{Flat}
-<description/></term>
-        <term>{Medium}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Articulation of right hand fingers" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Articulation of left hand fingers" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Right ribs" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Raised}
-<description/></term>
-        <term>{Flat}
-<description/></term>
-        <term>{Medium}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Left Patella" type="vocab">
-      <description/>
-      <lookup>
-        <term>{In_place}
-<description/></term>
-        <term>{Laterally}
-<description/></term>
-        <term>{Medially}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Right Patella" type="vocab">
-      <description/>
-      <lookup>
-        <term>{In_place}
-<description/></term>
-        <term>{Laterally}
-<description/></term>
-        <term>{Medially}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Coxo-femural Right" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Lombo-sacral" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Left Hip Joint" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Right Sacro-illiac Joint" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Left knee" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Right knee" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Left Sacro-illiac Joint" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Left tarsals ankle bones" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Right tarsals ankle bones" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Left metatarsals" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Right metatarsals" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Left toe bones" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Right toe bones" type="vocab">
-      <description/>
-      <lookup>
-        <term>{Strict}
-<description/></term>
-        <term>{Faint}
-<description/></term>
-        <term>{Disjointed}
-<description/></term>
-        <term>{Migrated}
-<description/></term>
-        <term>{Missing}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="Migrations on The Interior of V.I.C." type="vocab">
+    <property name="Stone Feature Present And Visible" type="vocab">
       <description/>
       <lookup>
         <term>{Yes}
@@ -865,7 +204,26 @@
 <description/></term>
       </lookup>
     </property>
-    <property name="Migrations on The Exterior of V.I.C." type="vocab">
+    <property name="Stone Feature Description" type="measure">
+      <description/>
+    </property>
+    <property name="Surface Material Density" type="vocab">
+      <description/>
+      <lookup>
+        <term>{zero}
+<description/></term>
+        <term>{scarce}
+<description/></term>
+        <term>{medium}
+<description/></term>
+        <term>{high}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Surface Material Description" type="measure">
+      <description/>
+    </property>
+    <property name="Sample Collected" type="vocab">
       <description/>
       <lookup>
         <term>{Yes}
@@ -874,158 +232,172 @@
 <description/></term>
       </lookup>
     </property>
-    <property name="Terrier" type="vocab">
+    <property name="Material Photo" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="Disturbance Kind" type="vocab">
       <description/>
       <lookup>
-        <term>{Yes}
+        <term>{undisturbed}
 <description/></term>
-        <term>{No}
+        <term>{surface_sediment_disturbed}
+<description/></term>
+        <term>{subsurface_disturbed}
+<description/></term>
+        <term>{totally_disturbed}
+<description/></term>
+        <term>{unknown}
 <description/></term>
       </lookup>
     </property>
-    <property name="Place of Corpse Decomposition" type="vocab">
+    <property name="Disturbance Factors" type="vocab">
       <description/>
       <lookup>
-        <term>{Empty_space}
+        <term>{anthropic}
 <description/></term>
-        <term>{Limited_space}
+        <term>{animal_activity}
 <description/></term>
-        <term>{Indeterminate}
+        <term>{post_depositional}
+<description/></term>
+        <term>{topographic}
 <description/></term>
       </lookup>
     </property>
-    <property name="Skull Position" type="measure">
-      <description/>
+    <property name="Principal Factors" type="vocab">
+      <description>Select one factor that contributes to most visible damage</description>
+      <lookup>
+        <term>{Anthropic}
+<description/><term>{Agricultural}
+<description/></term><term>{Looting}
+<description/></term><term>{Development}
+<description/></term></term>
+        <term>{Post_depositional}
+<description/><term>{Mound_geomorphology}
+<description/></term><term>{Erosion}
+<description/></term><term>{Wind_damage}
+<description/></term><term>{Water_damage}
+<description/></term><term>{Age}
+<description/></term></term>
+        <term>{Topographic}
+<description/><term>{Aspect}
+<description/></term><term>{Slope}
+<description/></term><term>{Exposure}
+<description/></term><term>{Hydrology}
+<description/></term></term>
+      </lookup>
     </property>
-    <property name="Position Moved Mandible" type="measure">
-      <description/>
-    </property>
-    <property name="Left Arm Position" type="measure">
-      <description/>
-    </property>
-    <property name="Left Hand Position" type="measure">
-      <description/>
-    </property>
-    <property name="Left Leg" type="measure">
-      <description/>
-    </property>
-    <property name="Left Foot position" type="measure">
-      <description/>
-    </property>
-    <property name="Right Arm Position" type="measure">
-      <description/>
-    </property>
-    <property name="Right Hand Position" type="measure">
-      <description/>
-    </property>
-    <property name="Right Leg" type="measure">
-      <description/>
-    </property>
-    <property name="Right Foot position" type="measure">
-      <description/>
-    </property>
-    <property name="Position of Limbs" type="vocab">
+    <property name="Age of Damage" type="vocab">
       <description/>
       <lookup>
-        <term>{ou}
+        <term>{Remote}
 <description/></term>
-        <term>{90_}
+        <term>{Recent}
 <description/></term>
-        <term>{EC}
-<description/></term>
-        <term>{140_}
-<description/></term>
-        <term>{Lc}
-<description/></term>
-        <term>{120_}
-<description/></term>
-        <term>{RP}
-<description/></term>
-        <term>{Ex}
-<description/></term>
-        <term>{CR}
-<description/></term>
-        <term>{CJ}
-<description/></term>
-        <term>{ED}
-<description/></term>
-        <term>{CJD}
-<description/></term>
-        <term>{DE}
-<description/></term>
-        <term>{Ppd}
-<description/></term>
-        <term>{Dpg}
+        <term>{Fresh}
 <description/></term>
       </lookup>
     </property>
-    <property name="Coxal Position" type="vocab">
+    <property name="Disturbance Description" type="measure">
+      <description/>
+    </property>
+    <property name="RT Kind" type="vocab">
       <description/>
       <lookup>
-        <term>{Open}
+        <term>{Basic_pit}
 <description/></term>
-        <term>{Close__Pubic_bones_in_contact_}
+        <term>{Trench}
 <description/></term>
-        <term>{Intermediate}
+        <term>{Tunnel}
 <description/></term>
       </lookup>
     </property>
-    <property name="Limb Position Notes" type="measure">
+    <property name="RT Method" type="vocab">
+      <description/>
+      <lookup>
+        <term>{Manual}
+<description/></term>
+        <term>{Mechanized}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="RT Frequency" type="vocab">
       <description/>
     </property>
-    <property name="Left Scapula Position" type="measure">
+    <property name="RT Description" type="measure">
       <description/>
     </property>
-    <property name="Left Clavicle Position" type="measure">
+    <property name="Volume of Soil Removed via RT" type="vocab">
+      <description/>
+      <lookup>
+        <term>{_10_}
+<description/></term>
+        <term>{10_20_}
+<description/></term>
+        <term>{20_30_}
+<description/></term>
+        <term>{30_40_}
+<description/></term>
+        <term>{40_40_}
+<description/></term>
+        <term>{50_40_}
+<description/></term>
+        <term>{60_40_}
+<description/></term>
+        <term>{70_40_}
+<description/></term>
+        <term>{80_40_}
+<description/></term>
+        <term>{90_100_}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Affect" type="vocab">
+      <description>1=0-20% of the entire feature is missing or disrupted, 5= 80-100% of the feature's surface is missing or disrupted</description>
+      <lookup>
+        <term>{1}
+<description/></term>
+        <term>{2}
+<description/></term>
+        <term>{3}
+<description/></term>
+        <term>{4}
+<description/></term>
+        <term>{5}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Impact" type="vocab">
+      <description>1= context is nearly intact; 5 = original context of the feature is nearly all destroyed</description>
+      <lookup>
+        <term>{1}
+<description/></term>
+        <term>{2}
+<description/></term>
+        <term>{3}
+<description/></term>
+        <term>{4}
+<description/></term>
+        <term>{5}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Comments and Recommendations" type="measure">
       <description/>
     </property>
-    <property name="Right Scapula Position" type="measure">
+    <property name="CRM Photo" type="file" file="true" thumbnail="true">
       <description/>
     </property>
-    <property name="Right Clavicle Position" type="measure">
+    <property name="Latitude" type="measure">
       <description/>
     </property>
-    <property name="Decomposition Commentary" type="measure">
+    <property name="Longitude" type="measure">
       <description/>
     </property>
-  </ArchaeologicalElement>
-  <ArchaeologicalElement name="Impact">
-    <description/>
-    <property name="Placement" isIdentifier="true" type="measure">
-      <description/>
-      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
-      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
-    </property>
-    <property name="Impact Description" type="measure">
+    <property name="Northing" type="measure">
       <description/>
     </property>
-  </ArchaeologicalElement>
-  <ArchaeologicalElement name="Bone Migration">
-    <description/>
-    <property name="Mandible Migration" isIdentifier="true" type="measure">
+    <property name="Easting" type="measure">
       <description/>
-      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
-      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
-    </property>
-    <property name="Manubriumible Migration" isIdentifier="true" type="measure">
-      <description/>
-      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
-      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
-    </property>
-    <property name="Sternumible Migration" isIdentifier="true" type="measure">
-      <description/>
-      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
-      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
-    </property>
-    <property name="Left Patellaible Migration" isIdentifier="true" type="measure">
-      <description/>
-      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
-      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
-    </property>
-    <property name="Right Patellaible Migration" isIdentifier="true" type="measure">
-      <description/>
-      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
-      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
     </property>
   </ArchaeologicalElement>
 </dataSchema>

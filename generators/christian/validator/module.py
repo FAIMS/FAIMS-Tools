@@ -43,54 +43,87 @@ def getLower(t):
     return nodes
 
 def getNonLower(t):
-    for i in t:
-        print type(i)
+    #for i in t:
+        #print type(i)
     nodes = [i for i in t if re.match('[^a-z]', i.tag)] # Might be failing due to comments
     return nodes
 
-def wMsg(notice, nodes, expected=None):
-    notice = "WARNING: " + notice
+def wMsg(notice, nodes, expected=[]):
+    notice = 'WARNING: ' + notice
     printNotice(notice, nodes, expected)
 
-def eMsg(notice, nodes, expected=None):
-    notice = "ERROR:   " + notice
+def eMsg(notice, nodes, expected=[]):
+    notice = 'ERROR:   ' + notice
     printNotice(notice, nodes, expected)
 
-def printNotice(notice, nodes, expected=None):
-    notice = notice + "."
+def printNotice(notice, nodes, expected=[]):
+    notice = notice + '.  '
 
-    if   expected == None:
-        pass
+    if   len(expected) == 0:
+        expected = ''
     elif len(expected) == 1:
-        expected = 'Expected ' + expected[0] + '.'
+        expected = 'Allowed item is %s.  ' % expected[0]
     else:
-        expected = 'Expected one of:\n  - ' + '\n  - '.join(expected)
+        expected = 'Allowed items are:\n  - ' + '\n  - '.join(expected) + '\n'
 
     if len(nodes) == 0:
-        print notice + "."
+        location = ''
     if len(nodes) == 1:
-        print notice + ". Occurs at line " + str(node.sourceline) + "."
+        location = 'Occurs at line ' + str(nodes[0].sourceline) + '.  '
     if len(nodes) >= 2:
-        print notice + ". Occurs at:"
+        location = 'Occurs at:'
         for node in nodes:
-            print "    - Line " + str(node.sourceline)
-    print
+            location += '\n  - Line ' + str(node.sourceline)
 
-    if len(nodes) == 0:
-        print notice + "."
-    if len(nodes) == 1:
-        print notice + ". Occurs at line " + str(node.sourceline) + "."
-    if len(nodes) >= 2:
-        print notice + ". Occurs at:"
-        for node in nodes:
-            print "    - Line " + str(node.sourceline)
+    print notice + expected + location
     print
 
 
 def bye(countWar, countErr, early=True):
-    print "Validation completed with %i error(s) and %i warning(s)." \
+    print 'Validation completed with %i error(s) and %i warning(s).' \
             % (countErr, countWar)
     exit()
+
+def parseCommaSeparatedList(list, expansionIndex):
+    '''
+    Expands ['Element', 'b, c'] into [['Element', 'b'], ['Element', 'c']] when
+    expansionIndex is, for instance, 1.
+    '''
+    separatedList  = [x.strip() for x in list[expansionIndex].split(',')]
+
+    result = []
+    for str in separatedList:
+        copy = list[:]
+        copy[expansionIndex] = str
+        result.append(copy)
+
+    return result
+
+def flatten(list, times=1):
+    for i in range(times):
+        list = [val for sublist in list for val in sublist]
+    return list
+
+def expandCommaSeparatedList(list, depth=0, maxDepth=None):
+    '''
+    Expands list ['x, y', 'b, c'] into
+    [['x', 'b'], ['x', 'c'], ['y', 'b'], ['y', 'c']]
+    '''
+    if list == []:
+        return [[]]
+
+    if maxDepth == None:
+        length = len(list)
+        result = expandCommaSeparatedList(list, depth, length)
+        result = flatten(result, length-1)
+        return result
+
+    list = parseCommaSeparatedList(list, depth)
+    if depth + 1 < maxDepth:
+        for i in range(len(list)):
+            list[i] = expandCommaSeparatedList(list[i], depth+1, maxDepth)
+
+    return list
 
 def parseTable(table):
     table = table.strip()
@@ -98,6 +131,11 @@ def parseTable(table):
     table = table[1:]
     table = [re.split(' *\| *', i) for i in table]
     table = [i for i in table if i != ['']]
+    for rowIdx in range(len(table)):
+        for colIdx in range(len(table[rowIdx])):
+            cell = table[rowIdx][colIdx]
+            if re.match('.*,', cell):
+                table[rowIdx][colIdx] = [x.strip() for x in cell.split(',')]
     return table
 
 def flagAll(nodes, attrib, value):
@@ -112,22 +150,40 @@ def getExpectedTypes(table, node, reserved=False):
     # Get expected type(s)
     expected = []
     for row in table:
-        parentType = t[0]
-        pattern    = t[1]
-        matchType  = t[2]
+        parentType = row[0]
+        pattern    = row[1]
+        matchType  = row[2]
 
         if parent.attrib[attribType] != parentType:
             continue
 
-        if reserved:
+        if   reserved == True:
             regex = '[^a-z]'
-        else:
+        elif reserved == False:
             regex = '^[a-z]+$'
+        elif reserved == None:
+            regex = '.*'
+        else:
+            continue
 
         if re.match(regex, matchType):
             expected.append(matchType)
 
     return expected
+
+def getAttributes(table, xmlType):
+    for row in table:
+        rowXmlType = row[0]
+        rowAttribs = row[1]
+
+        if type(rowAttribs) is not list:
+            if not rowAttribs:
+                rowAttribs = []
+            else:
+                rowAttribs = [rowAttribs]
+
+        if rowXmlType == xmlType:
+            return rowAttribs
 
 ################################################################################
 #                                     MAIN                                     #
@@ -136,7 +192,7 @@ def getExpectedTypes(table, node, reserved=False):
 filenameModule = sys.argv[1]
 
 ################################## PARSE XML ###################################
-print "Parsing XML..."
+print 'Parsing XML...'
 parser = etree.XMLParser(strip_cdata=False)
 try:
     tree = etree.parse(filenameModule, parser)
@@ -144,98 +200,160 @@ except etree.XMLSyntaxError as e:
     print e
     exit()
 tree = tree.getroot()
-print "Done!"
+print 'Done!'
 print
 
 ############################### VALIDATE SCHEMA ################################
-print "Validating schema..."
+print 'Validating schema...'
 countWar = 0
 countErr = 0
 
 TYPES = '''
 PARENT XML TYPE | PATTERN     | MATCH XML TYPE
-Document        | /           | Module
+document        | /           | module
 
-Module          | /[^a-z]/    | Tabgroup
-Module          | logic       | Logic
-Module          | rels        | Rels
+module          | /[^a-z]/    | tabgroup
+module          | logic       | <logic>
+module          | rels        | <rels>
 
-Tabgroup        | /[^a-z]/    | Tab
-Tabgroup        | desc        | Desc
-Tabgroup        | search      | Search
+tabgroup        | /[^a-z]/    | tab
+tabgroup        | desc        | <desc>
+tabgroup        | search      | <search>
 
-Tab             | /[^a-z]/    | Element
-Tab             | autonum     | Autonum
-Tab             | cols        | Cols
-Tab             | gps         | GPS
-Tab             | author      | Author
-Tab             | timestamp   | Timestamp
+tab             | /[^a-z]/    | GUI element
+tab             | author      | <author>
+tab             | autonum     | <autonum>
+tab             | cols        | <cols>
+tab             | gps         | <gps>
+tab             | timestamp   | <timestamp>
 
-Element         | desc        | Desc
-Element         | opts        | Opts
-Element         | str         | Str
+GUI element     | desc        | <desc>
+GUI element     | opts        | <opts>
+GUI element     | str         | <str>
 
-Cols            | /[^a-z]/    | Element
-Cols            | col         | Col
+<cols>          | /[^a-z]/    | GUI Element
+<cols>          | col         | <col>
 
-Opts            | opt         | Opt
+<opts>          | opt         | <opt>
 
-Str             | app         | App
-Str             | fmt         | Fmt
-Str             | pos         | Pos
+<str>           | app         | <app>
+<str>           | fmt         | <fmt>
+<str>           | pos         | <pos>
 
-Col             | /[^a-z]/    | Element
+<col>           | /[^a-z]/    | <element>
 
-Opt             | opt         | Opt
+<opt>           | opt         | <opt>
 '''
 
 TYPES = parseTable(TYPES)
-attribType = '__RESERVED_XML_TYPE__'
+typeAttribName = '__RESERVED_XML_TYPE__'
+
+ok = True
 for t in TYPES:
     parentType = t[0]
-    pattern      = t[1]
+    pattern    = t[1]
     matchType  = t[2]
 
     if   pattern == '/':
         matches = tree.xpath('/*')
-        flagAll(matches, attribType, matchType)
+        flagAll(matches, typeAttribName, matchType)
     elif pattern == '/[^a-z]/':
         matches = tree.xpath(
                 '//*[@%s="%s"]/*' %
-                (attribType, parentType)
+                (typeAttribName, parentType)
         )
         matches = getNonLower(matches)
-        flagAll(matches, attribType, matchType)
+        flagAll(matches, typeAttribName, matchType)
     else:
         matches = tree.xpath(
                 '//*[@%s="%s"]/%s' %
-                (attribType, parentType, pattern)
+                (typeAttribName, parentType, pattern)
         )
-        flagAll(matches, attribType, matchType)
+        flagAll(matches, typeAttribName, matchType)
 
-print(etree.tostring(tree, pretty_print=True))
-
-disallowed = tree.xpath('//*[@%s]/*[not(@%s)]' % (attribType, attribType))
-disallowedLowers = getLower(disallowed)
-disallowedUppers = getNonLower(disallowed)
-for d in disallowedLowers:
+disallowed = tree.xpath(
+        '//*[@%s]/*[not(@%s)]' %
+        (typeAttribName, typeAttribName)
+)
+for d in disallowed:
     eMsg(
-            'Not a valid reserved tag',
-            [d]
-    )
-    countErr += 1; ok &= False
-for d in disallowedUppers:
-
-    eMsg(
-            "Not a valid %s tag" % expectedType,
-            [tree]
+            'Element `%s` disallowed here' % d.tag,
+            [d],
+            getExpectedTypes(TYPES, d, None)
     )
     countErr += 1; ok &= False
 
 
 
-print(etree.tostring(tree, pretty_print=True))
+
+ATTRIBS = '''
+XML TYPE      | ATTRIBUTES ALLOWED
+module        |
+tabgroup      | f
+tab           | f
+GUI element   | b, c, ec, f, l, lc, t
+<cols>        | f
+<opts>        |
+<str>         |
+<col>         | f
+<opt>         | p
+<app>         |
+<author>      |
+<autonum>     |
+<desc>        |
+<fmt>         |
+<gps>         |
+<logic>       |
+<pos>         |
+<rels>        |
+<search>      |
+<timestamp>   |
+'''
+ATTRIBS = parseTable(ATTRIBS)
+
+matches = tree.xpath(
+        '//*[@%s]' %
+        (typeAttribName)
+)
+
+disallowed = []
+for m in matches:
+    mAttribs     = dict(m.attrib)
+    mXmlType     = mAttribs[typeAttribName]
+    mAttribs.pop(typeAttribName, None)
+    mAttribNames = mAttribs
+
+    for mAttribName in mAttribNames:
+        if not mAttribName in getAttributes(ATTRIBS, mXmlType):
+            disallowed.append((mAttribName, m))
+
+for d in disallowed:
+    disallowedAttrib = d[0]
+    disallowedNode   = d[1]
+    eMsg(
+            'Attribute `%s` disallowed here' % disallowedAttrib,
+            [disallowedNode],
+            getAttributes(ATTRIBS, disallowedNode.attrib[typeAttribName])
+    )
+    countErr += 1; ok &= False
+
+if not ok:
+    bye(countWar, countErr)
 exit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ok = True
 allowedLowers = ['logic', 'rels']

@@ -1,8 +1,16 @@
 <?xml version="1.0" ?>
-<module suppressWarnings="false">
-  <User f="nodata">
+<module suppressWarnings="false" adsdf="asdf">
+  <noot/>
+  <User huh="wut" f="nodata">
+    <noot/>
     <User>
-      <Select_User t="list" f="user" l="Control"/>
+      <noot>
+        <noot/>
+      </noot>
+      <Select_User test="testing" t="list" f="user" l="Control">
+        <noot asdf="asdf">
+        </noot>
+      </Select_User>
     </User>
   </User>
   <Control f="nodata">
