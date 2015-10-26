@@ -700,12 +700,12 @@
 
 <Bone_Migration>
   <Bone_Migration>
-    <Mandible_Migration f="id"/>
-    <Manubriumible_Migration f="id"/>
-    <Sternumible_Migration f="id"/>
+    <Mandible_Migration f="id notnull"/>
+    <Manubriumible_Migration f="id notnull"/>
+    <Sternumible_Migration f="id notnull"/>
     <cols>
-      <Left_Patellaible_Migration f="id"/>
-      <Right_Patellaible_Migration f="id"/>
+      <Left_Patellaible_Migration f="id notnull"/>
+      <Right_Patellaible_Migration f="id notnull"/>
     </cols>
   </Bone_Migration>
 </Bone_Migration>
