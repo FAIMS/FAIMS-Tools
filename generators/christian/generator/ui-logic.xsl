@@ -112,9 +112,6 @@ bindOnEvent(String ref, String event) {
     stmtsExpr += "; ";
   }
 
-  Log.e(".", ref);
-  Log.e(".", event);
-  Log.e(".", stmtsExpr);
   onEvent(ref, event, stmtsExpr);
 }
 
@@ -354,6 +351,16 @@ setUser(user);
 /******************************************************************************/
 /*                              MENU POPULATION                               */
 /******************************************************************************/
+/** Fetches the contents of a specifed vocabulary and stores it in the given list. **/
+fetchVocabulary(String vocabName, List storageList) {
+  fetchAll("select vocabid, vocabname from vocabulary left join attributekey using (attributeid) where attributename = '" + vocabName + "';", new FetchCallback() {
+    onFetch(result) {
+      storageList.addAll(result);
+      // Log.d("fetchVocabulary()", "Fetched vocabulary \"" + vocabname + "\" contents: " + result.toString());
+    }
+  });
+}
+
 /** Wrapper for to make a vocab without an exlusion list **/
 makeVocab(String type, String path, String attrib) {
   makeVocab(type, path, attrib, null);
@@ -1099,7 +1106,6 @@ makeDuplicateRelationships(fetchedAttributes, String newuuid){
   for (savedAttribute : fetchedAttributes){
     //  saveEntitiesToHierRel(relnname, parent, child, parentverb, childverb, relSaveCallback);
     //relntypename, parentparticipatesverb, childparticipatesverb, childuuid
-    Log.e("Module", "in");
     String relntypename           = savedAttribute.get(0);
     String parentparticipatesverb = savedAttribute.get(1);
     String childparticipatesverb  = savedAttribute.get(2);
