@@ -352,11 +352,11 @@ setUser(user);
 /*                              MENU POPULATION                               */
 /******************************************************************************/
 /** Fetches the contents of a specifed vocabulary and stores it in the given list. **/
-fetchVocabulary(String vocabName, List storageList) {
+fetchVocab(String vocabName, List storageList) {
   fetchAll("select vocabid, vocabname from vocabulary left join attributekey using (attributeid) where attributename = '" + vocabName + "';", new FetchCallback() {
     onFetch(result) {
       storageList.addAll(result);
-      // Log.d("fetchVocabulary()", "Fetched vocabulary \"" + vocabname + "\" contents: " + result.toString());
+      // Log.d("fetchVocab()", "Fetched vocabulary \"" + vocabname + "\" contents: " + result.toString());
     }
   });
 }
