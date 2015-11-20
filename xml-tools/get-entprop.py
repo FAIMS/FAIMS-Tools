@@ -86,5 +86,6 @@ entProps = getEntProps(nodes)
 
 # Output
 for ep in entProps:
-    out = '%s, %s' % ep
-    print out
+    print ep
+    #out = '%s, %s' % ep
+    #print out
