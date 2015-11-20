@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import json
+import re
 import sys
 import urllib2
 
@@ -24,6 +25,7 @@ def getRowValue(row, *columnNames):
 
 def getRowValue_(row, columnName):
     columnName = columnName.lower()
+    columnName = re.sub('[^a-z]', '', columnName)
     columnName = 'gsx$%s' % columnName
     if columnName in row:
         return row[columnName]['$t'].encode('utf-8').strip()
