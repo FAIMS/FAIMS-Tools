@@ -8,6 +8,8 @@ from   copy import deepcopy
 def parseXpathExpressions(filename):
     with open(filename) as f:
         flagPaths = f.readlines()
+    for i in range(len(flagPaths)):
+        flagPaths[i] = flagPaths[i].strip()
     return flagPaths
 
 def selectAllNodes(tree, expressions):
@@ -15,6 +17,10 @@ def selectAllNodes(tree, expressions):
     for e in expressions:
         someNodes = tree.xpath(e)
         allNodes.extend(someNodes)
+        if len(someNodes) != 1:
+            warn = 'WARNING: "%s" matches %s nodes, which isn\'t exactly 1' % \
+                    (e, len(someNodes))
+            sys.stderr.write(warn)
     return allNodes
 
 def parseAttrib(str):
