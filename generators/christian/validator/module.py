@@ -136,6 +136,28 @@ def parseTable(table):
             cell = table[rowIdx][colIdx]
             if re.match('.*,', cell):
                 table[rowIdx][colIdx] = [x.strip() for x in cell.split(',')]
+
+    # Special treatment of tables with cardinalities
+    hasCardinalities = False
+    for i in range(len(table)):
+        for j in range(1, len(table[i])):
+            if '<=' in table[i][j]:
+                hasCardinalities |= True
+    if hasCardinalities:
+        for i in range(len(table)):
+            for j in range(1, len(table[i])):
+                m = re.search('(([0-9]+)\s+<=\s+)?(\<?[a-zA-Z][a-zA-Z ]+[a-zA-Z]\>?)(\s+<=\s+([0-9]+))?', table[i][j])
+
+                if m:
+                    min  = m.group(2)
+                    type = m.group(3)
+                    max  = m.group(5)
+
+                    lim = [min,  type, max]
+                else:
+                    lim = [None, None, None]
+
+                table[i][j] = lim
     return table
 
 def flagAll(nodes, attrib, value):
@@ -442,6 +464,67 @@ for d in disallowed:
 
     eMsg(
             msg % (disallowedAttribVal, disallowedAttrib),
+            [disallowedNode],
+            allowed
+    )
+    countErr += 1; ok &= False
+
+CARDINALITIES = '''
+PARENT XML TYPE | DIRECT CHILD COUNT    | DESCENDANT COUNT
+document        | 1 <= module <= 1      |
+
+module          | 1 <= tabgroup         |
+module          | 0 <= <logic> <= 1     |
+module          | 0 <= <rels>  <= 1     |
+
+tabgroup        | 1 <= tab              |
+tabgroup        | 0 <= <desc>   <= 1    |
+tabgroup        | 0 <= <search> <= 1    |
+
+tab             |                       | 1 <= GUI Element
+tab             | 0 <= <autonum>   <= 1 |
+tab             | 0 <= <cols>           |
+tab             | 0 <= <gps>       <= 1 |
+tab             | 0 <= <author>    <= 1 |
+tab             | 0 <= <timestamp> <= 1 |
+
+GUI Element     | 1 <= <desc> <= 1      |
+GUI Element     | 1 <= <opts> <= 1      |
+GUI Element     | 1 <= <str>  <= 1      |
+
+<cols>          |                       | 1 <= GUI Element
+<cols>          | 0 <= <col>            |
+
+<opts>          | 1 <= <opt>            |
+
+<str>           | 0 <= app <= 1         |
+<str>           | 0 <= fmt <= 1         |
+<str>           | 0 <= pos <= 1         |
+
+<col>           | 1 <= GUI Element      |
+
+<opt>           | 0 <= <opt>            |
+'''
+CARDINALITIES = parseTable(CARDINALITIES)
+for c in CARDINALITIES:
+    print c
+
+# Only consider nodes flagged with `typeAttribName`
+for c in CARDINALITIES:
+    pass
+
+matches = tree.xpath(
+        '//*[@%s]' %
+        (typeAttribName)
+)
+# Determine if attributes contain allowed values according to ATTRIB_VALS
+disallowed = []
+for m in matches:
+    disallowed.extend(disallowedCardinalities(m, CARDINALITIES))
+
+for d in disallowed:
+    eMsg(
+            'Element `%s` is duplicated or results in duplicate GUI elements when the UI schema is generated' % d.tag
             [disallowedNode],
             allowed
     )
