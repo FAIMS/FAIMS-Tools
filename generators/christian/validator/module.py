@@ -84,46 +84,46 @@ def bye(countWar, countErr, early=True):
             % (countErr, countWar)
     exit()
 
-def parseCommaSeparatedList(list, expansionIndex):
-    '''
-    Expands ['Element', 'b, c'] into [['Element', 'b'], ['Element', 'c']] when
-    expansionIndex is, for instance, 1.
-    '''
-    separatedList  = [x.strip() for x in list[expansionIndex].split(',')]
+#def parseCommaSeparatedList(list, expansionIndex):
+    #'''
+    #Expands ['Element', 'b, c'] into [['Element', 'b'], ['Element', 'c']] when
+    #expansionIndex is, for instance, 1.
+    #'''
+    #separatedList  = [x.strip() for x in list[expansionIndex].split(',')]
 
-    result = []
-    for str in separatedList:
-        copy = list[:]
-        copy[expansionIndex] = str
-        result.append(copy)
+    #result = []
+    #for str in separatedList:
+        #copy = list[:]
+        #copy[expansionIndex] = str
+        #result.append(copy)
 
-    return result
+    #return result
 
-def flatten(list, times=1):
-    for i in range(times):
-        list = [val for sublist in list for val in sublist]
-    return list
+#def flatten(list, times=1):
+    #for i in range(times):
+        #list = [val for sublist in list for val in sublist]
+    #return list
 
-def expandCommaSeparatedList(list, depth=0, maxDepth=None):
-    '''
-    Expands list ['x, y', 'b, c'] into
-    [['x', 'b'], ['x', 'c'], ['y', 'b'], ['y', 'c']]
-    '''
-    if list == []:
-        return [[]]
+#def expandCommaSeparatedList(list, depth=0, maxDepth=None):
+    #'''
+    #Expands list ['x, y', 'b, c'] into
+    #[['x', 'b'], ['x', 'c'], ['y', 'b'], ['y', 'c']]
+    #'''
+    #if list == []:
+        #return [[]]
 
-    if maxDepth == None:
-        length = len(list)
-        result = expandCommaSeparatedList(list, depth, length)
-        result = flatten(result, length-1)
-        return result
+    #if maxDepth == None:
+        #length = len(list)
+        #result = expandCommaSeparatedList(list, depth, length)
+        #result = flatten(result, length-1)
+        #return result
 
-    list = parseCommaSeparatedList(list, depth)
-    if depth + 1 < maxDepth:
-        for i in range(len(list)):
-            list[i] = expandCommaSeparatedList(list[i], depth+1, maxDepth)
+    #list = parseCommaSeparatedList(list, depth)
+    #if depth + 1 < maxDepth:
+        #for i in range(len(list)):
+            #list[i] = expandCommaSeparatedList(list[i], depth+1, maxDepth)
 
-    return list
+    #return list
 
 def parseTable(table):
     table = table.strip()
@@ -171,10 +171,10 @@ def getExpectedTypes(table, node, reserved=False):
 
     return expected
 
-def getAttributes(table, xmlType):
+def getAttributes(table, xmlType, rowAttribsIndex=1):
     for row in table:
         rowXmlType = row[0]
-        rowAttribs = row[1]
+        rowAttribs = row[rowAttribsIndex]
 
         if type(rowAttribs) is not list:
             if not rowAttribs:
@@ -182,8 +182,67 @@ def getAttributes(table, xmlType):
             else:
                 rowAttribs = [rowAttribs]
 
+        for i in range(len(rowAttribs)):
+            if   rowAttribs[i] == '$link-all':
+                rowAttribs[i] = 'a link to a tab or tab group'
+            elif rowAttribs[i] == '$link-tabgroup':
+                rowAttribs[i] = 'a link to a tab group'
+            elif rowAttribs[i] == '$link-tab':
+                rowAttribs[i] = 'a link to a tab'
+
         if rowXmlType == xmlType:
             return rowAttribs
+
+def isValidLink(root, link, linkType):
+    if not link:
+        return False
+
+    if   linkType == 'tab':
+        result  = True
+        try:
+            result &= bool(root.xpath('/module/' + link))
+        except:
+            result &= False
+        result &= '/'     in link
+        result &= '/' != link[ 0]
+        result &= '/' != link[-1]
+        return result
+    elif linkType == 'tabgroup':
+        result  = True
+        try:
+            result &= bool(root.xpath('/module/' + link))
+        except:
+            result &= False
+        result &= '/' not in link
+        return result
+    elif linkType == 'all':
+        result  = False
+        result |= isValidLink(root, link, 'tab'     )
+        result |= isValidLink(root, link, 'tabgroup')
+        return result
+    else:
+        return False
+
+def disallowedAttribVals(m, ATTRIB_VALS):
+    disallowed = []
+    for attrib, oneOf, manyOf in ATTRIB_VALS:
+        if attrib not in m.attrib: # Set intersection of attrib and m.attrib
+            continue
+
+        if oneOf:
+            if '$link' in oneOf:
+                link = m.attrib[attrib]
+                linkType = oneOf[6:] # 'all', 'tab', or 'tabgroup'
+                if not isValidLink(tree, link, linkType):
+                    disallowed.append((attrib, m.attrib[attrib], m))
+            else:
+                if m.attrib[attrib] not in oneOf:
+                    disallowed.append((attrib, m.attrib[attrib], m))
+        if manyOf:
+            for flag in m.attrib[attrib].split():
+                if flag not in manyOf:
+                    disallowed.append((attrib, flag,             m))
+    return disallowed
 
 ################################################################################
 #                                     MAIN                                     #
@@ -249,6 +308,7 @@ TYPES = parseTable(TYPES)
 typeAttribName = '__RESERVED_XML_TYPE__'
 
 ok = True
+# Flag nodes with their TYPEs
 for t in TYPES:
     parentType = t[0]
     pattern    = t[1]
@@ -270,11 +330,12 @@ for t in TYPES:
                 (typeAttribName, parentType, pattern)
         )
         flagAll(matches, typeAttribName, matchType)
-
+# Nodes which didn't end up getting flagged aren't allowed
 disallowed = tree.xpath(
         '//*[@%s]/*[not(@%s)]' %
         (typeAttribName, typeAttribName)
 )
+# Tell the user about the error(s)
 for d in disallowed:
     eMsg(
             'Element `%s` disallowed here' % d.tag,
@@ -311,11 +372,12 @@ GUI element   | b, c, ec, f, l, lc, t
 '''
 ATTRIBS = parseTable(ATTRIBS)
 
+# Only consider nodes flagged with `typeAttribName`
 matches = tree.xpath(
         '//*[@%s]' %
         (typeAttribName)
 )
-
+# Determine if nodes contain an attibute not allowed according to ATTRIBS
 disallowed = []
 for m in matches:
     mAttribs     = dict(m.attrib)
@@ -326,7 +388,7 @@ for m in matches:
     for mAttribName in mAttribNames:
         if not mAttribName in getAttributes(ATTRIBS, mXmlType):
             disallowed.append((mAttribName, m))
-
+# Tell the user about the error(s)
 for d in disallowed:
     disallowedAttrib = d[0]
     disallowedNode   = d[1]
@@ -334,6 +396,54 @@ for d in disallowed:
             'Attribute `%s` disallowed here' % disallowedAttrib,
             [disallowedNode],
             getAttributes(ATTRIBS, disallowedNode.attrib[typeAttribName])
+    )
+    countErr += 1; ok &= False
+
+ATTRIB_VALS = '''
+ATTRIBUTE    | ALLOWED VALUES (ONE-OF)     | ALLOWED VALUES (MANY-OF)
+b            | date, decimal, string, time |
+c            |                             |
+f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, readonly, user
+l            | $link-all                   |
+ec           | $link-tabgroup              |
+lc           | $link-tabgroup              |
+t            | audio, button, camera, checkbox, dropdown, file, gpsdiag, group, input, list, map, picture, radio, table, video, viewfiles, web, webview |
+p            |                             |
+'''
+ATTRIB_VALS = parseTable(ATTRIB_VALS)
+
+# Only consider nodes flagged with `typeAttribName`
+matches = tree.xpath(
+        '//*[@%s]' %
+        (typeAttribName)
+)
+# Determine if attributes contain allowed values according to ATTRIB_VALS
+disallowed = []
+for m in matches:
+    disallowed.extend(disallowedAttribVals(m, ATTRIB_VALS))
+
+# Tell the user about the error(s)
+for d in disallowed:
+    disallowedAttrib    = d[0]
+    disallowedAttribVal = d[1]
+    disallowedNode      = d[2]
+
+    allowedOneOf  = getAttributes(ATTRIB_VALS, disallowedAttrib, 1)
+    allowedManyOf = getAttributes(ATTRIB_VALS, disallowedAttrib, 2)
+    allowed       = allowedOneOf + allowedManyOf
+
+    if   allowedOneOf:
+        msg = 'Item `%s` in attribute %s is disallowed.  Exactly one item is expected'
+    elif allowedManyOf:
+        msg = 'Item `%s` in attribute %s is disallowed.  One or more items are expected'
+    else:
+        sys.stderr.write('Oops!')
+        exit()
+
+    eMsg(
+            msg % (disallowedAttribVal, disallowedAttrib),
+            [disallowedNode],
+            allowed
     )
     countErr += 1; ok &= False
 
