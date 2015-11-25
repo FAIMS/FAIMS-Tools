@@ -628,6 +628,7 @@ for m in matches:
 
 exit()
 
+# TODO
 for d in disallowed:
     'Element `%s` is duplicated or results in duplicate properties when the data schema is generated' % d.tag
     'Element `%s` is duplicated or results in duplicate GUI elements when the UI schema is generated' % d.tag
@@ -656,32 +657,12 @@ exit()
 
 
 
-ok = True
-allowedLowers = ['logic', 'rels']
-
-tgs = getNonLower(tree)
-if not tgs:
-    eMsg(
-            "Module must contain at least one tabgroup",
-            [tree]
-    )
-    countErr += 1; ok &= False
-
 ds = getDuplicates(tgs)
 for d in ds:
     tag = d[0].tag
     eMsg(
             "Tabgroup element name `%s` cannot be duplicated in module" % tag,
             d
-    )
-    countErr += 1; ok &= False
-
-ns = getLower(tree)
-for n in ns:
-    if n.tag in allowedLowers: continue
-    eMsg(
-            "Element `%s` not allowed here" % n.tag,
-            [n]
     )
     countErr += 1; ok &= False
 
@@ -702,14 +683,6 @@ allowedLowers = ['desc', 'search']
 
 tgs = getNonLower(tree)
 for tg in tgs:
-    ts = getNonLower(tg)
-    if not ts:
-        eMsg(
-                "Tabgroup `%s` must contain at least one tab" % tg.tag,
-                [tg]
-        )
-        countErr += 1; ok &= False
-
     ds = getDuplicates(ts)
     for d in ds:
         tag = d[0].tag
@@ -718,71 +691,5 @@ for tg in tgs:
                 d
         )
         countErr += 1; ok &= False
-
-    ns = getLower(tg)
-    for n in ns:
-        if n.tag in allowedLowers: continue
-        eMsg(
-                "Element `%s` not allowed here" % n.tag,
-                [n]
-        )
-        countErr += 1; ok &= False
-
-    ds = getDuplicates(ns)
-    for d in ds:
-        tag = d[0].tag
-        eMsg(
-                "Reserved element `%s` cannot be duplicated here" % tag,
-                d
-        )
-        countErr += 1; ok &= False
-
-# "BLOCKING POINT" - CANNOT CONTINUE VALIDATION UNLESS ok==TRUE
-if not ok:
-    bye(countWar, countErr)
-ok = True
-allowedLowers = ['author', 'autonum', 'cols', 'gps', 'timestamp']
-
-tgs = getNonLower(tree)
-ts = []
-for tg in tgs:
-    ts += getNonLower(tg)
-for t in ts:
-    print t.tag
-    gs = getNonLower(t)
-    #if not gs:
-        #eMsg(
-                #"Tab `%s` must contain at least one GUI element" % t.tag
-                #[t]
-        #)
-        #countErr += 1; ok &= False
-
-    #ds = getDuplicates(gs)
-    #for d in ds:
-        #tag = d[0].tag
-        #eMsg(
-                #"GUI element name `%s` cannot be duplicated in tab" % tag,
-                #d
-        #)
-        #countErr += 1; ok &= False
-
-    #ns = getLower(t)
-    #for n in ns:
-        #tag = n.tag
-        #if tag in allowedLowers: continue
-        #eMsg(
-                #"Element `%s` not allowed here" % tag,
-                #[n]
-        #)
-        #countErr += 1; ok &= False
-
-    #ds = getDuplicates(ns)
-    #for d in ds:
-        #tag = d[0].tag
-        #eMsg(
-                #"Reserved element `%s` cannot be duplicated here" % tag,
-                #d
-        #)
-        #countErr += 1; ok &= False
 
 bye(countWar, countErr)
