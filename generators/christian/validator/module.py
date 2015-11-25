@@ -146,12 +146,21 @@ def parseTable(table):
     if hasCardinalities:
         for i in range(len(table)):
             for j in range(1, len(table[i])):
-                m = re.search('(([0-9]+)\s+<=\s+)?(\<?[a-zA-Z][a-zA-Z ]+[a-zA-Z]\>?)(\s+<=\s+([0-9]+))?', table[i][j])
+                regMin  = '(([0-9]+)\s+<=\s+)?'
+                regType = '(\<?[a-zA-Z][a-zA-Z ]*[a-zA-Z]\>?)'
+                regMax  = '(\s+<=\s+([0-9]+))?'
+                reg     = regMin + regType + regMax
+                m = re.search(reg, table[i][j])
 
                 if m:
                     min  = m.group(2)
                     type = m.group(3)
                     max  = m.group(5)
+
+                    if min:
+                        min = int(min)
+                    if max:
+                        max = int(max)
 
                     lim = [min,  type, max]
                 else:
@@ -265,6 +274,41 @@ def disallowedAttribVals(m, ATTRIB_VALS):
                 if flag not in manyOf:
                     disallowed.append((attrib, flag,             m))
     return disallowed
+
+def satisfiesCardinalityConstraint(parent, constraint, children='direct'):
+    min, type, max = constraint
+    if type == None:
+        return True
+
+    if children == 'direct':
+        children = ''
+    else:
+        children = './/'
+    matches = parent.xpath(
+            '%s*[@%s="%s"]' %
+            (children, typeAttribName, type)
+    )
+
+    if min != None and len(matches) < min: return False
+    if max != None and len(matches) > max: return False
+    return True
+
+# English is dumb
+def childWithGrammaticalNumber(number):
+    if number == 1:
+        return 'child'
+    return 'children'
+def descendantWithGrammaticalNumber(number):
+    d = 'descendant'; s = 's'
+    if number == 1:
+        return d
+    return  d + s
+def descChildNounPhrase(child, number):
+    if  childDirectness == 'direct':
+        childNum = childWithGrammaticalNumber (number)
+        return 'direct %s' % childNum
+    else:
+        return descendantWithGrammaticalNumber(number)
 
 ################################################################################
 #                                     MAIN                                     #
@@ -481,19 +525,19 @@ tabgroup        | 1 <= tab              |
 tabgroup        | 0 <= <desc>   <= 1    |
 tabgroup        | 0 <= <search> <= 1    |
 
-tab             |                       | 1 <= GUI Element
+tab             |                       | 1 <= GUI element
 tab             | 0 <= <autonum>   <= 1 |
 tab             | 0 <= <cols>           |
 tab             | 0 <= <gps>       <= 1 |
 tab             | 0 <= <author>    <= 1 |
 tab             | 0 <= <timestamp> <= 1 |
 
-GUI Element     | 1 <= <desc> <= 1      |
-GUI Element     | 1 <= <opts> <= 1      |
-GUI Element     | 1 <= <str>  <= 1      |
+GUI element     | 0 <= <desc> <= 1      |
+GUI element     | 0 <= <opts> <= 1      |
+GUI element     | 0 <= <str>  <= 1      |
 
-<cols>          |                       | 1 <= GUI Element
-<cols>          | 0 <= <col>            |
+<cols>          |                       | 1 <= GUI element
+<cols>          | 1 <= <col>            |
 
 <opts>          | 1 <= <opt>            |
 
@@ -501,26 +545,56 @@ GUI Element     | 1 <= <str>  <= 1      |
 <str>           | 0 <= fmt <= 1         |
 <str>           | 0 <= pos <= 1         |
 
-<col>           | 1 <= GUI Element      |
+<col>           | 1 <= GUI element      |
 
 <opt>           | 0 <= <opt>            |
 '''
 CARDINALITIES = parseTable(CARDINALITIES)
-for c in CARDINALITIES:
-    print c
 
 # Only consider nodes flagged with `typeAttribName`
-for c in CARDINALITIES:
-    pass
-
-matches = tree.xpath(
-        '//*[@%s]' %
-        (typeAttribName)
-)
-# Determine if attributes contain allowed values according to ATTRIB_VALS
 disallowed = []
-for m in matches:
-    disallowed.extend(disallowedCardinalities(m, CARDINALITIES))
+for c in CARDINALITIES:
+    parentTypeName        = c[0]
+    directChildContraints = c[1]
+    descendantContraints  = c[2]
+
+    matches = tree.xpath(
+            '//*[@%s="%s"]' %
+            (typeAttribName, parentTypeName)
+    )
+
+    for m in matches:
+        if not satisfiesCardinalityConstraint(m,  directChildContraints, 'direct'):
+            disallowed.append((m, parentTypeName, directChildContraints, 'direct'))
+        if not satisfiesCardinalityConstraint(m,  descendantContraints, 'descendant'):
+            disallowed.append((m, parentTypeName, descendantContraints, 'descendant'))
+
+for d in disallowed:
+    node                = d[0]
+    name                = node.tag
+    typeParent          = d[1]
+    min, typeChild, max = d[2]
+    childDirectness     = d[3]
+
+    if   min == None:
+        nounPhrase = descChildNounPhrase(childDirectness, max)
+        msg = 'Element `%s` of type %s requires at most %s %s of type %s' % \
+        (name, typeParent,      max, nounPhrase, typeChild)
+    elif max == None:
+        nounPhrase = descChildNounPhrase(childDirectness, min)
+        msg = 'Element `%s` of type %s requires at least %s %s of type %s' % \
+        (name, typeParent, min,      nounPhrase, typeChild)
+    else:
+        pluralNumber = 2
+        nounPhrase = descChildNounPhrase(childDirectness, pluralNumber)
+        msg = 'Element `%s` of type %s requires between %s and %s %s (inclusive) of type %s' % \
+        (name, typeParent, min, max, nounPhrase, typeChild)
+    eMsg(
+            msg,
+            [node]
+    )
+    countErr += 1; ok &= False
+exit()
 
 for d in disallowed:
     eMsg(
