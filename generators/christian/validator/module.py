@@ -215,11 +215,11 @@ def getAttributes(table, xmlType, rowAttribsIndex=1):
 
         for i in range(len(rowAttribs)):
             if   rowAttribs[i] == '$link-all':
-                rowAttribs[i] = 'a link to a tab or tab group'
+                rowAttribs[i] = 'a valid link to a tab or tab group'
             elif rowAttribs[i] == '$link-tabgroup':
-                rowAttribs[i] = 'a link to a tab group'
+                rowAttribs[i] = 'a valid link to a tab group'
             elif rowAttribs[i] == '$link-tab':
-                rowAttribs[i] = 'a link to a tab'
+                rowAttribs[i] = 'a valid link to a tab'
 
         if rowXmlType == xmlType:
             return rowAttribs
@@ -310,6 +310,17 @@ def descChildNounPhrase(child, number):
     else:
         return descendantWithGrammaticalNumber(number)
 
+def guessType(node):
+    isUser = 'f' in node.attrib and 'user' in node.attrib['f'].split()
+
+    if isUser:
+        return 'list'
+    if node.xpath('opts') and     node.xpath('.//opt[@p]'):
+        return 'picture'
+    if node.xpath('opts') and not node.xpath('.//opt[@p]'):
+        return 'dropdown'
+    return 'input'
+
 ################################################################################
 #                                     MAIN                                     #
 ################################################################################
@@ -352,20 +363,20 @@ tab             | cols        | <cols>
 tab             | gps         | <gps>
 tab             | timestamp   | <timestamp>
 
+<cols>          | /[^a-z]/    | GUI element
+<cols>          | col         | <col>
+
+<col>           | /[^a-z]/    | GUI element
+
 GUI element     | desc        | <desc>
 GUI element     | opts        | <opts>
 GUI element     | str         | <str>
-
-<cols>          | /[^a-z]/    | GUI Element
-<cols>          | col         | <col>
-
-<opts>          | opt         | <opt>
 
 <str>           | app         | <app>
 <str>           | fmt         | <fmt>
 <str>           | pos         | <pos>
 
-<col>           | /[^a-z]/    | <element>
+<opts>          | opt         | <opt>
 
 <opt>           | opt         | <opt>
 '''
@@ -379,6 +390,7 @@ for t in TYPES:
     parentType = t[0]
     pattern    = t[1]
     matchType  = t[2]
+    print t
 
     if   pattern == '/':
         matches = tree.xpath('/*')
@@ -396,6 +408,11 @@ for t in TYPES:
                 (typeAttribName, parentType, pattern)
         )
         flagAll(matches, typeAttribName, matchType)
+matches = tree.xpath(
+        '//*[@%s="%s"]/*' %
+        (typeAttribName, '<cols>')
+)
+
 # Nodes which didn't end up getting flagged aren't allowed
 disallowed = tree.xpath(
         '//*[@%s]/*[not(@%s)]' %
@@ -594,9 +611,26 @@ for d in disallowed:
             [node]
     )
     countErr += 1; ok &= False
+
+matches = tree.xpath(
+        '//*[@%s="%s" and not(@t)]' %
+        (typeAttribName, 'GUI element')
+)
+for m in matches:
+    m.attrib['t'] = guessType(m)
+    wMsg(
+            'No value for the attribute t of the element `%s` is present.  Assuming a value of `%s`' %
+            (m.tag, m.attrib['t']),
+            [m]
+    )
+    countWar += 1; ok &= True
+
+
 exit()
 
 for d in disallowed:
+    'Element `%s` is duplicated or results in duplicate properties when the data schema is generated' % d.tag
+    'Element `%s` is duplicated or results in duplicate GUI elements when the UI schema is generated' % d.tag
     eMsg(
             'Element `%s` is duplicated or results in duplicate GUI elements when the UI schema is generated' % d.tag
             [disallowedNode],
