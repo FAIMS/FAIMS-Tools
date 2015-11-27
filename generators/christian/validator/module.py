@@ -2,6 +2,36 @@ import re
 from lxml import etree
 import sys
 
+RESERVED_XML_TYPE = '__RESERVED_XML_TYPE__'
+RESERVED_IGNORE   = '__RESERVED_IGNORE__'
+
+def deleteAttribFromTree(t, attrib):
+    if t == None:
+        return
+    if hasattr(t, 'attrib') and attrib in t.attrib:
+        del t.attrib[attrib]
+
+    for e in t:
+        deleteAttribFromTree(e, attrib)
+
+def isEqual(t1, t2):
+    try:
+        if t1.tag         != t2.tag:         return False
+        if t1.text        != t2.text:        return False
+        if t1.attrib['t'] != t2.attrib['t']: return False
+        if t1.attrib['p'] != t2.attrib['p']: return False
+        if len(t1)        != len(t2):        return False
+    except:
+        pass
+
+    t1[:] = sorted(t1, key=lambda n: str(n.tag) + str(n.text) + str(n.attrib))
+    t2[:] = sorted(t2, key=lambda n: str(n.tag) + str(n.text) + str(n.attrib))
+    for i in range(len(t1)):
+        if not isEqual(t1[i], t2[i]):
+            return False
+
+    return True
+
 def getDuplicates(l):
     '''
     Example:
@@ -47,6 +77,15 @@ def getNonLower(t):
         #print type(i)
     nodes = [i for i in t if re.match('[^a-z]', i.tag)] # Might be failing due to comments
     return nodes
+
+def normaliseAttributes(node):
+    for key, val in node.attrib.iteritems():
+        val = val.split()
+        val.sort()
+        node.attrib[key] = ' '.join(val)
+
+    for n in node:
+        normaliseAttributes(n)
 
 def wMsg(notice, nodes, expected=[]):
     notice = 'WARNING: ' + notice
@@ -286,7 +325,7 @@ def satisfiesCardinalityConstraint(parent, constraint, children='direct'):
         children = './/'
     matches = parent.xpath(
             '%s*[@%s="%s"]' %
-            (children, typeAttribName, type)
+            (children, RESERVED_XML_TYPE, type)
     )
 
     if min != None and len(matches) < min: return False
@@ -321,6 +360,53 @@ def guessType(node):
         return 'dropdown'
     return 'input'
 
+def checkNameCardinalityConstraints(nodeTypeParent, nodeTypeChild, schemaType, checkContents=False):
+    assert schemaType in ['UI', 'data']
+
+    countErr = 0; ok = True
+
+    elements = tree.xpath(
+            '//*[@%s="%s"]' %
+            (RESERVED_XML_TYPE, nodeTypeChild)
+    )
+    elementsInSchema = []
+
+    for n in elements:
+        if schemaType == 'UI'   and 'f' in n.attrib and 'noui'   in n.attrib['f'].split():
+            continue
+        if schemaType == 'data' and 'f' in n.attrib and 'nodata' in n.attrib['f'].split():
+            continue
+        elementsInSchema.append(n)
+
+    for n in elementsInSchema:
+        duplicatesAndSelf = n.xpath(
+                './ancestor::*[@%s="%s"]//%s[@%s="%s" and not(@%s="true")]' %
+                (RESERVED_XML_TYPE, nodeTypeParent, n.tag, RESERVED_XML_TYPE, nodeTypeChild, RESERVED_IGNORE)
+        )
+        if checkContents:
+            # Only retain nodes which aren't equal to n
+            duplicatesAndSelf_ = [n] # (btw, also retain n itself)
+            for d in duplicatesAndSelf:
+                if not isEqual(n, d):
+                    duplicatesAndSelf_.append(d)
+            duplicatesAndSelf = duplicatesAndSelf_
+
+        for n in duplicatesAndSelf:
+            n.attrib[RESERVED_IGNORE] = "true"
+        if len(duplicatesAndSelf) <= 1:
+            continue
+        capitalisedType = nodeTypeChild[0].upper() + nodeTypeChild[1:]
+        pluralisedType  = nodeTypeChild + 's'
+        msg = '%s `%s` is illegally duplicated or results in illegal duplicate %s in its parent %s when the %s schema is generated' % \
+        (capitalisedType, n.tag, pluralisedType, nodeTypeParent, schemaType)
+        eMsg(
+                msg,
+                duplicatesAndSelf
+        )
+        countErr += 1; ok &= False
+    deleteAttribFromTree(elementsInSchema, RESERVED_IGNORE)
+    return (countErr, ok)
+
 ################################################################################
 #                                     MAIN                                     #
 ################################################################################
@@ -336,6 +422,9 @@ except etree.XMLSyntaxError as e:
     print e
     exit()
 tree = tree.getroot()
+print etree.tostring(tree)
+normaliseAttributes(tree)
+print etree.tostring(tree)
 print 'Done!'
 print
 
@@ -348,13 +437,13 @@ TYPES = '''
 PARENT XML TYPE | PATTERN     | MATCH XML TYPE
 document        | /           | module
 
-module          | /[^a-z]/    | tabgroup
+module          | /[^a-z]/    | tab group
 module          | logic       | <logic>
 module          | rels        | <rels>
 
-tabgroup        | /[^a-z]/    | tab
-tabgroup        | desc        | <desc>
-tabgroup        | search      | <search>
+tab group       | /[^a-z]/    | tab
+tab group       | desc        | <desc>
+tab group       | search      | <search>
 
 tab             | /[^a-z]/    | GUI element
 tab             | author      | <author>
@@ -382,7 +471,7 @@ GUI element     | str         | <str>
 '''
 
 TYPES = parseTable(TYPES)
-typeAttribName = '__RESERVED_XML_TYPE__'
+RESERVED_XML_TYPE = '__RESERVED_XML_TYPE__'
 
 ok = True
 # Flag nodes with their TYPEs
@@ -394,29 +483,29 @@ for t in TYPES:
 
     if   pattern == '/':
         matches = tree.xpath('/*')
-        flagAll(matches, typeAttribName, matchType)
+        flagAll(matches, RESERVED_XML_TYPE, matchType)
     elif pattern == '/[^a-z]/':
         matches = tree.xpath(
                 '//*[@%s="%s"]/*' %
-                (typeAttribName, parentType)
+                (RESERVED_XML_TYPE, parentType)
         )
         matches = getNonLower(matches)
-        flagAll(matches, typeAttribName, matchType)
+        flagAll(matches, RESERVED_XML_TYPE, matchType)
     else:
         matches = tree.xpath(
                 '//*[@%s="%s"]/%s' %
-                (typeAttribName, parentType, pattern)
+                (RESERVED_XML_TYPE, parentType, pattern)
         )
-        flagAll(matches, typeAttribName, matchType)
+        flagAll(matches, RESERVED_XML_TYPE, matchType)
 matches = tree.xpath(
         '//*[@%s="%s"]/*' %
-        (typeAttribName, '<cols>')
+        (RESERVED_XML_TYPE, '<cols>')
 )
 
 # Nodes which didn't end up getting flagged aren't allowed
 disallowed = tree.xpath(
         '//*[@%s]/*[not(@%s)]' %
-        (typeAttribName, typeAttribName)
+        (RESERVED_XML_TYPE, RESERVED_XML_TYPE)
 )
 # Tell the user about the error(s)
 for d in disallowed:
@@ -433,7 +522,7 @@ for d in disallowed:
 ATTRIBS = '''
 XML TYPE      | ATTRIBUTES ALLOWED
 module        |
-tabgroup      | f
+tab group     | f
 tab           | f
 GUI element   | b, c, ec, f, l, lc, t
 <cols>        | f
@@ -455,17 +544,17 @@ GUI element   | b, c, ec, f, l, lc, t
 '''
 ATTRIBS = parseTable(ATTRIBS)
 
-# Only consider nodes flagged with `typeAttribName`
+# Only consider nodes flagged with `RESERVED_XML_TYPE`
 matches = tree.xpath(
         '//*[@%s]' %
-        (typeAttribName)
+        (RESERVED_XML_TYPE)
 )
 # Determine if nodes contain an attibute not allowed according to ATTRIBS
 disallowed = []
 for m in matches:
     mAttribs     = dict(m.attrib)
-    mXmlType     = mAttribs[typeAttribName]
-    mAttribs.pop(typeAttribName, None)
+    mXmlType     = mAttribs[RESERVED_XML_TYPE]
+    mAttribs.pop(RESERVED_XML_TYPE, None)
     mAttribNames = mAttribs
 
     for mAttribName in mAttribNames:
@@ -478,7 +567,7 @@ for d in disallowed:
     eMsg(
             'Attribute `%s` disallowed here' % disallowedAttrib,
             [disallowedNode],
-            getAttributes(ATTRIBS, disallowedNode.attrib[typeAttribName])
+            getAttributes(ATTRIBS, disallowedNode.attrib[RESERVED_XML_TYPE])
     )
     countErr += 1; ok &= False
 
@@ -495,10 +584,10 @@ p            |                             |
 '''
 ATTRIB_VALS = parseTable(ATTRIB_VALS)
 
-# Only consider nodes flagged with `typeAttribName`
+# Only consider nodes flagged with `RESERVED_XML_TYPE`
 matches = tree.xpath(
         '//*[@%s]' %
-        (typeAttribName)
+        (RESERVED_XML_TYPE)
 )
 # Determine if attributes contain allowed values according to ATTRIB_VALS
 disallowed = []
@@ -534,13 +623,13 @@ CARDINALITIES = '''
 PARENT XML TYPE | DIRECT CHILD COUNT    | DESCENDANT COUNT
 document        | 1 <= module <= 1      |
 
-module          | 1 <= tabgroup         |
+module          | 1 <= tab group        |
 module          | 0 <= <logic> <= 1     |
 module          | 0 <= <rels>  <= 1     |
 
-tabgroup        | 1 <= tab              |
-tabgroup        | 0 <= <desc>   <= 1    |
-tabgroup        | 0 <= <search> <= 1    |
+tab group       | 1 <= tab              |
+tab group       | 0 <= <desc>   <= 1    |
+tab group       | 0 <= <search> <= 1    |
 
 tab             |                       | 1 <= GUI element
 tab             | 0 <= <autonum>   <= 1 |
@@ -568,7 +657,7 @@ GUI element     | 0 <= <str>  <= 1      |
 '''
 CARDINALITIES = parseTable(CARDINALITIES)
 
-# Only consider nodes flagged with `typeAttribName`
+# Only consider nodes flagged with `RESERVED_XML_TYPE`
 disallowed = []
 for c in CARDINALITIES:
     parentTypeName        = c[0]
@@ -577,7 +666,7 @@ for c in CARDINALITIES:
 
     matches = tree.xpath(
             '//*[@%s="%s"]' %
-            (typeAttribName, parentTypeName)
+            (RESERVED_XML_TYPE, parentTypeName)
     )
 
     for m in matches:
@@ -614,7 +703,7 @@ for d in disallowed:
 
 matches = tree.xpath(
         '//*[@%s="%s" and not(@t)]' %
-        (typeAttribName, 'GUI element')
+        (RESERVED_XML_TYPE, 'GUI element')
 )
 for m in matches:
     m.attrib['t'] = guessType(m)
@@ -625,22 +714,22 @@ for m in matches:
     )
     countWar += 1; ok &= True
 
+# TODO: Expand nodes before performing cardinality constraint checks
+countErr_, ok_ = checkNameCardinalityConstraints('module',    'tab group',   'UI')
+countErr += countErr_; ok &= ok_
+countErr_, ok_ = checkNameCardinalityConstraints('tab group', 'tab',         'UI')
+countErr += countErr_; ok &= ok_
+countErr_, ok_ = checkNameCardinalityConstraints('tab',       'GUI element', 'UI')
+countErr += countErr_; ok &= ok_
 
-exit()
+countErr_, ok_ = checkNameCardinalityConstraints('module',    'tab group',   'data')
+countErr += countErr_; ok &= ok_
+countErr_, ok_ = checkNameCardinalityConstraints('tab group', 'GUI element', 'data')
+countErr += countErr_; ok &= ok_
+countErr_, ok_ = checkNameCardinalityConstraints('module',    'GUI element', 'data', True)
+countErr += countErr_; ok &= ok_
 
-# TODO
-for d in disallowed:
-    'Element `%s` is duplicated or results in duplicate properties when the data schema is generated' % d.tag
-    'Element `%s` is duplicated or results in duplicate GUI elements when the UI schema is generated' % d.tag
-    eMsg(
-            'Element `%s` is duplicated or results in duplicate GUI elements when the UI schema is generated' % d.tag
-            [disallowedNode],
-            allowed
-    )
-    countErr += 1; ok &= False
 
-if not ok:
-    bye(countWar, countErr)
 exit()
 
 
@@ -687,7 +776,7 @@ for tg in tgs:
     for d in ds:
         tag = d[0].tag
         eMsg(
-                "Tab element name `%s` cannot be duplicated in tabgroup" % tag,
+                "Tab element name `%s` cannot be duplicated in tab group" % tag,
                 d
         )
         countErr += 1; ok &= False
