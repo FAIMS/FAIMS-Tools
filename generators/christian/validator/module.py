@@ -32,49 +32,11 @@ def isEqual(t1, t2):
 
     return True
 
-def getDuplicates(l):
-    '''
-    Example:
-      input:
-        <root>
-          <A/>
-          <C/>
-          <B/>
-          <B/>
-          <B/>
-          <C/>
-        </root>
-      return value:
-      [
-        [<C Element>, <C Element>],
-        [<B Element>, <B Element>, <B Element>]
-      ]
-    '''
-    tags = set([n.tag for n in l])
-    tags = list(tags)
-
-    nodesByTag = {}
-    for t in tags:
-        nodesByTag[t] = []
-    for n in l:
-        nodesByTag[n.tag].append(n)
-
-    duplicates = [] # List of lists
-    for nodes in nodesByTag.itervalues():
-        if len(nodes) >= 2:
-            duplicates.append(nodes)
-
-    duplicates.sort(key=lambda listOfDuplicates: listOfDuplicates[0].sourceline)
-
-    return duplicates
-
 def getLower(t):
     nodes = [i for i in t if re.match('^[a-z]+$', i.tag)]
     return nodes
 
 def getNonLower(t):
-    #for i in t:
-        #print type(i)
     nodes = [i for i in t if re.match('[^a-z]', i.tag)] # Might be failing due to comments
     return nodes
 
@@ -122,47 +84,6 @@ def bye(countWar, countErr, early=True):
     print 'Validation completed with %i error(s) and %i warning(s).' \
             % (countErr, countWar)
     exit()
-
-#def parseCommaSeparatedList(list, expansionIndex):
-    #'''
-    #Expands ['Element', 'b, c'] into [['Element', 'b'], ['Element', 'c']] when
-    #expansionIndex is, for instance, 1.
-    #'''
-    #separatedList  = [x.strip() for x in list[expansionIndex].split(',')]
-
-    #result = []
-    #for str in separatedList:
-        #copy = list[:]
-        #copy[expansionIndex] = str
-        #result.append(copy)
-
-    #return result
-
-#def flatten(list, times=1):
-    #for i in range(times):
-        #list = [val for sublist in list for val in sublist]
-    #return list
-
-#def expandCommaSeparatedList(list, depth=0, maxDepth=None):
-    #'''
-    #Expands list ['x, y', 'b, c'] into
-    #[['x', 'b'], ['x', 'c'], ['y', 'b'], ['y', 'c']]
-    #'''
-    #if list == []:
-        #return [[]]
-
-    #if maxDepth == None:
-        #length = len(list)
-        #result = expandCommaSeparatedList(list, depth, length)
-        #result = flatten(result, length-1)
-        #return result
-
-    #list = parseCommaSeparatedList(list, depth)
-    #if depth + 1 < maxDepth:
-        #for i in range(len(list)):
-            #list[i] = expandCommaSeparatedList(list[i], depth+1, maxDepth)
-
-    #return list
 
 def parseTable(table):
     table = table.strip()
@@ -422,9 +343,7 @@ except etree.XMLSyntaxError as e:
     print e
     exit()
 tree = tree.getroot()
-print etree.tostring(tree)
 normaliseAttributes(tree)
-print etree.tostring(tree)
 print 'Done!'
 print
 
@@ -479,7 +398,6 @@ for t in TYPES:
     parentType = t[0]
     pattern    = t[1]
     matchType  = t[2]
-    print t
 
     if   pattern == '/':
         matches = tree.xpath('/*')
@@ -731,54 +649,3 @@ countErr += countErr_; ok &= ok_
 
 
 exit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-ds = getDuplicates(tgs)
-for d in ds:
-    tag = d[0].tag
-    eMsg(
-            "Tabgroup element name `%s` cannot be duplicated in module" % tag,
-            d
-    )
-    countErr += 1; ok &= False
-
-ds = getDuplicates(ns)
-for d in ds:
-    tag = d[0].tag
-    eMsg(
-            "Reserved element name `%s` cannot be duplicated here" % tag,
-            d
-    )
-    countErr += 1; ok &= False
-
-# "BLOCKING POINT" - CANNOT CONTINUE VALIDATION UNLESS ok==TRUE
-if not ok:
-    bye(countWar, countErr)
-ok = True
-allowedLowers = ['desc', 'search']
-
-tgs = getNonLower(tree)
-for tg in tgs:
-    ds = getDuplicates(ts)
-    for d in ds:
-        tag = d[0].tag
-        eMsg(
-                "Tab element name `%s` cannot be duplicated in tab group" % tag,
-                d
-        )
-        countErr += 1; ok &= False
-
-bye(countWar, countErr)
