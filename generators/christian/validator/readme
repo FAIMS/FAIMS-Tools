@@ -1,34 +1,35 @@
-WARNING: This module is missing a login menu
-WARNING: For this element, a label was explicitly given. It may have been able to be represented more succinctly by allowing it to be inferred from its element's tag</xsl:comment>
-WARNING: @  @       | It looks like you are implementing a search | </xsl:comment>
-WARNING: &lt;desc&gt; tag not given</xsl:comment>-->
-WARNING: No type t was given for this view; assuming it is a dropdown</xsl:comment>
-WARNING: No type t was given for this view; assuming it is a list</xsl:comment>
-WARNING: No type t was given for this view; assuming it is an input</xsl:comment>
-WARNING: No type t was given for this view; assuming it is a picture gallery</xsl:comment>
-WARNING: Option is duplicated in this menu</xsl:comment>
-ERROR: A set of &lt;opts&gt; tags are expected but not present</xsl:comment>
-ERROR: Binding in b attribute ignored; use of "autonum" flag forces decimal binding</xsl:comment>
-ERROR: Flags ignored</xsl:comment>
-ERROR: Property has &lt;str&gt; tags but is not flagged as an identifier</xsl:comment>
-ERROR: Style in c attribute not applied; styling conflict exists due to "autonum" flag</xsl:comment>
-ERROR: Style in c attribute not applied; styling conflict exists due to "notnull" flag</xsl:comment>
-ERROR: This view was created from an element whose t attribute's value is unexpected</xsl:comment>
-ERROR: Unexpected binding "<xsl:value-of select="@b"/>"</xsl:comment>
-ERROR: Unexpected flag(s) "<xsl:value-of select="$v16" />"</xsl:comment>
-ERROR: More than one search tab found. Settting bindings for only the first.</xsl:text>
-ERROR: This module has more than one login menu</xsl:text>
-ERROR: Unexpected attribute "</xsl:text>
-ERROR: Identifier not given</xsl:comment>
-ERROR: Option is missing a name</xsl:comment>
-ERROR: This automatically generated relationship is a duplicate of a user-specified one and is required to implement child relationships specified by the use of any "lc" attributes</xsl:comment>
-ERROR: This view's name is a duplicate of one or more other views' in this tab group</xsl:comment>
-ERROR: viewfiles button cannot belong to element flagged with 'nodata'</xsl:comment>
-ERROR: View name is duplicated such that this UI schema is invalid</xsl:comment>
-ERROR: field(s) flagged with 'autonum' but no autonum tag exists</xsl:text>
-ERROR: "l" and "lc" tags cannot be present simultaneously; found on "</xsl:text>
-ERROR: "lc" attribute cannot belong to element flagged with "noui" or "nodata"</xsl:text>
-
+  WARNING: This module is missing a login menu
+  WARNING: For this element, a label was explicitly given. It may have been able to be represented more succinctly by allowing it to be inferred from its element's tag</xsl:comment>
+  WARNING: A search tab may be automatically generated using the <search> tag
+  WARNING: Option is duplicated in this menu</xsl:comment>
+* WARNING: No type t was given for this view; assuming it is a dropdown</xsl:comment>
+* WARNING: No type t was given for this view; assuming it is a list</xsl:comment>
+* WARNING: No type t was given for this view; assuming it is an input</xsl:comment>
+* WARNING: No type t was given for this view; assuming it is a picture gallery</xsl:comment>
+  ERROR: Binding in b attribute ignored; use of "autonum" flag forces decimal binding</xsl:comment>
+  ERROR: Property has &lt;str&gt; tags but is not flagged as an identifier</xsl:comment>
+  ERROR: Style in c attribute not applied; styling conflict exists due to "autonum" flag</xsl:comment>
+  ERROR: Style in c attribute not applied; styling conflict exists due to "notnull" flag</xsl:comment>
+  ERROR: This module has more than one login menu</xsl:text>
+  ERROR: Option is missing a name</xsl:comment>
+  ERROR: This automatically generated relationship is a duplicate of a user-specified one and is required to implement child relationships specified by the use of any "lc" attributes</xsl:comment>
+  ERROR: viewfiles button cannot belong to element flagged with 'nodata'</xsl:comment>
+  ERROR: field(s) flagged with 'autonum' but no autonum tag exists</xsl:text>
+  ERROR: "l" and "lc" tags cannot be present simultaneously; found on "</xsl:text>
+  ERROR: "lc" attribute cannot belong to element flagged with "noui" or "nodata"</xsl:text>
+* ERROR: Property is duplicated in this module
+* ERROR: Property is duplicated in this entity
+* ERROR: This view's name is a duplicate of one or more other views' in this tab group</xsl:comment>
+* ERROR: View name is duplicated such that this UI schema is invalid</xsl:comment>
+* ERROR: Flags ignored</xsl:comment>
+* ERROR: This view was created from an element whose t attribute's value is unexpected</xsl:comment>
+* ERROR: Unexpected attribute "</xsl:text>
+* ERROR: Identifier not given</xsl:comment>
+* ERROR: Link to tab or tab group could not be resolved
+* ERROR: A set of &lt;opts&gt; tags are expected but not present</xsl:comment>
+* ERROR: Unexpected binding "<xsl:value-of select="@b"/>"</xsl:comment>
+* ERROR: Unexpected flag(s) "<xsl:value-of select="$v16" />"</xsl:comment>
+* ERROR: More than one search tab found. Settting bindings for only the first.</xsl:text>
 
 
 Text, elements, attributes
@@ -45,6 +46,8 @@ Shallow semantic parsing:
 6    5  Verify XML element cardinality constraints based on (DATA_ENT_NAME, DATA_PROP_NAME)
 7  2,3  Annotate with "data-GUI types"
 8    7  Verify attribute contents permitted in data-GUI type context
+
+Verify attribute values
 
 Deep semantic parsing:
 1       Produce ERRORs
@@ -122,7 +125,15 @@ Rels      |
 Search    |
 Timestamp |
 
-
+ATTRIBUTE    | ALLOWED VALUES (ONE)        | ALLOWED VALUES (MANY)
+b            | date, decimal, string, time |
+c            |                             |
+f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, readonly, user
+l            | $link                       |
+ec           | $link-tabgroup              |
+lc           | $link-tabgroup              |
+t            | audio, button, camera, checkbox, dropdown, file, gpsdiag, group, input, list, map, picture, radio, table, video, viewfiles, web, webview |
+p            |                             |
 
 
 
@@ -150,7 +161,7 @@ Element         | 1<=Opts<=1         |
 Element         | 1<=Str<=1          |
 
 Cols            |                    | 1<=Element
-Cols            | 0<=Col             |
+Cols            | 1<=Col             |
 
 Opts            | 1<=Opt             |
 
@@ -165,45 +176,53 @@ Opt             | 0<=Opt             |
 
 
 
-<* t="audio">
-<* t="camera">
-<* t="file">
-<* t="video">
+
+
+
+
+
+
+
+PARENT XML TYPE | DIRECT CHILD COUNT | DESCENDANT COUNT
+Document        |                    | 0<=User/Login<=1
+Document        |                    | 0<=Search<=1
+
+
+
+
+
+
+<$1 t="audio">
+--------------------------------------------------------------------------------
+<$1 t="dropdown"/>
+<Button_$1 t="button">Attach Audio</Button_$1>
+================================================================================
+<$1 t="camera">
+--------------------------------------------------------------------------------
+<$1 t="dropdown"/>
+<Button_$1 t="button">Attach Photograph</Button_$1>
+================================================================================
+<$1 t="file">
+--------------------------------------------------------------------------------
+<$1 t="dropdown"/>
+<Button_$1 t="button">Attach File</Button_$1>
+================================================================================
+<$1 t="video">
+--------------------------------------------------------------------------------
+<$1 t="dropdown"/>
+<Button_$1 t="button">Attach Video</Button_$1>
+================================================================================
 <author>
-<gps>
-<search>
-<timestamp>
-================================================================================
-<* t="audio">
 --------------------------------------------------------------------------------
-<* t="dropdown">Attach Audio</*>
-<Button_* t="button">
-================================================================================
-<* t="camera">
---------------------------------------------------------------------------------
-<* t="dropdown">Attach Photograph</*>
-<Button_* t="button">
-================================================================================
-<* t="file">
---------------------------------------------------------------------------------
-<* t="dropdown">Attach File</*>
-<Button_* t="button">
-================================================================================
-<* t="video">
---------------------------------------------------------------------------------
-<* t="dropdown">Attach Video</*>
-<Button_* t="button">
-================================================================================
-<author>
---------------------------------------------------------------------------------
+<Author t="input" f="readonly nodata"/>
 ================================================================================
 <gps>
 --------------------------------------------------------------------------------
 <Colgroup_GPS t="group"/>
-<Latitude  t="input" f="readonly"/>
-<Longitude t="input" f="readonly"/>
-<Northing  t="input" f="readonly"/>
-<Easting   t="input" f="readonly"/>
+<Latitude     t="input" f="readonly"/>
+<Longitude    t="input" f="readonly"/>
+<Northing     t="input" f="readonly"/>
+<Easting      t="input" f="readonly"/>
 ================================================================================
 <search>
 --------------------------------------------------------------------------------
@@ -219,4 +238,4 @@ Opt             | 0<=Opt             |
 ================================================================================
 <timestamp>
 --------------------------------------------------------------------------------
-================================================================================
+<Timestamp t="input" f="readonly nodata"/>
