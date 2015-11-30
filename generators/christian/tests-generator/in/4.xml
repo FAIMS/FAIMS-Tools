@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<!--@TEST: Multiple tabs-->
+<module>
+  <Tabgroup>
+    <Tab_1>
+      <Input_1 t="input" f="id"/> <!--f="id" is required to prevent errors-->
+    </Tab_1>
+    <Tab_2>
+      <Input_2 t="input"/>
+    </Tab_2>
+  </Tabgroup>
+</module>

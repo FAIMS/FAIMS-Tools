@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <ArchaeologicalElement name="Tabgroup">
+    <description/>
+    <property name="Input 1" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Audio 1" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="Button 1">
+      <description/>
+    </property>
+    <property name="Checkbox 1" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="Dropdown 1" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="File 1" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="List 1" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="Picture 1" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="Radio 1" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="Webview 1 1">
+      <description/>
+    </property>
+    <property name="Webview 2 1">
+      <description/>
+    </property>
+    <property name="Input 2" type="measure">
+      <description/>
+    </property>
+    <property name="Audio 2" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="Button 2">
+      <description/>
+    </property>
+    <property name="Checkbox 2" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="Dropdown 2" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="File 2" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="List 2" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="Picture 2" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="Radio 2" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="Webview 1 2">
+      <description/>
+    </property>
+    <property name="Webview 2 2">
+      <description/>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

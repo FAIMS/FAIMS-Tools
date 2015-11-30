@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<!--@TEST: Multiple GUI elements of the same type in one tab-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Input_1       t="input" f="id"/> <!--f="id" is required to prevent errors-->
+      <Audio_1       t="audio"/>
+      <Button_1      t="trigger"/>
+      <Checkbox_1    t="checkbox"/>
+      <Dropdown_1    t="dropdown"/>
+      <File_1        t="file"/>
+      <GPS_Diag_1    t="gpsdiag"/>
+      <Group_1       t="group"/>
+      <List_1        t="list"/>
+      <Map_1         t="map"/>
+      <Picture_1     t="picture"/>
+      <Radio_1       t="radio"/>
+      <Viewfiles_1   t="viewfiles"/>
+      <Webview_1_1   t="web"/>
+      <Webview_2_1   t="webview"/>
+
+      <Input_2       t="input"/>
+      <Audio_2       t="audio"/>
+      <Button_2      t="trigger"/>
+      <Checkbox_2    t="checkbox"/>
+      <Dropdown_2    t="dropdown"/>
+      <File_2        t="file"/>
+      <GPS_Diag_2    t="gpsdiag"/>
+      <Group_2       t="group"/>
+      <List_2        t="list"/>
+      <Map_2         t="map"/>
+      <Picture_2     t="picture"/>
+      <Radio_2       t="radio"/>
+      <Viewfiles_2   t="viewfiles"/>
+      <Webview_1_2   t="web"/>
+      <Webview_2_2   t="webview"/>
+    </Tab>
+  </Tabgroup>
+</module>
