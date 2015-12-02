@@ -27,8 +27,8 @@ do
         elif [ "$ext" = "properties" ]
         then
             # Canonicalise arch16n's
-            sort "$pathExpected_name_ext" | uniq | sed '/^\s*$/d' > /tmp/output-expected.$ext
-            sort "$pathActual_name_ext"   | uniq | sed '/^\s*$/d' > /tmp/output-actual.$ext
+            sort -s "$pathExpected_name_ext" | uniq | sed '/^\s*$/d' > /tmp/output-expected.$ext
+            sort -s "$pathActual_name_ext"   | uniq | sed '/^\s*$/d' > /tmp/output-actual.$ext
         else
             # Move ouputs where XML would've gone
             cp "$pathExpected_name_ext" /tmp/output-expected.$ext
@@ -42,19 +42,16 @@ do
             continue
         fi
         i=${#failures[@]}
-        failures[$i]="$filename: \"$subject\" makes wrong $name_ext"
+        failures[$i]="Failure: $filename - \"$subject\". $name_ext generated incorrectly."
     done
     ((numTests++))
 done
 
 echo "TEST SUMMARY:"
-if [ ${#failures[@]} -eq 0 ]
-then
-    echo "  $numTests tests passed!"
-    exit
-fi
 
 for f in "${failures[@]}"
 do
     echo "  $f"
 done
+
+echo "$numTests tests completed with $((($numTests - ${#failures[@]}))) passes and ${#failures[@]} failures."
