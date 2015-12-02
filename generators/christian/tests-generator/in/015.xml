@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<!--@TEST: l attribute - single link to other tab group's tab-->
+<module>
+  <Parent>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Button_1 t="button" l="Child/Link_Here"/>
+    </Tab>
+    <Link_Here>
+      <Input t="input"/>
+    </Link_Here>
+  </Parent>
+  <Child>
+    <First_Tab>
+      <Dummy t="input" f="id"/>
+    </First_Tab>
+    <Link_Here>
+      <Input t="input"/>
+    </Link_Here>
+  </Child>
+</module>

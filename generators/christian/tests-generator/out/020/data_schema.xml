@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <ArchaeologicalElement name="Tabgroup">
+    <description/>
+    <property name="Dummy" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Dropdown" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt1}
+<description/></term>
+        <term>{test_opt2}
+<description/></term>
+        <term>{test_opt10}
+<description/></term>
+        <term>{test_opt20}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="List" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt1}
+<description/></term>
+        <term>{test_opt2}
+<description/></term>
+        <term>{test_opt11}
+<description/></term>
+        <term>{test_opt21}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Picture" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt1}
+<description/></term>
+        <term>{test_opt2}
+<description/></term>
+        <term>{test_opt12}
+<description/></term>
+        <term>{test_opt22}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Radio" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt1}
+<description/></term>
+        <term>{test_opt2}
+<description/></term>
+        <term>{test_opt13}
+<description/></term>
+        <term>{test_opt23}
+<description/></term>
+      </lookup>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>Fill This In</h:title>
+    <model>
+      <instance>
+        <faims id="Fill_This_In">
+          <style>
+            <orientation>
+              <orientation/>
+            </orientation>
+            <even>
+              <layout_weight/>
+            </even>
+            <large>
+              <layout_weight/>
+            </large>
+          </style>
+          <Parent>
+            <Tab>
+              <Dummy/>
+              <Button_1/>
+            </Tab>
+            <Link_Here>
+              <Input/>
+            </Link_Here>
+          </Parent>
+        </faims>
+      </instance>
+    </model>
+  </h:head>
+  <h:body>
+    <group ref="style">
+      <label/>
+      <group ref="orientation">
+        <label/>
+        <input ref="orientation">
+          <label>horizontal</label>
+        </input>
+      </group>
+      <group ref="even">
+        <label/>
+        <input ref="layout_weight">
+          <label>1</label>
+        </input>
+      </group>
+      <group ref="large">
+        <label/>
+        <input ref="layout_weight">
+          <label>3</label>
+        </input>
+      </group>
+    </group>
+    <group ref="Parent" faims_archent_type="Parent">
+      <label>{Parent}</label>
+      <group ref="Tab">
+        <label>{Tab}</label>
+        <input faims_attribute_type="measure" ref="Dummy" faims_attribute_name="Dummy">
+          <label>{Dummy}</label>
+        </input>
+        <trigger ref="Button_1">
+          <label>{Button_1}</label>
+        </trigger>
+      </group>
+      <group ref="Link_Here">
+        <label>{Link_Here}</label>
+        <input faims_attribute_type="measure" ref="Input" faims_attribute_name="Input">
+          <label>{Input}</label>
+        </input>
+      </group>
+    </group>
+  </h:body>
+</h:html>

@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<!--@TEST: opts and opt tags - multiple -->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Dropdown    t="dropdown">
+        <opts>
+          <!--Options with names shared between GUI elements-->
+          <opt>test opt1</opt>
+          <opt>test opt2</opt>
+
+          <!--Options with names unique to GUI elements-->
+          <opt>test opt10</opt>
+          <opt>test opt20</opt>
+        </opts>
+      </Dropdown>
+      <List        t="list">
+        <opts>
+          <opt>test opt1</opt>
+          <opt>test opt2</opt>
+
+          <opt>test opt11</opt>
+          <opt>test opt21</opt>
+        </opts>
+      </List>
+      <Picture     t="picture">
+        <opts>
+          <opt>test opt1</opt>
+          <opt>test opt2</opt>
+
+          <opt>test opt12</opt>
+          <opt>test opt22</opt>
+        </opts>
+      </Picture>
+      <Radio       t="radio">
+        <opts>
+          <opt>test opt1</opt>
+          <opt>test opt2</opt>
+
+          <opt>test opt13</opt>
+          <opt>test opt23</opt>
+        </opts>
+      </Radio>
+    </Tab>
+  </Tabgroup>
+</module>

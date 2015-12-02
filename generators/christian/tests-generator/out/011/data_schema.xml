@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <RelationshipElement name="Parent - Child" type="hierarchical">
+    <description>A 1-to-n relationship between the parent and its children, respectively.</description>
+    <parent>Parent Of</parent>
+    <child>Child Of</child>
+  </RelationshipElement>
+  <ArchaeologicalElement name="Parent">
+    <description/>
+    <property name="Dummy" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+  </ArchaeologicalElement>
+  <ArchaeologicalElement name="Child">
+    <description/>
+    <property name="Dummy" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

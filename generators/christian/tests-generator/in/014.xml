@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<!--@TEST: l attribute - single link to same tab group-->
+<module>
+  <Parent>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Button_1 t="button" l="Parent/Link_Here"/>
+    </Tab>
+    <Link_Here>
+      <Input t="input"/>
+    </Link_Here>
+  </Parent>
+</module>

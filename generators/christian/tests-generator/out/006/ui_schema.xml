@@ -1,0 +1,508 @@
+<?xml version="1.0"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>Fill This In</h:title>
+    <model>
+      <instance>
+        <faims id="Fill_This_In">
+          <style>
+            <orientation>
+              <orientation/>
+            </orientation>
+            <even>
+              <layout_weight/>
+            </even>
+            <large>
+              <layout_weight/>
+            </large>
+          </style>
+          <Tabgroup>
+            <Tab>
+              <Dummy/>
+              <Input_date/>
+              <Audio_date/>
+              <Button_Audio_date/>
+              <Button_date/>
+              <Checkbox_date/>
+              <Dropdown_date/>
+              <File_date/>
+              <Button_File_date/>
+              <GPS_Diag_date/>
+              <Group_date/>
+              <List_date/>
+              <Map_date/>
+              <Picture_date/>
+              <Radio_date/>
+              <Viewfiles_date/>
+              <Webview_1_date/>
+              <Webview_2_date/>
+              <Input_decimal/>
+              <Audio_decimal/>
+              <Button_Audio_decimal/>
+              <Button_decimal/>
+              <Checkbox_decimal/>
+              <Dropdown_decimal/>
+              <File_decimal/>
+              <Button_File_decimal/>
+              <GPS_Diag_decimal/>
+              <Group_decimal/>
+              <List_decimal/>
+              <Map_decimal/>
+              <Picture_decimal/>
+              <Radio_decimal/>
+              <Viewfiles_decimal/>
+              <Webview_1_decimal/>
+              <Webview_2_decimal/>
+              <Input_string/>
+              <Audio_string/>
+              <Button_Audio_string/>
+              <Button_string/>
+              <Checkbox_string/>
+              <Dropdown_string/>
+              <File_string/>
+              <Button_File_string/>
+              <GPS_Diag_string/>
+              <Group_string/>
+              <List_string/>
+              <Map_string/>
+              <Picture_string/>
+              <Radio_string/>
+              <Viewfiles_string/>
+              <Webview_1_string/>
+              <Webview_2_string/>
+              <Input_time/>
+              <Audio_time/>
+              <Button_Audio_time/>
+              <Button_time/>
+              <Checkbox_time/>
+              <Dropdown_time/>
+              <File_time/>
+              <Button_File_time/>
+              <GPS_Diag_time/>
+              <Group_time/>
+              <List_time/>
+              <Map_time/>
+              <Picture_time/>
+              <Radio_time/>
+              <Viewfiles_time/>
+              <Webview_1_time/>
+              <Webview_2_time/>
+            </Tab>
+          </Tabgroup>
+        </faims>
+      </instance>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/Input_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/Audio_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/Button_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/Checkbox_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/Dropdown_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/File_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/GPS_Diag_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/Group_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/List_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/Map_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/Picture_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/Radio_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/Viewfiles_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/Webview_1_date"/>
+      <bind type="date" nodeset="/faims/Tabgroup/Tab/Webview_2_date"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/Input_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/Audio_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/Button_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/Checkbox_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/Dropdown_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/File_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/GPS_Diag_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/Group_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/List_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/Map_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/Picture_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/Radio_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/Viewfiles_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/Webview_1_decimal"/>
+      <bind type="decimal" nodeset="/faims/Tabgroup/Tab/Webview_2_decimal"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/Input_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/Audio_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/Button_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/Checkbox_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/Dropdown_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/File_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/GPS_Diag_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/Group_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/List_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/Map_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/Picture_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/Radio_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/Viewfiles_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/Webview_1_string"/>
+      <bind type="string" nodeset="/faims/Tabgroup/Tab/Webview_2_string"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/Input_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/Audio_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/Button_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/Checkbox_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/Dropdown_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/File_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/GPS_Diag_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/Group_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/List_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/Map_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/Picture_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/Radio_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/Viewfiles_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/Webview_1_time"/>
+      <bind type="time" nodeset="/faims/Tabgroup/Tab/Webview_2_time"/>
+    </model>
+  </h:head>
+  <h:body>
+    <group ref="style">
+      <label/>
+      <group ref="orientation">
+        <label/>
+        <input ref="orientation">
+          <label>horizontal</label>
+        </input>
+      </group>
+      <group ref="even">
+        <label/>
+        <input ref="layout_weight">
+          <label>1</label>
+        </input>
+      </group>
+      <group ref="large">
+        <label/>
+        <input ref="layout_weight">
+          <label>3</label>
+        </input>
+      </group>
+    </group>
+    <group ref="Tabgroup" faims_archent_type="Tabgroup">
+      <label>{Tabgroup}</label>
+      <group ref="Tab" faims_scrollable="false">
+        <label>{Tab}</label>
+        <input faims_attribute_type="measure" ref="Dummy" faims_attribute_name="Dummy">
+          <label>{Dummy}</label>
+        </input>
+        <input faims_attribute_type="measure" ref="Input_date" faims_attribute_name="Input date">
+          <label>{Input_date}</label>
+        </input>
+        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="Audio_date" faims_attribute_name="Audio date">
+          <label>{Audio_date}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Audio_date">
+          <label>{Button_Audio_date}</label>
+        </trigger>
+        <trigger ref="Button_date" faims_attribute_name="Button date">
+          <label>{Button_date}</label>
+          <!--WARNING: This view was created from an element whose t attribute's value is unexpected-->
+        </trigger>
+        <select faims_attribute_type="vocab" ref="Checkbox_date" faims_attribute_name="Checkbox date">
+          <label>{Checkbox_date}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <select1 faims_attribute_type="vocab" ref="Dropdown_date" faims_attribute_name="Dropdown date">
+          <label>{Dropdown_date}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="File_date" faims_attribute_name="File date">
+          <label>{File_date}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_File_date">
+          <label>{Button_File_date}</label>
+        </trigger>
+        <input faims_read_only="true" ref="GPS_Diag_date">
+          <label>{GPS_Diag_date}</label>
+        </input>
+        <group ref="Group_date">
+          <label>{Group_date}</label>
+        </group>
+        <select1 appearance="compact" ref="List_date" faims_attribute_name="List date">
+          <label>{List_date}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <input faims_map="true" ref="Map_date">
+          <label>{Map_date}</label>
+        </input>
+        <select1 type="image" faims_attribute_type="vocab" ref="Picture_date" faims_attribute_name="Picture date">
+          <label>{Picture_date}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select1 appearance="full" faims_attribute_type="vocab" ref="Radio_date" faims_attribute_name="Radio date">
+          <label>{Radio_date}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <trigger ref="Viewfiles_date">
+          <label>{Viewfiles_date}</label>
+        </trigger>
+        <input faims_web="true" ref="Webview_1_date">
+          <label>{Webview_1_date}</label>
+        </input>
+        <input faims_web="true" ref="Webview_2_date">
+          <label>{Webview_2_date}</label>
+        </input>
+        <input faims_attribute_type="measure" ref="Input_decimal" faims_attribute_name="Input decimal">
+          <label>{Input_decimal}</label>
+        </input>
+        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="Audio_decimal" faims_attribute_name="Audio decimal">
+          <label>{Audio_decimal}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Audio_decimal">
+          <label>{Button_Audio_decimal}</label>
+        </trigger>
+        <trigger ref="Button_decimal" faims_attribute_name="Button decimal">
+          <label>{Button_decimal}</label>
+          <!--WARNING: This view was created from an element whose t attribute's value is unexpected-->
+        </trigger>
+        <select faims_attribute_type="vocab" ref="Checkbox_decimal" faims_attribute_name="Checkbox decimal">
+          <label>{Checkbox_decimal}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <select1 faims_attribute_type="vocab" ref="Dropdown_decimal" faims_attribute_name="Dropdown decimal">
+          <label>{Dropdown_decimal}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="File_decimal" faims_attribute_name="File decimal">
+          <label>{File_decimal}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_File_decimal">
+          <label>{Button_File_decimal}</label>
+        </trigger>
+        <input faims_read_only="true" ref="GPS_Diag_decimal">
+          <label>{GPS_Diag_decimal}</label>
+        </input>
+        <group ref="Group_decimal">
+          <label>{Group_decimal}</label>
+        </group>
+        <select1 appearance="compact" ref="List_decimal" faims_attribute_name="List decimal">
+          <label>{List_decimal}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <input faims_map="true" ref="Map_decimal">
+          <label>{Map_decimal}</label>
+        </input>
+        <select1 type="image" faims_attribute_type="vocab" ref="Picture_decimal" faims_attribute_name="Picture decimal">
+          <label>{Picture_decimal}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select1 appearance="full" faims_attribute_type="vocab" ref="Radio_decimal" faims_attribute_name="Radio decimal">
+          <label>{Radio_decimal}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <trigger ref="Viewfiles_decimal">
+          <label>{Viewfiles_decimal}</label>
+        </trigger>
+        <input faims_web="true" ref="Webview_1_decimal">
+          <label>{Webview_1_decimal}</label>
+        </input>
+        <input faims_web="true" ref="Webview_2_decimal">
+          <label>{Webview_2_decimal}</label>
+        </input>
+        <input faims_attribute_type="measure" ref="Input_string" faims_attribute_name="Input string">
+          <label>{Input_string}</label>
+        </input>
+        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="Audio_string" faims_attribute_name="Audio string">
+          <label>{Audio_string}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Audio_string">
+          <label>{Button_Audio_string}</label>
+        </trigger>
+        <trigger ref="Button_string" faims_attribute_name="Button string">
+          <label>{Button_string}</label>
+          <!--WARNING: This view was created from an element whose t attribute's value is unexpected-->
+        </trigger>
+        <select faims_attribute_type="vocab" ref="Checkbox_string" faims_attribute_name="Checkbox string">
+          <label>{Checkbox_string}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <select1 faims_attribute_type="vocab" ref="Dropdown_string" faims_attribute_name="Dropdown string">
+          <label>{Dropdown_string}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="File_string" faims_attribute_name="File string">
+          <label>{File_string}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_File_string">
+          <label>{Button_File_string}</label>
+        </trigger>
+        <input faims_read_only="true" ref="GPS_Diag_string">
+          <label>{GPS_Diag_string}</label>
+        </input>
+        <group ref="Group_string">
+          <label>{Group_string}</label>
+        </group>
+        <select1 appearance="compact" ref="List_string" faims_attribute_name="List string">
+          <label>{List_string}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <input faims_map="true" ref="Map_string">
+          <label>{Map_string}</label>
+        </input>
+        <select1 type="image" faims_attribute_type="vocab" ref="Picture_string" faims_attribute_name="Picture string">
+          <label>{Picture_string}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select1 appearance="full" faims_attribute_type="vocab" ref="Radio_string" faims_attribute_name="Radio string">
+          <label>{Radio_string}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <trigger ref="Viewfiles_string">
+          <label>{Viewfiles_string}</label>
+        </trigger>
+        <input faims_web="true" ref="Webview_1_string">
+          <label>{Webview_1_string}</label>
+        </input>
+        <input faims_web="true" ref="Webview_2_string">
+          <label>{Webview_2_string}</label>
+        </input>
+        <input faims_attribute_type="measure" ref="Input_time" faims_attribute_name="Input time">
+          <label>{Input_time}</label>
+        </input>
+        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="Audio_time" faims_attribute_name="Audio time">
+          <label>{Audio_time}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Audio_time">
+          <label>{Button_Audio_time}</label>
+        </trigger>
+        <trigger ref="Button_time" faims_attribute_name="Button time">
+          <label>{Button_time}</label>
+          <!--WARNING: This view was created from an element whose t attribute's value is unexpected-->
+        </trigger>
+        <select faims_attribute_type="vocab" ref="Checkbox_time" faims_attribute_name="Checkbox time">
+          <label>{Checkbox_time}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <select1 faims_attribute_type="vocab" ref="Dropdown_time" faims_attribute_name="Dropdown time">
+          <label>{Dropdown_time}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="File_time" faims_attribute_name="File time">
+          <label>{File_time}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_File_time">
+          <label>{Button_File_time}</label>
+        </trigger>
+        <input faims_read_only="true" ref="GPS_Diag_time">
+          <label>{GPS_Diag_time}</label>
+        </input>
+        <group ref="Group_time">
+          <label>{Group_time}</label>
+        </group>
+        <select1 appearance="compact" ref="List_time" faims_attribute_name="List time">
+          <label>{List_time}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <input faims_map="true" ref="Map_time">
+          <label>{Map_time}</label>
+        </input>
+        <select1 type="image" faims_attribute_type="vocab" ref="Picture_time" faims_attribute_name="Picture time">
+          <label>{Picture_time}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select1 appearance="full" faims_attribute_type="vocab" ref="Radio_time" faims_attribute_name="Radio time">
+          <label>{Radio_time}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <trigger ref="Viewfiles_time">
+          <label>{Viewfiles_time}</label>
+        </trigger>
+        <input faims_web="true" ref="Webview_1_time">
+          <label>{Webview_1_time}</label>
+        </input>
+        <input faims_web="true" ref="Webview_2_time">
+          <label>{Webview_2_time}</label>
+        </input>
+      </group>
+    </group>
+  </h:body>
+</h:html>

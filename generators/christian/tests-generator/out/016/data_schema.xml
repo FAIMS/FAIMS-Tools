@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <ArchaeologicalElement name="Parent">
+    <description/>
+    <property name="Dummy" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Input" type="measure">
+      <description/>
+    </property>
+  </ArchaeologicalElement>
+  <ArchaeologicalElement name="Child">
+    <description/>
+    <property name="Sneezy Input" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

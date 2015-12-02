@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>Fill This In</h:title>
+    <model>
+      <instance>
+        <faims id="Fill_This_In">
+          <style>
+            <orientation>
+              <orientation/>
+            </orientation>
+            <even>
+              <layout_weight/>
+            </even>
+            <large>
+              <layout_weight/>
+            </large>
+          </style>
+          <Tabgroup>
+            <Tab>
+              <Dummy/>
+              <Audio/>
+              <Button_Audio/>
+              <Button/>
+              <Checkbox/>
+              <Dropdown/>
+              <File/>
+              <Button_File/>
+              <GPS_Diag/>
+              <Group/>
+              <List/>
+              <Map/>
+              <Picture/>
+              <Radio/>
+              <Viewfiles/>
+              <Webview_1/>
+              <Webview_2/>
+            </Tab>
+          </Tabgroup>
+        </faims>
+      </instance>
+    </model>
+  </h:head>
+  <h:body>
+    <group ref="style">
+      <label/>
+      <group ref="orientation">
+        <label/>
+        <input ref="orientation">
+          <label>horizontal</label>
+        </input>
+      </group>
+      <group ref="even">
+        <label/>
+        <input ref="layout_weight">
+          <label>1</label>
+        </input>
+      </group>
+      <group ref="large">
+        <label/>
+        <input ref="layout_weight">
+          <label>3</label>
+        </input>
+      </group>
+    </group>
+    <group ref="Tabgroup" faims_archent_type="Tabgroup">
+      <label>{Tabgroup}</label>
+      <group ref="Tab" faims_scrollable="false">
+        <label>{Tab}</label>
+        <input faims_attribute_type="measure" ref="Dummy" faims_attribute_name="Dummy">
+          <label>{Dummy}</label>
+        </input>
+        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="Audio" faims_attribute_name="Audio">
+          <label>{Audio}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Audio">
+          <label>{Button_Audio}</label>
+        </trigger>
+        <trigger ref="Button" faims_attribute_name="Button">
+          <label>{Button}</label>
+          <!--WARNING: This view was created from an element whose t attribute's value is unexpected-->
+        </trigger>
+        <select faims_attribute_type="vocab" ref="Checkbox" faims_attribute_name="Checkbox">
+          <label>{Checkbox}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <select1 faims_attribute_type="vocab" ref="Dropdown" faims_attribute_name="Dropdown">
+          <label>{Dropdown}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="File" faims_attribute_name="File">
+          <label>{File}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_File">
+          <label>{Button_File}</label>
+        </trigger>
+        <input faims_read_only="true" ref="GPS_Diag">
+          <label>{GPS_Diag}</label>
+        </input>
+        <group ref="Group">
+          <label>{Group}</label>
+        </group>
+        <select1 appearance="compact" ref="List" faims_attribute_name="List">
+          <label>{List}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <input faims_map="true" ref="Map">
+          <label>{Map}</label>
+        </input>
+        <select1 type="image" faims_attribute_type="vocab" ref="Picture" faims_attribute_name="Picture">
+          <label>{Picture}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select1 appearance="full" faims_attribute_type="vocab" ref="Radio" faims_attribute_name="Radio">
+          <label>{Radio}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <trigger ref="Viewfiles">
+          <label>{Viewfiles}</label>
+        </trigger>
+        <input faims_web="true" ref="Webview_1">
+          <label>{Webview_1}</label>
+        </input>
+        <input faims_web="true" ref="Webview_2">
+          <label>{Webview_2}</label>
+        </input>
+      </group>
+    </group>
+  </h:body>
+</h:html>

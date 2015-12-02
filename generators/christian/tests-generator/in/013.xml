@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<!--@TEST: Child entites - lc attribute - multiple children-->
+<module>
+  <Parent>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Add_Child       t="button" lc="Child"/>
+      <Add_Child_Other t="button" lc="Child_Other"/>
+      <List_Of_Related_Entities       t="list" ec="Child"/>
+      <Other_List_Of_Related_Entities t="list" ec="Child_Other"/>
+    </Tab>
+  </Parent>
+  <Child>
+    <Tab>
+      <Dummy t="input" f="id"/>
+    </Tab>
+  </Child>
+  <Child_Other>
+    <Tab>
+      <Dummy t="input" f="id"/>
+    </Tab>
+  </Child_Other>
+</module>

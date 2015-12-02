@@ -1,0 +1,74 @@
+<?xml version="1.0" ?>
+<!--@TEST: Bindings-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <!--All inputs-->
+      <Input_date       b="date" t="input"/>
+      <Audio_date       b="date" t="audio"/>
+      <Button_date      b="date" t="trigger"/>
+      <Checkbox_date    b="date" t="checkbox"/>
+      <Dropdown_date    b="date" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown_date>
+      <File_date        b="date" t="file"/>
+      <GPS_Diag_date    b="date" t="gpsdiag"/>
+      <Group_date       b="date" t="group"/>
+      <List_date        b="date" t="list"><opts><opt>test opt</opt></opts></List_date>
+      <Map_date         b="date" t="map"/>
+      <Picture_date     b="date" t="picture"><opts><opt>test opt</opt></opts></Picture_date>
+      <Radio_date       b="date" t="radio"><opts><opt>test opt</opt></opts></Radio_date>
+      <Viewfiles_date   b="date" t="viewfiles"/>
+      <Webview_1_date   b="date" t="web"/>
+      <Webview_2_date   b="date" t="webview"/>
+
+      <Input_decimal       b="decimal" t="input"/>
+      <Audio_decimal       b="decimal" t="audio"/>
+      <Button_decimal      b="decimal" t="trigger"/>
+      <Checkbox_decimal    b="decimal" t="checkbox"/>
+      <Dropdown_decimal    b="decimal" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown_decimal>
+      <File_decimal        b="decimal" t="file"/>
+      <GPS_Diag_decimal    b="decimal" t="gpsdiag"/>
+      <Group_decimal       b="decimal" t="group"/>
+      <List_decimal        b="decimal" t="list"><opts><opt>test opt</opt></opts></List_decimal>
+      <Map_decimal         b="decimal" t="map"/>
+      <Picture_decimal     b="decimal" t="picture"><opts><opt>test opt</opt></opts></Picture_decimal>
+      <Radio_decimal       b="decimal" t="radio"><opts><opt>test opt</opt></opts></Radio_decimal>
+      <Viewfiles_decimal   b="decimal" t="viewfiles"/>
+      <Webview_1_decimal   b="decimal" t="web"/>
+      <Webview_2_decimal   b="decimal" t="webview"/>
+
+      <Input_string       b="string" t="input"/>
+      <Audio_string       b="string" t="audio"/>
+      <Button_string      b="string" t="trigger"/>
+      <Checkbox_string    b="string" t="checkbox"/>
+      <Dropdown_string    b="string" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown_string>
+      <File_string        b="string" t="file"/>
+      <GPS_Diag_string    b="string" t="gpsdiag"/>
+      <Group_string       b="string" t="group"/>
+      <List_string        b="string" t="list"><opts><opt>test opt</opt></opts></List_string>
+      <Map_string         b="string" t="map"/>
+      <Picture_string     b="string" t="picture"><opts><opt>test opt</opt></opts></Picture_string>
+      <Radio_string       b="string" t="radio"><opts><opt>test opt</opt></opts></Radio_string>
+      <Viewfiles_string   b="string" t="viewfiles"/>
+      <Webview_1_string   b="string" t="web"/>
+      <Webview_2_string   b="string" t="webview"/>
+
+      <Input_time       b="time" t="input"/>
+      <Audio_time       b="time" t="audio"/>
+      <Button_time      b="time" t="trigger"/>
+      <Checkbox_time    b="time" t="checkbox"/>
+      <Dropdown_time    b="time" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown_time>
+      <File_time        b="time" t="file"/>
+      <GPS_Diag_time    b="time" t="gpsdiag"/>
+      <Group_time       b="time" t="group"/>
+      <List_time        b="time" t="list"><opts><opt>test opt</opt></opts></List_time>
+      <Map_time         b="time" t="map"/>
+      <Picture_time     b="time" t="picture"><opts><opt>test opt</opt></opts></Picture_time>
+      <Radio_time       b="time" t="radio"><opts><opt>test opt</opt></opts></Radio_time>
+      <Viewfiles_time   b="time" t="viewfiles"/>
+      <Webview_1_time   b="time" t="web"/>
+      <Webview_2_time   b="time" t="webview"/>
+    </Tab>
+  </Tabgroup>
+</module>

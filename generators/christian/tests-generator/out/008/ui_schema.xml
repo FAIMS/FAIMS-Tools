@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>Fill This In</h:title>
+    <model>
+      <instance>
+        <faims id="Fill_This_In">
+          <style>
+            <orientation>
+              <orientation/>
+            </orientation>
+            <even>
+              <layout_weight/>
+            </even>
+            <large>
+              <layout_weight/>
+            </large>
+          </style>
+          <Parent>
+            <Tab>
+              <Dummy/>
+              <Add_Child/>
+              <Add_Child_Other/>
+              <List_Of_Related_Entities/>
+              <Other_List_Of_Related_Entities/>
+            </Tab>
+          </Parent>
+          <Child>
+            <Tab>
+              <Dummy/>
+            </Tab>
+          </Child>
+          <Child_Other>
+            <Tab>
+              <Dummy/>
+            </Tab>
+          </Child_Other>
+        </faims>
+      </instance>
+    </model>
+  </h:head>
+  <h:body>
+    <group ref="style">
+      <label/>
+      <group ref="orientation">
+        <label/>
+        <input ref="orientation">
+          <label>horizontal</label>
+        </input>
+      </group>
+      <group ref="even">
+        <label/>
+        <input ref="layout_weight">
+          <label>1</label>
+        </input>
+      </group>
+      <group ref="large">
+        <label/>
+        <input ref="layout_weight">
+          <label>3</label>
+        </input>
+      </group>
+    </group>
+    <group ref="Parent" faims_archent_type="Parent">
+      <label>{Parent}</label>
+      <group ref="Tab">
+        <label>{Tab}</label>
+        <input faims_attribute_type="measure" ref="Dummy" faims_attribute_name="Dummy">
+          <label>{Dummy}</label>
+        </input>
+        <trigger ref="Add_Child">
+          <label>{Add_Child}</label>
+        </trigger>
+        <trigger ref="Add_Child_Other">
+          <label>{Add_Child_Other}</label>
+        </trigger>
+        <select1 appearance="compact" ref="List_Of_Related_Entities" faims_annotation="false" faims_certainty="false">
+          <label>{List_Of_Related_Entities}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select1 appearance="compact" ref="Other_List_Of_Related_Entities" faims_annotation="false" faims_certainty="false">
+          <label>{Other_List_Of_Related_Entities}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+      </group>
+    </group>
+    <group ref="Child" faims_archent_type="Child">
+      <label>{Child}</label>
+      <group ref="Tab">
+        <label>{Tab}</label>
+        <input faims_attribute_type="measure" ref="Dummy" faims_attribute_name="Dummy">
+          <label>{Dummy}</label>
+        </input>
+      </group>
+    </group>
+    <group ref="Child_Other" faims_archent_type="Child Other">
+      <label>{Child_Other}</label>
+      <group ref="Tab">
+        <label>{Tab}</label>
+        <input faims_attribute_type="measure" ref="Dummy" faims_attribute_name="Dummy">
+          <label>{Dummy}</label>
+        </input>
+      </group>
+    </group>
+  </h:body>
+</h:html>

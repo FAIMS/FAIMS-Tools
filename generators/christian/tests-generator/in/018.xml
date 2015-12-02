@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<!--@TEST: opts and opt tags - single-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Dropdown    t="dropdown">
+        <opts>
+          <opt>test opt</opt>
+        </opts>
+      </Dropdown>
+      <List        t="list">
+        <opts>
+          <opt>test opt</opt>
+        </opts>
+      </List>
+      <Picture     t="picture">
+        <opts>
+          <opt>test opt</opt>
+        </opts>
+      </Picture>
+      <Radio       t="radio">
+        <opts>
+          <opt>test opt</opt>
+        </opts>
+      </Radio>
+    </Tab>
+  </Tabgroup>
+</module>

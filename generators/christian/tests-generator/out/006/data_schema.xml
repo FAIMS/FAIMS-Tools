@@ -1,0 +1,211 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <ArchaeologicalElement name="Tabgroup">
+    <description/>
+    <property name="Dummy" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Input date" type="measure">
+      <description/>
+    </property>
+    <property name="Audio date" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="Button date">
+      <description/>
+    </property>
+    <property name="Checkbox date" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="Dropdown date" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="File date" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="List date" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Picture date" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Radio date" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Webview 1 date">
+      <description/>
+    </property>
+    <property name="Webview 2 date">
+      <description/>
+    </property>
+    <property name="Input decimal" type="measure">
+      <description/>
+    </property>
+    <property name="Audio decimal" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="Button decimal">
+      <description/>
+    </property>
+    <property name="Checkbox decimal" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="Dropdown decimal" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="File decimal" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="List decimal" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Picture decimal" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Radio decimal" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Webview 1 decimal">
+      <description/>
+    </property>
+    <property name="Webview 2 decimal">
+      <description/>
+    </property>
+    <property name="Input string" type="measure">
+      <description/>
+    </property>
+    <property name="Audio string" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="Button string">
+      <description/>
+    </property>
+    <property name="Checkbox string" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="Dropdown string" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="File string" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="List string" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Picture string" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Radio string" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Webview 1 string">
+      <description/>
+    </property>
+    <property name="Webview 2 string">
+      <description/>
+    </property>
+    <property name="Input time" type="measure">
+      <description/>
+    </property>
+    <property name="Audio time" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="Button time">
+      <description/>
+    </property>
+    <property name="Checkbox time" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description/>
+    </property>
+    <property name="Dropdown time" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="File time" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="List time" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Picture time" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Radio time" type="vocab">
+      <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Webview 1 time">
+      <description/>
+    </property>
+    <property name="Webview 2 time">
+      <description/>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

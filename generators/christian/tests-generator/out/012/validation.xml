@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<ValidationSchema>
+  <ArchaeologicalElement name="Parent"/>
+  <ArchaeologicalElement name="Child"/>
+  <ArchaeologicalElement name="Child_Other"/>
+</ValidationSchema>

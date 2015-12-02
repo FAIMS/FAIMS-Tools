@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<!--@TEST: Child entites - lc attribute - single child-->
+<module>
+  <Parent>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Add_Child t="button" lc="Child"/>
+    </Tab>
+  </Parent>
+  <Child>
+    <Tab>
+      <Dummy t="input" f="id"/>
+    </Tab>
+  </Child>
+</module>

@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<!--@TEST: l attribute - multiple links-->
+<module>
+  <Parent>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Button_1 t="button" l="Parent/Link_Here"/>
+      <Button_2 t="button" l="Child"/>
+      <Button_3 t="button" l="Child/Sleepy"/>
+      <Button_4 t="button" l="Child/Sneezy"/>
+      <Button_5 t="button" l="Child/Dopey"/>
+    </Tab>
+    <Link_Here>
+      <Input t="input"/>
+    </Link_Here>
+  </Parent>
+  <Child>
+    <Sneezy>
+      <Sneezy_Input t="input" f="id"/>
+    </Sneezy>
+    <Sleepy>
+      <Sleepy_Input t="input" f="id"/>
+    </Sleepy>
+    <Dopey>
+      <Dopey_Input t="input" f="id"/>
+    </Dopey>
+  </Child>
+</module>
