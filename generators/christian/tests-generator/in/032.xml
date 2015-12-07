@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<!--@TEST: Reserved tags - logic-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+    </Tab>
+  </Tabgroup>
+  <logic>
+    BABBYS_FIRST_MODULE="Brahms' Op. 118 No. 2 is pretty alright, I reckon";
+  </logic>
+</module>

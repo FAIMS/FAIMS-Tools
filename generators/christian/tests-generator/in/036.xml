@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<!--@TEST: Reserved tags - author-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+    </Tab>
+
+    <author>
+      Does this text work as a label
+    </author>
+  </Tabgroup>
+</module>

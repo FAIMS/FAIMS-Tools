@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<!--@TEST: Reserved tags - desc - Menu item descriptions in cols-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <cols>
+
+        <!--In cols tags but not in col tags-->
+        <Dropdown    t="dropdown">
+          <desc>Desc 5</desc>
+          <opts>
+            <opt>test opt
+              <desc>Desc 5a</desc>
+            </opt>
+            <opt>test opt
+              <desc>Desc 5b</desc>
+            </opt>
+          </opts>
+        </Dropdown>
+        <List        t="list">
+          <desc>Desc 6</desc>
+          <opts>
+            <opt>test opt
+              <desc>Desc 6a</desc>
+            </opt>
+            <opt>test opt
+              <desc>Desc 6b</desc>
+            </opt>
+          </opts>
+        </List>
+        <Picture     t="picture">
+          <desc>Desc 7</desc>
+          <opts>
+            <opt>test opt
+              <desc>Desc 7a</desc>
+            </opt>
+            <opt>test opt
+              <desc>Desc 7b</desc>
+            </opt>
+          </opts>
+        </Picture>
+        <Radio       t="radio">
+          <desc>Desc 8</desc>
+          <opts>
+            <opt>test opt
+              <desc>Desc 8a</desc>
+            </opt>
+            <opt>test opt
+              <desc>Desc 8b</desc>
+            </opt>
+          </opts>
+        </Radio>
+        <col>
+
+          <!--In cols tags and in col tags-->
+          <Dropdown_1    t="dropdown">
+            <desc>Desc 5</desc>
+            <opts>
+              <opt>test opt
+                <desc>Desc 5a</desc>
+              </opt>
+              <opt>test opt
+                <desc>Desc 5b</desc>
+              </opt>
+            </opts>
+          </Dropdown_1>
+          <List_1       t="list">
+            <desc>Desc 6</desc>
+            <opts>
+              <opt>test opt
+                <desc>Desc 6a</desc>
+              </opt>
+              <opt>test opt
+                <desc>Desc 6b</desc>
+              </opt>
+            </opts>
+          </List_1>
+          <Picture_1     t="picture">
+            <desc>Desc 7</desc>
+            <opts>
+              <opt>test opt
+                <desc>Desc 7a</desc>
+              </opt>
+              <opt>test opt
+                <desc>Desc 7b</desc>
+              </opt>
+            </opts>
+          </Picture_1>
+          <Radio_1       t="radio">
+            <desc>Desc 8</desc>
+            <opts>
+              <opt>test opt
+                <desc>Desc 8a</desc>
+              </opt>
+              <opt>test opt
+                <desc>Desc 8b</desc>
+              </opt>
+            </opts>
+          </Radio_1>
+        </col>
+      </cols>
+    </Tab>
+  </Tabgroup>
+</module>

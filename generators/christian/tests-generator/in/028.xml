@@ -49,23 +49,6 @@
           </opt>
         </opts>
       </Radio>
-
-      <!--Do desc tags work with col(s)?-->
-      <cols>
-        <col>
-          <Left_1  t="input">
-            <desc>Desc 9</desc>
-          </Left_1>
-          <Left_2  t="input">
-            <desc>Desc 10</desc>
-          </Left_2>
-        </col>
-        <col>
-          <Right_1 t="input">
-            <desc>Desc 11</desc>
-          </Right_1>
-        </col>
-      </cols>
     </Tab>
   </Tabgroup>
 </module>

@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<!--@TEST: Reserved tags - str, pos, fmt, app-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <!--Should be third-->
+      <Input_1 t="input" f="id">
+        <str>
+          <fmt>$1</fmt>
+          <app>-</app>
+        </str>
+      </Input_1>
+
+      <!--Should be first-->
+      <Input_2 t="input" f="id">
+        <str>
+          <pos>2</pos>
+          <fmt>$2</fmt>
+          <app>-</app>
+        </str>
+      </Input_2>
+
+      <!--Should be second-->
+      <Input_3 t="input" f="id">
+        <str>
+          <pos>1</pos>
+          <fmt>$3</fmt>
+          <app>-</app>
+        </str>
+      </Input_3>
+    </Tab>
+  </Tabgroup>
+</module>
