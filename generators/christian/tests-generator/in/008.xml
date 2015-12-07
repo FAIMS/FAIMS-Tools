@@ -1,1 +1,12 @@
+<?xml version="1.0" ?>
+<!--@TEST: e attribute - Single, linking to same entity-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
 
+      <Dropdown_1  e="Tabgroup" t="dropdown"/>
+      <List_1      e="Tabgroup" t="list"/>
+    </Tab>
+  </Tabgroup>
+</module>
