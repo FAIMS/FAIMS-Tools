@@ -31,6 +31,8 @@
 * ERROR: Unexpected flag(s) "<xsl:value-of select="$v16" />"</xsl:comment>
 * ERROR: More than one search tab found. Settting bindings for only the first.</xsl:text>
 
+desc tags only allowed in attributes of certain type t
+
 
 Text, elements, attributes
 
