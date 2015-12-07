@@ -6,6 +6,11 @@ rm -rf      tests-generator/out/*
 
 for input in $(find tests-generator/in/ -name "*.xml")
 do
+    if [ ! -s "$input" ]
+    then
+        continue
+    fi
+
     filename=$(basename "$input")  # tests-generator/in/1.xml -> 1.xml
     noextension="${filename%.*}"   # 1.xml -> 1
     ./generate.sh "$input"
