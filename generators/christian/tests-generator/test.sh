@@ -6,8 +6,13 @@ numPassed=0
 numTests=0
 failures=( )
 
-for input in $(find tests-generator/in/ -name "*.xml")
+for input in $(find tests-generator/in/ -name "*.xml" | sort)
 do
+    if [ ! -s "$input" ]
+    then
+        continue
+    fi
+
     filename=$(basename "$input")  # tests-generator/in/1.xml -> 1.xml
     noextension="${filename%.*}"   # 1.xml -> 1
     subject=$( grep "@TEST" "$input" | sed -rn 's/^\s*<!--\s*@TEST:\s*(.*[^ ])\s*-->\s*$/\1/p' )
@@ -15,7 +20,7 @@ do
     echo "Running $filename - \"$subject\"..."
 
     ./generate.sh "$input"
-    for pathExpected_name_ext in $(find tests-generator/out/$noextension/ -type f)
+    for pathExpected_name_ext in $(find tests-generator/out/$noextension/ -type f | sort)
     do
         name_ext=$(basename "$pathExpected_name_ext")
         pathActual_name_ext="module/$name_ext"
@@ -53,7 +58,7 @@ do
     then
         ((numPassed++))
     else
-        $didPass=1 # reset to default
+        didPass=1 # reset to default
     fi
     ((numTests++))
 done
