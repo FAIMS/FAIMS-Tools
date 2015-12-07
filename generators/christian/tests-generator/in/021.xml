@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!--@TEST: Type guessing-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Input/>
+      <Audio       t="audio"/>
+      <Button      t="trigger"/>
+      <Checkbox    t="checkbox"/>
+      <Dropdown                ><opts><opt>test opt</opt></opts></Dropdown>
+      <File        t="file"/>
+      <GPS_Diag    t="gpsdiag"/>
+      <Group       t="group"/>
+      <List                 f="user"><opts><opt>test opt</opt></opts></List>
+      <Map         t="map"/>
+      <Picture                ><opts><opt p=".">test opt</opt></opts></Picture>
+      <Radio       t="radio"><opts><opt>test opt</opt></opts></Radio>
+      <Viewfiles   t="viewfiles"/>
+      <Webview_1   t="web"/>
+      <Webview_2   t="webview"/>
+    </Tab>
+  </Tabgroup>
+</module>

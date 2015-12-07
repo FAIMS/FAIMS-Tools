@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<!--@TEST: Reserved tags - autonum - Single field-->
+<module>
+  <Control>
+    <Control>
+      <autonum/>
+      <Button t="button" l="Tabgroup"/>
+    </Control>
+  </Control>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Automatically_Numbered_Field f="autonum"/>
+    </Tab>
+  </Tabgroup>
+</module>

@@ -1,0 +1,71 @@
+<?xml version="1.0" ?>
+<!--@TEST: Reserved tags - desc - Menu GUI elements-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Dropdown    t="dropdown">
+        <desc>Desc 5</desc>
+        <opts>
+          <opt>test opt
+            <desc>Desc 5a</desc>
+          </opt>
+          <opt>test opt
+            <desc>Desc 5b</desc>
+          </opt>
+        </opts>
+      </Dropdown>
+      <List        t="list">
+        <desc>Desc 6</desc>
+        <opts>
+          <opt>test opt
+            <desc>Desc 6a</desc>
+          </opt>
+          <opt>test opt
+            <desc>Desc 6b</desc>
+          </opt>
+        </opts>
+      </List>
+      <Picture     t="picture">
+        <desc>Desc 7</desc>
+        <opts>
+          <opt>test opt
+            <desc>Desc 7a</desc>
+          </opt>
+          <opt>test opt
+            <desc>Desc 7b</desc>
+          </opt>
+        </opts>
+      </Picture>
+      <Radio       t="radio">
+        <desc>Desc 8</desc>
+        <opts>
+          <opt>test opt
+            <desc>Desc 8a</desc>
+          </opt>
+          <opt>test opt
+            <desc>Desc 8b</desc>
+          </opt>
+        </opts>
+      </Radio>
+
+      <!--Do desc tags work with col(s)?-->
+      <cols>
+        <col>
+          <Left_1  t="input">
+            <desc>Desc 9</desc>
+          </Left_1>
+          <Left_2  t="input">
+            <desc>Desc 10</desc>
+          </Left_2>
+        </col>
+        <col>
+          <Right_1 t="input">
+            <desc>Desc 11</desc>
+          </Right_1>
+        </col>
+      </cols>
+    </Tab>
+  </Tabgroup>
+</module>

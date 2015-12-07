@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<!--@TEST: Reserved tags - col-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <cols>
+        <col>
+          <Left_1  t="input"/>
+          <Left_2  t="input"/>
+        </col>
+        <col>
+          <Right_1 t="input"/>
+        </col>
+      </cols>
+    </Tab>
+  </Tabgroup>
+</module>
