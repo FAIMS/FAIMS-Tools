@@ -101,9 +101,6 @@ bindOnEvent(String ref, String event) {
     stmtsExpr += "; ";
   }
 
-  Log.e(".", ref);
-  Log.e(".", event);
-  Log.e(".", stmtsExpr);
   onEvent(ref, event, stmtsExpr);
 }
 
@@ -127,19 +124,7 @@ getDropdownItemValue() {
   return dropdownItemValue;
 }
 
-addOnEvent("User/User/Select_User", "click", "dropdownItemValue = getFieldValue(\"User/User/Select_User\")");
-addOnEvent("Burial_Mound/General/Type", "click", "dropdownItemValue = getFieldValue(\"Burial_Mound/General/Type\")");
-addOnEvent("Burial_Mound/General/Site_Significance", "click", "dropdownItemValue = getFieldValue(\"Burial_Mound/General/Site_Significance\")");
-addOnEvent("Burial_Mound/General/Source", "click", "dropdownItemValue = getFieldValue(\"Burial_Mound/General/Source\")");
-addOnEvent("Burial_Mound/General/Surrounding_Landuse", "click", "dropdownItemValue = getFieldValue(\"Burial_Mound/General/Surrounding_Landuse\")");
-addOnEvent("Burial_Mound/General/Surface_Landuse", "click", "dropdownItemValue = getFieldValue(\"Burial_Mound/General/Surface_Landuse\")");
-addOnEvent("Burial_Mound/General/Visibility", "click", "dropdownItemValue = getFieldValue(\"Burial_Mound/General/Visibility\")");
-addOnEvent("Burial_Mound/Material/Surface_Material_Density", "click", "dropdownItemValue = getFieldValue(\"Burial_Mound/Material/Surface_Material_Density\")");
-addOnEvent("Burial_Mound/CRM/Disturbance_Kind", "click", "dropdownItemValue = getFieldValue(\"Burial_Mound/CRM/Disturbance_Kind\")");
-addOnEvent("Burial_Mound/CRM/Principal_Factors", "click", "dropdownItemValue = getFieldValue(\"Burial_Mound/CRM/Principal_Factors\")");
-addOnEvent("Burial_Mound/CRM/Volume_of_Soil_Removed_via_RT", "click", "dropdownItemValue = getFieldValue(\"Burial_Mound/CRM/Volume_of_Soil_Removed_via_RT\")");
-addOnEvent("Burial_Mound/CRM/Affect", "click", "dropdownItemValue = getFieldValue(\"Burial_Mound/CRM/Affect\")");
-addOnEvent("Burial_Mound/CRM/Impact", "click", "dropdownItemValue = getFieldValue(\"Burial_Mound/CRM/Impact\")");
+addOnEvent("Tabgroup/Tab/Dropdown", "click", "dropdownItemValue = getFieldValue(\"Tabgroup/Tab/Dropdown\")");
 
 /******************************************************************************/
 /*                                 ACTION BAR                                 */
@@ -238,10 +223,9 @@ addActionBarItem("external_gps", new ToggleActionButtonCallback() {
 /******************************************************************************/
 /*                                    GPS                                     */
 /******************************************************************************/
-addOnEvent("Control/Main", "show", "updateGPSDiagnostics()");
 
 updateGPSDiagnostics() {
-  String diagnosticsRef = "Control/Main/GPS_Diagnostics";
+  String diagnosticsRef = "";
   if (diagnosticsRef.equals("")) {
     return;
   }
@@ -307,52 +291,34 @@ updateGPSDiagnostics() {
 /*                                 USER LOGIN                                 */
 /******************************************************************************/
 
-String userMenuPath = "User/User/Select_User";
-
-populateListForUsers(){
-  String getNonDeletedUsersQuery = "SELECT userid, fname || ' ' || lname "+
-                                   "  FROM user "+
-                                   " WHERE userdeleted is null;";
-
-  fetchAll(getNonDeletedUsersQuery, new FetchCallback() {
-    onFetch(result) {
-      populateDropDown(userMenuPath, result, true);
-    }
-  });
-}
-
-String username = "";
-
-selectUser () {
-  String userVocabId  = getFieldValue(userMenuPath);
-  if (isNull(userVocabId))
-    return;
-
-  String userQ        = "SELECT userid,fname,lname,email FROM user " +
-                        "WHERE  userid='" + userVocabId + "';";
-  FetchCallback callback = new FetchCallback() {
-    onFetch(result) {
-      user = new User(
-            result.get(0),
-            result.get(1),
-            result.get(2),
-            result.get(3)
-      );
-      setUser(user);
-      username = result.get(1) + " " + result.get(2);
-    }
-  };
-
-  fetchOne(userQ, callback);
-}
-
-addOnEvent(userMenuPath, "show",  "populateListForUsers()");
-addOnEvent(userMenuPath, "click", "selectUser()");
+// WARNING: This module is missing a login menu
+String userId    = "1";
+String nameFirst = "";
+String nameLast  = "";
+String email     = "";
+User   user      = new User(userId, nameFirst, nameLast, email);
+setUser(user);
 
 
 /******************************************************************************/
 /*                              MENU POPULATION                               */
 /******************************************************************************/
+/** Fetches the contents of a specifed vocabulary and stores it in the given list. **/
+fetchVocab(String vocabName, List storageList) {
+  fetchVocab(vocabName, storageList, null);
+}
+fetchVocab(String vocabName, List storageList, String callbackFunction) {
+  fetchAll("select vocabid, vocabname from vocabulary left join attributekey using (attributeid) where attributename = '" + vocabName + "';", new FetchCallback() {
+    onFetch(result) {
+      storageList.addAll(result);
+      Log.d("fetchVocab()", "Fetched vocabulary \"" + vocabname + "\" contents: " + result.toString());
+      if (callbackFunction != null && !isNull(callbackFunction)) {
+        execute(callbackFunction);
+      }
+    }
+  });
+}
+
 /** Wrapper for to make a vocab without an exlusion list **/
 makeVocab(String type, String path, String attrib) {
   makeVocab(type, path, attrib, null);
@@ -444,28 +410,10 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
       }
     });
 }
-makeVocab("DropDown", "Burial_Mound/General/Type", "Type");
-makeVocab("DropDown", "Burial_Mound/General/Site_Significance", "Site Significance");
-makeVocab("DropDown", "Burial_Mound/General/Source", "Source");
-makeVocab("CheckBoxGroup", "Burial_Mound/General/Exists_in_Legacy", "Exists in Legacy");
-makeVocab("HierarchicalDropDown", "Burial_Mound/General/Surrounding_Landuse", "Surrounding Landuse");
-makeVocab("HierarchicalDropDown", "Burial_Mound/General/Surface_Landuse", "Surface Landuse");
-makeVocab("DropDown", "Burial_Mound/General/Visibility", "Visibility");
-makeVocab("PictureGallery", "Burial_Mound/Dimensions/Profile", "Profile");
-makeVocab("PictureGallery", "Burial_Mound/Dimensions/Plan", "Plan");
-makeVocab("RadioGroup", "Burial_Mound/Material/Stone_Feature_Present_And_Visible", "Stone Feature Present And Visible");
-makeVocab("DropDown", "Burial_Mound/Material/Surface_Material_Density", "Surface Material Density");
-makeVocab("RadioGroup", "Burial_Mound/Material/Sample_Collected", "Sample Collected");
-makeVocab("DropDown", "Burial_Mound/CRM/Disturbance_Kind", "Disturbance Kind");
-makeVocab("CheckBoxGroup", "Burial_Mound/CRM/Disturbance_Factors", "Disturbance Factors");
-makeVocab("HierarchicalDropDown", "Burial_Mound/CRM/Principal_Factors", "Principal Factors");
-makeVocab("CheckBoxGroup", "Burial_Mound/CRM/Age_of_Damage", "Age of Damage");
-makeVocab("CheckBoxGroup", "Burial_Mound/CRM/RT_Kind", "RT Kind");
-makeVocab("CheckBoxGroup", "Burial_Mound/CRM/RT_Method", "RT Method");
-makeVocab("PictureGallery", "Burial_Mound/CRM/RT_Frequency", "RT Frequency");
-makeVocab("DropDown", "Burial_Mound/CRM/Volume_of_Soil_Removed_via_RT", "Volume of Soil Removed via RT");
-makeVocab("DropDown", "Burial_Mound/CRM/Affect", "Affect");
-makeVocab("DropDown", "Burial_Mound/CRM/Impact", "Impact");
+makeVocab("DropDown", "Tabgroup/Tab/Dropdown", "Dropdown");
+makeVocab("List", "Tabgroup/Tab/List", "List");
+makeVocab("PictureGallery", "Tabgroup/Tab/Picture", "Picture");
+makeVocab("RadioGroup", "Tabgroup/Tab/Radio", "Radio");
 
 
 /******************************************************************************/
@@ -534,15 +482,6 @@ validateFields(List fields, String format) {
   return out;
 }
 
-validateBurialMound() {
-  List f = new ArrayList(); // Fields to be validated
-
-  f.add(fieldPair("Burial_Mound/General/Object_ID", "{Object_ID}"));
-
-  String validationMessage = validateFields(f, "PLAINTEXT");
-  showWarning("Validation Results", validationMessage);
-}
-
 
 
 /******************************************************************************/
@@ -602,8 +541,6 @@ saveTabGroup(String tabgroup, String callback) {
 populateAuthorAndTimestamp(String tabgroup) {
   Map tabgroupToAuthor    = new HashMap();
   Map tabgroupToTimestamp = new HashMap();
-  tabgroupToAuthor.put("Burial_Mound", "Burial_Mound/General/Author");
-  tabgroupToTimestamp.put("Burial_Mound", "Burial_Mound/General/Timestamp");
 
   String uuid          = getUuid(tabgroup);
   String authorPath    = tabgroupToAuthor.get(tabgroup);
@@ -631,39 +568,15 @@ populateAuthorAndTimestamp(String tabgroup) {
   fetchOne(q, callback);
 }
 
-onShowBurialMound () {
+onShowTabgroup () {
   // TODO: Add some things which should happen when this tabgroup is shown
-  saveTabGroup("Burial_Mound");
+  saveTabGroup("Tabgroup");
 }
 
-addOnEvent("Burial_Mound", "show", "onShowBurialMound()");
-
-onClickUserLogin () {
-  // TODO: Add some things which should happen when this element is clicked
-  newTab("Control", true);
-}
-onClickControlTakeFeature () {
-  // TODO: Add some things which should happen when this element is clicked
-  newBurialMound();
-}
-onClickBurialMoundCreateShapefile () {
-  // TODO: Add some things which should happen when this element is clicked
-  newTab("Control/Map", true);
-}
-
-addOnEvent("User/User/Login", "click", "onClickUserLogin()");
-addOnEvent("Control/Main/Take_Feature", "click", "onClickControlTakeFeature()");
-addOnEvent("Burial_Mound/General/Create_Shapefile", "click", "onClickBurialMoundCreateShapefile()");
+addOnEvent("Tabgroup", "show", "onShowTabgroup()");
 
 
-/******************************************************************************/
-/*                   AUDIO, CAMERA, FILE AND VIDEO BINDINGS                   */
-/******************************************************************************/
-addOnEvent("Burial_Mound/General/Button_General_Photo", "click", "attachPictureTo(\"Burial_Mound/General/General_Photo\")");
-addOnEvent("Burial_Mound/Dimensions/Button_Sketch_Photo", "click", "attachPictureTo(\"Burial_Mound/Dimensions/Sketch_Photo\")");
-addOnEvent("Burial_Mound/Material/Button_Material_Photo", "click", "attachPictureTo(\"Burial_Mound/Material/Material_Photo\")");
-addOnEvent("Burial_Mound/CRM/Button_CRM_Photo", "click", "attachPictureTo(\"Burial_Mound/CRM/CRM_Photo\")");
-addOnEvent("Burial_Mound/Dimensions/Button_Attach_A_Sketch", "click", "attachFileTo(\"Burial_Mound/Dimensions/Attach_A_Sketch\")");
+
 
 /******************************************************************************/
 /*                             NAVIGATION DRAWER                              */
@@ -678,7 +591,6 @@ removeNavigationButtons() {
 addNavigationButtons(String tabgroup) {
   removeNavigationButtons();
   List tabgroupsToValidate = new ArrayList();
-  tabgroupsToValidate.add("Burial_Mound");
 
   addNavigationButton("new", new ActionButtonCallback() {
     actionOnLabel() {
@@ -814,7 +726,6 @@ makeDuplicateRelationships(fetchedAttributes, String newuuid){
   for (savedAttribute : fetchedAttributes){
     //  saveEntitiesToHierRel(relnname, parent, child, parentverb, childverb, relSaveCallback);
     //relntypename, parentparticipatesverb, childparticipatesverb, childuuid
-    Log.e("Module", "in");
     String relntypename           = savedAttribute.get(0);
     String parentparticipatesverb = savedAttribute.get(1);
     String childparticipatesverb  = savedAttribute.get(2);
@@ -872,39 +783,22 @@ loadEntityFrom(String entityID) {
   });
 }
 
-newBurialMound(){
-  String tabgroup = "Burial_Mound";
+newTabgroup(){
+  String tabgroup = "Tabgroup";
 
-  String autoNumSource = "";
-  autoNumSource = getFieldValue("Control/Main/Next_Object_ID");
-  if (isNull(autoNumSource)) {
-    showWarning("{Alert}","{A_next_ID_has_not_been_entered_please_provide_one}");
-    return;
-  }
 
   setUuid(tabgroup, null);
   newTabGroup(tabgroup);
 
-  String autoNumDest = "";
-  autoNumDest = "Burial_Mound/General/Object_ID";
-  incAutoNum(autoNumDest);
 }
 
-duplicateBurialMound(){
-  String tabgroup = "Burial_Mound";
+duplicateTabgroup(){
+  String tabgroup = "Tabgroup";
   String uuidOld = getUuid(tabgroup);
 
   disableAutoSave(tabgroup);
 
-  String autoNumDest = "";
-  autoNumDest = "Burial_Mound/General/Object_ID";
-  incAutoNum(autoNumDest);
 
-  populateCameraPictureGallery("Burial_Mound/General/General_Photo", new ArrayList());
-  populateFileList("Burial_Mound/Dimensions/Attach_A_Sketch", new ArrayList());
-  populateCameraPictureGallery("Burial_Mound/Dimensions/Sketch_Photo", new ArrayList());
-  populateCameraPictureGallery("Burial_Mound/Material/Material_Photo", new ArrayList());
-  populateCameraPictureGallery("Burial_Mound/CRM/CRM_Photo", new ArrayList());
 
 
   saveCallback = new SaveCallback() {
@@ -935,29 +829,24 @@ duplicateBurialMound(){
   fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
     onFetch(result) {
       excludeAttributes = new ArrayList();
-      excludeAttributes.add("General Photo");
-      excludeAttributes.add("Attach A Sketch");
-      excludeAttributes.add("Sketch Photo");
-      excludeAttributes.add("Material Photo");
-      excludeAttributes.add("CRM Photo");
 
       duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
     }
   });
 }
 
-deleteBurialMound(){
-  String tabgroup = "Burial_Mound";
+deleteTabgroup(){
+  String tabgroup = "Tabgroup";
 
   if (isNull(getUuid(tabgroup))) {
     cancelTabGroup(tabgroup, true);
   } else {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteBurialMound()", "doNotDelete()");
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteTabgroup()", "doNotDelete()");
   }
 }
 
-reallyDeleteBurialMound(){
-  String tabgroup = "Burial_Mound";
+reallyDeleteTabgroup(){
+  String tabgroup = "Tabgroup";
   deleteArchEnt(getUuid(tabgroup));
   cancelTabGroup(tabgroup, false);
 }
@@ -966,203 +855,7 @@ reallyDeleteBurialMound(){
 doNotDelete(){
   showToast("{Delete_Cancelled}");
 }
-addOnEvent("User", "show", "removeNavigationButtons()");
-addOnEvent("Control", "show", "removeNavigationButtons()");
-addOnEvent("Burial_Mound", "show", "addNavigationButtons(\"Burial_Mound\")");
-
-/******************************************************************************/
-/*                                   SEARCH                                   */
-/******************************************************************************/
-addOnEvent("Control/Search"               , "show"  , "search();");
-addOnEvent("Control/Search/Entity_List"   , "click" , "loadEntity();");
-addOnEvent("Control/Search/Search_Button" , "click" , "search()");
-addOnEvent("Control/Search/Search_Term"   , "click" , "clearSearch()");
-
-clearSearch(){
-  setFieldValue("Control/Search/Search_Term","");
-}
-
-search(){
-  String tabgroup = "Control";
-  String refEntityList  = tabgroup + "/Search/Entity_List";
-  String refSearchTerm  = tabgroup + "/Search/Search_Term";
-  String refEntityTypes = tabgroup + "/Search/Entity_Types";
-
-  String type = "";
-  String term = getFieldValue(refSearchTerm);
-  String searchQuery = "SELECT uuid, response "+
-                       "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
-                       " WHERE uuid in (SELECT uuid "+
-                       "                  FROM latestNonDeletedArchEntIdentifiers "+
-                       "                 WHERE measure LIKE '"+term+"'||'%'  "+
-                       "                   AND ( aenttypename LIKE '"+type+"' OR '' = '"+type+"' ) "+
-                       "                )  "+
-                       " ORDER BY response "+
-                       " LIMIT ? "+
-                       "OFFSET ? ";
-
-  populateCursorList(refEntityList, searchQuery, 25);
-  refreshTabgroupCSS(tabgroup);
-
-  Log.d("Module", "Search query: " + searchQuery);
-}
-
-loadBurialMoundFrom(String uuid) {
-  String tabgroup = "Burial_Mound";
-  setUuid(tabgroup, uuid);
-  if (isNull(uuid)) return;
-
-  showTabGroup(tabgroup, uuid);
-}
-
-
-/******************************************************************************/
-/*                          TAKE FROM GPS BUTTON(S)                           */
-/******************************************************************************/
-addOnEvent("Burial_Mound/General/Take_From_GPS", "click", "takePoint(\"Burial_Mound\")");
-
-/* Takes the current point using gps. */
-takePoint(String tabgroup) {
-  String archEntType = tabgroup.replaceAll("_", " ");
-  String currentUuid = getUuid(tabgroup);
-  if (isNull(currentUuid)){
-    showToast("Please enter data first and let a save occur.");
-  }
-
-  Object position = getGPSPosition();
-  if (position == null) {
-    showToast("{GPS_Not_Initialised}");
-    return;
-  }
-
-  Object projPosition = getGPSPositionProjected();
-  Double latitude     = position.getLatitude();
-  Double longitude    = position.getLongitude();
-  Double northing     = projPosition.getLatitude();
-  Double easting      = projPosition.getLongitude();
-
-  samplePoint = new Point(new MapPos(easting, northing), null, (PointStyle) null, null);
-  ArrayList geolist = new ArrayList();
-  geolist.add(samplePoint);
-
-  attributes = createAttributeList();
-  attributes.add(createEntityAttribute("Latitude", "Accuracy: "+getGPSEstimatedAccuracy(), null, null, null));
-
-  saveArchEnt(currentUuid, archEntType, geolist, attributes, new SaveCallback() {
-    onSave(uuid, newRecord) {
-      print("[takePoint()] Added geometry: " + geolist);
-      fillInGPS(tabgroup);
-    }
-  });
-}
-
-/* Sets the value of GPS views for the given tab path. */
-fillInGPS(String tabgroup) {
-  Map tabgroupToTabRef = new HashMap();
-  tabgroupToTabRef.put("Burial_Mound", "Burial_Mound/General/");
-
-  String currentUuid = getUuid(tabgroup);
-  if (isNull(currentUuid)) {
-    return;
-  }
-
-  String query = "SELECT x(transform(geospatialcolumn,                4326)) as longtiude, " +
-                 "       y(transform(geospatialcolumn,                4326)) as latitude, " +
-                 "       x(transform(geospatialcolumn, "+getModuleSrid()+")) as easting, " +
-                 "       y(transform(geospatialcolumn, "+getModuleSrid()+")) as northing " +
-                 "  FROM latestnondeletedarchent, vocabulary " +
-                 " WHERE uuid = '" + currentUuid + "';";
-
-  fetchOne(query, new FetchCallback() {
-    onFetch(result) {
-      print("[fillInGPS()] Fetched DB transformed geometry: " + result);
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Longitude" , result.get(0));
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Latitude"  , result.get(1));
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Easting"   , result.get(2));
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Northing"  , result.get(3));
-    }
-  });
-}
-
-/******************************************************************************/
-/*                       AUTONUMBERING HELPER FUNCTIONS                       */
-/******************************************************************************/
-insertIntoLocalSettings(String key, String val) {
-    fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
-}
-
-insertIntoLocalSettings(String key, Integer val) {
-    insertIntoLocalSettings(key, Integer.toString(val));
-}
-
-/*
- * If value of field specified by `ref` is null, sets the field to `defaultVal`,
- * otherwise increments its value.
- *
- * Returns the value the field was updated to.
- */
-incField(String ref, Integer defaultVal) {
-  String val = getFieldValue(ref);
-
-  if (isNull(val)) {
-    setFieldValue(ref, defaultVal);
-    return defaultVal;
-  }
-
-  Integer inc = Integer.parseInt(val) + 1;
-  setFieldValue(ref, inc);
-  insertIntoLocalSettings(ref, inc.toString());
-
-  return inc;
-}
-
-/* Increments the field at `ref` or returns null if it does not contain a
- * number.
- */
-incField(String ref) {
-  return incField(ref, 1);
-}
-
-addOnEvent("Control", "load", "onLoadControl()");
-
-/* This function should only be called once since it creates event handlers,
- * otherwise multiple copies of the same handler will trigger with the event.
- */
-onLoadControl() {
-  List l = new ArrayList();
-  l.add("Control/Main/Next_Object_ID");
-
-
-  for (ref : l) {
-    loadStartingId(ref);
-  }
-  for (ref : l) {
-    onFocus(ref, null,  "insertIntoLocalSettings(\"" + ref + "\", getFieldValue(\"" + ref + "\"));");
-  }
-}
-
-loadStartingId(String ref) {
-  String idQ = "SELECT value FROM localSettings WHERE key = '" + ref + "';";
-  fetchOne(idQ, new FetchCallback() {
-    onFetch(result) {
-      if (!isNull(result)) {
-        setFieldValue(ref, result.get(0));
-      } else {
-        setFieldValue(ref, "1");
-      }
-    }
-  });
-}
-
-incAutoNum(String destPath) {
-  Map destToSource = new HashMap();
-  destToSource.put("Burial_Mound/General/Object_ID", "Control/Main/Next_Object_ID");
-
-  String sourcePath = destToSource.get(destPath);
-  String destVal    = getFieldValue(sourcePath);
-  setFieldValue(destPath, destVal);
-  incField(sourcePath);
-}
+addOnEvent("Tabgroup", "show", "addNavigationButtons(\"Tabgroup\")");
 
 /******************************************************************************/
 /*                                    INIT                                    */

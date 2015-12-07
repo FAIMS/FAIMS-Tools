@@ -1,30 +1,39 @@
 <?xml version="1.0" ?>
-<module suppressWarnings="false" adsdf="asdf">
-  <noot/>
-  <User huh="wut" f="nodata">
-    <noot/>
+<module suppressWarnings="false">
+  <User f="nodata">
     <User>
-      <noot>
-        <noot/>
-      </noot>
-      <Select_User test="testing" t="list" f="user" l="Control">
-        <noot asdf="asdf">
-        </noot>
-      </Select_User>
+      <Select_User t="list" f="user" l="Control"/>
     </User>
   </User>
+  <User/>
   <Control f="nodata">
     <Control>
       <New_Ent t="button" l="Ent"/>
     </Control>
     <search/>
+    <search/>
   </Control>
+  <Control/>
   <Ent>
     <Tab>
-      <ID f="id"/>
+      <ID f="id user"/>
       <Muh_Table t="table"/>
       <Device_List f="nodata" t="dropdown"/>
       <Refresh_List t="button" lc="B"/>
+      <cols>
+        <col>
+          <Input/>
+          <Dropdown>
+            <opts></opts>
+          </Dropdown>
+          <Picture>
+            <opts>
+              <opt p="find"/>
+            </opts>
+          </Picture>
+          <list f="user"/>
+        </col>
+      </cols>
     </Tab>
   </Ent>
   <B>

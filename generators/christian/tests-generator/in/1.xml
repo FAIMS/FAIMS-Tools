@@ -1,9 +1,0 @@
-<?xml version="1.0" ?>
-<!--@TEST: Single input-->
-<module>
-  <Tabgroup>
-    <Tab>
-      <Input t="input" f="id"/> <!--f="id" is required to prevent errors-->
-    </Tab>
-  </Tabgroup>
-</module>
