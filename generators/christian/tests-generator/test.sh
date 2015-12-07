@@ -70,4 +70,4 @@ do
     echo "  $f"
 done
 
-echo "$numTests tests completed with $numPassed passes and $((($numTests - $numPassed))) failures."
+echo "$numTests test(s) completed with $numPassed pass(es) and $((($numTests - $numPassed))) failure(s)."
