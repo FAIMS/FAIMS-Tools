@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<!--@TEST: arch16 generation and substitution-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <!--Squares brackets shouldn't screw things up-->
+      <Region_Villiage t="dropdown">
+        <desc>Indicate the geographical scope of the item. Enter data in the order locality, state or province, country.</desc>
+        <opts>
+          <opt>[locality], [state or province], [country]</opt>
+          <opt>Burgos, Ilocos Sur, Philippines</opt>
+        </opts>
+      </Region_Villiage>
+
+      <!--Dashes should be okay-->
+      <Language_Content_ISO639-3 t="dropdown">
+        <desc>Content language is the language included in your data (spoken and/or written). Insert the 3-letter ISO 639-3 code for your language, and the standard name of the language as spelt in the ethnologue entry [search on www.ethnologue.com/site_search.asp]. Separate the code and the language with a hyphen, e.g. "ilo - Ilocano"</desc>
+        <opts>
+          <opt>mis - Uncoded languages</opt>
+          <opt>und - Undetermined languages</opt>
+          <opt>mul - Multiple languages</opt>
+          <opt>zxx - No linguistic content</opt>
+          <opt>[3-letter ISO639-3 code] - [Ethnologue name of language]</opt>
+          <opt>ilo - Ilocano</opt>
+          <opt>eng - English</opt>
+        </opts>
+      </Language_Content_ISO639-3>
+
+      <!--
+           I'd put a null character in here but XML parsers don't like it, let
+           alone a thoughtlessly written bunch of XSLT code.
+      -->
+      <M__--enu t="dropdown">
+        <opts>
+          <opt>
+            this
+            is
+            0
+            "
+            a
+            '
+            “Smart quotes for all!”
+            test
+            %
+            _
+            !@#$^&amp;*()[]|+_-/.,
+            tab character:	other characters
+            This test is pretty hard 『…』
+          </opt>
+          <opt>『…』</opt>
+        </opts>
+      </M__--enu>
+    </Tab>
+  </Tabgroup>
+</module>
