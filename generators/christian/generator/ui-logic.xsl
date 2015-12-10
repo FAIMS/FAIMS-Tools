@@ -1345,11 +1345,24 @@ fillInGPS(String tabgroup) {
 /*                       AUTONUMBERING HELPER FUNCTIONS                       */
 /******************************************************************************/
 insertIntoLocalSettings(String key, String val) {
-    fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
+  fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
 }
 
 insertIntoLocalSettings(String key, Integer val) {
-    insertIntoLocalSettings(key, Integer.toString(val));
+  insertIntoLocalSettings(key, Integer.toString(val));
+}
+
+setFieldValueFromLocalSettings(String key, String ref) {
+  String q = "SELECT value FROM localSettings WHERE key = '" + key + "';";
+  fetchOne(q, new FetchCallback() {
+    onFetch(result) {
+      if (!isNull(result)) {
+        setFieldValue(ref, result.get(0));
+      } else {
+        setFieldValue(ref, "");
+      }
+    }
+  });
 }
 
 /*
