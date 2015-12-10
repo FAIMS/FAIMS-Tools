@@ -54,8 +54,6 @@ setFieldValueFromLocalSettings(String key, String ref) {
     onFetch(result) {
       if (!isNull(result)) {
         setFieldValue(ref, result.get(0));
-      } else {
-        setFieldValue(ref, "");
       }
     }
   });
