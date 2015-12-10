@@ -40,6 +40,27 @@ makeLocalID(){
 }
 makeLocalID();
 
+insertIntoLocalSettings(String key, String val) {
+  fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
+}
+
+insertIntoLocalSettings(String key, Integer val) {
+  insertIntoLocalSettings(key, Integer.toString(val));
+}
+
+setFieldValueFromLocalSettings(String key, String ref) {
+  String q = "SELECT value FROM localSettings WHERE key = '" + key + "';";
+  fetchOne(q, new FetchCallback() {
+    onFetch(result) {
+      if (!isNull(result)) {
+        setFieldValue(ref, result.get(0));
+      } else {
+        setFieldValue(ref, "");
+      }
+    }
+  });
+}
+
 newTab(String tab, Boolean resolveTabGroups) {
   if (!resolveTabGroups) {
     return newTab(tab);
@@ -1344,27 +1365,6 @@ fillInGPS(String tabgroup) {
 /******************************************************************************/
 /*                       AUTONUMBERING HELPER FUNCTIONS                       */
 /******************************************************************************/
-insertIntoLocalSettings(String key, String val) {
-  fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
-}
-
-insertIntoLocalSettings(String key, Integer val) {
-  insertIntoLocalSettings(key, Integer.toString(val));
-}
-
-setFieldValueFromLocalSettings(String key, String ref) {
-  String q = "SELECT value FROM localSettings WHERE key = '" + key + "';";
-  fetchOne(q, new FetchCallback() {
-    onFetch(result) {
-      if (!isNull(result)) {
-        setFieldValue(ref, result.get(0));
-      } else {
-        setFieldValue(ref, "");
-      }
-    }
-  });
-}
-
 /*
  * If value of field specified by `ref` is null, sets the field to `defaultVal`,
  * otherwise increments its value.
