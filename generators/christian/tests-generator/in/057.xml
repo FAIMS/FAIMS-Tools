@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<!--@TEST: Flags - 'user'-->
+<module>
+  <Tabgroup f="nodata"> <!--user lists aren't meant to act as properties, hence "nodata"-->
+    <Tab>
+      <List t="list" f="user"/>
+    </Tab>
+  </Tabgroup>
+</module>

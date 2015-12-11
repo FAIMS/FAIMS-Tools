@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <ArchaeologicalElement name="Tabgroup">
+    <description/>
+    <property name="Dummy" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Region Villiage" type="vocab">
+      <description/>
+      <lookup>
+        <term>{_locality____state_or_province____country_}
+<description/></term>
+        <term>{Burgos__Ilocos_Sur__Philippines}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Language Content ISO639-3" type="vocab">
+      <description/>
+      <lookup>
+        <term>{mis___Uncoded_languages}
+<description/></term>
+        <term>{und___Undetermined_languages}
+<description/></term>
+        <term>{mul___Multiple_languages}
+<description/></term>
+        <term>{zxx___No_linguistic_content}
+<description/></term>
+        <term>{_3_letter_ISO639_3_code_____Ethnologue_name_of_language_}
+<description/></term>
+        <term>{ilo___Ilocano}
+<description/></term>
+        <term>{eng___English}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Caf&#xE9; Coffee" type="measure">
+      <description/>
+    </property>
+    <property name="Yay Accents &#xE9;&#xF2;&#xE1;" type="measure">
+      <description/>
+    </property>
+    <property name="Language Content ISO639-4" type="vocab">
+      <description/>
+      <lookup>
+        <term>{Caf__Coffee}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="Menopause Jokes Are Not Funny. Period." type="measure">
+      <description/>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

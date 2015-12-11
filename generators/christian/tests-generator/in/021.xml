@@ -8,6 +8,7 @@
       <Input/>
       <Audio       t="audio"/>
       <Button      t="trigger"/>
+      <Camera      t="camera"/>
       <Checkbox    t="checkbox"/>
       <Dropdown                ><opts><opt>test opt</opt></opts></Dropdown>
       <File        t="file"/>
@@ -17,6 +18,7 @@
       <Map         t="map"/>
       <Picture                ><opts><opt p=".">test opt</opt></opts></Picture>
       <Radio       t="radio"><opts><opt>test opt</opt></opts></Radio>
+      <Video       t="video"/>
       <Viewfiles   t="viewfiles"/>
       <Webview_1   t="web"/>
       <Webview_2   t="webview"/>

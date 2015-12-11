@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<!--@TEST: Flags - 'nocertainty'-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Audio       f="nocertainty" t="audio"/>
+      <Button      f="nocertainty" t="trigger"/>
+      <Camera      f="nocertainty" t="camera"/>
+      <Checkbox    f="nocertainty" t="checkbox"/>
+      <Dropdown    f="nocertainty" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown>
+      <File        f="nocertainty" t="file"/>
+      <GPS_Diag    f="nocertainty" t="gpsdiag"/>
+      <Group       f="nocertainty" t="group"/>
+      <List        f="nocertainty" t="list"><opts><opt>test opt</opt></opts></List>
+      <Map         f="nocertainty" t="map"/>
+      <Picture     f="nocertainty" t="picture"><opts><opt>test opt</opt></opts></Picture>
+      <Radio       f="nocertainty" t="radio"><opts><opt>test opt</opt></opts></Radio>
+      <Viewfiles   f="nocertainty" t="viewfiles"/>
+      <Video       f="nocertainty" t="video"/>
+      <Webview_1   f="nocertainty" t="web"/>
+      <Webview_2   f="nocertainty" t="webview"/>
+    </Tab>
+  </Tabgroup>
+</module>

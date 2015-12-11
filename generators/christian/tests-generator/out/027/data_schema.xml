@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <ArchaeologicalElement name="Tabgroup">
+    <description/>
+    <property name="Dummy" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Input" type="measure">
+      <description>Desc 1</description>
+    </property>
+    <property name="Audio" type="file" file="true" thumbnail="true">
+      <description>Desc 2</description>
+    </property>
+    <property name="Checkbox" type="vocab">
+      <!--WARNING: A set of <opts> tags are expected but not present-->
+      <description>Desc 3</description>
+    </property>
+    <property name="File" type="file" file="true" thumbnail="true">
+      <description>Desc 4</description>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

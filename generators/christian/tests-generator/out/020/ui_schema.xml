@@ -19,10 +19,7 @@
           <Tabgroup>
             <Tab>
               <Dummy/>
-              <Dropdown/>
-              <List/>
               <Picture/>
-              <Radio/>
             </Tab>
           </Tabgroup>
         </faims>
@@ -58,29 +55,8 @@
         <input faims_attribute_type="measure" ref="Dummy" faims_attribute_name="Dummy">
           <label>{Dummy}</label>
         </input>
-        <select1 faims_attribute_type="vocab" ref="Dropdown" faims_attribute_name="Dropdown">
-          <label>{Dropdown}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 appearance="compact" ref="List" faims_attribute_name="List">
-          <label>{List}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
         <select1 type="image" faims_attribute_type="vocab" ref="Picture" faims_attribute_name="Picture">
           <label>{Picture}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select1>
-        <select1 appearance="full" faims_attribute_type="vocab" ref="Radio" faims_attribute_name="Radio">
-          <label>{Radio}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>

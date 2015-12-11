@@ -13,6 +13,9 @@
     <property name="Audio 1" type="file" file="true" thumbnail="true">
       <description/>
     </property>
+    <property name="Camera 1" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
     <property name="Button 1">
       <description/>
     </property>
@@ -51,6 +54,9 @@
 <description/></term>
       </lookup>
     </property>
+    <property name="Video 1" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
     <property name="Webview 1 1">
       <description/>
     </property>
@@ -61,6 +67,9 @@
       <description/>
     </property>
     <property name="Audio 2" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
+    <property name="Camera 2" type="file" file="true" thumbnail="true">
       <description/>
     </property>
     <property name="Button 2">
@@ -100,6 +109,9 @@
         <term>{test_opt}
 <description/></term>
       </lookup>
+    </property>
+    <property name="Video 2" type="file" file="true" thumbnail="true">
+      <description/>
     </property>
     <property name="Webview 1 2">
       <description/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!--@TEST: arch16 generation and substitution-->
+<!--@TEST: arch16n generation and substitution - Inferred labels-->
 <module>
   <Tabgroup>
     <Tab>
@@ -7,7 +7,6 @@
 
       <!--Squares brackets shouldn't screw things up-->
       <Region_Villiage t="dropdown">
-        <desc>Indicate the geographical scope of the item. Enter data in the order locality, state or province, country.</desc>
         <opts>
           <opt>[locality], [state or province], [country]</opt>
           <opt>Burgos, Ilocos Sur, Philippines</opt>
@@ -16,7 +15,6 @@
 
       <!--Dashes should be okay-->
       <Language_Content_ISO639-3 t="dropdown">
-        <desc>Content language is the language included in your data (spoken and/or written). Insert the 3-letter ISO 639-3 code for your language, and the standard name of the language as spelt in the ethnologue entry [search on www.ethnologue.com/site_search.asp]. Separate the code and the language with a hyphen, e.g. "ilo - Ilocano"</desc>
         <opts>
           <opt>mis - Uncoded languages</opt>
           <opt>und - Undetermined languages</opt>
@@ -28,30 +26,17 @@
         </opts>
       </Language_Content_ISO639-3>
 
-      <!--
-           I'd put a null character in here but XML parsers don't like it, let
-           alone a thoughtlessly written bunch of XSLT code.
-      -->
-      <M__--enu t="dropdown">
+      <!--Accents-->
+      <Café_Coffee t="input"/>
+      <Yay_Accents_éòá t="input"/>
+      <Language_Content_ISO639-4 t="dropdown">
         <opts>
-          <opt>
-            this
-            is
-            0
-            "
-            a
-            '
-            “Smart quotes for all!”
-            test
-            %
-            _
-            !@#$^&amp;*()[]|+_-/.,
-            tab character:	other characters
-            This test is pretty hard 『…』
-          </opt>
-          <opt>『…』</opt>
+          <opt>Café Coffee</opt>
         </opts>
-      </M__--enu>
+      </Language_Content_ISO639-4>
+
+      <!--Full Stops-->
+      <Menopause_Jokes_Are_Not_Funny._Period. t="input"/>
     </Tab>
   </Tabgroup>
 </module>

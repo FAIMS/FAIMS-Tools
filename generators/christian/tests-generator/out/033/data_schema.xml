@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <ArchaeologicalElement name="Tabgroup">
+    <description/>
+    <property name="Dummy" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Latitude" type="measure">
+      <description/>
+    </property>
+    <property name="Longitude" type="measure">
+      <description/>
+    </property>
+    <property name="Northing" type="measure">
+      <description/>
+    </property>
+    <property name="Easting" type="measure">
+      <description/>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

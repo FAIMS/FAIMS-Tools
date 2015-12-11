@@ -10,9 +10,6 @@
     <property name="Input date" type="measure">
       <description/>
     </property>
-    <property name="Audio date" type="file" file="true" thumbnail="true">
-      <description/>
-    </property>
     <property name="Button date">
       <description/>
     </property>
@@ -26,9 +23,6 @@
         <term>{test_opt}
 <description/></term>
       </lookup>
-    </property>
-    <property name="File date" type="file" file="true" thumbnail="true">
-      <description/>
     </property>
     <property name="List date" type="vocab">
       <description/>
@@ -60,9 +54,6 @@
     <property name="Input decimal" type="measure">
       <description/>
     </property>
-    <property name="Audio decimal" type="file" file="true" thumbnail="true">
-      <description/>
-    </property>
     <property name="Button decimal">
       <description/>
     </property>
@@ -76,9 +67,6 @@
         <term>{test_opt}
 <description/></term>
       </lookup>
-    </property>
-    <property name="File decimal" type="file" file="true" thumbnail="true">
-      <description/>
     </property>
     <property name="List decimal" type="vocab">
       <description/>
@@ -110,9 +98,6 @@
     <property name="Input string" type="measure">
       <description/>
     </property>
-    <property name="Audio string" type="file" file="true" thumbnail="true">
-      <description/>
-    </property>
     <property name="Button string">
       <description/>
     </property>
@@ -126,9 +111,6 @@
         <term>{test_opt}
 <description/></term>
       </lookup>
-    </property>
-    <property name="File string" type="file" file="true" thumbnail="true">
-      <description/>
     </property>
     <property name="List string" type="vocab">
       <description/>
@@ -160,9 +142,6 @@
     <property name="Input time" type="measure">
       <description/>
     </property>
-    <property name="Audio time" type="file" file="true" thumbnail="true">
-      <description/>
-    </property>
     <property name="Button time">
       <description/>
     </property>
@@ -176,9 +155,6 @@
         <term>{test_opt}
 <description/></term>
       </lookup>
-    </property>
-    <property name="File time" type="file" file="true" thumbnail="true">
-      <description/>
     </property>
     <property name="List time" type="vocab">
       <description/>

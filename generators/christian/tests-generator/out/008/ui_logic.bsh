@@ -29,6 +29,25 @@ makeLocalID(){
 }
 makeLocalID();
 
+insertIntoLocalSettings(String key, String val) {
+  fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
+}
+
+insertIntoLocalSettings(String key, Integer val) {
+  insertIntoLocalSettings(key, Integer.toString(val));
+}
+
+setFieldValueFromLocalSettings(String key, String ref) {
+  String q = "SELECT value FROM localSettings WHERE key = '" + key + "';";
+  fetchOne(q, new FetchCallback() {
+    onFetch(result) {
+      if (!isNull(result)) {
+        setFieldValue(ref, result.get(0));
+      }
+    }
+  });
+}
+
 newTab(String tab, Boolean resolveTabGroups) {
   if (!resolveTabGroups) {
     return newTab(tab);
@@ -124,6 +143,7 @@ getDropdownItemValue() {
   return dropdownItemValue;
 }
 
+addOnEvent("Tabgroup/Tab/Dropdown_1", "click", "dropdownItemValue = getFieldValue(\"Tabgroup/Tab/Dropdown_1\")");
 
 /******************************************************************************/
 /*                                 ACTION BAR                                 */
@@ -563,46 +583,14 @@ populateAuthorAndTimestamp(String tabgroup) {
   fetchOne(q, callback);
 }
 
-onShowParent () {
+onShowTabgroup () {
   // TODO: Add some things which should happen when this tabgroup is shown
-  saveTabGroup("Parent");
-}
-onShowChild () {
-  // TODO: Add some things which should happen when this tabgroup is shown
-  saveTabGroup("Child");
-}
-onShowChildOther () {
-  // TODO: Add some things which should happen when this tabgroup is shown
-  saveTabGroup("Child_Other");
+  saveTabGroup("Tabgroup");
 }
 
-addOnEvent("Parent", "show", "onShowParent()");
-addOnEvent("Child", "show", "onShowChild()");
-addOnEvent("Child_Other", "show", "onShowChildOther()");
+addOnEvent("Tabgroup", "show", "onShowTabgroup()");
 
-onClickParentAddChild () {
-  // TODO: Add some things which should happen when this element is clicked
-  String tabgroup = "Parent";
-  if (isNull(getUuid(tabgroup))){
-    showToast("{You_must_save_this_tabgroup_first}");
-    return;
-  }
-  parentTabgroup = tabgroup;
-  newChild();
-}
-onClickParentAddChildOther () {
-  // TODO: Add some things which should happen when this element is clicked
-  String tabgroup = "Parent";
-  if (isNull(getUuid(tabgroup))){
-    showToast("{You_must_save_this_tabgroup_first}");
-    return;
-  }
-  parentTabgroup = tabgroup;
-  newChildOther();
-}
 
-addOnEvent("Parent/Tab/Add_Child", "click", "onClickParentAddChild()");
-addOnEvent("Parent/Tab/Add_Child_Other", "click", "onClickParentAddChildOther()");
 
 
 /******************************************************************************/
@@ -810,8 +798,8 @@ loadEntityFrom(String entityID) {
   });
 }
 
-newParent(){
-  String tabgroup = "Parent";
+newTabgroup(){
+  String tabgroup = "Tabgroup";
 
 
   setUuid(tabgroup, null);
@@ -819,8 +807,8 @@ newParent(){
 
 }
 
-duplicateParent(){
-  String tabgroup = "Parent";
+duplicateTabgroup(){
+  String tabgroup = "Tabgroup";
   String uuidOld = getUuid(tabgroup);
 
   disableAutoSave(tabgroup);
@@ -862,154 +850,18 @@ duplicateParent(){
   });
 }
 
-deleteParent(){
-  String tabgroup = "Parent";
+deleteTabgroup(){
+  String tabgroup = "Tabgroup";
 
   if (isNull(getUuid(tabgroup))) {
     cancelTabGroup(tabgroup, true);
   } else {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteParent()", "doNotDelete()");
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteTabgroup()", "doNotDelete()");
   }
 }
 
-reallyDeleteParent(){
-  String tabgroup = "Parent";
-  deleteArchEnt(getUuid(tabgroup));
-  cancelTabGroup(tabgroup, false);
-}
-
-newChild(){
-  String tabgroup = "Child";
-
-
-  setUuid(tabgroup, null);
-  newTabGroup(tabgroup);
-
-}
-
-duplicateChild(){
-  String tabgroup = "Child";
-  String uuidOld = getUuid(tabgroup);
-
-  disableAutoSave(tabgroup);
-
-
-
-
-  saveCallback = new SaveCallback() {
-    onSave(uuid, newRecord) {
-      setUuid(tabgroup, uuid);
-      populateAuthorAndTimestamp(tabgroup);
-
-      Boolean enable_autosave = true;
-
-      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
-        onFetch(result) {
-          Log.e("Module", result.toString());
-          makeDuplicateRelationships(result, getUuid(tabgroup));
-          showToast("{Duplicated_record}");
-          dialog.dismiss();
-        }
-      });
-
-      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
-        onSave(autosaveUuid, autosaveNewRecord) {
-          setUuid(tabgroup, autosaveUuid);
-        }
-      }, enable_autosave);
-    }
-  };
-
-  String extraDupeAttributes = "";
-  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
-    onFetch(result) {
-      excludeAttributes = new ArrayList();
-
-      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
-    }
-  });
-}
-
-deleteChild(){
-  String tabgroup = "Child";
-
-  if (isNull(getUuid(tabgroup))) {
-    cancelTabGroup(tabgroup, true);
-  } else {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteChild()", "doNotDelete()");
-  }
-}
-
-reallyDeleteChild(){
-  String tabgroup = "Child";
-  deleteArchEnt(getUuid(tabgroup));
-  cancelTabGroup(tabgroup, false);
-}
-
-newChildOther(){
-  String tabgroup = "Child_Other";
-
-
-  setUuid(tabgroup, null);
-  newTabGroup(tabgroup);
-
-}
-
-duplicateChildOther(){
-  String tabgroup = "Child_Other";
-  String uuidOld = getUuid(tabgroup);
-
-  disableAutoSave(tabgroup);
-
-
-
-
-  saveCallback = new SaveCallback() {
-    onSave(uuid, newRecord) {
-      setUuid(tabgroup, uuid);
-      populateAuthorAndTimestamp(tabgroup);
-
-      Boolean enable_autosave = true;
-
-      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
-        onFetch(result) {
-          Log.e("Module", result.toString());
-          makeDuplicateRelationships(result, getUuid(tabgroup));
-          showToast("{Duplicated_record}");
-          dialog.dismiss();
-        }
-      });
-
-      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
-        onSave(autosaveUuid, autosaveNewRecord) {
-          setUuid(tabgroup, autosaveUuid);
-        }
-      }, enable_autosave);
-    }
-  };
-
-  String extraDupeAttributes = "";
-  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
-    onFetch(result) {
-      excludeAttributes = new ArrayList();
-
-      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
-    }
-  });
-}
-
-deleteChildOther(){
-  String tabgroup = "Child_Other";
-
-  if (isNull(getUuid(tabgroup))) {
-    cancelTabGroup(tabgroup, true);
-  } else {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteChildOther()", "doNotDelete()");
-  }
-}
-
-reallyDeleteChildOther(){
-  String tabgroup = "Child_Other";
+reallyDeleteTabgroup(){
+  String tabgroup = "Tabgroup";
   deleteArchEnt(getUuid(tabgroup));
   cancelTabGroup(tabgroup, false);
 }
@@ -1018,9 +870,7 @@ reallyDeleteChildOther(){
 doNotDelete(){
   showToast("{Delete_Cancelled}");
 }
-addOnEvent("Parent", "show", "addNavigationButtons(\"Parent\")");
-addOnEvent("Child", "show", "addNavigationButtons(\"Child\")");
-addOnEvent("Child_Other", "show", "addNavigationButtons(\"Child_Other\")");
+addOnEvent("Tabgroup", "show", "addNavigationButtons(\"Tabgroup\")");
 
 /******************************************************************************/
 /*                POPULATION OF ENTITY AND CHILD ENTITY LISTS                 */
@@ -1089,18 +939,18 @@ populateMenuWithEntities (
 
 menus = new ArrayList();
 menus.add(new String[] {
-  "List",
-  "Parent/Tab/List_Of_Related_Entities",
-  "getUuid(\"Parent\")",
-  "Child",
-  "Parent - Child",
+  "DropDown",
+  "Tabgroup/Tab/Dropdown_1",
+  "getUuid(\"Tabgroup\")",
+  "Tabgroup",
+  ""
 });
 menus.add(new String[] {
   "List",
-  "Parent/Tab/Other_List_Of_Related_Entities",
-  "getUuid(\"Parent\")",
-  "Child Other",
-  "Parent - Child Other",
+  "Tabgroup/Tab/List_1",
+  "getUuid(\"Tabgroup\")",
+  "Tabgroup",
+  ""
 });
 for (m : menus) {
   String viewType       = m[0];
@@ -1124,8 +974,8 @@ for (m : menus) {
 
   addOnEvent(path, "show", functionCall);
 }
-addOnEvent("Parent/Tab/List_Of_Related_Entities", "click", "loadEntity()");
-addOnEvent("Parent/Tab/Other_List_Of_Related_Entities", "click", "loadEntity()");
+addOnEvent("Tabgroup/Tab/Dropdown_1", "click", "loadEntity(true)");
+addOnEvent("Tabgroup/Tab/List_1", "click", "loadEntity()");
 
 /******************************************************************************/
 /*                                    INIT                                    */

@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+<!--@TEST: arch16n generation and substitution - User-specified labels-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <!--Squares brackets shouldn't screw things up-->
+      <Region_Villiage t="dropdown">
+        this
+        is
+        0
+        "
+        a
+        '
+        test
+        “Smart” quotes for all!
+        %
+        _
+        !@#$^&amp;*()[]|+_-/.,
+        tab character:	other characters
+        This test is pretty hard 『…』
+        <opts>
+          <opt>[locality], [state or province], [country]</opt>
+          <opt>Burgos, Ilocos Sur, Philippines</opt>
+        </opts>
+      </Region_Villiage>
+
+      <!--
+           I'd put a null character in here but XML parsers don't like it, let
+           alone a thoughtlessly written bunch of XSLT code.
+      -->
+      <M__--enu t="dropdown">
+        This ménu is fáncy
+        <opts>
+          <opt>
+            this
+            is
+            100
+            "
+            a
+            '
+            test
+            “Smart” quotes for all!
+            %
+            _
+            !@#$^&amp;*()[]|+_-/.,
+            tab character:	other characters
+            This test is pretty hard 『…』
+          </opt>
+          <opt>『…』</opt>
+        </opts>
+      </M__--enu>
+    </Tab>
+  </Tabgroup>
+</module>

@@ -29,6 +29,25 @@ makeLocalID(){
 }
 makeLocalID();
 
+insertIntoLocalSettings(String key, String val) {
+  fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
+}
+
+insertIntoLocalSettings(String key, Integer val) {
+  insertIntoLocalSettings(key, Integer.toString(val));
+}
+
+setFieldValueFromLocalSettings(String key, String ref) {
+  String q = "SELECT value FROM localSettings WHERE key = '" + key + "';";
+  fetchOne(q, new FetchCallback() {
+    onFetch(result) {
+      if (!isNull(result)) {
+        setFieldValue(ref, result.get(0));
+      }
+    }
+  });
+}
+
 newTab(String tab, Boolean resolveTabGroups) {
   if (!resolveTabGroups) {
     return newTab(tab);
@@ -599,18 +618,6 @@ addOnEvent("Tabgroup", "show", "onShowTabgroup()");
 
 
 /******************************************************************************/
-/*                   AUDIO, CAMERA, FILE AND VIDEO BINDINGS                   */
-/******************************************************************************/
-addOnEvent("Tabgroup/Tab/Button_Audio_date", "click", "attachAudioTo(\"Tabgroup/Tab/Audio_date\")");
-addOnEvent("Tabgroup/Tab/Button_Audio_decimal", "click", "attachAudioTo(\"Tabgroup/Tab/Audio_decimal\")");
-addOnEvent("Tabgroup/Tab/Button_Audio_string", "click", "attachAudioTo(\"Tabgroup/Tab/Audio_string\")");
-addOnEvent("Tabgroup/Tab/Button_Audio_time", "click", "attachAudioTo(\"Tabgroup/Tab/Audio_time\")");
-addOnEvent("Tabgroup/Tab/Button_File_date", "click", "attachFileTo(\"Tabgroup/Tab/File_date\")");
-addOnEvent("Tabgroup/Tab/Button_File_decimal", "click", "attachFileTo(\"Tabgroup/Tab/File_decimal\")");
-addOnEvent("Tabgroup/Tab/Button_File_string", "click", "attachFileTo(\"Tabgroup/Tab/File_string\")");
-addOnEvent("Tabgroup/Tab/Button_File_time", "click", "attachFileTo(\"Tabgroup/Tab/File_time\")");
-
-/******************************************************************************/
 /*                 BINDINGS FOR 'VIEW ATTACHED FILES' BUTTONS                 */
 /******************************************************************************/
 addOnEvent("Tabgroup/Tab/Button_Viewfiles_date", "click", "viewAttachedFiles(getUuid(\"Tabgroup\"))");
@@ -839,14 +846,6 @@ duplicateTabgroup(){
   disableAutoSave(tabgroup);
 
 
-  populateFileList("Tabgroup/Tab/Audio_date", new ArrayList());
-  populateFileList("Tabgroup/Tab/File_date", new ArrayList());
-  populateFileList("Tabgroup/Tab/Audio_decimal", new ArrayList());
-  populateFileList("Tabgroup/Tab/File_decimal", new ArrayList());
-  populateFileList("Tabgroup/Tab/Audio_string", new ArrayList());
-  populateFileList("Tabgroup/Tab/File_string", new ArrayList());
-  populateFileList("Tabgroup/Tab/Audio_time", new ArrayList());
-  populateFileList("Tabgroup/Tab/File_time", new ArrayList());
 
 
   saveCallback = new SaveCallback() {
@@ -877,14 +876,6 @@ duplicateTabgroup(){
   fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
     onFetch(result) {
       excludeAttributes = new ArrayList();
-      excludeAttributes.add("Audio date");
-      excludeAttributes.add("File date");
-      excludeAttributes.add("Audio decimal");
-      excludeAttributes.add("File decimal");
-      excludeAttributes.add("Audio string");
-      excludeAttributes.add("File string");
-      excludeAttributes.add("Audio time");
-      excludeAttributes.add("File time");
 
       duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
     }

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <ArchaeologicalElement name="Tabgroup">
+    <description/>
+    <property name="Dummy" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Region Villiage" type="vocab">
+      <description/>
+      <lookup>
+        <term>{_locality____state_or_province____country_}
+<description/></term>
+        <term>{Burgos__Ilocos_Sur__Philippines}
+<description/></term>
+      </lookup>
+    </property>
+    <property name="M  --enu" type="vocab">
+      <description/>
+      <lookup>
+        <term>{this_is_100___a___test__Smart__quotes_for_all_________________________tab_character__other_characters_This_test_is_pretty_hard____}
+<description/></term>
+        <term>{___}
+<description/></term>
+      </lookup>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

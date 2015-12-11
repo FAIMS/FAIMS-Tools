@@ -29,6 +29,25 @@ makeLocalID(){
 }
 makeLocalID();
 
+insertIntoLocalSettings(String key, String val) {
+  fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
+}
+
+insertIntoLocalSettings(String key, Integer val) {
+  insertIntoLocalSettings(key, Integer.toString(val));
+}
+
+setFieldValueFromLocalSettings(String key, String ref) {
+  String q = "SELECT value FROM localSettings WHERE key = '" + key + "';";
+  fetchOne(q, new FetchCallback() {
+    onFetch(result) {
+      if (!isNull(result)) {
+        setFieldValue(ref, result.get(0));
+      }
+    }
+  });
+}
+
 newTab(String tab, Boolean resolveTabGroups) {
   if (!resolveTabGroups) {
     return newTab(tab);
@@ -591,8 +610,12 @@ addOnEvent("Tabgroup", "show", "onShowTabgroup()");
 /******************************************************************************/
 addOnEvent("Tabgroup/Tab/Button_Audio_1", "click", "attachAudioTo(\"Tabgroup/Tab/Audio_1\")");
 addOnEvent("Tabgroup/Tab/Button_Audio_2", "click", "attachAudioTo(\"Tabgroup/Tab/Audio_2\")");
+addOnEvent("Tabgroup/Tab/Button_Camera_1", "click", "attachPictureTo(\"Tabgroup/Tab/Camera_1\")");
+addOnEvent("Tabgroup/Tab/Button_Camera_2", "click", "attachPictureTo(\"Tabgroup/Tab/Camera_2\")");
 addOnEvent("Tabgroup/Tab/Button_File_1", "click", "attachFileTo(\"Tabgroup/Tab/File_1\")");
 addOnEvent("Tabgroup/Tab/Button_File_2", "click", "attachFileTo(\"Tabgroup/Tab/File_2\")");
+addOnEvent("Tabgroup/Tab/Button_Video_1", "click", "attachVideoTo(\"Tabgroup/Tab/Video_1\")");
+addOnEvent("Tabgroup/Tab/Button_Video_2", "click", "attachVideoTo(\"Tabgroup/Tab/Video_2\")");
 
 /******************************************************************************/
 /*                 BINDINGS FOR 'VIEW ATTACHED FILES' BUTTONS                 */
@@ -822,9 +845,13 @@ duplicateTabgroup(){
 
 
   populateFileList("Tabgroup/Tab/Audio_1", new ArrayList());
+  populateCameraPictureGallery("Tabgroup/Tab/Camera_1", new ArrayList());
   populateFileList("Tabgroup/Tab/File_1", new ArrayList());
+  populateVideoGallery("Tabgroup/Tab/Video_1", new ArrayList());
   populateFileList("Tabgroup/Tab/Audio_2", new ArrayList());
+  populateCameraPictureGallery("Tabgroup/Tab/Camera_2", new ArrayList());
   populateFileList("Tabgroup/Tab/File_2", new ArrayList());
+  populateVideoGallery("Tabgroup/Tab/Video_2", new ArrayList());
 
 
   saveCallback = new SaveCallback() {
@@ -856,9 +883,13 @@ duplicateTabgroup(){
     onFetch(result) {
       excludeAttributes = new ArrayList();
       excludeAttributes.add("Audio 1");
+      excludeAttributes.add("Camera 1");
       excludeAttributes.add("File 1");
+      excludeAttributes.add("Video 1");
       excludeAttributes.add("Audio 2");
+      excludeAttributes.add("Camera 2");
       excludeAttributes.add("File 2");
+      excludeAttributes.add("Video 2");
 
       duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
     }

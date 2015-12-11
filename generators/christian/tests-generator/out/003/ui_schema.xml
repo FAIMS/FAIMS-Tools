@@ -22,6 +22,8 @@
               <Input_1/>
               <Audio_1/>
               <Button_Audio_1/>
+              <Camera_1/>
+              <Button_Camera_1/>
               <Button_1/>
               <Checkbox_1/>
               <Dropdown_1/>
@@ -33,12 +35,16 @@
               <Map_1/>
               <Picture_1/>
               <Radio_1/>
+              <Video_1/>
+              <Button_Video_1/>
               <Viewfiles_1/>
               <Webview_1_1/>
               <Webview_2_1/>
               <Input_2/>
               <Audio_2/>
               <Button_Audio_2/>
+              <Camera_2/>
+              <Button_Camera_2/>
               <Button_2/>
               <Checkbox_2/>
               <Dropdown_2/>
@@ -50,6 +56,8 @@
               <Map_2/>
               <Picture_2/>
               <Radio_2/>
+              <Video_2/>
+              <Button_Video_2/>
               <Viewfiles_2/>
               <Webview_1_2/>
               <Webview_2_2/>
@@ -101,6 +109,16 @@
         <trigger ref="Button_Audio_1">
           <label>{Button_Audio_1}</label>
         </trigger>
+        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="Camera_1" faims_attribute_name="Camera 1">
+          <label>{Camera_1}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Camera_1">
+          <label>{Button_Camera_1}</label>
+        </trigger>
         <trigger ref="Button_1" faims_attribute_name="Button 1">
           <label>{Button_1}</label>
           <!--WARNING: This view was created from an element whose t attribute's value is unexpected-->
@@ -143,7 +161,7 @@
           </item>
         </select1>
         <input faims_map="true" ref="Map_1">
-          <label>{Map_1}</label>
+          <label/>
         </input>
         <select1 type="image" faims_attribute_type="vocab" ref="Picture_1" faims_attribute_name="Picture 1">
           <label>{Picture_1}</label>
@@ -159,6 +177,16 @@
             <value>0</value>
           </item>
         </select1>
+        <select type="video" faims_attribute_type="measure" faims_sync="true" ref="Video_1" faims_attribute_name="Video 1">
+          <label>{Video_1}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Video_1">
+          <label>{Button_Video_1}</label>
+        </trigger>
         <trigger ref="Viewfiles_1">
           <label>{Viewfiles_1}</label>
         </trigger>
@@ -180,6 +208,16 @@
         </select>
         <trigger ref="Button_Audio_2">
           <label>{Button_Audio_2}</label>
+        </trigger>
+        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="Camera_2" faims_attribute_name="Camera 2">
+          <label>{Camera_2}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Camera_2">
+          <label>{Button_Camera_2}</label>
         </trigger>
         <trigger ref="Button_2" faims_attribute_name="Button 2">
           <label>{Button_2}</label>
@@ -223,7 +261,7 @@
           </item>
         </select1>
         <input faims_map="true" ref="Map_2">
-          <label>{Map_2}</label>
+          <label/>
         </input>
         <select1 type="image" faims_attribute_type="vocab" ref="Picture_2" faims_attribute_name="Picture 2">
           <label>{Picture_2}</label>
@@ -239,6 +277,16 @@
             <value>0</value>
           </item>
         </select1>
+        <select type="video" faims_attribute_type="measure" faims_sync="true" ref="Video_2" faims_attribute_name="Video 2">
+          <label>{Video_2}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Video_2">
+          <label>{Button_Video_2}</label>
+        </trigger>
         <trigger ref="Viewfiles_2">
           <label>{Viewfiles_2}</label>
         </trigger>

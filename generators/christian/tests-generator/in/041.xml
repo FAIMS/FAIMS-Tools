@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<!--@TEST: Flags - 'noannotation'-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Audio       f="noannotation" t="audio"/>
+      <Button      f="noannotation" t="trigger"/>
+      <Camera      f="noannotation" t="camera"/>
+      <Checkbox    f="noannotation" t="checkbox"/>
+      <Dropdown    f="noannotation" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown>
+      <File        f="noannotation" t="file"/>
+      <GPS_Diag    f="noannotation" t="gpsdiag"/>
+      <Group       f="noannotation" t="group"/>
+      <List        f="noannotation" t="list"><opts><opt>test opt</opt></opts></List>
+      <Map         f="noannotation" t="map"/>
+      <Picture     f="noannotation" t="picture"><opts><opt>test opt</opt></opts></Picture>
+      <Radio       f="noannotation" t="radio"><opts><opt>test opt</opt></opts></Radio>
+      <Video       f="noannotation" t="video"/>
+      <Viewfiles   f="noannotation" t="viewfiles"/>
+      <Webview_1   f="noannotation" t="web"/>
+      <Webview_2   f="noannotation" t="webview"/>
+    </Tab>
+  </Tabgroup>
+</module>

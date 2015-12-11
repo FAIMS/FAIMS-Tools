@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <RelationshipElement name="Rel with children" type="hierarchical">
+      <description>A 1-to-n relationship between the parent and its children, respectively.</description>
+      <parent>Parent Of</parent>
+      <child>Child Of</child>
+    </RelationshipElement>
+  <RelationshipElement name="Rel without children" type="bidirectional">
+      <description>Implements a 1:N relationship between Stone Artefact Clusters and Stone Associated Insitu</description>
+    </RelationshipElement>
+  <ArchaeologicalElement name="Tabgroup">
+    <description/>
+    <property name="Dummy" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

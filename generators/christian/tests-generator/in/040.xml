@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<!--@TEST: Flags - 'hidden'-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+    </Tab>
+    <Hidden_Tab f="hidden">
+      <Dummy_Other t="input"/>
+    </Hidden_Tab>
+  </Tabgroup>
+</module>

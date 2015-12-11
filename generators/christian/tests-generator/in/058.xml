@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<!--@TEST: Flags - 'notnull'-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id notnull"/> <!--f="id" is required to prevent errors-->
+
+      <Checkbox    f="notnull" t="checkbox"/>
+      <Dropdown    f="notnull" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown>
+      <List        f="notnull" t="list"><opts><opt>test opt</opt></opts></List>
+      <Picture     f="notnull" t="picture"><opts><opt>test opt</opt></opts></Picture>
+      <Radio       f="notnull" t="radio"><opts><opt>test opt</opt></opts></Radio>
+    </Tab>
+  </Tabgroup>
+</module>

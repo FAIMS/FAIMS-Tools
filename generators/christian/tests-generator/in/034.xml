@@ -6,7 +6,7 @@
       <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
     </Tab>
     <search>
-      Does this text work as a label
+      Does this text work as a label?
     </search>
   </Tabgroup>
 </module>

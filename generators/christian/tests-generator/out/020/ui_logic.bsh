@@ -29,6 +29,25 @@ makeLocalID(){
 }
 makeLocalID();
 
+insertIntoLocalSettings(String key, String val) {
+  fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
+}
+
+insertIntoLocalSettings(String key, Integer val) {
+  insertIntoLocalSettings(key, Integer.toString(val));
+}
+
+setFieldValueFromLocalSettings(String key, String ref) {
+  String q = "SELECT value FROM localSettings WHERE key = '" + key + "';";
+  fetchOne(q, new FetchCallback() {
+    onFetch(result) {
+      if (!isNull(result)) {
+        setFieldValue(ref, result.get(0));
+      }
+    }
+  });
+}
+
 newTab(String tab, Boolean resolveTabGroups) {
   if (!resolveTabGroups) {
     return newTab(tab);
@@ -124,7 +143,6 @@ getDropdownItemValue() {
   return dropdownItemValue;
 }
 
-addOnEvent("Tabgroup/Tab/Dropdown", "click", "dropdownItemValue = getFieldValue(\"Tabgroup/Tab/Dropdown\")");
 
 /******************************************************************************/
 /*                                 ACTION BAR                                 */
@@ -410,10 +428,7 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
       }
     });
 }
-makeVocab("DropDown", "Tabgroup/Tab/Dropdown", "Dropdown");
-makeVocab("List", "Tabgroup/Tab/List", "List");
 makeVocab("PictureGallery", "Tabgroup/Tab/Picture", "Picture");
-makeVocab("RadioGroup", "Tabgroup/Tab/Radio", "Radio");
 
 
 /******************************************************************************/

@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<!--@TEST: Flags - 'nodata' applied to fields-->
+<module>
+  <Tabgroup>
+    <Tab f="noscroll">
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Input_1 t="input"/>
+      <Input_2 t="input" f="nodata"/>
+      <Input_3 t="input"/>
+      <Input_4 t="input" f="nodata"/>
+      <Input_5 t="input"/>
+    </Tab>
+  </Tabgroup>
+</module>

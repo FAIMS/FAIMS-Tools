@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>Fill This In</h:title>
+    <model>
+      <instance>
+        <faims id="Fill_This_In">
+          <style>
+            <orientation>
+              <orientation/>
+            </orientation>
+            <even>
+              <layout_weight/>
+            </even>
+            <large>
+              <layout_weight/>
+            </large>
+          </style>
+          <Tabgroup>
+            <Tab>
+              <Dummy/>
+              <Colgroup_0>
+                <Col_0>
+                  <Dropdown/>
+                </Col_0>
+                <Col_1>
+                  <List/>
+                </Col_1>
+                <Col_2>
+                  <Picture/>
+                </Col_2>
+                <Col_3>
+                  <Radio/>
+                </Col_3>
+                <Col_4>
+                  <Dropdown_1/>
+                  <List_1/>
+                  <Picture_1/>
+                  <Radio_1/>
+                </Col_4>
+              </Colgroup_0>
+            </Tab>
+          </Tabgroup>
+        </faims>
+      </instance>
+    </model>
+  </h:head>
+  <h:body>
+    <group ref="style">
+      <label/>
+      <group ref="orientation">
+        <label/>
+        <input ref="orientation">
+          <label>horizontal</label>
+        </input>
+      </group>
+      <group ref="even">
+        <label/>
+        <input ref="layout_weight">
+          <label>1</label>
+        </input>
+      </group>
+      <group ref="large">
+        <label/>
+        <input ref="layout_weight">
+          <label>3</label>
+        </input>
+      </group>
+    </group>
+    <group ref="Tabgroup" faims_archent_type="Tabgroup">
+      <label>{Tabgroup}</label>
+      <group ref="Tab">
+        <label>{Tab}</label>
+        <input faims_attribute_type="measure" ref="Dummy" faims_attribute_name="Dummy">
+          <label>{Dummy}</label>
+        </input>
+        <group ref="Colgroup_0" faims_style="orientation">
+          <label/>
+          <group ref="Col_0" faims_style="even">
+            <label/>
+            <select1 faims_attribute_type="vocab" ref="Dropdown" faims_attribute_name="Dropdown">
+              <label>{Dropdown}</label>
+              <item>
+                <label>Options not loaded</label>
+                <value>0</value>
+              </item>
+            </select1>
+          </group>
+          <group ref="Col_1" faims_style="even">
+            <label/>
+            <select1 appearance="compact" ref="List" faims_attribute_name="List">
+              <label>{List}</label>
+              <item>
+                <label>Options not loaded</label>
+                <value>0</value>
+              </item>
+            </select1>
+          </group>
+          <group ref="Col_2" faims_style="even">
+            <label/>
+            <select1 type="image" faims_attribute_type="vocab" ref="Picture" faims_attribute_name="Picture">
+              <label>{Picture}</label>
+              <item>
+                <label>Options not loaded</label>
+                <value>0</value>
+              </item>
+            </select1>
+          </group>
+          <group ref="Col_3" faims_style="even">
+            <label/>
+            <select1 appearance="full" faims_attribute_type="vocab" ref="Radio" faims_attribute_name="Radio">
+              <label>{Radio}</label>
+              <item>
+                <label>Options not loaded</label>
+                <value>0</value>
+              </item>
+            </select1>
+          </group>
+          <group ref="Col_4" faims_style="even">
+            <label/>
+            <select1 faims_attribute_type="vocab" ref="Dropdown_1" faims_attribute_name="Dropdown 1">
+              <label>{Dropdown_1}</label>
+              <item>
+                <label>Options not loaded</label>
+                <value>0</value>
+              </item>
+            </select1>
+            <select1 appearance="compact" ref="List_1" faims_attribute_name="List 1">
+              <label>{List_1}</label>
+              <item>
+                <label>Options not loaded</label>
+                <value>0</value>
+              </item>
+            </select1>
+            <select1 type="image" faims_attribute_type="vocab" ref="Picture_1" faims_attribute_name="Picture 1">
+              <label>{Picture_1}</label>
+              <item>
+                <label>Options not loaded</label>
+                <value>0</value>
+              </item>
+            </select1>
+            <select1 appearance="full" faims_attribute_type="vocab" ref="Radio_1" faims_attribute_name="Radio 1">
+              <label>{Radio_1}</label>
+              <item>
+                <label>Options not loaded</label>
+                <value>0</value>
+              </item>
+            </select1>
+          </group>
+        </group>
+      </group>
+    </group>
+  </h:body>
+</h:html>

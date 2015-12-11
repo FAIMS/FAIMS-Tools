@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <ArchaeologicalElement name="Control">
+    <!--ERROR: Identifier not given-->
+    <description/>
+    <property name="autonum" type="measure">
+      <description/>
+    </property>
+  </ArchaeologicalElement>
+  <ArchaeologicalElement name="Tabgroup">
+    <description/>
+    <property name="Dummy" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Automatically Numbered Field 1" type="measure">
+      <description/>
+    </property>
+    <property name="Automatically Numbered Field 2" type="measure">
+      <description/>
+    </property>
+    <property name="Automatically Numbered Field 3" type="measure">
+      <description/>
+    </property>
+    <property name="Automatically Numbered Field 4" type="measure">
+      <description/>
+    </property>
+    <property name="Automatically Numbered Field 5" type="measure">
+      <description/>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <ArchaeologicalElement name="Tabgroup">
+    <description/>
+    <property name="Dummy" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Mid 1" type="measure">
+      <description/>
+    </property>
+    <property name="Left 2" type="measure">
+      <description/>
+    </property>
+    <property name="Right 2" type="measure">
+      <description/>
+    </property>
+    <property name="Left 3" type="measure">
+      <description/>
+    </property>
+    <property name="Mid 3" type="measure">
+      <description/>
+    </property>
+    <property name="Right 3" type="measure">
+      <description/>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

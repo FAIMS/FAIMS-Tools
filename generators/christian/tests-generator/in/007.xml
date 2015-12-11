@@ -7,6 +7,7 @@
 
       <Audio       c="test-class" t="audio"/>
       <Button      c="test-class" t="trigger"/>
+      <Camera      c="test-class" t="camera"/>
       <Checkbox    c="test-class" t="checkbox"/>
       <Dropdown    c="test-class" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown>
       <File        c="test-class" t="file"/>
@@ -16,6 +17,7 @@
       <Map         c="test-class" t="map"/>
       <Picture     c="test-class" t="picture"><opts><opt>test opt</opt></opts></Picture>
       <Radio       c="test-class" t="radio"><opts><opt>test opt</opt></opts></Radio>
+      <Video       c="test-class" t="video"/>
       <Viewfiles   c="test-class" t="viewfiles"/>
       <Webview_1   c="test-class" t="web"/>
       <Webview_2   c="test-class" t="webview"/>

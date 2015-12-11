@@ -7,55 +7,20 @@
       <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
       <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
     </property>
-    <property name="Dropdown" type="vocab">
-      <description/>
-      <lookup>
-        <term>{test_opt1}
-<description/></term>
-        <term>{test_opt2}
-<description/></term>
-        <term>{test_opt10}
-<description/></term>
-        <term>{test_opt20}
-<description/></term>
-      </lookup>
-    </property>
-    <property name="List" type="vocab">
-      <description/>
-      <lookup>
-        <term>{test_opt1}
-<description/></term>
-        <term>{test_opt2}
-<description/></term>
-        <term>{test_opt11}
-<description/></term>
-        <term>{test_opt21}
-<description/></term>
-      </lookup>
-    </property>
     <property name="Picture" type="vocab">
       <description/>
       <lookup>
-        <term>{test_opt1}
+        <term pictureURL="files/data/limewire_experience_1.avi.wmv.exe.jpg">{test_opt1}
 <description/></term>
-        <term>{test_opt2}
+        <term pictureURL="files/data/limewire_experience_2.avi.wmv.exe.jpg">{test_opt2}
 <description/></term>
-        <term>{test_opt12}
+        <term pictureURL="files/data/limewire_experience_3.avi.wmv.exe.jpg">{test_opt3}
 <description/></term>
-        <term>{test_opt22}
+        <term pictureURL="files/data/limewire_experience_4.avi.wmv.exe.jpg">{test_opt4}
 <description/></term>
-      </lookup>
-    </property>
-    <property name="Radio" type="vocab">
-      <description/>
-      <lookup>
-        <term>{test_opt1}
+        <term>{test_opt5}
 <description/></term>
-        <term>{test_opt2}
-<description/></term>
-        <term>{test_opt13}
-<description/></term>
-        <term>{test_opt23}
+        <term pictureURL="files/data/writing tests is boring.png">{test_opt9001}
 <description/></term>
       </lookup>
     </property>

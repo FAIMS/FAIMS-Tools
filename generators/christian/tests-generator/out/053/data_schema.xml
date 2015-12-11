@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <ArchaeologicalElement name="Tabgroup 1">
+    <description/>
+    <property name="Dummy 1 1" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Input 1 1" type="measure">
+      <description/>
+    </property>
+    <property name="Input 1 2" type="measure">
+      <description/>
+    </property>
+    <property name="Input 1 2" type="measure">
+      <!--ERROR: This view's name is a duplicate of one or more other views' in this tab group-->
+      <description/>
+    </property>
+  </ArchaeologicalElement>
+  <ArchaeologicalElement name="Tabgroup 2">
+    <description/>
+    <property name="Input 2 2" type="measure">
+      <description/>
+    </property>
+    <property name="Input 2 2" type="measure">
+      <!--ERROR: This view's name is a duplicate of one or more other views' in this tab group-->
+      <description/>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

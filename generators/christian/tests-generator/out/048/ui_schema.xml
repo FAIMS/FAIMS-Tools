@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>Fill This In</h:title>
+    <model>
+      <instance>
+        <faims id="Fill_This_In">
+          <style>
+            <orientation>
+              <orientation/>
+            </orientation>
+            <even>
+              <layout_weight/>
+            </even>
+            <large>
+              <layout_weight/>
+            </large>
+          </style>
+          <Tabgroup_1>
+            <Tab_1>
+              <Dummy_1_1/>
+              <Input_1_1/>
+            </Tab_1>
+            <Tab_2>
+              <Input_1_2/>
+              <Input_1_2/>
+            </Tab_2>
+          </Tabgroup_1>
+          <Tabgroup_2>
+            <Tab_1>
+              <Dummy_2_1/>
+              <Input_2_1/>
+            </Tab_1>
+            <Tab_2>
+              <Input_2_2/>
+              <Input_2_2/>
+            </Tab_2>
+          </Tabgroup_2>
+        </faims>
+      </instance>
+    </model>
+  </h:head>
+  <h:body>
+    <group ref="style">
+      <label/>
+      <group ref="orientation">
+        <label/>
+        <input ref="orientation">
+          <label>horizontal</label>
+        </input>
+      </group>
+      <group ref="even">
+        <label/>
+        <input ref="layout_weight">
+          <label>1</label>
+        </input>
+      </group>
+      <group ref="large">
+        <label/>
+        <input ref="layout_weight">
+          <label>3</label>
+        </input>
+      </group>
+    </group>
+    <group ref="Tabgroup_1" faims_archent_type="Tabgroup 1">
+      <label>{Tabgroup_1}</label>
+      <group ref="Tab_1">
+        <label>{Tab_1}</label>
+        <input faims_attribute_type="measure" ref="Dummy_1_1" faims_attribute_name="Dummy 1 1">
+          <label>{Dummy_1_1}</label>
+        </input>
+        <input faims_attribute_type="measure" ref="Input_1_1" faims_attribute_name="Input 1 1">
+          <label>{Input_1_1}</label>
+        </input>
+      </group>
+      <group ref="Tab_2">
+        <label>{Tab_2}</label>
+        <input faims_attribute_type="measure" ref="Input_1_2" faims_attribute_name="Input 1 2">
+          <label>{Input_1_2}</label>
+        </input>
+        <input faims_attribute_type="measure" ref="Input_1_2" faims_attribute_name="Input 1 2">
+          <label>{Input_1_2}</label>
+        </input>
+      </group>
+    </group>
+    <group ref="Tabgroup_2" faims_archent_type="Tabgroup 2">
+      <label/>
+      <group ref="Tab_1">
+        <label>{Tab_1}</label>
+        <input faims_attribute_type="measure" ref="Dummy_2_1" faims_attribute_name="Dummy 2 1">
+          <label>{Dummy_2_1}</label>
+        </input>
+        <input faims_attribute_type="measure" ref="Input_2_1" faims_attribute_name="Input 2 1">
+          <label>{Input_2_1}</label>
+        </input>
+      </group>
+      <group ref="Tab_2">
+        <label>{Tab_2}</label>
+        <input faims_attribute_type="measure" ref="Input_2_2" faims_attribute_name="Input 2 2">
+          <label>{Input_2_2}</label>
+        </input>
+        <input faims_attribute_type="measure" ref="Input_2_2" faims_attribute_name="Input 2 2">
+          <label>{Input_2_2}</label>
+        </input>
+      </group>
+    </group>
+  </h:body>
+</h:html>

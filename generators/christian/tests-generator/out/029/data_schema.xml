@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <ArchaeologicalElement name="Tabgroup">
+    <description/>
+    <property name="Dummy" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then "$1 " else "$2 "}}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Left" type="measure">
+      <description>Desc 9</description>
+    </property>
+    <property name="Right" type="measure">
+      <description>Desc 11</description>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>

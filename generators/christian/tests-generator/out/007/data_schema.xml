@@ -13,6 +13,9 @@
     <property name="Button">
       <description/>
     </property>
+    <property name="Camera" type="file" file="true" thumbnail="true">
+      <description/>
+    </property>
     <property name="Checkbox" type="vocab">
       <!--WARNING: A set of <opts> tags are expected but not present-->
       <description/>
@@ -47,6 +50,9 @@
         <term>{test_opt}
 <description/></term>
       </lookup>
+    </property>
+    <property name="Video" type="file" file="true" thumbnail="true">
+      <description/>
     </property>
     <property name="Webview 1">
       <description/>

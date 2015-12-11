@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<!--@TEST: Flags - 'nolabel'-->
+<module>
+  <Tabgroup f="nolabel">
+    <Tab f="nolabel">
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Audio       f="nolabel" t="audio"/>
+      <Button      f="nolabel" t="trigger"/>
+      <Camera      f="nolabel" t="camera"/>
+      <Checkbox    f="nolabel" t="checkbox"/>
+      <Dropdown    f="nolabel" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown>
+      <File        f="nolabel" t="file"/>
+      <GPS_Diag    f="nolabel" t="gpsdiag"/>
+      <Group       f="nolabel" t="group"/>
+      <List        f="nolabel" t="list"><opts><opt>test opt</opt></opts></List>
+      <Map         f="nolabel" t="map"/>
+      <Picture     f="nolabel" t="picture"><opts><opt>test opt</opt></opts></Picture>
+      <Radio       f="nolabel" t="radio"><opts><opt>test opt</opt></opts></Radio>
+      <Viewfiles   f="nolabel" t="viewfiles"/>
+      <Video       f="nolabel" t="video"/>
+      <Webview_1   f="nolabel" t="web"/>
+      <Webview_2   f="nolabel" t="webview"/>
+    </Tab>
+  </Tabgroup>
+</module>

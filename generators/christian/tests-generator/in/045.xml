@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<!--@TEST: Flags - 'nothumbnail'-->
+<module>
+  <Tabgroup>
+    <Tab>
+      <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Audio       f="nothumbnail" t="audio"/>
+      <Camera      f="nothumbnail" t="camera"/>
+      <File        f="nothumbnail" t="file"/>
+      <Video       f="nothumbnail" t="video"/>
+    </Tab>
+  </Tabgroup>
+</module>

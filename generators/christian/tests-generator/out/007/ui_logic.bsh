@@ -29,6 +29,25 @@ makeLocalID(){
 }
 makeLocalID();
 
+insertIntoLocalSettings(String key, String val) {
+  fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
+}
+
+insertIntoLocalSettings(String key, Integer val) {
+  insertIntoLocalSettings(key, Integer.toString(val));
+}
+
+setFieldValueFromLocalSettings(String key, String ref) {
+  String q = "SELECT value FROM localSettings WHERE key = '" + key + "';";
+  fetchOne(q, new FetchCallback() {
+    onFetch(result) {
+      if (!isNull(result)) {
+        setFieldValue(ref, result.get(0));
+      }
+    }
+  });
+}
+
 newTab(String tab, Boolean resolveTabGroups) {
   if (!resolveTabGroups) {
     return newTab(tab);
@@ -584,7 +603,9 @@ addOnEvent("Tabgroup", "show", "onShowTabgroup()");
 /*                   AUDIO, CAMERA, FILE AND VIDEO BINDINGS                   */
 /******************************************************************************/
 addOnEvent("Tabgroup/Tab/Button_Audio", "click", "attachAudioTo(\"Tabgroup/Tab/Audio\")");
+addOnEvent("Tabgroup/Tab/Button_Camera", "click", "attachPictureTo(\"Tabgroup/Tab/Camera\")");
 addOnEvent("Tabgroup/Tab/Button_File", "click", "attachFileTo(\"Tabgroup/Tab/File\")");
+addOnEvent("Tabgroup/Tab/Button_Video", "click", "attachVideoTo(\"Tabgroup/Tab/Video\")");
 
 /******************************************************************************/
 /*                 BINDINGS FOR 'VIEW ATTACHED FILES' BUTTONS                 */
@@ -813,7 +834,9 @@ duplicateTabgroup(){
 
 
   populateFileList("Tabgroup/Tab/Audio", new ArrayList());
+  populateCameraPictureGallery("Tabgroup/Tab/Camera", new ArrayList());
   populateFileList("Tabgroup/Tab/File", new ArrayList());
+  populateVideoGallery("Tabgroup/Tab/Video", new ArrayList());
 
 
   saveCallback = new SaveCallback() {
@@ -845,7 +868,9 @@ duplicateTabgroup(){
     onFetch(result) {
       excludeAttributes = new ArrayList();
       excludeAttributes.add("Audio");
+      excludeAttributes.add("Camera");
       excludeAttributes.add("File");
+      excludeAttributes.add("Video");
 
       duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
     }

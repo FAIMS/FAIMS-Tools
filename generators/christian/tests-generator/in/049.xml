@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<!--@TEST: Flags - 'noui' applied to tab-->
+<module>
+  <Tabgroup_1>
+    <Tab_1>
+      <Dummy_1_1 t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Input_1_1 t="input"/>
+    </Tab_1>
+    <Tab_2>
+      <Input_1_2 t="input"/> <!--f="id" is required to prevent errors-->
+
+      <Input_1_2 t="input"/>
+    </Tab_2>
+  </Tabgroup_1>
+  <Tabgroup_2>
+    <Tab_1 f="noui">
+      <Dummy_2_1 t="input" f="id"/> <!--f="id" is required to prevent errors-->
+
+      <Input_2_1 t="input"/>
+    </Tab_1>
+    <Tab_2>
+      <Input_2_2 t="input"/> <!--f="id" is required to prevent errors-->
+
+      <Input_2_2 t="input"/>
+    </Tab_2>
+  </Tabgroup_2>
+</module>

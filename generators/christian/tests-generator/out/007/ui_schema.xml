@@ -22,6 +22,8 @@
               <Audio/>
               <Button_Audio/>
               <Button/>
+              <Camera/>
+              <Button_Camera/>
               <Checkbox/>
               <Dropdown/>
               <File/>
@@ -32,6 +34,8 @@
               <Map/>
               <Picture/>
               <Radio/>
+              <Video/>
+              <Button_Video/>
               <Viewfiles/>
               <Webview_1/>
               <Webview_2/>
@@ -84,6 +88,16 @@
           <label>{Button}</label>
           <!--WARNING: This view was created from an element whose t attribute's value is unexpected-->
         </trigger>
+        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="Camera" faims_style_class="test-class" faims_attribute_name="Camera">
+          <label>{Camera}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Camera">
+          <label>{Button_Camera}</label>
+        </trigger>
         <select faims_attribute_type="vocab" ref="Checkbox" faims_style_class="test-class" faims_attribute_name="Checkbox">
           <label>{Checkbox}</label>
           <item>
@@ -122,7 +136,7 @@
           </item>
         </select1>
         <input faims_map="true" ref="Map" faims_style_class="test-class">
-          <label>{Map}</label>
+          <label/>
         </input>
         <select1 type="image" faims_attribute_type="vocab" ref="Picture" faims_style_class="test-class" faims_attribute_name="Picture">
           <label>{Picture}</label>
@@ -138,6 +152,16 @@
             <value>0</value>
           </item>
         </select1>
+        <select type="video" faims_attribute_type="measure" faims_sync="true" ref="Video" faims_style_class="test-class" faims_attribute_name="Video">
+          <label>{Video}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Video">
+          <label>{Button_Video}</label>
+        </trigger>
         <trigger ref="Viewfiles" faims_style_class="test-class">
           <label>{Viewfiles}</label>
         </trigger>
