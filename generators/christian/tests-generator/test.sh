@@ -63,6 +63,7 @@ do
     ((numTests++))
 done
 
+echo ""
 echo "TEST SUMMARY:"
 
 for f in "${failures[@]}"
