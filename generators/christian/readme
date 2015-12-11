@@ -40,7 +40,8 @@ QUICK START
 
   1. Modify the example module.xml. If you see something there which you don't
      understand, check this file.
-  2. Run `./generate.sh`
+  2. Run `./generate.sh`. (You can also run `./generate.sh /path/to/module.xml`
+     if your module.xml is somewhere other than the root directory.)
   3. Collect your new shiny new module from the 'module' directory and your
      shiny new wireframe from the 'wireframe' directory.
   4. (After running `./generate.sh`, you can run `./parse-warnings.sh` and
