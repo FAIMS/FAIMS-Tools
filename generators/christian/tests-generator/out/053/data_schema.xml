@@ -13,8 +13,7 @@
     <property name="Input 1 2" type="measure">
       <description/>
     </property>
-    <property name="Input 1 2" type="measure">
-      <!--ERROR: This view's name is a duplicate of one or more other views' in this tab group-->
+    <property name="Input 1 3" type="measure">
       <description/>
     </property>
   </ArchaeologicalElement>
@@ -23,8 +22,7 @@
     <property name="Input 2 2" type="measure">
       <description/>
     </property>
-    <property name="Input 2 2" type="measure">
-      <!--ERROR: This view's name is a duplicate of one or more other views' in this tab group-->
+    <property name="Input 2 3" type="measure">
       <description/>
     </property>
   </ArchaeologicalElement>

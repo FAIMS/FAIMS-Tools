@@ -582,16 +582,11 @@ populateAuthorAndTimestamp(String tabgroup) {
   fetchOne(q, callback);
 }
 
-onShowControl () {
-  // TODO: Add some things which should happen when this tabgroup is shown
-  saveTabGroup("Control");
-}
 onShowTabgroup () {
   // TODO: Add some things which should happen when this tabgroup is shown
   saveTabGroup("Tabgroup");
 }
 
-addOnEvent("Control", "show", "onShowControl()");
 addOnEvent("Tabgroup", "show", "onShowTabgroup()");
 
 onClickControlButton () {
@@ -807,74 +802,6 @@ loadEntityFrom(String entityID) {
   });
 }
 
-newControl(){
-  String tabgroup = "Control";
-
-
-  setUuid(tabgroup, null);
-  newTabGroup(tabgroup);
-
-}
-
-duplicateControl(){
-  String tabgroup = "Control";
-  String uuidOld = getUuid(tabgroup);
-
-  disableAutoSave(tabgroup);
-
-
-
-
-  saveCallback = new SaveCallback() {
-    onSave(uuid, newRecord) {
-      setUuid(tabgroup, uuid);
-      populateAuthorAndTimestamp(tabgroup);
-
-      Boolean enable_autosave = true;
-
-      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
-        onFetch(result) {
-          Log.e("Module", result.toString());
-          makeDuplicateRelationships(result, getUuid(tabgroup));
-          showToast("{Duplicated_record}");
-          dialog.dismiss();
-        }
-      });
-
-      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
-        onSave(autosaveUuid, autosaveNewRecord) {
-          setUuid(tabgroup, autosaveUuid);
-        }
-      }, enable_autosave);
-    }
-  };
-
-  String extraDupeAttributes = "";
-  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
-    onFetch(result) {
-      excludeAttributes = new ArrayList();
-
-      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
-    }
-  });
-}
-
-deleteControl(){
-  String tabgroup = "Control";
-
-  if (isNull(getUuid(tabgroup))) {
-    cancelTabGroup(tabgroup, true);
-  } else {
-    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteControl()", "doNotDelete()");
-  }
-}
-
-reallyDeleteControl(){
-  String tabgroup = "Control";
-  deleteArchEnt(getUuid(tabgroup));
-  cancelTabGroup(tabgroup, false);
-}
-
 newTabgroup(){
   String tabgroup = "Tabgroup";
 
@@ -995,7 +922,7 @@ reallyDeleteTabgroup(){
 doNotDelete(){
   showToast("{Delete_Cancelled}");
 }
-addOnEvent("Control", "show", "addNavigationButtons(\"Control\")");
+addOnEvent("Control", "show", "removeNavigationButtons()");
 addOnEvent("Tabgroup", "show", "addNavigationButtons(\"Tabgroup\")");
 
 /******************************************************************************/

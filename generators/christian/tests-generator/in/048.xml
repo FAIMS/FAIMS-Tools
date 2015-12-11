@@ -10,7 +10,7 @@
     <Tab_2>
       <Input_1_2 t="input"/> <!--f="id" is required to prevent errors-->
 
-      <Input_1_2 t="input"/>
+      <Input_1_3 t="input"/>
     </Tab_2>
   </Tabgroup_1>
   <Tabgroup_2 f="noui">
@@ -22,7 +22,7 @@
     <Tab_2>
       <Input_2_2 t="input"/> <!--f="id" is required to prevent errors-->
 
-      <Input_2_2 t="input"/>
+      <Input_2_3 t="input"/>
     </Tab_2>
   </Tabgroup_2>
 </module>

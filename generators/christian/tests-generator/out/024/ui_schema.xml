@@ -72,7 +72,7 @@
         </input>
       </group>
     </group>
-    <group ref="Control" faims_archent_type="Control">
+    <group ref="Control">
       <label>{Control}</label>
       <group ref="Control">
         <label>{Control}</label>

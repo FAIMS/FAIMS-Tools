@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!--@TEST: Reserved tags - autonum - Multiple fields-->
 <module>
-  <Control>
+  <Control f="nodata">
     <Control>
       <autonum/>
       <Button t="button" l="Tabgroup"/>
