@@ -160,7 +160,6 @@ TYPES
     - map          <input faims_map="true"/>
     - picture      <select1 type="image"/>
     - radio        <select1 appearance="full"/>
-    - table        <input faims_table="true"/>
     - video        <select type="file" faims_sync=true/>
                    <trigger/>
     - viewfiles    <trigger/>
