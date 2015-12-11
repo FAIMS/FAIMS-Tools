@@ -828,9 +828,11 @@
             <xsl:text>}</xsl:text>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text>{</xsl:text>
-            <xsl:value-of select="name()" />
-            <xsl:text>}</xsl:text>
+            <xsl:if test="not(normalize-space(@t) = 'map')">
+              <xsl:text>{</xsl:text>
+              <xsl:value-of select="name()" />
+              <xsl:text>}</xsl:text>
+            </xsl:if>
             <!--<xsl:if test="$doWarn">-->
               <!--<xsl:comment>WARNING: Label not given; automatically generated from element name</xsl:comment>-->
             <!--</xsl:if>-->
