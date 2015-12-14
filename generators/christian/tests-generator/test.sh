@@ -15,7 +15,7 @@ do
 
     filename=$(basename "$input")  # tests-generator/in/1.xml -> 1.xml
     noextension="${filename%.*}"   # 1.xml -> 1
-    subject=$( grep "@TEST" "$input" | sed -rn 's/^\s*<!--\s*@TEST:\s*(.*[^ ])\s*-->\s*$/\1/p' )
+    subject=$( grep "@TEST:" "$input" | sed -rn 's/^\s*<!--\s*@TEST:\s*(.*[^ ])\s*-->\s*$/\1/p' )
     didPass=1
     echo "Running $filename - \"$subject\"..."
 
