@@ -10,12 +10,12 @@
     <property name="Input date" type="measure">
       <description/>
     </property>
-    <property name="Button date">
-      <description/>
-    </property>
     <property name="Checkbox date" type="vocab">
-      <!--WARNING: A set of <opts> tags are expected but not present-->
       <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
     </property>
     <property name="Dropdown date" type="vocab">
       <description/>
@@ -54,12 +54,12 @@
     <property name="Input decimal" type="measure">
       <description/>
     </property>
-    <property name="Button decimal">
-      <description/>
-    </property>
     <property name="Checkbox decimal" type="vocab">
-      <!--WARNING: A set of <opts> tags are expected but not present-->
       <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
     </property>
     <property name="Dropdown decimal" type="vocab">
       <description/>
@@ -98,12 +98,12 @@
     <property name="Input string" type="measure">
       <description/>
     </property>
-    <property name="Button string">
-      <description/>
-    </property>
     <property name="Checkbox string" type="vocab">
-      <!--WARNING: A set of <opts> tags are expected but not present-->
       <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
     </property>
     <property name="Dropdown string" type="vocab">
       <description/>
@@ -142,12 +142,12 @@
     <property name="Input time" type="measure">
       <description/>
     </property>
-    <property name="Button time">
-      <description/>
-    </property>
     <property name="Checkbox time" type="vocab">
-      <!--WARNING: A set of <opts> tags are expected but not present-->
       <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
     </property>
     <property name="Dropdown time" type="vocab">
       <description/>

@@ -7,9 +7,9 @@
 
       <Input/>
       <Audio       t="audio"/>
-      <Button      t="trigger"/>
+      <Button      t="button"/>
       <Camera      t="camera"/>
-      <Checkbox    t="checkbox"/>
+      <Checkbox    t="checkbox"><opts><opt>test opt</opt></opts></Checkbox>
       <Dropdown                ><opts><opt>test opt</opt></opts></Dropdown>
       <File        t="file"/>
       <GPS_Diag    t="gpsdiag"/>

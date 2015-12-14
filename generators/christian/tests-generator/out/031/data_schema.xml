@@ -10,72 +10,72 @@
     <property name="Dropdown" type="vocab">
       <description>Desc 5</description>
       <lookup>
-        <term>{test_opt}
+        <term>{test_opt_1}
 <description>Desc 5a</description></term>
-        <term><!--WARNING: Option is duplicated in this menu-->{test_opt}
+        <term>{test_opt_2}
 <description>Desc 5b</description></term>
       </lookup>
     </property>
     <property name="List" type="vocab">
       <description>Desc 6</description>
       <lookup>
-        <term>{test_opt}
+        <term>{test_opt_1}
 <description>Desc 6a</description></term>
-        <term>{test_opt}
+        <term>{test_opt_2}
 <description>Desc 6b</description></term>
       </lookup>
     </property>
     <property name="Picture" type="vocab">
       <description>Desc 7</description>
       <lookup>
-        <term>{test_opt}
+        <term>{test_opt_1}
 <description>Desc 7a</description></term>
-        <term>{test_opt}
+        <term>{test_opt_2}
 <description>Desc 7b</description></term>
       </lookup>
     </property>
     <property name="Radio" type="vocab">
       <description>Desc 8</description>
       <lookup>
-        <term>{test_opt}
+        <term>{test_opt_1}
 <description>Desc 8a</description></term>
-        <term>{test_opt}
+        <term>{test_opt_2}
 <description>Desc 8b</description></term>
       </lookup>
     </property>
     <property name="Dropdown 1" type="vocab">
       <description>Desc 5</description>
       <lookup>
-        <term>{test_opt}
+        <term>{test_opt_1}
 <description>Desc 5a</description></term>
-        <term><!--WARNING: Option is duplicated in this menu-->{test_opt}
+        <term>{test_opt_2}
 <description>Desc 5b</description></term>
       </lookup>
     </property>
     <property name="List 1" type="vocab">
       <description>Desc 6</description>
       <lookup>
-        <term>{test_opt}
+        <term>{test_opt_1}
 <description>Desc 6a</description></term>
-        <term>{test_opt}
+        <term>{test_opt_2}
 <description>Desc 6b</description></term>
       </lookup>
     </property>
     <property name="Picture 1" type="vocab">
       <description>Desc 7</description>
       <lookup>
-        <term>{test_opt}
+        <term>{test_opt_1}
 <description>Desc 7a</description></term>
-        <term>{test_opt}
+        <term>{test_opt_2}
 <description>Desc 7b</description></term>
       </lookup>
     </property>
     <property name="Radio 1" type="vocab">
       <description>Desc 8</description>
       <lookup>
-        <term>{test_opt}
+        <term>{test_opt_1}
 <description>Desc 8a</description></term>
-        <term>{test_opt}
+        <term>{test_opt_2}
 <description>Desc 8b</description></term>
       </lookup>
     </property>

@@ -119,9 +119,8 @@
         <trigger ref="Button_Camera_1">
           <label>{Button_Camera_1}</label>
         </trigger>
-        <trigger ref="Button_1" faims_attribute_name="Button 1">
+        <trigger ref="Button_1">
           <label>{Button_1}</label>
-          <!--WARNING: This view was created from an element whose t attribute's value is unexpected-->
         </trigger>
         <select faims_attribute_type="vocab" ref="Checkbox_1" faims_attribute_name="Checkbox 1">
           <label>{Checkbox_1}</label>
@@ -219,9 +218,8 @@
         <trigger ref="Button_Camera_2">
           <label>{Button_Camera_2}</label>
         </trigger>
-        <trigger ref="Button_2" faims_attribute_name="Button 2">
+        <trigger ref="Button_2">
           <label>{Button_2}</label>
-          <!--WARNING: This view was created from an element whose t attribute's value is unexpected-->
         </trigger>
         <select faims_attribute_type="vocab" ref="Checkbox_2" faims_attribute_name="Checkbox 2">
           <label>{Checkbox_2}</label>

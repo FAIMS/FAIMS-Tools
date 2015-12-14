@@ -22,9 +22,10 @@
               <Input/>
               <Audio/>
               <Button_Audio/>
-              <Checkbox/>
               <File/>
               <Button_File/>
+              <Video/>
+              <Button_Video/>
             </Tab>
           </Tabgroup>
         </faims>
@@ -73,13 +74,6 @@
         <trigger ref="Button_Audio">
           <label>{Button_Audio}</label>
         </trigger>
-        <select faims_attribute_type="vocab" ref="Checkbox" faims_attribute_name="Checkbox">
-          <label>{Checkbox}</label>
-          <item>
-            <label>Options not loaded</label>
-            <value>0</value>
-          </item>
-        </select>
         <select type="file" faims_attribute_type="measure" faims_sync="true" ref="File" faims_attribute_name="File">
           <label>{File}</label>
           <item>
@@ -89,6 +83,16 @@
         </select>
         <trigger ref="Button_File">
           <label>{Button_File}</label>
+        </trigger>
+        <select type="video" faims_attribute_type="measure" faims_sync="true" ref="Video" faims_attribute_name="Video">
+          <label>{Video}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Video">
+          <label>{Button_Video}</label>
         </trigger>
       </group>
     </group>

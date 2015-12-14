@@ -11,7 +11,7 @@
     <Tab>
       <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
 
-      <Automatically_Numbered_Field f="autonum"/>
+      <Automatically_Numbered_Field t="input" f="autonum"/>
     </Tab>
   </Tabgroup>
 </module>

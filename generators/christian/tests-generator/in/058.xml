@@ -5,7 +5,7 @@
     <Tab>
       <Dummy t="input" f="id notnull"/> <!--f="id" is required to prevent errors-->
 
-      <Checkbox    f="notnull" t="checkbox"/>
+      <Checkbox    f="notnull" t="checkbox"><opts><opt>test opt</opt></opts></Checkbox>
       <Dropdown    f="notnull" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown>
       <List        f="notnull" t="list"><opts><opt>test opt</opt></opts></List>
       <Picture     f="notnull" t="picture"><opts><opt>test opt</opt></opts></Picture>

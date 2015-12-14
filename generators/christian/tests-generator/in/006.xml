@@ -7,8 +7,8 @@
 
       <!--All inputs-->
       <Input_date       b="date" t="input"/>
-      <Button_date      b="date" t="trigger"/>
-      <Checkbox_date    b="date" t="checkbox"/>
+      <Button_date      b="date" t="button"/>
+      <Checkbox_date    b="date" t="checkbox"><opts><opt>test opt</opt></opts></Checkbox_date>
       <Dropdown_date    b="date" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown_date>
       <GPS_Diag_date    b="date" t="gpsdiag"/>
       <Group_date       b="date" t="group"/>
@@ -21,8 +21,8 @@
       <Webview_2_date   b="date" t="webview"/>
 
       <Input_decimal       b="decimal" t="input"/>
-      <Button_decimal      b="decimal" t="trigger"/>
-      <Checkbox_decimal    b="decimal" t="checkbox"/>
+      <Button_decimal      b="decimal" t="button"/>
+      <Checkbox_decimal    b="decimal" t="checkbox"><opts><opt>test opt</opt></opts></Checkbox_decimal>
       <Dropdown_decimal    b="decimal" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown_decimal>
       <GPS_Diag_decimal    b="decimal" t="gpsdiag"/>
       <Group_decimal       b="decimal" t="group"/>
@@ -35,8 +35,8 @@
       <Webview_2_decimal   b="decimal" t="webview"/>
 
       <Input_string       b="string" t="input"/>
-      <Button_string      b="string" t="trigger"/>
-      <Checkbox_string    b="string" t="checkbox"/>
+      <Button_string      b="string" t="button"/>
+      <Checkbox_string    b="string" t="checkbox"><opts><opt>test opt</opt></opts></Checkbox_string>
       <Dropdown_string    b="string" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown_string>
       <GPS_Diag_string    b="string" t="gpsdiag"/>
       <Group_string       b="string" t="group"/>
@@ -49,8 +49,8 @@
       <Webview_2_string   b="string" t="webview"/>
 
       <Input_time       b="time" t="input"/>
-      <Button_time      b="time" t="trigger"/>
-      <Checkbox_time    b="time" t="checkbox"/>
+      <Button_time      b="time" t="button"/>
+      <Checkbox_time    b="time" t="checkbox"><opts><opt>test opt</opt></opts></Checkbox_time>
       <Dropdown_time    b="time" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown_time>
       <GPS_Diag_time    b="time" t="gpsdiag"/>
       <Group_time       b="time" t="group"/>

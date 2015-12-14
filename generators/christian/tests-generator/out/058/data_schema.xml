@@ -8,8 +8,11 @@
       <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
     </property>
     <property name="Checkbox" type="vocab">
-      <!--WARNING: A set of <opts> tags are expected but not present-->
       <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
     </property>
     <property name="Dropdown" type="vocab">
       <description/>

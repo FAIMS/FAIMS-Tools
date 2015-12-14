@@ -11,12 +11,12 @@
       <Audio       t="audio">
         <desc>Desc 2</desc>
       </Audio>
-      <Checkbox    t="checkbox">
-        <desc>Desc 3</desc>
-      </Checkbox>
       <File        t="file">
         <desc>Desc 4</desc>
       </File>
+      <Video       t="video">
+        <desc>Desc 5</desc>
+      </Video>
     </Tab>
   </Tabgroup>
 </module>

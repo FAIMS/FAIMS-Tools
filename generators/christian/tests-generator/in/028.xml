@@ -8,10 +8,10 @@
       <Dropdown    t="dropdown">
         <desc>Desc 5</desc>
         <opts>
-          <opt>test opt
+          <opt>test opt 1
             <desc>Desc 5a</desc>
           </opt>
-          <opt>test opt
+          <opt>test opt 2
             <desc>Desc 5b</desc>
           </opt>
         </opts>
@@ -19,10 +19,10 @@
       <List        t="list">
         <desc>Desc 6</desc>
         <opts>
-          <opt>test opt
+          <opt>test opt 1
             <desc>Desc 6a</desc>
           </opt>
-          <opt>test opt
+          <opt>test opt 2
             <desc>Desc 6b</desc>
           </opt>
         </opts>
@@ -30,25 +30,22 @@
       <Picture     t="picture">
         <desc>Desc 7</desc>
         <opts>
-          <opt>test opt
+          <opt>test opt 1
             <desc>Desc 7a</desc>
           </opt>
-          <opt>test opt
+          <opt>test opt 2
             <desc>Desc 7b</desc>
           </opt>
         </opts>
       </Picture>
       <Radio       t="radio">
         <desc>Desc 8</desc>
-        <opts>
-          <opt>test opt
-            <desc>Desc 8a</desc>
-          </opt>
-          <opt>test opt
-            <desc>Desc 8b</desc>
-          </opt>
-        </opts>
+        <opts><opt>option</opt></opts>
       </Radio>
+      <Checkbox    t="checkbox">
+        <desc>Desc 9</desc>
+        <opts><opt>option</opt></opts>
+      </Checkbox>
     </Tab>
   </Tabgroup>
 </module>

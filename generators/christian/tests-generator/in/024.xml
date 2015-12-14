@@ -11,11 +11,11 @@
     <Tab>
       <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
 
-      <Automatically_Numbered_Field_1 f="autonum"/>
-      <Automatically_Numbered_Field_2 f="autonum"/>
-      <Automatically_Numbered_Field_3 f="autonum"/>
-      <Automatically_Numbered_Field_4 f="autonum"/>
-      <Automatically_Numbered_Field_5 f="autonum"/>
+      <Automatically_Numbered_Field_1 t="input" f="autonum"/>
+      <Automatically_Numbered_Field_2 t="input" f="autonum"/>
+      <Automatically_Numbered_Field_3 t="input" f="autonum"/>
+      <Automatically_Numbered_Field_4 t="input" f="autonum"/>
+      <Automatically_Numbered_Field_5 t="input" f="autonum"/>
     </Tab>
   </Tabgroup>
 </module>

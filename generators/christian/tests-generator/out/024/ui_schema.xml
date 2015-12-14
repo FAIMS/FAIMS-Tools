@@ -105,23 +105,18 @@
         </input>
         <input faims_attribute_type="measure" ref="Automatically_Numbered_Field_1" faims_attribute_name="Automatically Numbered Field 1">
           <label>{Automatically_Numbered_Field_1}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
         <input faims_attribute_type="measure" ref="Automatically_Numbered_Field_2" faims_attribute_name="Automatically Numbered Field 2">
           <label>{Automatically_Numbered_Field_2}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
         <input faims_attribute_type="measure" ref="Automatically_Numbered_Field_3" faims_attribute_name="Automatically Numbered Field 3">
           <label>{Automatically_Numbered_Field_3}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
         <input faims_attribute_type="measure" ref="Automatically_Numbered_Field_4" faims_attribute_name="Automatically Numbered Field 4">
           <label>{Automatically_Numbered_Field_4}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
         <input faims_attribute_type="measure" ref="Automatically_Numbered_Field_5" faims_attribute_name="Automatically Numbered Field 5">
           <label>{Automatically_Numbered_Field_5}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
       </group>
     </group>

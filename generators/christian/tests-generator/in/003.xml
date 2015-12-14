@@ -8,8 +8,8 @@
       <Input_1       t="input"/>
       <Audio_1       t="audio"/>
       <Camera_1      t="camera"/>
-      <Button_1      t="trigger"/>
-      <Checkbox_1    t="checkbox"/>
+      <Button_1      t="button"/>
+      <Checkbox_1    t="checkbox"><opts><opt>test opt</opt></opts></Checkbox_1>
       <Dropdown_1    t="dropdown"><opts><opt>test opt</opt></opts></Dropdown_1>
       <File_1        t="file"/>
       <GPS_Diag_1    t="gpsdiag"/>
@@ -26,8 +26,8 @@
       <Input_2       t="input"/>
       <Audio_2       t="audio"/>
       <Camera_2      t="camera"/>
-      <Button_2      t="trigger"/>
-      <Checkbox_2    t="checkbox"/>
+      <Button_2      t="button"/>
+      <Checkbox_2    t="checkbox"><opts><opt>test opt</opt></opts></Checkbox_2>
       <Dropdown_2    t="dropdown"><opts><opt>test opt</opt></opts></Dropdown_2>
       <File_2        t="file"/>
       <GPS_Diag_2    t="gpsdiag"/>

@@ -84,9 +84,8 @@
         <trigger ref="Button_Audio">
           <label>{Button_Audio}</label>
         </trigger>
-        <trigger ref="Button" faims_attribute_name="Button">
+        <trigger ref="Button">
           <label/>
-          <!--WARNING: This view was created from an element whose t attribute's value is unexpected-->
         </trigger>
         <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="Camera" faims_attribute_name="Camera">
           <label/>

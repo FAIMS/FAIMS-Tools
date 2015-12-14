@@ -433,6 +433,7 @@ makeVocab("DropDown", "Tabgroup/Tab/Dropdown", "Dropdown");
 makeVocab("List", "Tabgroup/Tab/List", "List");
 makeVocab("PictureGallery", "Tabgroup/Tab/Picture", "Picture");
 makeVocab("RadioGroup", "Tabgroup/Tab/Radio", "Radio");
+makeVocab("CheckBoxGroup", "Tabgroup/Tab/Checkbox", "Checkbox");
 
 
 /******************************************************************************/

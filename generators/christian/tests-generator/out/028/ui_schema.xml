@@ -23,6 +23,7 @@
               <List/>
               <Picture/>
               <Radio/>
+              <Checkbox/>
             </Tab>
           </Tabgroup>
         </faims>
@@ -86,6 +87,13 @@
             <value>0</value>
           </item>
         </select1>
+        <select faims_attribute_type="vocab" ref="Checkbox" faims_attribute_name="Checkbox">
+          <label>{Checkbox}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
       </group>
     </group>
   </h:body>

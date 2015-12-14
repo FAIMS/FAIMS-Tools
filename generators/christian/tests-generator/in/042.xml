@@ -6,9 +6,9 @@
       <Dummy t="input" f="id"/> <!--f="id" is required to prevent errors-->
 
       <Audio       f="nocertainty" t="audio"/>
-      <Button      f="nocertainty" t="trigger"/>
+      <Button      f="nocertainty" t="button"/>
       <Camera      f="nocertainty" t="camera"/>
-      <Checkbox    f="nocertainty" t="checkbox"/>
+      <Checkbox    f="nocertainty" t="checkbox"><opts><opt>test opt</opt></opts></Checkbox>
       <Dropdown    f="nocertainty" t="dropdown"><opts><opt>test opt</opt></opts></Dropdown>
       <File        f="nocertainty" t="file"/>
       <GPS_Diag    f="nocertainty" t="gpsdiag"/>

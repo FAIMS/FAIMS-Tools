@@ -77,7 +77,6 @@
         </input>
         <input faims_attribute_type="measure" ref="Automatically_Numbered_Field" faims_attribute_name="Automatically Numbered Field">
           <label>{Automatically_Numbered_Field}</label>
-          <!--WARNING: No type t was given for this view; assuming it is an input-->
         </input>
       </group>
     </group>

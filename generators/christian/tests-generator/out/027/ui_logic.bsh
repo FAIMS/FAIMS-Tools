@@ -428,7 +428,6 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
       }
     });
 }
-makeVocab("CheckBoxGroup", "Tabgroup/Tab/Checkbox", "Checkbox");
 
 
 /******************************************************************************/
@@ -598,6 +597,7 @@ addOnEvent("Tabgroup", "show", "onShowTabgroup()");
 /******************************************************************************/
 addOnEvent("Tabgroup/Tab/Button_Audio", "click", "attachAudioTo(\"Tabgroup/Tab/Audio\")");
 addOnEvent("Tabgroup/Tab/Button_File", "click", "attachFileTo(\"Tabgroup/Tab/File\")");
+addOnEvent("Tabgroup/Tab/Button_Video", "click", "attachVideoTo(\"Tabgroup/Tab/Video\")");
 
 /******************************************************************************/
 /*                             NAVIGATION DRAWER                              */
@@ -822,6 +822,7 @@ duplicateTabgroup(){
 
   populateFileList("Tabgroup/Tab/Audio", new ArrayList());
   populateFileList("Tabgroup/Tab/File", new ArrayList());
+  populateVideoGallery("Tabgroup/Tab/Video", new ArrayList());
 
 
   saveCallback = new SaveCallback() {
@@ -854,6 +855,7 @@ duplicateTabgroup(){
       excludeAttributes = new ArrayList();
       excludeAttributes.add("Audio");
       excludeAttributes.add("File");
+      excludeAttributes.add("Video");
 
       duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
     }

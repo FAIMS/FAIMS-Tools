@@ -10,15 +10,15 @@
     <property name="Audio" type="file" file="true" thumbnail="true">
       <description/>
     </property>
-    <property name="Button">
-      <description/>
-    </property>
     <property name="Camera" type="file" file="true" thumbnail="true">
       <description/>
     </property>
     <property name="Checkbox" type="vocab">
-      <!--WARNING: A set of <opts> tags are expected but not present-->
       <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
     </property>
     <property name="Dropdown" type="vocab">
       <description/>

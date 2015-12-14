@@ -16,12 +16,12 @@
     <property name="Camera 1" type="file" file="true" thumbnail="true">
       <description/>
     </property>
-    <property name="Button 1">
-      <description/>
-    </property>
     <property name="Checkbox 1" type="vocab">
-      <!--WARNING: A set of <opts> tags are expected but not present-->
       <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
     </property>
     <property name="Dropdown 1" type="vocab">
       <description/>
@@ -72,12 +72,12 @@
     <property name="Camera 2" type="file" file="true" thumbnail="true">
       <description/>
     </property>
-    <property name="Button 2">
-      <description/>
-    </property>
     <property name="Checkbox 2" type="vocab">
-      <!--WARNING: A set of <opts> tags are expected but not present-->
       <description/>
+      <lookup>
+        <term>{test_opt}
+<description/></term>
+      </lookup>
     </property>
     <property name="Dropdown 2" type="vocab">
       <description/>
