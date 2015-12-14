@@ -1,0 +1,90 @@
+RUNNING TESTS
+
+  To run each test case present in the in/ directory, execute test.sh.  Typical
+  output of this command looks like this:
+
+      % ./test.sh
+      Running 001.xml - "Input"...
+      Running 002.xml - "GUI elements of all possible types in one tab"...
+
+      TEST SUMMARY:
+      2 test(s) completed with 2 pass(es) and 0 failure(s).
+
+  If a test fails, a diff of the expected and received output is shown:
+
+      % ./test.sh
+      Running 001.xml - "Input"...
+      --- /tmp/output-expected-001.properties 2015-12-14 14:05:28.24281058 +1100
+      +++ /tmp/output-actual-001.properties   2015-12-14 14:05:28.24281058 +1100
+      @@ -10,7 +10,7 @@
+       Disable_External_GPS=Disable External GPS
+       Disable_Internal_GPS=Disable Internal GPS
+       Disable_Sync=Disable Sync
+      -Dummy=Dummy
+      +Dopey=Dopey
+       Duplicated_record=Duplicated record
+       Duplicate=Duplicate
+       Easting=Easting
+      --- /tmp/output-expected-001.xml        2015-12-14 14:05:28.31481104 +1100
+      +++ /tmp/output-actual-001.xml  2015-12-14 14:05:28.314811042 +1100
+      @@ -51,7 +51,7 @@
+             <group ref="Tab">
+               <label>{Tab}</label>
+               <input faims_attribute_name="Dummy" faims_attribute_type="measure
+      " ref="Dummy">
+      -          <label>{Dummy}</label>
+      +          <label><!--WARNING: For this element, a label was explicitly gi
+      ven. It may have been able to be represented more succinctly by allowing i
+      t to be inferred from its element's tag-->{Dopey}</label>
+               </input>
+             </group>
+           </group>
+      Running 002.xml - "GUI elements of all possible types in one tab"...
+
+      TEST SUMMARY:
+        Failure: 001.xml - "Input". english.0.properties generated incorrectly.
+        Failure: 001.xml - "Input". ui_schema.xml generated incorrectly.
+      2 test(s) completed with 1 pass(es) and 1 failure(s).
+
+  Note that XML and arch16n files are canonicalised before being compared. Files
+  of different types (e.g. .bsh and .css) are not.
+________________________________________________________________________________
+
+WRITING A TEST CASE
+
+  To make a test case, a module XML file is placed in the in/ directory.  The
+  corresponding expected output is placed in the out/ directory inside a
+  sub-directory, with the same name as the module's XML file (excluding its file
+  extension).  For example, a test case whose module XML file is called
+  'MY-TEST-CASE.xml' will have a directory by the same name in out/ which
+  contains the expected module files:
+
+      tests-generator
+      ├── in
+      │   └── MY-TEST-CASE.xml
+      ├── make-tests.sh
+      ├── out
+      │   └── MY-TEST-CASE
+      │       ├── data_schema.xml
+      │       ├── english.0.properties
+      │       ├── ui_logic.bsh
+      │       ├── ui_schema.xml
+      │       ├── ui_styling.css
+      │       └── validation.xml
+      ├── readme
+      └── test.sh
+
+  It is recommended that a description of the test be included in a comment
+  starting with the "@TEST:" directive:
+
+      <!--@TEST: This is my description-->
+
+  Comments can be placed anywhere in module XML files, but the line immediately
+  after the XML declaration is preferred.  Additionally, multi-line descriptions
+  can be made as follows:
+
+      <!--@TEST: This is my description. It spans a couple of lines.  Ain't-->
+      <!--@TEST: that real neato, bud?-->
+
+  Short, descriptive one-line comments are strongly preferred to multi-line
+  ones.
