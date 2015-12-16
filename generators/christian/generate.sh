@@ -29,4 +29,9 @@ $proc2 -xsl:generator/wireframeElements.xsl  -s:"$modulePath/module/ui_schema.xm
 # Handle post-processing directive
 cd "$modulePath"
 cmd=$( grep "@POSTPROC:" "$module" | head -n 1 | sed -rn 's/^\s*<!--\s*@POSTPROC:\s*(.*[^ ])\s*-->\s*$/\1/p' )
-eval $cmd # Yes, I've heard of the "eval is evil" dogma
+if [ ! -z "$cmd" ]
+then
+    echo "Running post-processing command:"
+    echo "  $cmd"
+    eval $cmd # Yes, I've heard of the "eval is evil" dogma
+fi
