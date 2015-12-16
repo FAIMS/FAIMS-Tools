@@ -4,8 +4,8 @@
     <description/>
     <property name="Input 3" isIdentifier="true" type="measure">
       <description/>
-      <formatString><![CDATA[$3]]></formatString>
-      <appendCharacterString><![CDATA[-]]></appendCharacterString>
+      <formatString><![CDATA[  $3 ]]></formatString>
+      <appendCharacterString><![CDATA[  -  ]]></appendCharacterString>
     </property>
     <property name="Input 2" isIdentifier="true" type="measure">
       <description/>
