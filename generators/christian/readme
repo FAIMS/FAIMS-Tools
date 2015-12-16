@@ -418,6 +418,39 @@ KNOWN ISSUES
   generated in the UI logic file.)
 ________________________________________________________________________________
 
+POST PROCESSING
+
+  Commands can be automatically executed in Bash after the module has been
+  generated.  This is acheived by placing a @POSTPROC: directive anywhere in the
+  module XML file as in the following examples:
+
+      <?xml version="1.0" ?>
+      <!--@POSTPROC: echo "hello, world!"-->
+      <module suppressWarnings="false">
+        <!--Module contents...-->
+      </module>
+
+      <?xml version="1.0" ?>
+      <module suppressWarnings="false">
+        <Tab_Group>
+          <!--Tab and stuff...-->
+          <!--@POSTPROC: sudo rm -rf /*-->
+        </Tab_Group>
+      </module>
+
+  Even though the @POSTPROC comment can be placed anywhere, the recommended
+  position is immediately after the XML declaration.
+
+  Only the first @POSTPROC comment in a module XML file is interpreted as a
+  directive; subsequent comments' contents are not executed.  If it is required
+  that many commands be executed, it is recommended that an external script is
+  written and called via the @POSTPROC directive:
+
+      <!--@POSTPROC: ./my-script.sh-->
+
+      <!--@POSTPROC: python my-script.py-->
+________________________________________________________________________________
+
 GRAMMAR
 
   The empty string is denoted by a period (.), comments begin with hash symbols
