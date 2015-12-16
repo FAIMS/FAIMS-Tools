@@ -190,7 +190,7 @@
           <formatString><xsl:value-of select=".//fmt/text()"/></formatString>
         </xsl:when>
         <xsl:otherwise>
-          <formatString>{{if $1 then "$1 " else "$2 "}}</formatString>
+          <formatString>"$1" {{if and($1, $2) then " " }} "$2" {{if $3 then " ($3)"}}{{if between($4,0,0.49) then "??" elsif lessThan($4,1) then "?" }}</formatString>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:choose>
