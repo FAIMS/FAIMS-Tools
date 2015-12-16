@@ -26,8 +26,8 @@
       <Input_3 t="input" f="id">
         <str>
           <pos>1</pos>
-          <fmt>$3</fmt>
-          <app>-</app>
+          <fmt>  $3 </fmt> <!--Spaces should be preserved-->
+          <app>  -  </app> <!--Spaces should be preserved-->
         </str>
       </Input_3>
     </Tab>
