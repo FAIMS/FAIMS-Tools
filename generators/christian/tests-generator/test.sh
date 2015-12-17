@@ -6,7 +6,14 @@ numPassed=0
 numTests=0
 failures=( )
 
-for input in $(find tests-generator/in/ -name "*.xml" | sort)
+if [ -z $1 ]
+then
+    inputs=$(find tests-generator/in/ -maxdepth 1 -name "*.xml" | sort)
+else
+    inputs="tests-generator/$1"
+fi
+
+for input in $inputs
 do
     if [ ! -s "$input" ]
     then
@@ -19,11 +26,11 @@ do
     didPass=1
     echo "Running $filename - \"$subject\"..."
 
-    ./generate.sh "$input"
+    ./generate.sh "$input" >/dev/null
     for pathExpected_name_ext in $(find tests-generator/out/$noextension/ -type f | sort)
     do
         name_ext=$(basename "$pathExpected_name_ext")
-        pathActual_name_ext="module/$name_ext"
+        pathActual_name_ext="tests-generator/in/module/$name_ext"
         name="${name_ext%.*}"
         ext="${name_ext##*.}"
 
@@ -62,6 +69,9 @@ do
     fi
     ((numTests++))
 done
+
+rm -rf tests-generator/in/module
+rm -rf tests-generator/in/wireframe
 
 echo ""
 echo "TEST SUMMARY:"

@@ -11,7 +11,8 @@ then
 else
     module=$1
 fi
-modulePath=$( dirname "$module" )
+modulePath=$( dirname  "$module" )
+moduleName=$( basename "$module" )
 
 mkdir -p "$modulePath/module"
 mkdir -p "$modulePath/wireframe"
@@ -34,7 +35,7 @@ find module -type f -print | xargs grep -nr --color="always" "ERROR"   | sed -e 
 find module -type f -print | xargs grep -nr --color="always" "WARNING" | sed -e 's/\s\+</ </g'
 
 # Handle post-processing directive
-cmd=$( grep "@POSTPROC:" "$module" | head -n 1 | sed -rn 's/^\s*<!--\s*@POSTPROC:\s*(.*[^ ])\s*-->\s*$/\1/p' )
+cmd=$( grep "@POSTPROC:" "$moduleName" | head -n 1 | sed -rn 's/^\s*<!--\s*@POSTPROC:\s*(.*[^ ])\s*-->\s*$/\1/p' )
 if [ ! -z "$cmd" ]
 then
     echo "Running post-processing command:"
