@@ -1391,12 +1391,12 @@ incField(String ref) {
   return incField(ref, 1);
 }
 
-addOnEvent("Control", "load", "onLoadControl()");
+addOnEvent("</xsl:text><xsl:call-template name="autonum-parent"/><xsl:text>", "show", "onShowAutonum()");
 
 /* This function should only be called once since it creates event handlers,
  * otherwise multiple copies of the same handler will trigger with the event.
  */
-onLoadControl() {
+onShowAutonum() {
   List l = new ArrayList();
 </xsl:text>
       <xsl:call-template name="control-starting-id-paths"/>
@@ -1704,10 +1704,17 @@ bindOnEvents();
   newTabGroup(tabgroup);
 
 </xsl:text>
+
     <xsl:call-template name="tabgroup-new-incautonum"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="$newline"/>
     <xsl:value-of select="$newline"/>
+  </xsl:template>
+
+  <xsl:template name="autonum-parent">
+    <xsl:value-of select="name(//autonum/ancestor::*[last()-1])" />
+    <xsl:text>/</xsl:text>
+    <xsl:value-of select="name(//autonum/ancestor::*[last()-2])" />
   </xsl:template>
 
   <xsl:template name="tabgroup-new-no-id">
