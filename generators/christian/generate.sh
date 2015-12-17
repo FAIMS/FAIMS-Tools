@@ -26,8 +26,14 @@ $proc1 generator/validation.xsl  $module               >"$modulePath/module/vali
 gawk     -f generator/arch16nForWireframe.awk   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
 $proc2 -xsl:generator/wireframeElements.xsl  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
 
-# Handle post-processing directive
+############################ POST-GENERATION STUFF #############################
 cd "$modulePath"
+# Parse errors
+find module -type f -print | xargs grep -nr --color="always" "ERROR"   | sed -e 's/\s\+</ </g'
+# Parse warnings
+find module -type f -print | xargs grep -nr --color="always" "WARNING" | sed -e 's/\s\+</ </g'
+
+# Handle post-processing directive
 cmd=$( grep "@POSTPROC:" "$module" | head -n 1 | sed -rn 's/^\s*<!--\s*@POSTPROC:\s*(.*[^ ])\s*-->\s*$/\1/p' )
 if [ ! -z "$cmd" ]
 then
