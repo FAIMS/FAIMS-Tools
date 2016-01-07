@@ -1,341 +1,8 @@
-import re
-from lxml import etree
+import helpers
 import sys
-
-RESERVED_XML_TYPE = '__RESERVED_XML_TYPE__'
-RESERVED_IGNORE   = '__RESERVED_IGNORE__'
-
-def deleteAttribFromTree(t, attrib):
-    if t == None:
-        return
-    if hasattr(t, 'attrib') and attrib in t.attrib:
-        del t.attrib[attrib]
-
-    for e in t:
-        deleteAttribFromTree(e, attrib)
-
-def isFlagged(element, flag, checkAncestors=True, attribName='f'):
-    if element is None:
-        return False
-    if attribName not in element.attrib:
-        return False
-    flags = element.attrib[attribName].split()
-    if flag in flags:
-        return True
-
-    if checkAncestors:
-        return isFlagged(element.getparent(), flag, checkAncestors, attribName)
-
-def setSourceline(t, sourceline):
-    if t == None:
-        return
-
-    t.sourceline = sourceline
-    for e in t:
-        setSourceline(e, sourceline)
-
-def getNonLower(t):
-    nodes = [i for i in t if re.match('[^a-z]', i.tag)] # TODO: Might be failing due to comments
-    return nodes
-
-def normaliseAttributes(node):
-    for key, val in node.attrib.iteritems():
-        val = val.split()
-        val.sort()
-        node.attrib[key] = ' '.join(val)
-
-    for n in node:
-        normaliseAttributes(n)
-
-def wMsg(notice, nodes, expected=[]):
-    notice = 'WARNING: ' + notice
-    printNotice(notice, nodes, expected)
-
-def eMsg(notice, nodes, expected=[]):
-    notice = 'ERROR:   ' + notice
-    printNotice(notice, nodes, expected)
-
-def printNotice(notice, nodes, expected=[]):
-    notice = notice + '.  '
-
-    if   len(expected) == 0:
-        expected = ''
-    elif len(expected) == 1:
-        expected = 'Allowed item is %s.  ' % expected[0]
-    else:
-        expected = 'Allowed items are:\n  - ' + '\n  - '.join(expected) + '\n'
-
-    if len(nodes) == 0:
-        location = ''
-    if len(nodes) == 1:
-        location = 'Occurs at line ' + str(nodes[0].sourceline) + '.  '
-    if len(nodes) >= 2:
-        location = 'Occurs at:'
-        for node in nodes:
-            location += '\n  - Line ' + str(node.sourceline)
-
-    print notice + expected + location
-    print
-
-
-def bye(countWar, countErr, early=True):
-    print 'Validation completed with %i error(s) and %i warning(s).' \
-            % (countErr, countWar)
-    exit()
-
-def parseTable(table):
-    table = table.strip()
-    table = table.split('\n')
-    table = table[1:]
-    table = [re.split(' *\| *', i) for i in table]
-    table = [i for i in table if i != ['']]
-    for rowIdx in range(len(table)):
-        for colIdx in range(len(table[rowIdx])):
-            cell = table[rowIdx][colIdx]
-            if re.match('.*,', cell):
-                table[rowIdx][colIdx] = [x.strip() for x in cell.split(',')]
-
-    # Special treatment of tables with cardinalities
-    hasCardinalities = False
-    for i in range(len(table)):
-        for j in range(1, len(table[i])):
-            if '<=' in table[i][j]:
-                hasCardinalities |= True
-    if not hasCardinalities:
-        return table
-
-    for i in range(len(table)):
-        for j in range(1, len(table[i])):
-            regMin  = '(([0-9]+)\s+<=\s+)?'
-            regType = '(\<?[a-zA-Z][a-zA-Z ]*[a-zA-Z]\>?)'
-            regMax  = '(\s+<=\s+([0-9]+))?'
-            reg     = regMin + regType + regMax
-            m = re.search(reg, table[i][j])
-
-            if m:
-                min  = m.group(2)
-                type = m.group(3)
-                max  = m.group(5)
-
-                if min:
-                    min = int(min)
-                if max:
-                    max = int(max)
-
-                lim = [min,  type, max]
-            else:
-                lim = [None, None, None]
-
-            table[i][j] = lim
-    return table
-
-def flagAll(nodes, attrib, value):
-    for n in nodes:
-        n.attrib[attrib] = value
-
-def getExpectedTypes(table, node, reserved=False):
-    attribType = '__RESERVED_XML_TYPE__'
-
-    parent = node.getparent()
-
-    # Get expected type(s)
-    expected = []
-    for row in table:
-        parentType = row[0]
-        pattern    = row[1]
-        matchType  = row[2]
-
-        if parent.attrib[attribType] != parentType:
-            continue
-
-        if   reserved == True:
-            regex = '[^a-z]'
-        elif reserved == False:
-            regex = '^[a-z]+$'
-        elif reserved == None:
-            regex = '.*'
-        else:
-            continue
-
-        if re.match(regex, matchType):
-            expected.append(matchType)
-
-    return expected
-
-def getAttributes(table, xmlType, rowAttribsIndex=1):
-    for row in table:
-        rowXmlType = row[0]
-        rowAttribs = row[rowAttribsIndex]
-
-        if type(rowAttribs) is not list:
-            if not rowAttribs:
-                rowAttribs = []
-            else:
-                rowAttribs = [rowAttribs]
-
-        for i in range(len(rowAttribs)):
-            if   rowAttribs[i] == '$link-all':
-                rowAttribs[i] = 'a valid link to a tab or tab group'
-            elif rowAttribs[i] == '$link-tabgroup':
-                rowAttribs[i] = 'a valid link to a tab group'
-            elif rowAttribs[i] == '$link-tab':
-                rowAttribs[i] = 'a valid link to a tab'
-
-        if rowXmlType == xmlType:
-            return rowAttribs
-
-def isValidLink(root, link, linkType):
-    if not link:
-        return False
-
-    if   linkType == 'tab':
-        result  = True
-        try:
-            result &= bool(root.xpath('/module/' + link))
-        except:
-            result &= False
-        result &= '/'     in link
-        result &= '/' != link[ 0]
-        result &= '/' != link[-1]
-        return result
-    elif linkType == 'tabgroup':
-        result  = True
-        try:
-            result &= bool(root.xpath('/module/' + link))
-        except:
-            result &= False
-        result &= '/' not in link
-        return result
-    elif linkType == 'all':
-        result  = False
-        result |= isValidLink(root, link, 'tab'     )
-        result |= isValidLink(root, link, 'tabgroup')
-        return result
-    else:
-        return False
-
-def disallowedAttribVals(m, ATTRIB_VALS):
-    disallowed = []
-    for attrib, oneOf, manyOf in ATTRIB_VALS:
-        if attrib not in m.attrib: # Set intersection of attrib and m.attrib
-            continue
-
-        if oneOf:
-            if '$link' in oneOf:
-                link = m.attrib[attrib]
-                linkType = oneOf[6:] # 'all', 'tab', or 'tabgroup'
-                if not isValidLink(tree, link, linkType):
-                    disallowed.append((attrib, m.attrib[attrib], m))
-            else:
-                if m.attrib[attrib] not in oneOf:
-                    disallowed.append((attrib, m.attrib[attrib], m))
-        if manyOf:
-            for flag in m.attrib[attrib].split():
-                if flag not in manyOf:
-                    disallowed.append((attrib, flag,             m))
-    return disallowed
-
-def satisfiesTypeCardinalityConstraint(parent, constraint, children='direct'):
-    min, type, max = constraint
-    if type == None:
-        return True
-
-    if children == 'direct':
-        children = ''
-    else:
-        children = './/'
-    matches = parent.xpath(
-            '%s*[@%s="%s"]' %
-            (children, RESERVED_XML_TYPE, type)
-    )
-
-    if min != None and len(matches) < min: return False
-    if max != None and len(matches) > max: return False
-    return True
-
-# English is dumb
-def childWithGrammaticalNumber(number):
-    if number == 1:
-        return 'child'
-    return 'children'
-def descendantWithGrammaticalNumber(number):
-    d = 'descendant'; s = 's'
-    if number == 1:
-        return d
-    return  d + s
-def descChildNounPhrase(child, number):
-    if  childDirectness == 'direct':
-        childNum = childWithGrammaticalNumber (number)
-        return 'direct %s' % childNum
-    else:
-        return descendantWithGrammaticalNumber(number)
-
-def guessType(node):
-    # Don't guess the type if it's already there
-    try:
-        return node.attrib['t']
-    except:
-        pass
-
-    # Okay, fine. Go ahead and give 'er a guess.
-    isUser = 'f' in node.attrib and 'user' in node.attrib['f'].split()
-    if isUser:
-        return 'list'
-    if node.xpath('opts') and     node.xpath('.//opt[@p]'):
-        return 'picture'
-    if node.xpath('opts') and not node.xpath('.//opt[@p]'):
-        return 'dropdown'
-    return 'input'
-
-def checkTagCardinalityConstraints(nodeTypeParent, nodeTypeChild, schemaType):
-    assert schemaType in ['UI', 'data']
-
-    countErr = 0; ok = True
-
-    elements = tree.xpath(
-            '//*[@%s="%s"]' %
-            (RESERVED_XML_TYPE, nodeTypeChild)
-    )
-
-    for original in elements:
-        duplicatesAndSelf = original.xpath(
-                './ancestor::*[@%s="%s"]//%s[@%s="%s" and not(@%s="true")]' %
-                (
-                    RESERVED_XML_TYPE, nodeTypeParent, original.tag,
-                    RESERVED_XML_TYPE, nodeTypeChild,
-                    RESERVED_IGNORE
-                )
-        )
-        if schemaType == 'UI'  : cond = lambda n: not isFlagged(n, 'noui')
-        if schemaType == 'data': cond = lambda n: not isFlagged(n, 'nodata')
-        duplicatesAndSelf = filter(cond, duplicatesAndSelf)
-
-        for original in duplicatesAndSelf: # Make sure not to re-check duplicate
-            original.attrib[RESERVED_IGNORE] = "true"
-        if len(duplicatesAndSelf) <= 1:
-            continue # If this runs, no duplicates were found
-
-        capitalisedType = nodeTypeChild[0].upper() + nodeTypeChild[1:]
-        pluralisedType  = nodeTypeChild + 's'
-        msg  = ''
-        msg += '%s `%s` is illegally duplicated or results in illegal duplicate'
-        msg += ' %s in its parent %s when the %s schema is generated'
-        msg  = msg % \
-                (
-                        capitalisedType,
-                        original.tag,
-                        pluralisedType,
-                        nodeTypeParent,
-                        schemaType
-                )
-        eMsg(
-                msg,
-                duplicatesAndSelf
-        )
-        countErr += 1; ok &= False
-
-    deleteAttribFromTree(elements, RESERVED_IGNORE)
-    return (countErr, ok)
+from lxml import etree
+import tables
+import consts
 
 ################################################################################
 #                                     MAIN                                     #
@@ -352,7 +19,7 @@ except etree.XMLSyntaxError as e:
     print e
     exit()
 tree = tree.getroot()
-normaliseAttributes(tree)
+helpers.normaliseAttributes(tree)
 print 'Done!'
 print
 
@@ -361,82 +28,42 @@ print 'Validating schema...'
 countWar = 0
 countErr = 0
 
-TYPES = '''
-PARENT XML TYPE | PATTERN     | MATCH XML TYPE
-document        | /           | module
-
-module          | /[^a-z]/    | tab group
-module          | logic       | <logic>
-module          | rels        | <rels>
-
-tab group       | /[^a-z]/    | tab
-tab group       | desc        | <desc>
-tab group       | search      | <search>
-
-tab             | /[^a-z]/    | GUI element
-tab             | author      | <author>
-tab             | autonum     | <autonum>
-tab             | cols        | <cols>
-tab             | gps         | <gps>
-tab             | timestamp   | <timestamp>
-
-<cols>          | /[^a-z]/    | GUI element
-<cols>          | col         | <col>
-
-<col>           | /[^a-z]/    | GUI element
-
-GUI element     | desc        | <desc>
-GUI element     | opts        | <opts>
-GUI element     | str         | <str>
-
-<str>           | app         | <app>
-<str>           | fmt         | <fmt>
-<str>           | pos         | <pos>
-
-<opts>          | opt         | <opt>
-
-<opt>           | opt         | <opt>
-'''
-
-TYPES = parseTable(TYPES)
-RESERVED_XML_TYPE = '__RESERVED_XML_TYPE__'
-
 ok = True
 # Flag nodes with their TYPEs
-for t in TYPES:
+for t in tables.TYPES:
     parentType = t[0]
     pattern    = t[1]
     matchType  = t[2]
 
     if   pattern == '/':
         matches = tree.xpath('/*')
-        flagAll(matches, RESERVED_XML_TYPE, matchType)
+        helpers.flagAll(matches, consts.RESERVED_XML_TYPE, matchType)
     elif pattern == '/[^a-z]/':
         matches = tree.xpath(
                 '//*[@%s="%s"]/*' %
-                (RESERVED_XML_TYPE, parentType)
+                (consts.RESERVED_XML_TYPE, parentType)
         )
-        matches = getNonLower(matches)
-        flagAll(matches, RESERVED_XML_TYPE, matchType)
+        matches = helpers.getNonLower(matches)
+        helpers.flagAll(matches, consts.RESERVED_XML_TYPE, matchType)
     else:
         matches = tree.xpath(
                 '//*[@%s="%s"]/%s' %
-                (RESERVED_XML_TYPE, parentType, pattern)
+                (consts.RESERVED_XML_TYPE, parentType, pattern)
         )
-        flagAll(matches, RESERVED_XML_TYPE, matchType)
+        helpers.flagAll(matches, consts.RESERVED_XML_TYPE, matchType)
 matches = tree.xpath(
         '//*[@%s="%s"]/*' %
-        (RESERVED_XML_TYPE, '<cols>')
+        (consts.RESERVED_XML_TYPE, '<cols>')
 )
 
 # Nodes which didn't end up getting flagged aren't allowed
 disallowed = tree.xpath(
         '//*[@%s]/*[not(@%s)]' %
-        (RESERVED_XML_TYPE, RESERVED_XML_TYPE)
+        (consts.RESERVED_XML_TYPE, consts.RESERVED_XML_TYPE)
 )
 # Tell the user about the error(s)
 for d in disallowed:
-    eMsg(
+    helpers.eMsg(
             'Element `%s` disallowed here' % d.tag,
             [d],
             getExpectedTypes(TYPES, d, None)
@@ -446,82 +73,45 @@ for d in disallowed:
 
 
 
-ATTRIBS = '''
-XML TYPE      | ATTRIBUTES ALLOWED
-module        |
-tab group     | f
-tab           | f
-GUI element   | b, c, ec, f, l, lc, t
-<cols>        | f
-<opts>        |
-<str>         |
-<col>         | f
-<opt>         | p
-<app>         |
-<author>      |
-<autonum>     |
-<desc>        |
-<fmt>         |
-<gps>         |
-<logic>       |
-<pos>         |
-<rels>        |
-<search>      |
-<timestamp>   |
-'''
-ATTRIBS = parseTable(ATTRIBS)
-
-# Only consider nodes flagged with `RESERVED_XML_TYPE`
+# Only consider nodes flagged with `consts.RESERVED_XML_TYPE`
 matches = tree.xpath(
         '//*[@%s]' %
-        (RESERVED_XML_TYPE)
+        (consts.RESERVED_XML_TYPE)
 )
-# Determine if nodes contain an attibute not allowed according to ATTRIBS
+# Determine if nodes contain an attibute not allowed according to tables.ATTRIBS
 disallowed = []
 for m in matches:
     mAttribs     = dict(m.attrib)
-    mXmlType     = mAttribs[RESERVED_XML_TYPE]
-    mAttribs.pop(RESERVED_XML_TYPE, None)
+    mXmlType     = mAttribs[consts.RESERVED_XML_TYPE]
+    mAttribs.pop(consts.RESERVED_XML_TYPE, None)
     mAttribNames = mAttribs
 
     for mAttribName in mAttribNames:
-        if not mAttribName in getAttributes(ATTRIBS, mXmlType):
+        if not mAttribName in helpers.getAttributes(tables.ATTRIBS, mXmlType):
             disallowed.append((mAttribName, m))
 # Tell the user about the error(s)
 for d in disallowed:
     disallowedAttrib = d[0]
     disallowedNode   = d[1]
-    eMsg(
+    helpers.eMsg(
             'Attribute `%s` disallowed here' % disallowedAttrib,
             [disallowedNode],
-            getAttributes(ATTRIBS, disallowedNode.attrib[RESERVED_XML_TYPE])
+            helpers.getAttributes(tables.ATTRIBS, disallowedNode.attrib[consts.RESERVED_XML_TYPE])
     )
     countErr += 1; ok &= False
 
 
 
-ATTRIB_VALS = '''
-ATTRIBUTE    | ALLOWED VALUES (ONE-OF)     | ALLOWED VALUES (MANY-OF)
-b            | date, decimal, string, time |
-c            |                             |
-f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, readonly, user
-l            | $link-all                   |
-ec           | $link-tabgroup              |
-lc           | $link-tabgroup              |
-t            | audio, button, camera, checkbox, dropdown, file, gpsdiag, group, input, list, map, picture, radio, table, video, viewfiles, web, webview |
-p            |                             |
-'''
-ATTRIB_VALS = parseTable(ATTRIB_VALS)
 
-# Only consider nodes flagged with `RESERVED_XML_TYPE`
+# Only consider nodes flagged with `consts.RESERVED_XML_TYPE`
 matches = tree.xpath(
         '//*[@%s]' %
-        (RESERVED_XML_TYPE)
+        (consts.RESERVED_XML_TYPE)
 )
-# Determine if attributes contain allowed values according to ATTRIB_VALS
+# Determine if attributes contain allowed values according to tables.ATTRIB_VALS
 disallowed = []
 for m in matches:
-    disallowed.extend(disallowedAttribVals(m, ATTRIB_VALS))
+    disallowed.extend(helpers.disallowedAttribVals(tree, m, tables.ATTRIB_VALS))
 
 # Tell the user about the error(s)
 for d in disallowed:
@@ -529,19 +119,21 @@ for d in disallowed:
     disallowedAttribVal = d[1]
     disallowedNode      = d[2]
 
-    allowedOneOf  = getAttributes(ATTRIB_VALS, disallowedAttrib, 1)
-    allowedManyOf = getAttributes(ATTRIB_VALS, disallowedAttrib, 2)
+    allowedOneOf  = helpers.getAttributes(tables.ATTRIB_VALS, disallowedAttrib, 1)
+    allowedManyOf = helpers.getAttributes(tables.ATTRIB_VALS, disallowedAttrib, 2)
     allowed       = allowedOneOf + allowedManyOf
 
     if   allowedOneOf:
-        msg = 'Item `%s` in attribute %s is disallowed.  Exactly one item is expected'
+        msg  = 'Item `%s` in attribute %s is disallowed.  Exactly one item is '
+        msg += 'expected'
     elif allowedManyOf:
-        msg = 'Item `%s` in attribute %s is disallowed.  One or more items are expected'
+        msg  = 'Item `%s` in attribute %s is disallowed.  One or more items '
+        msg += 'are expected'
     else:
         sys.stderr.write('Oops!')
         exit()
 
-    eMsg(
+    helpers.eMsg(
             msg % (disallowedAttribVal, disallowedAttrib),
             [disallowedNode],
             allowed
@@ -551,60 +143,23 @@ for d in disallowed:
 
 
 
-CARDINALITIES = '''
-PARENT XML TYPE | DIRECT CHILD COUNT    | DESCENDANT COUNT
-document        | 1 <= module <= 1      |
 
-module          | 1 <= tab group        |
-module          | 0 <= <logic> <= 1     |
-module          | 0 <= <rels>  <= 1     |
-
-tab group       | 1 <= tab              |
-tab group       | 0 <= <desc>   <= 1    |
-tab group       | 0 <= <search> <= 1    |
-
-tab             |                       | 1 <= GUI element
-tab             | 0 <= <autonum>   <= 1 |
-tab             | 0 <= <cols>           |
-tab             | 0 <= <gps>       <= 1 |
-tab             | 0 <= <author>    <= 1 |
-tab             | 0 <= <timestamp> <= 1 |
-
-GUI element     | 0 <= <desc> <= 1      |
-GUI element     | 0 <= <opts> <= 1      |
-GUI element     | 0 <= <str>  <= 1      |
-
-<cols>          |                       | 1 <= GUI element
-<cols>          | 1 <= <col>            |
-
-<opts>          | 1 <= <opt>            |
-
-<str>           | 0 <= app <= 1         |
-<str>           | 0 <= fmt <= 1         |
-<str>           | 0 <= pos <= 1         |
-
-<col>           | 1 <= GUI element      |
-
-<opt>           | 0 <= <opt>            |
-'''
-CARDINALITIES = parseTable(CARDINALITIES)
-
-# Only consider nodes flagged with `RESERVED_XML_TYPE`
+# Only consider nodes flagged with `consts.RESERVED_XML_TYPE`
 disallowed = []
-for c in CARDINALITIES:
+for c in tables.CARDINALITIES:
     parentTypeName        = c[0]
     directChildContraints = c[1]
     descendantContraints  = c[2]
 
     matches = tree.xpath(
             '//*[@%s="%s"]' %
-            (RESERVED_XML_TYPE, parentTypeName)
+            (consts.RESERVED_XML_TYPE, parentTypeName)
     )
 
     for m in matches:
-        if not satisfiesTypeCardinalityConstraint(m,  directChildContraints, 'direct'):
+        if not helpers.satisfiesTypeCardinalityConstraint(m,  directChildContraints, 'direct'):
             disallowed.append((m, parentTypeName, directChildContraints, 'direct'))
-        if not satisfiesTypeCardinalityConstraint(m,  descendantContraints, 'descendant'):
+        if not helpers.satisfiesTypeCardinalityConstraint(m,  descendantContraints, 'descendant'):
             disallowed.append((m, parentTypeName, descendantContraints, 'descendant'))
 
 for d in disallowed:
@@ -625,9 +180,11 @@ for d in disallowed:
     else:
         pluralNumber = 2
         nounPhrase = descChildNounPhrase(childDirectness, pluralNumber)
-        msg = 'Element `%s` of type %s requires between %s and %s %s (inclusive) of type %s' % \
+        msg  = 'Element `%s` of type %s requires between %s and %s %s '
+        msg += '(inclusive) of type %s'
+        msg % \
         (name, typeParent, min, max, nounPhrase, typeChild)
-    eMsg(
+    helpers.eMsg(
             msg,
             [node]
     )
@@ -635,11 +192,11 @@ for d in disallowed:
 
 matches = tree.xpath(
         '//*[@%s="%s" and not(@t)]' %
-        (RESERVED_XML_TYPE, 'GUI element')
+        (consts.RESERVED_XML_TYPE, 'GUI/data element')
 )
 for m in matches:
-    m.attrib['t'] = guessType(m)
-    wMsg(
+    m.attrib['t'] = helpers.guessType(m)
+    helpers.wMsg(
             'No value for the attribute t of the element `%s` is present.  Assuming a value of `%s`' %
             (m.tag, m.attrib['t']),
             [m]
@@ -674,48 +231,50 @@ replacementsByTag = {
                        </Search>',
         'timestamp' : '<Timestamp t="input" f="readonly nodata"/>'
 }
+for k, v in replacementsByTAttrib.iteritems():
+    # Valid XML has only one root element
+    replacementsByTAttrib[k] = '<root>%s</root>' % v
+for k, v in replacementsByTag.iteritems():
+    replacementsByTag[k] = '<root>%s</root>' % v
 
 for attrib, replacement in replacementsByTAttrib.iteritems():
     matches = tree.xpath(
             '//*[@%s and @t="%s"]' %
-            (RESERVED_XML_TYPE, attrib)
+            (consts.RESERVED_XML_TYPE, attrib)
     )
     for m in matches:
         t = m.tag
         n = m.sourceline
 
         replacement.replace('%s', t)
-        replacement = etree.fromstring(replacement)
-        setSourceline(replacement, n)
+        replacements = etree.fromstring(replacements)
+        helpers.setSourceline(replacements, n)
+        replaceElement(m, replacements)
 
-        tree.replace(m, replacement)
-
-for tag, replacement in replacementsByTag.iteritems():
+for tag, replacements in replacementsByTag.iteritems():
     matches = tree.xpath(
-            '//%s[@%s]' %
-            (RESERVED_XML_TYPE, tag)
+            '//%s[@%s]' % (tag, consts.RESERVED_XML_TYPE)
     )
     for m in matches:
         n = m.sourceline
 
-        replacement = etree.fromstring(replacement)
-        setSourceline(replacement, n)
-
-        tree.replace(m, replacement)
+        replacements = etree.fromstring(replacements)
+        helpers.setSourceline(replacements, n)
+        helpers.replaceElement(m, replacements)
 
 # Check cardinality contraints
-countErr_, ok_ = checkTagCardinalityConstraints('module',    'tab group',   'UI')
+countErr_, ok_ = helpers.checkTagCardinalityConstraints(tree, 'module',    'tab group',   'UI')
 countErr += countErr_; ok &= ok_
-countErr_, ok_ = checkTagCardinalityConstraints('tab group', 'tab',         'UI')
+countErr_, ok_ = helpers.checkTagCardinalityConstraints(tree, 'tab group', 'tab',         'UI')
 countErr += countErr_; ok &= ok_
-countErr_, ok_ = checkTagCardinalityConstraints('tab',       'GUI element', 'UI')
+countErr_, ok_ = helpers.checkTagCardinalityConstraints(tree, 'tab',       'GUI/data element', 'UI')
 countErr += countErr_; ok &= ok_
 
-countErr_, ok_ = checkTagCardinalityConstraints('module',    'tab group',   'data')
+countErr_, ok_ = helpers.checkTagCardinalityConstraints(tree, 'module',    'tab group',   'data')
 countErr += countErr_; ok &= ok_
-countErr_, ok_ = checkTagCardinalityConstraints('tab group', 'GUI element', 'data')
+countErr_, ok_ = helpers.checkTagCardinalityConstraints(tree, 'tab group', 'GUI/data element', 'data')
 countErr += countErr_; ok &= ok_
-countErr_, ok_ = checkTagCardinalityConstraints('module',    'GUI element', 'data')
+countErr_, ok_ = helpers.checkTagCardinalityConstraints(tree, 'module',    'GUI/data element', 'data')
 countErr += countErr_; ok &= ok_
 
 
