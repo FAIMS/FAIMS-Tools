@@ -14,30 +14,28 @@ def deleteAttribFromTree(t, attrib):
     for e in t:
         deleteAttribFromTree(e, attrib)
 
-def isEqual(t1, t2):
-    try:
-        if t1.tag         != t2.tag:         return False
-        if t1.text        != t2.text:        return False
-        if t1.attrib['t'] != t2.attrib['t']: return False
-        if t1.attrib['p'] != t2.attrib['p']: return False
-        if len(t1)        != len(t2):        return False
-    except:
-        pass
+def isFlagged(element, flag, checkAncestors=True, attribName='f'):
+    if element is None:
+        return False
+    if attribName not in element.attrib:
+        return False
+    flags = element.attrib[attribName].split()
+    if flag in flags:
+        return True
 
-    t1[:] = sorted(t1, key=lambda n: str(n.tag) + str(n.text) + str(n.attrib))
-    t2[:] = sorted(t2, key=lambda n: str(n.tag) + str(n.text) + str(n.attrib))
-    for i in range(len(t1)):
-        if not isEqual(t1[i], t2[i]):
-            return False
+    if checkAncestors:
+        return isFlagged(element.getparent(), flag, checkAncestors, attribName)
 
-    return True
+def setSourceline(t, sourceline):
+    if t == None:
+        return
 
-def getLower(t):
-    nodes = [i for i in t if re.match('^[a-z]+$', i.tag)]
-    return nodes
+    t.sourceline = sourceline
+    for e in t:
+        setSourceline(e, sourceline)
 
 def getNonLower(t):
-    nodes = [i for i in t if re.match('[^a-z]', i.tag)] # Might be failing due to comments
+    nodes = [i for i in t if re.match('[^a-z]', i.tag)] # TODO: Might be failing due to comments
     return nodes
 
 def normaliseAttributes(node):
@@ -103,30 +101,32 @@ def parseTable(table):
         for j in range(1, len(table[i])):
             if '<=' in table[i][j]:
                 hasCardinalities |= True
-    if hasCardinalities:
-        for i in range(len(table)):
-            for j in range(1, len(table[i])):
-                regMin  = '(([0-9]+)\s+<=\s+)?'
-                regType = '(\<?[a-zA-Z][a-zA-Z ]*[a-zA-Z]\>?)'
-                regMax  = '(\s+<=\s+([0-9]+))?'
-                reg     = regMin + regType + regMax
-                m = re.search(reg, table[i][j])
+    if not hasCardinalities:
+        return table
 
-                if m:
-                    min  = m.group(2)
-                    type = m.group(3)
-                    max  = m.group(5)
+    for i in range(len(table)):
+        for j in range(1, len(table[i])):
+            regMin  = '(([0-9]+)\s+<=\s+)?'
+            regType = '(\<?[a-zA-Z][a-zA-Z ]*[a-zA-Z]\>?)'
+            regMax  = '(\s+<=\s+([0-9]+))?'
+            reg     = regMin + regType + regMax
+            m = re.search(reg, table[i][j])
 
-                    if min:
-                        min = int(min)
-                    if max:
-                        max = int(max)
+            if m:
+                min  = m.group(2)
+                type = m.group(3)
+                max  = m.group(5)
 
-                    lim = [min,  type, max]
-                else:
-                    lim = [None, None, None]
+                if min:
+                    min = int(min)
+                if max:
+                    max = int(max)
 
-                table[i][j] = lim
+                lim = [min,  type, max]
+            else:
+                lim = [None, None, None]
+
+            table[i][j] = lim
     return table
 
 def flagAll(nodes, attrib, value):
@@ -235,7 +235,7 @@ def disallowedAttribVals(m, ATTRIB_VALS):
                     disallowed.append((attrib, flag,             m))
     return disallowed
 
-def satisfiesCardinalityConstraint(parent, constraint, children='direct'):
+def satisfiesTypeCardinalityConstraint(parent, constraint, children='direct'):
     min, type, max = constraint
     if type == None:
         return True
@@ -271,8 +271,14 @@ def descChildNounPhrase(child, number):
         return descendantWithGrammaticalNumber(number)
 
 def guessType(node):
-    isUser = 'f' in node.attrib and 'user' in node.attrib['f'].split()
+    # Don't guess the type if it's already there
+    try:
+        return node.attrib['t']
+    except:
+        pass
 
+    # Okay, fine. Go ahead and give 'er a guess.
+    isUser = 'f' in node.attrib and 'user' in node.attrib['f'].split()
     if isUser:
         return 'list'
     if node.xpath('opts') and     node.xpath('.//opt[@p]'):
@@ -281,7 +287,7 @@ def guessType(node):
         return 'dropdown'
     return 'input'
 
-def checkNameCardinalityConstraints(nodeTypeParent, nodeTypeChild, schemaType, checkContents=False):
+def checkTagCardinalityConstraints(nodeTypeParent, nodeTypeChild, schemaType):
     assert schemaType in ['UI', 'data']
 
     countErr = 0; ok = True
@@ -290,42 +296,45 @@ def checkNameCardinalityConstraints(nodeTypeParent, nodeTypeChild, schemaType, c
             '//*[@%s="%s"]' %
             (RESERVED_XML_TYPE, nodeTypeChild)
     )
-    elementsInSchema = []
 
-    for n in elements:
-        if schemaType == 'UI'   and 'f' in n.attrib and 'noui'   in n.attrib['f'].split():
-            continue
-        if schemaType == 'data' and 'f' in n.attrib and 'nodata' in n.attrib['f'].split():
-            continue
-        elementsInSchema.append(n)
-
-    for n in elementsInSchema:
-        duplicatesAndSelf = n.xpath(
+    for original in elements:
+        duplicatesAndSelf = original.xpath(
                 './ancestor::*[@%s="%s"]//%s[@%s="%s" and not(@%s="true")]' %
-                (RESERVED_XML_TYPE, nodeTypeParent, n.tag, RESERVED_XML_TYPE, nodeTypeChild, RESERVED_IGNORE)
+                (
+                    RESERVED_XML_TYPE, nodeTypeParent, original.tag,
+                    RESERVED_XML_TYPE, nodeTypeChild,
+                    RESERVED_IGNORE
+                )
         )
-        if checkContents:
-            # Only retain nodes which aren't equal to n
-            duplicatesAndSelf_ = [n] # (btw, also retain n itself)
-            for d in duplicatesAndSelf:
-                if not isEqual(n, d):
-                    duplicatesAndSelf_.append(d)
-            duplicatesAndSelf = duplicatesAndSelf_
+        if schemaType == 'UI'  : cond = lambda n: not isFlagged(n, 'noui')
+        if schemaType == 'data': cond = lambda n: not isFlagged(n, 'nodata')
+        duplicatesAndSelf = filter(cond, duplicatesAndSelf)
 
-        for n in duplicatesAndSelf:
-            n.attrib[RESERVED_IGNORE] = "true"
+        for original in duplicatesAndSelf: # Make sure not to re-check duplicate
+            original.attrib[RESERVED_IGNORE] = "true"
         if len(duplicatesAndSelf) <= 1:
-            continue
+            continue # If this runs, no duplicates were found
+
         capitalisedType = nodeTypeChild[0].upper() + nodeTypeChild[1:]
         pluralisedType  = nodeTypeChild + 's'
-        msg = '%s `%s` is illegally duplicated or results in illegal duplicate %s in its parent %s when the %s schema is generated' % \
-        (capitalisedType, n.tag, pluralisedType, nodeTypeParent, schemaType)
+        msg  = ''
+        msg += '%s `%s` is illegally duplicated or results in illegal duplicate'
+        msg += ' %s in its parent %s when the %s schema is generated'
+        msg  = msg % \
+                (
+                        capitalisedType,
+                        original.tag,
+                        pluralisedType,
+                        nodeTypeParent,
+                        schemaType
+                )
         eMsg(
                 msg,
                 duplicatesAndSelf
         )
         countErr += 1; ok &= False
-    deleteAttribFromTree(elementsInSchema, RESERVED_IGNORE)
+
+    deleteAttribFromTree(elements, RESERVED_IGNORE)
     return (countErr, ok)
 
 ################################################################################
@@ -489,6 +498,8 @@ for d in disallowed:
     )
     countErr += 1; ok &= False
 
+
+
 ATTRIB_VALS = '''
 ATTRIBUTE    | ALLOWED VALUES (ONE-OF)     | ALLOWED VALUES (MANY-OF)
 b            | date, decimal, string, time |
@@ -536,6 +547,9 @@ for d in disallowed:
             allowed
     )
     countErr += 1; ok &= False
+
+
+
 
 CARDINALITIES = '''
 PARENT XML TYPE | DIRECT CHILD COUNT    | DESCENDANT COUNT
@@ -588,9 +602,9 @@ for c in CARDINALITIES:
     )
 
     for m in matches:
-        if not satisfiesCardinalityConstraint(m,  directChildContraints, 'direct'):
+        if not satisfiesTypeCardinalityConstraint(m,  directChildContraints, 'direct'):
             disallowed.append((m, parentTypeName, directChildContraints, 'direct'))
-        if not satisfiesCardinalityConstraint(m,  descendantContraints, 'descendant'):
+        if not satisfiesTypeCardinalityConstraint(m,  descendantContraints, 'descendant'):
             disallowed.append((m, parentTypeName, descendantContraints, 'descendant'))
 
 for d in disallowed:
@@ -632,19 +646,76 @@ for m in matches:
     )
     countWar += 1; ok &= True
 
-# TODO: Expand nodes before performing cardinality constraint checks
-countErr_, ok_ = checkNameCardinalityConstraints('module',    'tab group',   'UI')
+
+
+# Transform XML such that cardinalities of UI and data schema elements
+# represented by "composite" XML elements are preserved.  For "composite" XML
+# elements, this makes some checks easier to perform.
+
+replacementsByTAttrib = {
+        'audio'  : '<%s t="dropdown"/><Button_%s t="button"/>',
+        'camera' : '<%s t="dropdown"/><Button_%s t="button"/>',
+        'file'   : '<%s t="dropdown"/><Button_%s t="button"/>',
+        'video'  : '<%s t="dropdown"/><Button_%s t="button"/>',
+}
+replacementsByTag = {
+        'gps'       : '<Colgroup_GPS t="group"/>              \
+                       <Latitude     t="input" f="readonly"/> \
+                       <Longitude    t="input" f="readonly"/> \
+                       <Northing     t="input" f="readonly"/> \
+                       <Easting      t="input" f="readonly"/>',
+        'search'    : '<Search f="readonly">           \
+                         <cols>                        \
+                           <Search_Term t="input"/>    \
+                           <Search_Button t="button"/> \
+                         </cols>                       \
+                         <Entity_Types t="input"/>     \
+                         <Entity_List t="list"/>       \
+                       </Search>',
+        'timestamp' : '<Timestamp t="input" f="readonly nodata"/>'
+}
+
+for attrib, replacement in replacementsByTAttrib.iteritems():
+    matches = tree.xpath(
+            '//*[@%s and @t="%s"]' %
+            (RESERVED_XML_TYPE, attrib)
+    )
+    for m in matches:
+        t = m.tag
+        n = m.sourceline
+
+        replacement.replace('%s', t)
+        replacement = etree.fromstring(replacement)
+        setSourceline(replacement, n)
+
+        tree.replace(m, replacement)
+
+for tag, replacement in replacementsByTag.iteritems():
+    matches = tree.xpath(
+            '//%s[@%s]' %
+            (RESERVED_XML_TYPE, tag)
+    )
+    for m in matches:
+        n = m.sourceline
+
+        replacement = etree.fromstring(replacement)
+        setSourceline(replacement, n)
+
+        tree.replace(m, replacement)
+
+# Check cardinality contraints
+countErr_, ok_ = checkTagCardinalityConstraints('module',    'tab group',   'UI')
 countErr += countErr_; ok &= ok_
-countErr_, ok_ = checkNameCardinalityConstraints('tab group', 'tab',         'UI')
+countErr_, ok_ = checkTagCardinalityConstraints('tab group', 'tab',         'UI')
 countErr += countErr_; ok &= ok_
-countErr_, ok_ = checkNameCardinalityConstraints('tab',       'GUI element', 'UI')
+countErr_, ok_ = checkTagCardinalityConstraints('tab',       'GUI element', 'UI')
 countErr += countErr_; ok &= ok_
 
-countErr_, ok_ = checkNameCardinalityConstraints('module',    'tab group',   'data')
+countErr_, ok_ = checkTagCardinalityConstraints('module',    'tab group',   'data')
 countErr += countErr_; ok &= ok_
-countErr_, ok_ = checkNameCardinalityConstraints('tab group', 'GUI element', 'data')
+countErr_, ok_ = checkTagCardinalityConstraints('tab group', 'GUI element', 'data')
 countErr += countErr_; ok &= ok_
-countErr_, ok_ = checkNameCardinalityConstraints('module',    'GUI element', 'data', True)
+countErr_, ok_ = checkTagCardinalityConstraints('module',    'GUI element', 'data')
 countErr += countErr_; ok &= ok_
 
 
