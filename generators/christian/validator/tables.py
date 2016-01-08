@@ -110,6 +110,34 @@ GUI/data element     | str         | <str>
 <opt>                | opt         | <opt>
 '''
 
+REPLACEMENTS_BY_T_ATTRIB = {
+        'audio'  : '<__REPLACE__        t="dropdown"/>\
+                    <Button___REPLACE__ t="button"/>',
+        'camera' : '<__REPLACE__        t="dropdown"/>\
+                    <Button___REPLACE__ t="button"/>',
+        'file'   : '<__REPLACE__        t="dropdown"/>\
+                    <Button___REPLACE__ t="button"/>',
+        'video'  : '<__REPLACE__        t="dropdown"/>\
+                    <Button___REPLACE__ t="button"/>',
+}
+REPLACEMENTS_BY_TAG = {
+        'author'    : '<Author t="input" f="readonly nodata"/>',
+        'gps'       : '<Colgroup_GPS t="group"/>              \
+                       <Latitude     t="input" f="readonly"/> \
+                       <Longitude    t="input" f="readonly"/> \
+                       <Northing     t="input" f="readonly"/> \
+                       <Easting      t="input" f="readonly"/>',
+        'search'    : '<Search f="readonly">           \
+                         <cols>                        \
+                           <Search_Term t="input"/>    \
+                           <Search_Button t="button"/> \
+                         </cols>                       \
+                         <Entity_Types t="input"/>     \
+                         <Entity_List t="list"/>       \
+                       </Search>',
+        'timestamp' : '<Timestamp t="input" f="readonly nodata"/>'
+}
+
 ATTRIBS       = datatransformers.parseTable(ATTRIBS)
 ATTRIB_VALS   = datatransformers.parseTable(ATTRIB_VALS)
 CARDINALITIES = datatransformers.parseTable(CARDINALITIES)

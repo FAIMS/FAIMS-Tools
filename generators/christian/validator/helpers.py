@@ -1,6 +1,8 @@
-import re
-import copy
+from   lxml import etree
 import consts
+import copy
+import helpers
+import re
 
 def deleteAttribFromTree(t, attrib):
     if t == None:
@@ -11,12 +13,23 @@ def deleteAttribFromTree(t, attrib):
     for e in t:
         deleteAttribFromTree(e, attrib)
 
-def replaceElement(element, replacements):
+def replaceElement(element, replacements, tag=''):
+    replacements = replacements.replace('__REPLACE__', tag)
+    replacements = '<root>%s</root>' % replacements
+    replacements = etree.fromstring(replacements)
+
+    originalSourceline = element.sourceline
+    helpers.setSourceline(replacements, originalSourceline)
+
+    # Insert each element in `replacements` at the location of `element`. The
+    # phrasing is a bit opaque here because lxml *moves* nodes from
+    # `replacements` instead of copying them when `.insert(index, r)` is called.
     index = element.getparent().index(element)
-    for i in range(len(replacements)):
-        r = replacements[i]
-        r = copy.deepcopy(r)
-        element.getparent().insert(index+i, r)
+    while len(replacements):
+        r = replacements[-1]
+        element.getparent().insert(index, r)
+
+    element.getparent().remove(element)
 
 def isFlagged(element, flag, checkAncestors=True, attribName='f'):
     if element is None:
@@ -120,10 +133,10 @@ def getExpectedTypes(table, node, reserved=False):
 
     return expected
 
-def getAttributes(table, xmlType, rowAttribsIndex=1):
+def getAttributes(table, xmlType, rowIndex=1):
     for row in table:
         rowXmlType = row[0]
-        rowAttribs = row[rowAttribsIndex]
+        rowAttribs = row[rowIndex]
 
         if type(rowAttribs) is not list:
             if not rowAttribs:
