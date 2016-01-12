@@ -3,6 +3,18 @@ import consts
 import copy
 import helpers
 import re
+import tables
+
+def filterUnannotated(nodes):
+    cond = lambda e: helpers.isAnnotated(e)
+    return filter(cond, nodes)
+
+def isAnnotated(e):
+    try:
+        return e.attrib[consts.RESERVED_XML_TYPE] != ''
+    except:
+        pass
+    return False
 
 def deleteAttribFromTree(t, attrib):
     if t == None:
@@ -13,7 +25,28 @@ def deleteAttribFromTree(t, attrib):
     for e in t:
         deleteAttribFromTree(e, attrib)
 
+def annotateWithTypes(tree):
+    for t in tables.TYPES:
+        parentType = t[0]
+        pattern    = t[1]
+        matchType  = t[2]
+
+        if   pattern == '/':
+            exp = '/*'
+            matches = tree.xpath(exp)
+        elif pattern == '/[^a-z]/':
+            exp = '//*[@%s="%s"]/*' % (consts.RESERVED_XML_TYPE, parentType)
+            matches = tree.xpath(exp)
+            matches = getNonLower(matches)
+        else:
+            exp  = '//*[@%s="%s"]/%s'
+            exp %= (consts.RESERVED_XML_TYPE, parentType, pattern)
+            matches = tree.xpath(exp)
+        flagAll(matches, consts.RESERVED_XML_TYPE, matchType)
+
+
 def replaceElement(element, replacements, tag=''):
+    replacements = re.sub('>\s+<', '><', replacements)
     replacements = replacements.replace('__REPLACE__', tag)
     replacements = '<root>%s</root>' % replacements
     replacements = etree.fromstring(replacements)
@@ -23,7 +56,7 @@ def replaceElement(element, replacements, tag=''):
 
     # Insert each element in `replacements` at the location of `element`. The
     # phrasing is a bit opaque here because lxml *moves* nodes from
-    # `replacements` instead of copying them when `.insert(index, r)` is called.
+    # `replacements` instead of copying them, when `insert(index, r)` is called.
     index = element.getparent().index(element)
     while len(replacements):
         r = replacements[-1]

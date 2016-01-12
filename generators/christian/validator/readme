@@ -6,17 +6,18 @@
 * WARNING: No type t was given for this view; assuming it is a list</xsl:comment>
 * WARNING: No type t was given for this view; assuming it is an input</xsl:comment>
 * WARNING: No type t was given for this view; assuming it is a picture gallery</xsl:comment>
-  ERROR: Binding in b attribute ignored; use of "autonum" flag forces decimal binding</xsl:comment>
-  ERROR: Property has &lt;str&gt; tags but is not flagged as an identifier</xsl:comment>
-  ERROR: Style in c attribute not applied; styling conflict exists due to "autonum" flag</xsl:comment>
-  ERROR: Style in c attribute not applied; styling conflict exists due to "notnull" flag</xsl:comment>
-  ERROR: This module has more than one login menu</xsl:text>
-  ERROR: Option is missing a name</xsl:comment>
+* ERROR: Binding in b attribute ignored; use of "autonum" flag forces decimal binding</xsl:comment>
+* ERROR: Property has &lt;str&gt; tags but is not flagged as an identifier</xsl:comment>
+* ERROR: Style in c attribute not applied; styling conflict exists due to "autonum" flag</xsl:comment>
+* ERROR: Style in c attribute not applied; styling conflict exists due to "notnull" flag</xsl:comment>
+* ERROR: This module has more than one login menu</xsl:text>
+* ERROR: Option is missing a name</xsl:comment>
   ERROR: This automatically generated relationship is a duplicate of a user-specified one and is required to implement child relationships specified by the use of any "lc" attributes</xsl:comment>
-  ERROR: viewfiles button cannot belong to element flagged with 'nodata'</xsl:comment>
-  ERROR: field(s) flagged with 'autonum' but no autonum tag exists</xsl:text>
-  ERROR: "l" and "lc" tags cannot be present simultaneously; found on "</xsl:text>
+* ERROR: viewfiles button cannot belong to element flagged with 'nodata'</xsl:comment>
+* ERROR: field(s) flagged with 'autonum' but no autonum tag exists</xsl:text>
+* ERROR: "l" and "lc" tags cannot be present simultaneously; found on "</xsl:text>
   ERROR: "lc" attribute cannot belong to element flagged with "noui" or "nodata"</xsl:text>
+  ERROR: Only elements whose t attribute is equivalent to one of the following may contain <opt> tags: checkbox, dropdown, list, picture, radio
 * ERROR: Property is duplicated in this module
 * ERROR: Property is duplicated in this entity
 * ERROR: This view's name is a duplicate of one or more other views' in this tab group</xsl:comment>
@@ -26,7 +27,7 @@
 * ERROR: Unexpected attribute "</xsl:text>
 * ERROR: Identifier not given</xsl:comment>
 * ERROR: Link to tab or tab group could not be resolved
-* ERROR: A set of &lt;opts&gt; tags are expected but not present</xsl:comment>
+* ERROR: A set of <opts> tags are expected but not present</xsl:comment>
 * ERROR: Unexpected binding "<xsl:value-of select="@b"/>"</xsl:comment>
 * ERROR: Unexpected flag(s) "<xsl:value-of select="$v16" />"</xsl:comment>
 * ERROR: More than one search tab found. Settting bindings for only the first.</xsl:text>
