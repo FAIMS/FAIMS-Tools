@@ -64,14 +64,28 @@ def replaceElement(element, replacements, tag=''):
 
     element.getparent().remove(element)
 
-def isFlagged(element, flag, checkAncestors=True, attribName='f'):
+def isFlagged(element, flags, checkAncestors=True, attribName='f'):
+    if type(flags) is list:
+        return isFlaggedList(element, flags, checkAncestors, attribName)
+    else:
+        return isFlaggedStr (element, flags, checkAncestors, attribName)
+
+def isFlaggedList(element, flags, checkAncestors=True, attribName='f'):
+    for flag in flags:
+        if isFlaggedStr(element, flag, checkAncestors, attribName):
+            return True
+    return False
+
+def isFlaggedStr(element, flag, checkAncestors=True, attribName='f'):
+    # Base case 1: We've iterated through all the ancestors
     if element is None:
         return False
-    if attribName not in element.attrib:
-        return False
-    flags = element.attrib[attribName].split()
-    if flag in flags:
-        return True
+    # Base case 2: The flag's been found in ancestor or self
+    try:
+        flags = element.attrib[attribName].split()
+        if flag in flags: return True
+    except:
+        pass
 
     if checkAncestors:
         return isFlagged(element.getparent(), flag, checkAncestors, attribName)
@@ -89,6 +103,10 @@ def getNonLower(t):
     return nodes
 
 def normaliseAttributes(node):
+    # Don't normalise stuff in <rels>
+    if node.xpath('./ancestor-or-self::rels'):
+        return
+    # Do normalise everything else
     for key, val in node.attrib.iteritems():
         val = val.split()
         val.sort()
@@ -97,16 +115,25 @@ def normaliseAttributes(node):
     for n in node:
         normaliseAttributes(n)
 
-def wMsg(notice, nodes, expected=[]):
+def wMsg(notice, nodes=None, expected=[]):
     notice = 'WARNING: ' + notice
     printNotice(notice, nodes, expected)
 
-def eMsg(notice, nodes, expected=[]):
+def eMsg(notice, nodes=None, expected=[]):
     notice = 'ERROR:   ' + notice
     printNotice(notice, nodes, expected)
 
-def printNotice(notice, nodes, expected=[]):
-    notice = notice + '.  '
+def printNotice(notice, nodes=None, expected=[]):
+    if   nodes      == None:
+        location = ''
+    elif len(nodes) == 0:
+        return
+    elif len(nodes) == 1:
+        location = 'Occurs at line ' + str(nodes[0].sourceline) + '.  '
+    elif len(nodes) >= 2:
+        location = 'Occurs at:'
+        for node in nodes:
+            location += '\n  - Line ' + str(node.sourceline)
 
     if   len(expected) == 0:
         expected = ''
@@ -115,15 +142,7 @@ def printNotice(notice, nodes, expected=[]):
     else:
         expected = 'Allowed items are:\n  - ' + '\n  - '.join(expected) + '\n'
 
-    if len(nodes) == 0:
-        location = ''
-    if len(nodes) == 1:
-        location = 'Occurs at line ' + str(nodes[0].sourceline) + '.  '
-    if len(nodes) >= 2:
-        location = 'Occurs at:'
-        for node in nodes:
-            location += '\n  - Line ' + str(node.sourceline)
-
+    notice = notice + '.  '
     print notice + expected + location
     print
 
@@ -267,7 +286,7 @@ def descendantWithGrammaticalNumber(number):
     if number == 1:
         return d
     return  d + s
-def descChildNounPhrase(child, number):
+def descChildNounPhrase(childDirectness , number):
     if  childDirectness == 'direct':
         childNum = childWithGrammaticalNumber (number)
         return 'direct %s' % childNum
@@ -320,14 +339,14 @@ def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaTy
             continue # If this runs, no duplicates were found
 
         capitalisedType = nodeTypeChild[0].upper() + nodeTypeChild[1:]
-        pluralisedType  = nodeTypeChild + 's'
-        msg  = '%s `%s` is illegally duplicated or results in illegal duplicate'
-        msg += ' %s in its parent %s when the %s schema is generated'
+
+        msg  = '%s `%s` is illegally duplicated in its parent %s when the %s '
+        msg += 'schema is generated.  (Note that some reserved elements are '
+        msg += 'shorthand for sets of elements)'
         msg  = msg % \
                 (
                         capitalisedType,
                         original.tag,
-                        pluralisedType,
                         nodeTypeParent,
                         schemaType
                 )
@@ -339,3 +358,51 @@ def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaTy
 
     deleteAttribFromTree(elements, consts.RESERVED_IGNORE)
     return (countErr, ok)
+
+def hasElementFlaggedWithId(tabGroup):
+    exp  = './/*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+    cond = lambda e: helpers.isFlagged(e, 'id')
+    matches = tabGroup.xpath(exp)
+    matches = filter(cond, matches)
+    return len(matches) > 0
+
+def getParentTabGroup(node):
+    exp = './ancestor::*[last()-1]'
+    matches = node.xpath(exp)
+    if matches:
+        return matches[0]
+    return None
+
+def getRelName(node):
+    try:
+        if not 'lc' in node.attrib:
+            return None
+    except:
+        return None
+    if helpers.getParentTabGroup(node) == None:
+        return None
+
+    parentName = helpers.getParentTabGroup(node)
+    parentName = parentName.tag
+    parentName = parentName.replace('_', ' ')
+
+    childName = node.attrib['lc']
+    childName = childName.replace('_', ' ')
+
+    relName = '%s - %s' % (parentName, childName)
+    return relName
+
+def getLabelFromTag(node):
+    label = node.tag
+    label = label.replace('_', ' ')
+    label = label.split()
+    label = ' '.join(label)
+    return label
+
+def getLabelFromText(node):
+    if node.text == None:
+        return ''
+    label = node.text
+    label = label.split()
+    label = ' '.join(label)
+    return label

@@ -1,7 +1,7 @@
-  WARNING: This module is missing a login menu
-  WARNING: For this element, a label was explicitly given. It may have been able to be represented more succinctly by allowing it to be inferred from its element's tag</xsl:comment>
-  WARNING: A search tab may be automatically generated using the <search> tag
-  WARNING: Option is duplicated in this menu</xsl:comment>
+* WARNING: This module is missing a login menu
+* WARNING: For this element, a label was explicitly given. It may have been able to be represented more succinctly by allowing it to be inferred from its element's tag</xsl:comment>
+- WARNING: A search tab may be automatically generated using the <search> tag
+- WARNING: Option is duplicated in this menu</xsl:comment>
 * WARNING: No type t was given for this view; assuming it is a dropdown</xsl:comment>
 * WARNING: No type t was given for this view; assuming it is a list</xsl:comment>
 * WARNING: No type t was given for this view; assuming it is an input</xsl:comment>
@@ -12,12 +12,12 @@
 * ERROR: Style in c attribute not applied; styling conflict exists due to "notnull" flag</xsl:comment>
 * ERROR: This module has more than one login menu</xsl:text>
 * ERROR: Option is missing a name</xsl:comment>
-  ERROR: This automatically generated relationship is a duplicate of a user-specified one and is required to implement child relationships specified by the use of any "lc" attributes</xsl:comment>
+* ERROR: This automatically generated relationship is a duplicate of a user-specified one and is required to implement child relationships specified by the use of any "lc" attributes</xsl:comment>
 * ERROR: viewfiles button cannot belong to element flagged with 'nodata'</xsl:comment>
 * ERROR: field(s) flagged with 'autonum' but no autonum tag exists</xsl:text>
 * ERROR: "l" and "lc" tags cannot be present simultaneously; found on "</xsl:text>
-  ERROR: "lc" attribute cannot belong to element flagged with "noui" or "nodata"</xsl:text>
-  ERROR: Only elements whose t attribute is equivalent to one of the following may contain <opt> tags: checkbox, dropdown, list, picture, radio
+* ERROR: "lc" attribute cannot belong to element flagged with "noui" or "nodata"</xsl:text>
+* ERROR: Only elements whose t attribute is equivalent to one of the following may contain <opt> tags: checkbox, dropdown, list, picture, radio
 * ERROR: Property is duplicated in this module
 * ERROR: Property is duplicated in this entity
 * ERROR: This view's name is a duplicate of one or more other views' in this tab group</xsl:comment>
@@ -32,7 +32,26 @@
 * ERROR: Unexpected flag(s) "<xsl:value-of select="$v16" />"</xsl:comment>
 * ERROR: More than one search tab found. Settting bindings for only the first.</xsl:text>
 
-desc tags only allowed in attributes of certain type t
+  ERROR: desc tags only allowed in attributes of certain type t
+  Check for any other errors not covered, esp flags which prohibit the use of other flags or attributes
+  Rewrite the "tables" in tables.py + general refactor
+
+  Mutually exclusive flags:
+    autonum      | 
+    hidden       | nodata
+    id           | 
+    noannotation | 
+    nocertainty  | 
+    nodata       | 
+    nolabel      | 
+    noscroll     | 
+    nosync       | 
+    nothumb      | 
+    nothumbnail  | 
+    notnull      | 
+    noui         | 
+    readonly     | 
+    user         | 
 
 
 Text, elements, attributes

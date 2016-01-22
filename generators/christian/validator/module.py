@@ -31,10 +31,14 @@ countErr = 0
 ok = True
 helpers.annotateWithTypes(tree)
 
-# Nodes which didn't end up getting flagged aren't allowed
+# Nodes which didn't end up getting flagged...
 exp  = '//*[@%s]/*[not(@%s)]'
 exp %= (consts.RESERVED_XML_TYPE, consts.RESERVED_XML_TYPE)
 disallowed = tree.xpath(exp)
+# ...and aren't in <rels> are disallowed
+exp  = './ancestor-or-self::rels'
+cond = lambda e: not e.xpath(exp)
+disallowed = filter(cond, disallowed)
 
 # Tell the user about the error(s)
 for d in disallowed:
@@ -211,6 +215,8 @@ countErr += countErr_; ok &= ok_
 
 ################################# MISC ERRORS ##################################
 
+################################################################################
+
 msg  = 'Binding in b attribute ignored; use of "autonum" flag forces decimal '
 msg += 'binding'
 
@@ -222,9 +228,8 @@ matches = filter(cond, matches)
 matches = helpers.filterUnannotated(matches)
 
 # Tell the user about the error(s)
-for m in matches:
-    affectedNodes = [m]
-    helpers.eMsg(msg, affectedNodes)
+affectedNodes = matches
+helpers.eMsg(msg, affectedNodes)
 
 ################################################################################
 
@@ -238,9 +243,8 @@ matches = filter(cond, matches)
 matches = helpers.filterUnannotated(matches)
 
 # Tell the user about the error(s)
-for m in matches:
-    affectedNodes = [m]
-    helpers.eMsg(msg, affectedNodes)
+affectedNodes = matches
+helpers.eMsg(msg, affectedNodes)
 
 ################################################################################
 
@@ -255,9 +259,8 @@ matches = filter(cond, matches)
 matches = helpers.filterUnannotated(matches)
 
 # Tell the user about the error(s)
-for m in matches:
-    affectedNodes = [m]
-    helpers.eMsg(msg, affectedNodes)
+affectedNodes = matches
+helpers.eMsg(msg, affectedNodes)
 
 ################################################################################
 
@@ -272,44 +275,44 @@ matches = filter(cond, matches)
 matches = helpers.filterUnannotated(matches)
 
 # Tell the user about the error(s)
-for m in matches:
-    affectedNodes = [m]
-    helpers.eMsg(msg, affectedNodes)
+affectedNodes = matches
+helpers.eMsg(msg, affectedNodes)
 
 ################################################################################
 
-msg  = 'This module has more than one user login menu'
+msg  = 'Module contains more than one user login menu'
 
-# Select all user-flagged elements
+# Select all GUI/data elements'
 exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
-
+# Select all user-flagged elements from those
 cond = lambda e: helpers.isFlagged(e, 'user')
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 matches = helpers.filterUnannotated(matches)
 
 # Tell the user about the error(s)
-if len(matches) > 1:
+if len(matches) >= 2:
     affectedNodes = matches
     helpers.eMsg(msg, affectedNodes)
 
 ################################################################################
 
-msg  = 'Text must be present in <opt> tags'
+msg  = 'Text not present in <opt> tag'
 
 # Select all user-flagged elements
 exp  = '//opt'
+cond = lambda e: e.text == None or e.text.strip() == ''
 matches = tree.xpath(exp)
+matches = filter(cond, matches)
 matches = helpers.filterUnannotated(matches)
 
 # Tell the user about the error(s)
-if len(matches) > 1:
-    affectedNodes = matches
-    helpers.eMsg(msg, affectedNodes)
+affectedNodes = matches
+helpers.eMsg(msg, affectedNodes)
 
 ################################################################################
 
-msg  = 'An element cannot have "l" and "lc" attributes simultaneously'
+msg  = 'Elements cannot have "l" and "lc" attributes simultaneously'
 
 # Select all elements having l and lc attributes
 exp  = '//*[@l and @lc]'
@@ -317,9 +320,8 @@ matches = tree.xpath(exp)
 matches = helpers.filterUnannotated(matches)
 
 # Tell the user about the error(s)
-if matches:
-    affectedNodes = matches
-    helpers.eMsg(msg, affectedNodes)
+affectedNodes = matches
+helpers.eMsg(msg, affectedNodes)
 
 ################################################################################
 
@@ -353,6 +355,136 @@ matches = tree.xpath(exp)
 matches = helpers.filterUnannotated(matches)
 
 # Tell the user about the error(s)
-if matches:
-    affectedNodes = matches
-    helpers.eMsg(msg, affectedNodes)
+affectedNodes = matches
+helpers.eMsg(msg, affectedNodes)
+
+################################################################################
+
+msg  = 'Elements flagged with "noui" or "nodata" cannot possess the "lc" '
+msg += 'attribute'
+
+exp  = '//*[@lc]'
+cond = lambda e: helpers.isFlagged(e, ['nodata', 'noui'])
+matches = tree.xpath(exp)
+matches = filter(cond, matches)
+matches = helpers.filterUnannotated(matches)
+
+affectedNodes = matches
+helpers.eMsg(msg, affectedNodes)
+
+################################################################################
+
+msg  = 'Tab groups not flagged with "nodata" require at least one identifier'
+
+exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'tab group')
+cond = lambda e: not helpers.isFlagged(e, 'nodata') and \
+                 not helpers.hasElementFlaggedWithId(e)
+matches = tree.xpath(exp)
+matches = filter(cond, matches)
+matches = helpers.filterUnannotated(matches)
+
+affectedNodes = matches
+helpers.eMsg(msg, affectedNodes)
+
+################################################################################
+
+msg  = 'Only elements whose t attribute is equivalent to one of the following '
+msg += 'may contain <opts> tags: %s' % ', '.join(tables.MENU_TS)
+
+# Get <opts> tags which are the children of GUI/data elements
+exp  = '//*[@%s="%s"]/opts' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+# Filter out <opts> tags whose element's t attrib *is* in DESC_TS
+cond = lambda e: not helpers.guessType(e.getparent()) in tables.MENU_TS
+matches = tree.xpath(exp)
+matches = filter(cond, matches)
+# Effectively, filter out <opts> tags which were already complained about
+matches = helpers.filterUnannotated(matches)
+
+affectedNodes = matches
+helpers.eMsg(msg, affectedNodes)
+
+################################################################################
+
+msg  = 'Only elements whose t attribute is equivalent to one of the following '
+msg += 'may contain <desc> tags: %s' % ', '.join(tables.DESC_TS)
+
+# Get <desc> tags which are the children of GUI/data elements
+exp  = '//*[@%s="%s"]/desc' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+# Filter out <desc> tags whose element's t attrib *is* in DESC_TS
+cond = lambda e: not helpers.guessType(e.getparent()) in tables.DESC_TS
+matches = tree.xpath(exp)
+matches = filter(cond, matches)
+# Effectively, filter out <desc> tags which were already complained about
+matches = helpers.filterUnannotated(matches)
+
+affectedNodes = matches
+helpers.eMsg(msg, affectedNodes)
+
+################################################################################
+
+msg  = 'The use of the "lc" attribute generates a relationship `%s` which is a '
+msg  += 'duplicate of a user-specified one'
+
+# Get elements which have lc attributes...
+exp  = '//*[@lc]'
+matches = tree.xpath(exp)
+# ...Which also have valid relationships (and therefore valid relNames)...
+cond = lambda e: helpers.getRelName(e) != None
+matches = filter(cond, matches)
+matches = helpers.filterUnannotated(matches)
+# ...And conflict with entries in the <rels> tags
+exp = '//rels/*[@name="%s"]'
+cond = lambda e: len(tree.xpath(exp % helpers.getRelName(e))) > 0
+matches = filter(cond, matches)
+
+for m in matches:
+    # Find the entries in <rels> that `m` conflicts with
+    relName = helpers.getRelName(m)
+    exp = '//rels/*[@name="%s"]' % relName
+    conflictingRels = tree.xpath(exp)
+
+    # Notify the user of the conflict
+    msg_ = msg % relName
+    affectedNodes = conflictingRels + [m]
+    helpers.eMsg(msg_, affectedNodes)
+
+################################ MISC WARNINGS #################################
+
+################################################################################
+
+msg  = 'Module is missing a login menu'
+
+# Select all GUI/data elements'
+exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+# Select all user-flagged elements from those
+cond = lambda e: helpers.isFlagged(e, 'user')
+matches = tree.xpath(exp)
+matches = filter(cond, matches)
+matches = helpers.filterUnannotated(matches)
+
+# Tell the user about the error(s)
+if len(matches) == 0:
+    helpers.wMsg(msg)
+
+################################################################################
+
+msg  = 'Text is superfluous here as it can be inferred from its element\'s tag'
+
+# List of types which interpret their text as labels
+types = [
+        'tab',
+        'tab group',
+        'GUI/data element',
+]
+# Make list of nodes whose type is in `types`
+matches = []
+for t in types:
+    exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, t)
+    matches += tree.xpath(exp)
+# Retain only elements with superfluous text
+cond = lambda e: helpers.getLabelFromText(e) == helpers.getLabelFromTag(e)
+matches = filter(cond, matches)
+# Pretty up the output a little
+matches.sort(key=lambda e: e.sourceline)
+
+helpers.wMsg(msg, matches)

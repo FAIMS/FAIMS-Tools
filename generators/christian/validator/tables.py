@@ -110,6 +110,28 @@ GUI/data element     | str         | <str>
 <opt>                | opt         | <opt>
 '''
 
+# Types (t attribute in module.xml schema) of menu-like items
+MENU_TS = [
+    'checkbox',
+    'dropdown',
+    'list',
+    'picture',
+    'radio'
+]
+
+# Types (t attribute in module.xml schema) where <desc> is allowed to go
+DESC_TS = [
+    'audio',
+    'camera',
+    'checkbox',
+    'dropdown',
+    'file',
+    'list',
+    'picture',
+    'radio',
+    'video'
+]
+
 REPLACEMENTS_BY_T_ATTRIB = {
         'audio'  : '<__REPLACE__        t="dropdown"/>\
                     <Button___REPLACE__ t="button"/>',
