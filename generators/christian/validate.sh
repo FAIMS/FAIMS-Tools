@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+thisScriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 if [ -z $1 ]
 then
@@ -7,4 +9,4 @@ else
     module=$1
 fi
 
-python validator/module.py $module
+python "$thisScriptPath/validator/module.py" $module
