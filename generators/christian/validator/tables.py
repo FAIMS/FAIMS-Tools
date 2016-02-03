@@ -126,6 +126,7 @@ DESC_TS = [
     'checkbox',
     'dropdown',
     'file',
+    'input',
     'list',
     'picture',
     'radio',
