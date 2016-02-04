@@ -110,9 +110,9 @@ TYPE GUESSING
 
       <Entity_Identifier f="id"/>          <!-- This'll be an input -->
 
-  If the XML tag is flagged with f="user", t="dropdown" is assumed. Example:
+  If the XML tag is flagged with f="user", t="list" is assumed. Example:
 
-      <List_of_Users f="user"/>            <!-- This'll be a dropdown -->
+      <List_of_Users f="user"/>            <!-- This'll be a list -->
 
   If the XML tags contain an <opts> element and no descendants with p
   attributes, t="dropdown" is assumed. Example:
@@ -130,7 +130,7 @@ TYPE GUESSING
       <Element>                            <!-- This'll be a picture gallery -->
         <opts>
           <opt p="Lovely_Image.jpg>Option 1</opt>
-          <opt                   >Option 2</opt>
+          <opt                    >Option 2</opt>
         </opts>
       </Element>
 ________________________________________________________________________________
