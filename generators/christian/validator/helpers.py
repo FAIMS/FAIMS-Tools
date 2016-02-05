@@ -99,7 +99,7 @@ def setSourceline(t, sourceline):
         setSourceline(e, sourceline)
 
 def getNonLower(t):
-    nodes = [i for i in t if re.match('[^a-z]', i.tag)] # TODO: Might be failing due to comments
+    nodes = [i for i in t if re.search('[^a-z]', i.tag)] # TODO: Might be failing due to comments
     return nodes
 
 def normaliseAttributes(node):
