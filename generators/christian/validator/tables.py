@@ -2,7 +2,7 @@ import datatransformers
 
 ATTRIBS = '''
 XML TYPE      | ATTRIBUTES ALLOWED
-module        |
+module        | suppressWarnings
 tab group     | f
 tab           | f
 GUI/data element   | b, c, ec, f, l, lc, t
