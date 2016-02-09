@@ -308,6 +308,8 @@ def guessType(node):
         return 'picture'
     if node.xpath('opts') and not node.xpath('.//opt[@p]'):
         return 'dropdown'
+    if 'ec' in node.attrib:
+        return 'list'
     return 'input'
 
 def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaType):
