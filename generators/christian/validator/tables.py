@@ -5,7 +5,7 @@ XML TYPE      | ATTRIBUTES ALLOWED
 module        | suppressWarnings
 tab group     | f
 tab           | f
-GUI/data element   | b, c, ec, f, l, lc, t
+GUI/data element   | b, c, e, ec, f, l, lc, t
 <cols>        | f
 <opts>        |
 <str>         |
