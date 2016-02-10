@@ -1277,6 +1277,8 @@ search(){
   Log.d("Module", "Search query: " + searchQuery);
 }
 </xsl:text>
+    </xsl:if>
+    <xsl:if test="(/module/*/search) or (//@e) or (//@ec)">
       <xsl:value-of select="$newline"/>
       <xsl:call-template name="load-entity-functions" />
     </xsl:if>
