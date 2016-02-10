@@ -1030,6 +1030,31 @@ addOnEvent("Parent", "show", "addNavigationButtons(\"Parent\")");
 addOnEvent("Child", "show", "addNavigationButtons(\"Child\")");
 addOnEvent("Child_Other", "show", "addNavigationButtons(\"Child_Other\")");
 
+loadParentFrom(String uuid) {
+  String tabgroup = "Parent";
+  setUuid(tabgroup, uuid);
+  if (isNull(uuid)) return;
+
+  showTabGroup(tabgroup, uuid);
+}
+
+loadChildFrom(String uuid) {
+  String tabgroup = "Child";
+  setUuid(tabgroup, uuid);
+  if (isNull(uuid)) return;
+
+  showTabGroup(tabgroup, uuid);
+}
+
+loadChildOtherFrom(String uuid) {
+  String tabgroup = "Child_Other";
+  setUuid(tabgroup, uuid);
+  if (isNull(uuid)) return;
+
+  showTabGroup(tabgroup, uuid);
+}
+
+
 /******************************************************************************/
 /*                POPULATION OF ENTITY AND CHILD ENTITY LISTS                 */
 /******************************************************************************/

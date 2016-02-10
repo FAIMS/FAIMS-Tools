@@ -620,10 +620,10 @@ addOnEvent("Tabgroup", "show", "onShowTabgroup()");
 /******************************************************************************/
 /*                 BINDINGS FOR 'VIEW ATTACHED FILES' BUTTONS                 */
 /******************************************************************************/
-addOnEvent("Tabgroup/Tab/Button_Viewfiles_date", "click", "viewAttachedFiles(getUuid(\"Tabgroup\"))");
-addOnEvent("Tabgroup/Tab/Button_Viewfiles_decimal", "click", "viewAttachedFiles(getUuid(\"Tabgroup\"))");
-addOnEvent("Tabgroup/Tab/Button_Viewfiles_string", "click", "viewAttachedFiles(getUuid(\"Tabgroup\"))");
-addOnEvent("Tabgroup/Tab/Button_Viewfiles_time", "click", "viewAttachedFiles(getUuid(\"Tabgroup\"))");
+addOnEvent("Tabgroup/Tab/Viewfiles_date", "click", "viewArchEntAttachedFiles(getUuid(\"Tabgroup\"))");
+addOnEvent("Tabgroup/Tab/Viewfiles_decimal", "click", "viewArchEntAttachedFiles(getUuid(\"Tabgroup\"))");
+addOnEvent("Tabgroup/Tab/Viewfiles_string", "click", "viewArchEntAttachedFiles(getUuid(\"Tabgroup\"))");
+addOnEvent("Tabgroup/Tab/Viewfiles_time", "click", "viewArchEntAttachedFiles(getUuid(\"Tabgroup\"))");
 
 /******************************************************************************/
 /*                             NAVIGATION DRAWER                              */

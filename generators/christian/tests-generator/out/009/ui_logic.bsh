@@ -947,6 +947,23 @@ doNotDelete(){
 addOnEvent("Tabgroup", "show", "addNavigationButtons(\"Tabgroup\")");
 addOnEvent("Tabgroup_Other", "show", "addNavigationButtons(\"Tabgroup_Other\")");
 
+loadTabgroupFrom(String uuid) {
+  String tabgroup = "Tabgroup";
+  setUuid(tabgroup, uuid);
+  if (isNull(uuid)) return;
+
+  showTabGroup(tabgroup, uuid);
+}
+
+loadTabgroupOtherFrom(String uuid) {
+  String tabgroup = "Tabgroup_Other";
+  setUuid(tabgroup, uuid);
+  if (isNull(uuid)) return;
+
+  showTabGroup(tabgroup, uuid);
+}
+
+
 /******************************************************************************/
 /*                POPULATION OF ENTITY AND CHILD ENTITY LISTS                 */
 /******************************************************************************/

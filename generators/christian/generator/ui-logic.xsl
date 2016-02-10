@@ -971,9 +971,9 @@ populateAuthorAndTimestamp(String tabgroup) {
       <xsl:value-of select="name(ancestor::*[last()-1])"/>
       <xsl:text>/</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-2])"/>
-      <xsl:text>/Button_</xsl:text>
+      <xsl:text>/</xsl:text>
       <xsl:value-of select="name()"/>
-      <xsl:text>", "click", "viewAttachedFiles(getUuid(\"</xsl:text>
+      <xsl:text>", "click", "viewArchEntAttachedFiles(getUuid(\"</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-1])"/>
       <xsl:text>\"))");</xsl:text>
       <xsl:value-of select="$newline" />

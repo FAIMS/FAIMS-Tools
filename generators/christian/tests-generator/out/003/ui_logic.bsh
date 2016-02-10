@@ -620,8 +620,8 @@ addOnEvent("Tabgroup/Tab/Button_Video_2", "click", "attachVideoTo(\"Tabgroup/Tab
 /******************************************************************************/
 /*                 BINDINGS FOR 'VIEW ATTACHED FILES' BUTTONS                 */
 /******************************************************************************/
-addOnEvent("Tabgroup/Tab/Button_Viewfiles_1", "click", "viewAttachedFiles(getUuid(\"Tabgroup\"))");
-addOnEvent("Tabgroup/Tab/Button_Viewfiles_2", "click", "viewAttachedFiles(getUuid(\"Tabgroup\"))");
+addOnEvent("Tabgroup/Tab/Viewfiles_1", "click", "viewArchEntAttachedFiles(getUuid(\"Tabgroup\"))");
+addOnEvent("Tabgroup/Tab/Viewfiles_2", "click", "viewArchEntAttachedFiles(getUuid(\"Tabgroup\"))");
 
 /******************************************************************************/
 /*                             NAVIGATION DRAWER                              */
