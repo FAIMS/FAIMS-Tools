@@ -181,27 +181,22 @@
   </xsl:template>
 
   <xsl:template name="faims-strings">
-    <xsl:if test=".//str and not(normalize-space(@f) = 'id') and not(contains(@f, ' id')) and not(contains(@f, 'id '))">
-      <xsl:comment>WARNING: Property has &lt;str&gt; tags but is not flagged as an identifier</xsl:comment>
-    </xsl:if>
-    <xsl:if test="normalize-space(@f) = 'id' or contains(@f, ' id') or contains(@f, 'id ')">
-      <xsl:choose>
-        <xsl:when test=".//fmt">
-          <formatString><xsl:value-of select=".//fmt/text()"/></formatString>
-        </xsl:when>
-        <xsl:otherwise>
-          <formatString>{{if $1 then $1}}{{if and($1, $2) then " " }}{{if $2 then $2}}{{if $3 then " ($3)"}}{{if between($4,0,0.49) then "??" elsif lessThan($4,1) then "?" }}</formatString>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:choose>
-        <xsl:when test=".//app">
-          <appendCharacterString><xsl:value-of select=".//app/text()"/></appendCharacterString>
-        </xsl:when>
-        <xsl:otherwise>
-          <appendCharacterString> - </appendCharacterString>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test=".//fmt">
+        <formatString><xsl:value-of select=".//fmt/text()"/></formatString>
+      </xsl:when>
+      <xsl:otherwise>
+        <formatString>{{if $1 then $1}}{{if and($1, $2) then " " }}{{if $2 then $2}}{{if $3 then " ($3)"}}{{if between($4,0,0.49) then "??" elsif lessThan($4,1) then "?" }}</formatString>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:choose>
+      <xsl:when test=".//app">
+        <appendCharacterString><xsl:value-of select=".//app/text()"/></appendCharacterString>
+      </xsl:when>
+      <xsl:otherwise>
+        <appendCharacterString> - </appendCharacterString>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <!-- dropdown/radio button/picture gallery options -->
