@@ -28,7 +28,6 @@ countWar = 0
 countErr = 0
 
 ######################### FLAG NODES WITH THEIR TYPES ##########################
-ok = True
 helpers.annotateWithTypes(tree)
 
 # Nodes which didn't end up getting flagged...
@@ -46,8 +45,6 @@ for d in disallowed:
     affectedNodes = [d]
     expectedItems = helpers.getExpectedTypes(tables.TYPES, d, None)
     helpers.eMsg(msg, affectedNodes, expectedItems)
-
-    countErr += 1; ok &= False
 
 ############# COARSE-GRAINED VALIDATION OF ATTRIBUTES OF ELEMENTS ##############
 # Only consider nodes flagged with `consts.RESERVED_XML_TYPE`
@@ -77,8 +74,6 @@ for d in disallowed:
     affectedNodes = [disallowedNode]
     expectedItems = helpers.getAttributes(tables.ATTRIBS, disallowedNodeType)
     helpers.eMsg(msg, affectedNodes, expectedItems)
-
-    countErr += 1; ok &= False
 
 ############## COARSE-GRAINED VALIDATION OF VALUES OF ATTRIBUTES ###############
 # Only consider nodes flagged with `consts.RESERVED_XML_TYPE`
@@ -114,8 +109,6 @@ for d in disallowed:
     affectedNodes = [disallowedNode]
     expectedItems = allowed
     helpers.eMsg(msg, affectedNodes, expectedItems)
-
-    countErr += 1; ok &= False
 
 ######################## VALIDATE CARDINALITIES BY TYPE ########################
 # Only consider nodes flagged with `consts.RESERVED_XML_TYPE`
@@ -159,8 +152,6 @@ for d in disallowed:
         msg %= (name, typeParent, min, max, nounPhrase, typeChild)
     helpers.eMsg(msg, [node])
 
-    countErr += 1; ok &= False
-
 exp  = '//*[@%s="%s" and not(@t)]'
 exp %= (consts.RESERVED_XML_TYPE, 'GUI/data element')
 matches = tree.xpath(exp)
@@ -172,24 +163,10 @@ for m in matches:
     msg %= (m.tag, m.attrib['t'])
 
     helpers.wMsg(msg, [m])
-    countWar += 1; ok &= True
 
 ################ VALIDATE CARDINALITIES FOR COMPOSITE ELEMENTS #################
-ok = True
 
-# "Expand" composite elements into the GUI/Data elements they represent
-for attrib, replacements in tables.REPLACEMENTS_BY_T_ATTRIB.iteritems():
-    exp = '//*[@%s and @t="%s"]' % (consts.RESERVED_XML_TYPE, attrib)
-    matches = tree.xpath(exp)
-    for m in matches:
-        helpers.replaceElement(m, replacements, m.tag)
-
-for tag, replacements in tables.REPLACEMENTS_BY_TAG.iteritems():
-    exp = '//%s[@%s]' % (tag, consts.RESERVED_XML_TYPE)
-    matches = tree.xpath(exp)
-    for m in matches:
-        helpers.replaceElement(m, replacements)
-
+helpers.expandCompositeElements(tree)
 helpers.annotateWithTypes(tree)
 
 # Check cardinality contraints
@@ -201,17 +178,12 @@ tg   = 'tab group'
 data = 'data'
 ui   = 'UI'
 
-countErr_, ok_ = helpers.checkTagCardinalityConstraints(tree, mod, tg, ui)
-countErr += countErr_; ok &= ok_
-countErr_, ok_ = helpers.checkTagCardinalityConstraints(tree, tg,  t,  ui)
-countErr += countErr_; ok &= ok_
-countErr_, ok_ = helpers.checkTagCardinalityConstraints(tree, t,  el,  ui)
-countErr += countErr_; ok &= ok_
+helpers.checkTagCardinalityConstraints(tree, mod, tg, ui)
+helpers.checkTagCardinalityConstraints(tree, tg,  t,  ui)
+helpers.checkTagCardinalityConstraints(tree, t,  el,  ui)
 
-countErr_, ok_ = helpers.checkTagCardinalityConstraints(tree, mod, tg, data)
-countErr += countErr_; ok &= ok_
-countErr_, ok_ = helpers.checkTagCardinalityConstraints(tree, mod, el, data)
-countErr += countErr_; ok &= ok_
+helpers.checkTagCardinalityConstraints(tree, mod, tg, data)
+helpers.checkTagCardinalityConstraints(tree, mod, el, data)
 
 ################################# MISC ERRORS ##################################
 
@@ -223,21 +195,6 @@ msg += 'binding'
 # Select all autonum-flagged elements which also have their b attributes set
 exp  = '//*[@b]'
 cond = lambda e: helpers.isFlagged(e, 'autonum')
-matches = tree.xpath(exp)
-matches = filter(cond, matches)
-matches = helpers.filterUnannotated(matches)
-
-# Tell the user about the error(s)
-affectedNodes = matches
-helpers.eMsg(msg, affectedNodes)
-
-################################################################################
-
-msg  = 'Property has <str> tags but is not flagged as an identifier'
-
-# Select all autonum-flagged elements which also have their b attributes set
-exp  = '//*[str]'
-cond = lambda e: not helpers.isFlagged(e, 'id')
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 matches = helpers.filterUnannotated(matches)
@@ -272,6 +229,26 @@ exp  = '//*[@c]'
 cond = lambda e: helpers.isFlagged(e, 'notnull')
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
+matches = helpers.filterUnannotated(matches)
+
+# Tell the user about the error(s)
+affectedNodes = matches
+helpers.eMsg(msg, affectedNodes)
+
+################################################################################
+
+msg  = 'Only elements whose t attribute is equivalent to "dropdown" or "list" '
+msg += 'may have the "user" flag'
+
+# Select all GUI/data elements'
+exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+# Select all user-flagged elements from those
+cond1 = lambda e: helpers.isFlagged(e, 'user')
+# Select all elements whose type is not dropdown nor list
+cond2 = lambda e: helpers.guessType(e) not in ('dropdown', 'list')
+matches = tree.xpath(exp)
+matches = filter(cond1, matches)
+matches = filter(cond2, matches)
 matches = helpers.filterUnannotated(matches)
 
 # Tell the user about the error(s)
@@ -398,6 +375,22 @@ cond = lambda e: not helpers.guessType(e.getparent()) in tables.MENU_TS
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 # Effectively, filter out <opts> tags which were already complained about
+matches = helpers.filterUnannotated(matches)
+
+affectedNodes = matches
+helpers.eMsg(msg, affectedNodes)
+
+################################################################################
+
+msg  = 'Only elements not flagged with "nodata" may contain <desc> tags'
+
+# Get <desc> tags
+exp  = '//desc'
+# Filter out <desc> tags not flagged with "nodata"
+cond = lambda e: helpers.isFlagged(e, 'nodata')
+matches = tree.xpath(exp)
+matches = filter(cond, matches)
+# Effectively, filter out <desc> tags which were already complained about
 matches = helpers.filterUnannotated(matches)
 
 affectedNodes = matches

@@ -32,8 +32,20 @@
 * ERROR: Unexpected flag(s) "<xsl:value-of select="$v16" />"</xsl:comment>
 * ERROR: More than one search tab found. Settting bindings for only the first.</xsl:text>
 
-  ERROR: desc tags only allowed in attributes of certain type t
+* ERROR: f="user" can only appear on gui elements with t="dropdown" or t="list"
+* ERROR: desc tags only allowed in attributes of certain type t
   Check for any other errors not covered, esp flags which prohibit the use of other flags or attributes
+    - ERROR:   Element `Select_User` disallowed here.  Allowed items are:
+        - <desc>
+        - <opts>
+        - <str>
+      Occurs at line 14.
+    Should be:
+    - ERROR:   Element `Select_User` disallowed in GUI/data element.  Allowed items are:
+        - <desc>
+        - <opts>
+        - <str>
+      Occurs at line 14.
   Rewrite the "tables" in tables.py + general refactor
 
   Mutually exclusive flags:

@@ -140,17 +140,13 @@ def printNotice(notice, nodes=None, expected=[]):
     elif len(expected) == 1:
         expected = 'Allowed item is %s.  ' % expected[0]
     else:
-        expected = 'Allowed items are:\n  - ' + '\n  - '.join(expected) + '\n'
+        expected = '\n  - '.join(expected)
+        expected = 'Allowed items may include:\n  - %s\n' % expected
 
     notice = notice + '.  '
+
     print notice + expected + location
     print
-
-
-def bye(countWar, countErr, early=True):
-    print 'Validation completed with %i error(s) and %i warning(s).' \
-            % (countErr, countWar)
-    exit()
 
 def flagAll(nodes, attrib, value):
     for n in nodes:
@@ -315,8 +311,6 @@ def guessType(node):
 def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaType):
     assert schemaType in ['UI', 'data']
 
-    countErr = 0; ok = True
-
     elements = tree.xpath(
             '//*[@%s="%s"]' %
             (consts.RESERVED_XML_TYPE, nodeTypeChild)
@@ -356,10 +350,8 @@ def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaTy
                 msg,
                 duplicatesAndSelf
         )
-        countErr += 1; ok &= False
 
     deleteAttribFromTree(elements, consts.RESERVED_IGNORE)
-    return (countErr, ok)
 
 def hasElementFlaggedWithId(tabGroup):
     exp  = './/*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
@@ -404,7 +396,44 @@ def getLabelFromTag(node):
 def getLabelFromText(node):
     if node.text == None:
         return ''
+
     label = node.text
     label = label.split()
     label = ' '.join(label)
     return label
+
+def getArch16nVal(node):
+    if node.xpath('./ancestor-or-self::rels'): return ''
+    if isFlagged(node, 'nolabel'):             return ''
+
+    if node.tag == 'autonum':                  return ''
+    if node.tag == 'col':                      return ''
+    if node.tag == 'cols':                     return ''
+    if node.tag == 'desc':                     return ''
+    if node.tag == 'logic':                    return ''
+    if node.tag == 'module':                   return ''
+    if node.tag == 'opts':                     return ''
+
+    if node.tag == 'author':                   return 'Author'
+    if node.tag == 'search':                   return 'Search'
+    if node.tag == 'timestamp':                return 'Timestamp'
+
+    if getLabelFromText(node):
+        return getLabelFromText(node)
+    return getLabelFromTag(node)
+
+def getArch16nKey(node):
+    return getArch16nVal(node).replace(' ', '_')
+
+def expandCompositeElements(tree):
+    for attrib, replacements in tables.REPLACEMENTS_BY_T_ATTRIB.iteritems():
+        exp = '//*[@%s and @t="%s"]' % (consts.RESERVED_XML_TYPE, attrib)
+        matches = tree.xpath(exp)
+        for m in matches:
+            helpers.replaceElement(m, replacements, m.tag)
+
+    for tag, replacements in tables.REPLACEMENTS_BY_TAG.iteritems():
+        exp = '//%s[@%s]' % (tag, consts.RESERVED_XML_TYPE)
+        matches = tree.xpath(exp)
+        for m in matches:
+            helpers.replaceElement(m, replacements)
