@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from   lxml import etree
 import consts
 import helpers
@@ -7,17 +9,12 @@ import tables
 ################################################################################
 #                                  PARSE XML                                   #
 ################################################################################
+print 'Parsing XML...'
 filenameModule = sys.argv[1]
-parser = etree.XMLParser(strip_cdata=False)
-try:
-    print 'Parsing XML...'
-    tree = etree.parse(filenameModule, parser)
-except etree.XMLSyntaxError as e:
-    print e
-    exit()
+tree = helpers.parseXml(filenameModule)
 print 'Done!'
 print
-tree = tree.getroot()
+
 helpers.normaliseAttributes(tree)
 
 ################################################################################
@@ -167,7 +164,6 @@ for m in matches:
 ################ VALIDATE CARDINALITIES FOR COMPOSITE ELEMENTS #################
 
 helpers.expandCompositeElements(tree)
-helpers.annotateWithTypes(tree)
 
 # Check cardinality contraints
 el   = 'GUI/data element'
