@@ -5,6 +5,16 @@ import helpers
 import re
 import tables
 
+def parseXml(filename):
+    parser = etree.XMLParser(strip_cdata=False)
+    try:
+        tree = etree.parse(filename, parser)
+    except etree.XMLSyntaxError as e:
+        print e
+        exit()
+    tree = tree.getroot()
+    return tree
+
 def filterUnannotated(nodes):
     cond = lambda e: helpers.isAnnotated(e)
     return filter(cond, nodes)
@@ -353,6 +363,13 @@ def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaTy
 
     deleteAttribFromTree(elements, consts.RESERVED_IGNORE)
 
+def hasAttrib(e, a):
+    try:
+        if a in e.attrib:
+            return True
+    except:
+        return False
+
 def hasElementFlaggedWithId(tabGroup):
     exp  = './/*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
     cond = lambda e: helpers.isFlagged(e, 'id')
@@ -368,10 +385,7 @@ def getParentTabGroup(node):
     return None
 
 def getRelName(node):
-    try:
-        if not 'lc' in node.attrib:
-            return None
-    except:
+    if not hasAttrib(node, 'lc'):
         return None
     if helpers.getParentTabGroup(node) == None:
         return None
@@ -437,3 +451,5 @@ def expandCompositeElements(tree):
         matches = tree.xpath(exp)
         for m in matches:
             helpers.replaceElement(m, replacements)
+
+    annotateWithTypes(tree)
