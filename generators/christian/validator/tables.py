@@ -150,7 +150,7 @@ REPLACEMENTS_BY_TAG = {
                        <Longitude    t="input" f="readonly"/> \
                        <Northing     t="input" f="readonly"/> \
                        <Easting      t="input" f="readonly"/>',
-        'search'    : '<Search f="readonly">           \
+        'search'    : '<Search f="readonly nodata">    \
                          <cols>                        \
                            <Search_Term t="input"/>    \
                            <Search_Button t="button"/> \
