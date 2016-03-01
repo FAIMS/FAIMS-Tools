@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from   lxml import etree
 import helpers
 import tables
@@ -7,13 +9,7 @@ import sys
 #                                  PARSE XML                                   #
 ################################################################################
 filenameModule = sys.argv[1]
-parser = etree.XMLParser(strip_cdata=False)
-try:
-    tree = etree.parse(filenameModule, parser)
-except etree.XMLSyntaxError as e:
-    print e
-    exit()
-tree = tree.getroot()
+tree = helpers.parseXml(filenameModule)
 helpers.normaliseAttributes(tree)
 helpers.expandCompositeElements(tree)
 
