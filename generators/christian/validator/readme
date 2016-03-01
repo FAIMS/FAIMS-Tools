@@ -48,6 +48,13 @@
       Occurs at line 14.
   Rewrite the "tables" in tables.py + general refactor
 
+  This should cause an error:
+  <Test>
+    <Test>
+      <Test t="input" f="nodata id"/>
+    </Test>
+  </Test>
+
   Mutually exclusive flags:
     autonum      | 
     hidden       | nodata
