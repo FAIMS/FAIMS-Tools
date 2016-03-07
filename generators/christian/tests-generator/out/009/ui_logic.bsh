@@ -3,6 +3,7 @@ import android.util.Log;
 Object dialog;          // Used to help coordinate the display of a "busy..." dialog
 String parentTabgroup;  // Used to allow entities to be saved as children
 String redirectTab;     // makes newTab work as expected
+String username = "";
 
 setFileSyncEnabled(true);
 setSyncDelay(5.0f);
@@ -523,12 +524,15 @@ saveTabGroup(String tabgroup, String callback) {
   List    geometry        = null;
   List    attributes      = null;
   String  parentTabgroup_ = parentTabgroup;
+  Boolean userWasSet      = !username.equals("");
 
   parentTabgroup = null;
   SaveCallback saveCallback  = new SaveCallback() {
     onSave(uuid, newRecord) {
       setUuid(tabgroup, uuid);
       populateAuthorAndTimestamp(tabgroup);
+
+      // Make a child-parent relationship if need be.
       if (newRecord && !isNull(parentTabgroup_)) {
         String rel = "";
         rel += parentTabgroup_.replaceAll("_", " ");
@@ -543,6 +547,18 @@ saveTabGroup(String tabgroup, String callback) {
           null
         );
       }
+
+      // This fixes an interesting bug. Without this, if a user was not set
+      // (by calling `setUser`) at the time `saveTabGroup` was first called, but
+      // set by the time `onSave` was called, the tab group is saved correctly
+      // the first time only.
+      //
+      // Adding this allows subsequent saves to succeed. Presumably it plays
+      // some role in helping FAIMS associate the correct user with a record.
+      if (!userWasSet) {
+        saveTabGroup(tabgroup);
+      }
+
       execute(callback);
     }
     onError(message) {
