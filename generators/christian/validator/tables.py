@@ -60,7 +60,6 @@ GUI/data element     | 0 <= <opts> <= 1      |
 GUI/data element     | 0 <= <str>  <= 1      |
 
 <cols>          |                       | 1 <= GUI/data element
-<cols>          | 1 <= <col>            |
 
 <opts>          | 1 <= <opt>            |
 

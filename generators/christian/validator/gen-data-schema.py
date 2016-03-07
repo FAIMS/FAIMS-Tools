@@ -11,13 +11,13 @@ def addRels(source, target):
     genRels (source, target)
 
 def copyRels(source, target):
-    exp = '//rels/*'
+    exp     = '//rels/*'
     matches = source.xpath(exp)
     for m in matches:
         target.append(m)
 
 def genRels(source, target):
-    exp = '//*[@lc]'
+    exp     = '//*[@lc]'
     matches = source.xpath(exp)
     for m in matches:
         r                = etree.Element('RelationshipElement')
@@ -63,20 +63,14 @@ def addEnts(source, target):
         addEnt(m, target)
 
 def addEnt(entNode, target):
-    exp = './desc'
-    matches = tree.xpath(exp)
-    if    matches: descText = matches[0].text
-    else:          descText = ''
-
     a                = etree.Element('ArchaeologicalElement')
     a.attrib['name'] = entNode.tag.replace('_', ' ')
 
     d      = etree.Element('description')
-    d.text = descText
+    d.text = getDescriptionText(entNode)
 
     a.append(d)
     target.append(a)
-
 
 def addProps(source, target):
     # Get data elements
@@ -89,10 +83,66 @@ def addProps(source, target):
     sortPropsByFmtStr(target)
 
 def addProp(dataElement, target):
-    pass
+    # make prop
+    p                = etree.Element('property')
+    p.attrib['name'] = dataElement.tag.replace('_', ' ')
+    p.attrib['type'] = getPropType(dataSchema)
+    if helpers.isFlagged(dataElement, 'id'):
+        p.attrib['isIdentifier'] = 'true'
+    if hasFileType(dataElement):
+        p.attrib['file']         = 'true'
+    if hasFileType(dataElement) and not helpers.isFlagged(dataElement):
+        p.attrib['thumbnail']    = 'true'
+
+    # make description
+    d      = etree.Element('description')
+    d.text = getDescriptionText(dataElement)
+
+    # make format and append character strings
+
+    # find correct parent
+    # add prop to parent
 
 def sortPropsByFmtStr(dataSchema):
     pass
+
+def getDescriptionText(node):
+    exp     = './desc'
+    matches = node.xpath(exp)
+    if   matches: return matches[0].text
+    else        : return ''
+
+def getPropType(node):
+    if hasMeasureType(node): return 'measure'
+    if hasFileType   (node): return 'file'
+    if hasVocabType  (node): return 'vocab'
+
+    raise ValueError('An unexpected t value was encountered')
+
+def hasMeasureType(node):
+    measureTypes = (
+            'input',
+    )
+    return helpers.guessType(node) in measureTypes
+
+def hasFileType(node):
+    fileTypes    = (
+            'audio',
+            'camera',
+            'file',
+            'video',
+    )
+    return helpers.guessType(node) in fileTypes
+
+def hasVocabType(node):
+    vocabTypes   = (
+            'checkbox',
+            'dropdown',
+            'list',
+            'picture',
+            'radio',
+    )
+    return helpers.guessType(node) in vocabTypes
 
 ################################################################################
 #                                  PARSE XML                                   #
