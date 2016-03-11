@@ -602,8 +602,13 @@ onShowTabgroup1 () {
   // TODO: Add some things which should happen when this tabgroup is shown
   saveTabGroup("Tabgroup_1");
 }
+onShowTabgroup3 () {
+  // TODO: Add some things which should happen when this tabgroup is shown
+  saveTabGroup("Tabgroup_3");
+}
 
 addOnEvent("Tabgroup_1", "show", "onShowTabgroup1()");
+addOnEvent("Tabgroup_3", "show", "onShowTabgroup3()");
 
 
 
@@ -881,12 +886,81 @@ reallyDeleteTabgroup1(){
   cancelTabGroup(tabgroup, false);
 }
 
+newTabgroup3(){
+  String tabgroup = "Tabgroup_3";
+
+
+  setUuid(tabgroup, null);
+  newTabGroup(tabgroup);
+
+}
+
+duplicateTabgroup3(){
+  String tabgroup = "Tabgroup_3";
+  String uuidOld = getUuid(tabgroup);
+
+  disableAutoSave(tabgroup);
+
+
+
+
+  saveCallback = new SaveCallback() {
+    onSave(uuid, newRecord) {
+      setUuid(tabgroup, uuid);
+      populateAuthorAndTimestamp(tabgroup);
+
+      Boolean enable_autosave = true;
+
+      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
+        onFetch(result) {
+          Log.e("Module", result.toString());
+          makeDuplicateRelationships(result, getUuid(tabgroup));
+          showToast("{Duplicated_record}");
+          dialog.dismiss();
+        }
+      });
+
+      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
+        onSave(autosaveUuid, autosaveNewRecord) {
+          setUuid(tabgroup, autosaveUuid);
+        }
+      }, enable_autosave);
+    }
+  };
+
+  String extraDupeAttributes = "";
+  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
+    onFetch(result) {
+      excludeAttributes = new ArrayList();
+
+      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);
+    }
+  });
+}
+
+deleteTabgroup3(){
+  String tabgroup = "Tabgroup_3";
+
+  if (isNull(getUuid(tabgroup))) {
+    cancelTabGroup(tabgroup, true);
+  } else {
+    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDeleteTabgroup3()", "doNotDelete()");
+  }
+}
+
+reallyDeleteTabgroup3(){
+  String tabgroup = "Tabgroup_3";
+  deleteArchEnt(getUuid(tabgroup));
+  cancelTabGroup(tabgroup, false);
+}
+
 
 doNotDelete(){
   showToast("{Delete_Cancelled}");
 }
 addOnEvent("Tabgroup_2", "show", "removeNavigationButtons()");
 addOnEvent("Tabgroup_1", "show", "addNavigationButtons(\"Tabgroup_1\")");
+addOnEvent("Tabgroup_3", "show", "addNavigationButtons(\"Tabgroup_3\")");
 
 /******************************************************************************/
 /*                                    INIT                                    */

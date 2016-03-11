@@ -25,4 +25,15 @@
       <Input_2_3 t="input"/>
     </Tab_2>
   </Tabgroup_2>
+  <Tabgroup_3>
+    <Tab_1>
+      <Dropdown f="noui">
+        <opts>
+          <opt>1</opt>
+          <opt>2</opt>
+          <opt>3</opt>
+        </opts>
+      </Dropdown>
+    </Tab_1>
+  </Tabgroup_3>
 </module>

@@ -36,6 +36,11 @@
               <Input_2_3/>
             </Tab_2>
           </Tabgroup_2>
+          <Tabgroup_3>
+            <Tab_1>
+              <Dropdown/>
+            </Tab_1>
+          </Tabgroup_3>
         </faims>
       </instance>
     </model>
@@ -102,6 +107,12 @@
         <input ref="Input_2_3">
           <label>{Input_2_3}</label>
         </input>
+      </group>
+    </group>
+    <group ref="Tabgroup_3" faims_archent_type="Tabgroup 3">
+      <label>{Tabgroup_3}</label>
+      <group ref="Tab_1">
+        <label>{Tab_1}</label>
       </group>
     </group>
   </h:body>

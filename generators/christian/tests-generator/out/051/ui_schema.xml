@@ -24,6 +24,7 @@
               <Input_3/>
               <Input_4/>
               <Input_5/>
+              <Dropdown/>
             </Tab>
           </Tabgroup>
         </faims>

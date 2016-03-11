@@ -10,6 +10,14 @@
       <Input_3 t="input"/>
       <Input_4 t="input" f="noui"/>
       <Input_5 t="input"/>
+
+      <Dropdown f="noui">
+        <opts>
+          <opt>1</opt>
+          <opt>2</opt>
+          <opt>3</opt>
+        </opts>
+      </Dropdown>
     </Tab>
   </Tabgroup>
 </module>
