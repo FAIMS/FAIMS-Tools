@@ -156,8 +156,14 @@ getDropdownItemValue() {
 }
 
 </xsl:text>
-    <xsl:for-each select="//*[normalize-space(@t) = 'dropdown' or
-          (not(@t) and ./opts and not(.//@p))]">
+    <xsl:for-each select="//*[
+        normalize-space(@t) = 'dropdown' or
+        (
+          not(@t) and
+          ./opts and not(.//@p) and
+          not(ancestor-or-self::*[contains(@f, 'noui')])
+        )
+      ]">
       <xsl:text>addOnEvent("</xsl:text>
       <xsl:call-template name="ref" />
       <xsl:text>", "click", "dropdownItemValue = getFieldValue(\"</xsl:text>
