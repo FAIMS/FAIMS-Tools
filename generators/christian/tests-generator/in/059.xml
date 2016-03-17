@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<!--@TEST: Misc - <search> + Special characters in tab group labels-->
+<module>
+  <Control f="nodata">
+    <search/>
+  </Control>
+
+  <TG>
+    <T>
+      <Charlie f="id"/>
+    </T>
+  </TG>
+
+  <Cultural_Management_Comment>
+    Cultural &amp; Management Comment
+    <C_M_Comments>
+      C &amp; M Comments
+      <Comment_ID f="id"/>
+      <Aboriginal_community_interpretation>
+        <desc>Note informants name and what they have said.</desc>
+      </Aboriginal_community_interpretation>
+      <Aboriginal_community_management_recommendations>
+        <desc>Note informants name and what they have said.</desc>
+      </Aboriginal_community_management_recommendations>
+      <Other_management_recommendations>
+        <desc>
+          Add any thoughts you have on appropriate/necessary management. The AHIMS
+          site recording form lists the following as options, but there may be
+          other measures that are more appropriate: boardwalk,
+          fencing/cage/barrier, closure to public, continued inspection, fire
+          hazard reduction, expert assessment, meeting with land manager,
+          revegetation, signage, soil erosion control, track closure/re-routing,
+          rubbish removal, insect/animal removal additional recording,
+          interpretation.
+        </desc>
+      </Other_management_recommendations>
+    </C_M_Comments>
+  </Cultural_Management_Comment>
+
+</module>

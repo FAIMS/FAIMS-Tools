@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<dataSchema>
+  <ArchaeologicalElement name="TG">
+    <description/>
+    <property name="Charlie" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then $1}}{{if and($1, $2) then " " }}{{if $2 then $2}}{{if $3 then " ($3)"}}{{if between($4,0,0.49) then "??" elsif lessThan($4,1) then "?" }}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+  </ArchaeologicalElement>
+  <ArchaeologicalElement name="Cultural Management Comment">
+    <description/>
+    <property name="Comment ID" isIdentifier="true" type="measure">
+      <description/>
+      <formatString><![CDATA[{{if $1 then $1}}{{if and($1, $2) then " " }}{{if $2 then $2}}{{if $3 then " ($3)"}}{{if between($4,0,0.49) then "??" elsif lessThan($4,1) then "?" }}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Aboriginal community interpretation" type="measure">
+      <description>Note informants name and what they have said.</description>
+      <formatString><![CDATA[{{if $1 then $1}}{{if and($1, $2) then " " }}{{if $2 then $2}}{{if $3 then " ($3)"}}{{if between($4,0,0.49) then "??" elsif lessThan($4,1) then "?" }}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Aboriginal community management recommendations" type="measure">
+      <description>Note informants name and what they have said.</description>
+      <formatString><![CDATA[{{if $1 then $1}}{{if and($1, $2) then " " }}{{if $2 then $2}}{{if $3 then " ($3)"}}{{if between($4,0,0.49) then "??" elsif lessThan($4,1) then "?" }}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+    <property name="Other management recommendations" type="measure">
+      <description>
+          Add any thoughts you have on appropriate/necessary management. The AHIMS
+          site recording form lists the following as options, but there may be
+          other measures that are more appropriate: boardwalk,
+          fencing/cage/barrier, closure to public, continued inspection, fire
+          hazard reduction, expert assessment, meeting with land manager,
+          revegetation, signage, soil erosion control, track closure/re-routing,
+          rubbish removal, insect/animal removal additional recording,
+          interpretation.
+        </description>
+      <formatString><![CDATA[{{if $1 then $1}}{{if and($1, $2) then " " }}{{if $2 then $2}}{{if $3 then " ($3)"}}{{if between($4,0,0.49) then "??" elsif lessThan($4,1) then "?" }}]]></formatString>
+      <appendCharacterString><![CDATA[ - ]]></appendCharacterString>
+    </property>
+  </ArchaeologicalElement>
+</dataSchema>
