@@ -2239,9 +2239,9 @@ addOnEvent(userMenuPath, "click", "selectUser()");
         not(name() = 'rels') and
         not(contains(@f, 'nodata'))
         ]">
-        <xsl:text>entityTypes.add(new NameValuePair("{</xsl:text>
-        <xsl:value-of select="name()"/>
-        <xsl:text>}", "</xsl:text>
+        <xsl:text>entityTypes.add(new NameValuePair("</xsl:text>
+        <xsl:call-template name="label" />
+        <xsl:text>", "</xsl:text>
         <xsl:call-template name="string-replace-all">
           <xsl:with-param name="text" select="name()" />
           <xsl:with-param name="replace" select="'_'" />
