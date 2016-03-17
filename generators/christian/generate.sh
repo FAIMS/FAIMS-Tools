@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 proc1="xsltproc"    # Lord, forgive me
 proc2="saxonb-xslt"
 
 
-if [ -z $1 ]
+if [ -z "$1" ]
 then
     module="module.xml"
 else
@@ -15,6 +15,22 @@ modulePath=$( dirname  "$module" )
 moduleName=$( basename "$module" )
 thisScriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+####################### HANDLE PRE-PROCESSING DIRECTIVE ########################
+# This will require some clean up after the transforms occur                   #
+################################################################################
+cp "$module" "${module}.original"
+
+cd "$modulePath" >/dev/null
+cmd=$( grep "@PREPROC:" "$moduleName" | head -n 1 | sed -rn 's/^\s*<!--\s*@PREPROC:\s*(.*[^ ])\s*-->\s*$/\1/p' )
+if [ ! -z "$cmd" ]
+then
+    echo "Running pre-processing command:"
+    echo "  $cmd"
+    eval $cmd # Yes, I've heard of the "eval is evil" dogma
+fi
+cd - >/dev/null
+
+############################ PERFORM THE TRANSFORMS ############################
 mkdir -p "$modulePath/module"
 mkdir -p "$modulePath/wireframe"
 
@@ -28,18 +44,24 @@ $proc1 "$thisScriptPath/generator/validation.xsl"  $module               >"$modu
 gawk     -f "$thisScriptPath/generator/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
 $proc2 -xsl:"$thisScriptPath/generator/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
 
-############################ POST-GENERATION STUFF #############################
-cd "$modulePath"
-# Parse errors
-find module -type f -print | xargs grep -nr --color="always" "ERROR"   | sed -e 's/\s\+</ </g'
-# Parse warnings
-find module -type f -print | xargs grep -nr --color="always" "WARNING" | sed -e 's/\s\+</ </g'
+####################### HANDLE PRE-PROCESSING DIRECTIVE ########################
+# This is the clean up step mentioned near the start of this script            #
+################################################################################
+mv "${module}.original" "$module"
 
-# Handle post-processing directive
+################################ DISPLAY ERRORS ################################
+# Parse errors
+find "$modulePath/module" -type f -print | xargs grep -nr --color="always" "ERROR"   | sed -e 's/\s\+</ </g'
+# Parse warnings
+find "$modulePath/module" -type f -print | xargs grep -nr --color="always" "WARNING" | sed -e 's/\s\+</ </g'
+
+####################### HANDLE POST-PROCESSING DIRECTIVE #######################
+cd "$modulePath" >/dev/null
 cmd=$( grep "@POSTPROC:" "$moduleName" | head -n 1 | sed -rn 's/^\s*<!--\s*@POSTPROC:\s*(.*[^ ])\s*-->\s*$/\1/p' )
 if [ ! -z "$cmd" ]
 then
     echo "Running post-processing command:"
     echo "  $cmd"
-    eval $cmd # Yes, I've heard of the "eval is evil" dogma
+    eval $cmd
 fi
+cd - >/dev/null
