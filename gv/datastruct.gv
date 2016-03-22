@@ -69,7 +69,7 @@ digraph g {
 			structRecords [label=<
 			<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" width="165">
 				
-				<TR><TD port="takeFeature" ><img src="takeFeatureButton.svg"/></TD></TR>
+				<TR><TD port="takeFeature"><img src="takeFeatureButton.svg"/></TD></TR>
 				<TR><TD ><img src="startingBurialID.svg"/></TD></TR>						
 				<TR><TD ><img src="gpsDiagnostics.svg"/></TD></TR>
 				

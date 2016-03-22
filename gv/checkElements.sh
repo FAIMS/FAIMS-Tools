@@ -194,90 +194,91 @@ mkdir false testImages
 
 
 #montage false testImages/* -geometry +10+10 -border 2 -tile 4 -background lightgreen  allTestImages.pdf
+rm -rf false wireframeOutput
+mkdir false wireframeOutput
+
+./makeElement.sh map1 "map" map 1 false false false false false wireframeOutput
 
 
+./makeElement.sh userList "User List" list 1 true false false false false wireframeOutput
+./makeElement.sh takeFeatureButton "Take a Feature" button 1 true false false false false wireframeOutput
+./makeElement.sh startingBurialID "Starting Burial ID" input 1 false false false false false wireframeOutput
+./makeElement.sh gpsDiagnostics "GPS Diagnostics" webview 1 false false false false false wireframeOutput
+./makeElement.sh searchTerm "Search Term" input 2 false false false false false wireframeOutput
+./makeElement.sh search "Search" button 2 true false false false false wireframeOutput
+./makeElement.sh entityTypes "Entity Types" dropdown 2 false false false false false wireframeOutput
+./makeElement.sh selectTrench "Select Trench" dropdown 2 false false false false false wireframeOutput
+./makeElement.sh searchList "Search Results" list 1 true false false false false wireframeOutput
 
+./makeElement.sh objectID "Object ID" input 1 false false true true false wireframeOutput
+./makeElement.sh createdAt "Created At" input 1 false false false false false wireframeOutput
+./makeElement.sh createdBy "Created By" input 1 false false false false false wireframeOutput
+./makeElement.sh type "Type" dropdown 1 true true true false false wireframeOutput
+./makeElement.sh siteSignificance "Site Significance" dropdown 1 true true true false false wireframeOutput
+./makeElement.sh name "Name" input 1 true true true false false wireframeOutput
+./makeElement.sh description "description" input 1 true true true false false wireframeOutput
+./makeElement.sh source "Source" dropdown 1 true true true false false wireframeOutput
+./makeElement.sh exists "Exists in Legacy" checkbox 1 true true true false false wireframeOutput
+./makeElement.sh surrounding "Surrounding Landuse" dropdown 1 true true true false false wireframeOutput
+./makeElement.sh surface "Surface Landuse" dropdown 1 true true true false false wireframeOutput
+./makeElement.sh visibility "Visbility" dropdown 1 true true true false false wireframeOutput
+./makeElement.sh latlong "latlong" latlong 1 true true true false false wireframeOutput
+./makeElement.sh notes "notes" input 1 true true true false false wireframeOutput
+./makeElement.sh takeShape "Take a Shape" button 1 true true true false false wireframeOutput
+./makeElement.sh generalPhoto "General Photos" camera 1 true true true false false wireframeOutput
+./makeElement.sh takePhoto "Take a Photo" button 1 true true true false false wireframeOutput
 
+./makeElement.sh profile "Profile" pictureGallery 1 true true true false false wireframeOutput
+./makeElement.sh plan "plan" pictureGallery 1 true true true false false wireframeOutput
+./makeElement.sh lengthmax "Length Max" input 2 true true true false false wireframeOutput
+./makeElement.sh lengthmin "Length Min" input 2 true true true false false wireframeOutput
+./makeElement.sh widthmax "Width Max" input 2 true true true false false wireframeOutput
+./makeElement.sh widthmin "Width Min" input 2 true true true false false wireframeOutput
+./makeElement.sh heightmax "Height Max" input 2 true true true false false wireframeOutput
+./makeElement.sh heightmin "Height Min" input 2 true true true false false wireframeOutput
+./makeElement.sh areamax "Area Max" input 2 true true true false false wireframeOutput
+./makeElement.sh areamin "Area Min" input 2 true true true false false wireframeOutput
+./makeElement.sh otherdim "Other Dimension" input 1 true true true false false wireframeOutput
+./makeElement.sh dimnotes "Dimension Notes" input 1 true true true false false wireframeOutput
 
-./makeElement.sh userList "User List" list 1 true false false false false testImages
-./makeElement.sh takeFeatureButton "Take a Feature" button 1 true false false false false testImages
-./makeElement.sh startingBurialID "Starting Burial ID" input 1 false false false false false testImages
-./makeElement.sh gpsDiagnostics "GPS Diagnostics" webview 1 false false false false false testImages
-./makeElement.sh searchTerm "Search Term" input 2 false false false false false testImages
-./makeElement.sh search "Search" button 2 true false false false false testImages
-./makeElement.sh entityTypes "Entity Types" dropdown 2 false false false false false testImages
-./makeElement.sh selectTrench "Select Trench" dropdown 2 false false false false false testImages
-./makeElement.sh searchList "Search Results" list 1 true false false false false testImages
+./makeElement.sh attachSketch "Attach a Sketch" button 1 true true true false false wireframeOutput
+./makeElement.sh viewSketch "View Attached Files" button 1 true true true false false wireframeOutput
+./makeElement.sh listSketch "List of Attached Files" file 1 true true true false false wireframeOutput
 
-./makeElement.sh objectID "Object ID" input 1 false false true true false testImages
-./makeElement.sh createdAt "Created At" input 1 false false false false false testImages
-./makeElement.sh createdBy "Created By" input 1 false false false false false testImages
-./makeElement.sh type "Type" dropdown 1 true true true false false testImages
-./makeElement.sh siteSignificance "Site Significance" dropdown 1 true true true false false testImages
-./makeElement.sh name "Name" input 1 true true true false false testImages
-./makeElement.sh description "description" input 1 true true true false false testImages
-./makeElement.sh source "Source" dropdown 1 true true true false false testImages
-./makeElement.sh exists "Exists in Legacy" checkbox 1 true true true false false testImages
-./makeElement.sh surrounding "Surrounding Landuse" dropdown 1 true true true false false testImages
-./makeElement.sh surface "Surface Landuse" dropdown 1 true true true false false testImages
-./makeElement.sh visibility "Visbility" dropdown 1 true true true false false testImages
-./makeElement.sh latlong "latlong" latlong 1 true true true false false testImages
-./makeElement.sh notes "notes" input 1 true true true false false testImages
-./makeElement.sh takeShape "Take a Shape" button 1 true true true false false testImages
-./makeElement.sh generalPhoto "General Photos" camera 1 true true true false false testImages
-./makeElement.sh takePhoto "Take a Photo" button 1 true true true false false testImages
+./makeElement.sh dimensionPhoto "Dimension Photos" camera 1 true true true false false wireframeOutput
+./makeElement.sh takeSketchPhoto "Take a Photo of Sketch" button 1 true true true false false wireframeOutput
 
-./makeElement.sh profile "Profile" pictureGallery 1 true true true false false testImages
-./makeElement.sh plan "plan" pictureGallery 1 true true true false false testImages
-./makeElement.sh lengthmax "Length Max" input 2 true true true false false testImages
-./makeElement.sh lengthmin "Length Min" input 2 true true true false false testImages
-./makeElement.sh widthmax "Width Max" input 2 true true true false false testImages
-./makeElement.sh widthmin "Width Min" input 2 true true true false false testImages
-./makeElement.sh heightmax "Height Max" input 2 true true true false false testImages
-./makeElement.sh heightmin "Height Min" input 2 true true true false false testImages
-./makeElement.sh areamax "Area Max" input 2 true true true false false testImages
-./makeElement.sh areamin "Area Min" input 2 true true true false false testImages
-./makeElement.sh otherdim "Other Dimension" input 1 true true true false false testImages
-./makeElement.sh dimnotes "Dimension Notes" input 1 true true true false false testImages
+./makeElement.sh featurePresent "Stone feature present and visible?" radio 1 true true true false false wireframeOutput
+./makeElement.sh featureDesc "Stone feature description" input 1 true true true false false wireframeOutput
+./makeElement.sh surfaceDense "Surface material density" dropdown 1 true true true false false wireframeOutput
+./makeElement.sh surfaceDesc "Surface material description" input 1 true true true false false wireframeOutput
+./makeElement.sh sampleColl "Sample Colelcted?" radio 1 true true true false false wireframeOutput
 
-./makeElement.sh attachSketch "Attach a Sketch" button 1 true true true false false testImages
-./makeElement.sh viewSketch "View Attached Files" button 1 true true true false false testImages
-./makeElement.sh listSketch "List of Attached Files" file 1 true true true false false testImages
+./makeElement.sh materialPhoto "Material Photos" camera 1 true true true false false wireframeOutput
+./makeElement.sh takematerialPhoto "Take a Photo of Material" button 1 true true true false false wireframeOutput
 
-./makeElement.sh dimensionPhoto "Dimension Photos" camera 1 true true true false false testImages
-./makeElement.sh takeSketchPhoto "Take a Photo of Sketch" button 1 true true true false false testImages
+./makeElement.sh disturbanceKind "Disturbance Kind" dropdown 1 true true true false false wireframeOutput
+./makeElement.sh disturbanceFactors "Disturbance Factors" checkbox 1 true true true false false wireframeOutput
+./makeElement.sh principalFactors "Principal Factors" dropdown 1 true true true false false wireframeOutput
+./makeElement.sh ageOfDamage "Age of Damage" checkbox 1 true true true false false wireframeOutput
+./makeElement.sh disturbanceDesc "disturbance description" input 1 true true true false false wireframeOutput
+./makeElement.sh RTKind "RT Kind" checkbox 1 true true true false false wireframeOutput
+./makeElement.sh RTMethod "RT Method" checkbox 1 true true true false false wireframeOutput
+./makeElement.sh RTFrequency "RT Frequency" pictureGallery 1 true true true false false wireframeOutput
+./makeElement.sh RTDesc "RT description" input 1 true true true false false wireframeOutput
+./makeElement.sh VolumeofsoilremovedviaRT "Volume of soil removed via RT" dropdown 1 true true true false false wireframeOutput
+./makeElement.sh Affect "Affect" dropdown 1 true true true false false wireframeOutput
+./makeElement.sh Impact "Impact" dropdown 1 true true true false false wireframeOutput
+./makeElement.sh CommentsandRecommendations "Comments and Recommendations" input 1 true true true false false wireframeOutput
 
-./makeElement.sh featurePresent "Stone feature present and visible?" radio 1 true true true false false testImages
-./makeElement.sh featureDesc "Stone feature description" input 1 true true true false false testImages
-./makeElement.sh surfaceDense "Surface material density" dropdown 1 true true true false false testImages
-./makeElement.sh surfaceDesc "Surface material description" input 1 true true true false false testImages
-./makeElement.sh sampleColl "Sample Colelcted?" radio 1 true true true false false testImages
+./makeElement.sh CRMPhoto "CRM Photos" camera 1 true true true false false wireframeOutput
+./makeElement.sh takeCRMPhoto "Take a Photo of CRM" button 1 true true true false false wireframeOutput
+cd wireframeOutput
 
-./makeElement.sh materialPhoto "Material Photos" camera 1 true true true false false testImages
-./makeElement.sh takematerialPhoto "Take a Photo of Material" button 1 true true true false false testImages
-
-./makeElement.sh disturbanceKind "Disturbance Kind" dropdown 1 true true true false false testImages
-./makeElement.sh disturbanceFactors "Disturbance Factors" checkbox 1 true true true false false testImages
-./makeElement.sh principalFactors "Principal Factors" dropdown 1 true true true false false testImages
-./makeElement.sh ageOfDamage "Age of Damage" checkbox 1 true true true false false testImages
-./makeElement.sh disturbanceDesc "disturbance description" input 1 true true true false false testImages
-./makeElement.sh RTKind "RT Kind" checkbox 1 true true true false false testImages
-./makeElement.sh RTMethod "RT Method" checkbox 1 true true true false false testImages
-./makeElement.sh RTFrequency "RT Frequency" pictureGallery 1 true true true false false testImages
-./makeElement.sh RTDesc "RT description" input 1 true true true false false testImages
-./makeElement.sh VolumeofsoilremovedviaRT "Volume of soil removed via RT" dropdown 1 true true true false false testImages
-./makeElement.sh Affect "Affect" dropdown 1 true true true false false testImages
-./makeElement.sh Impact "Impact" dropdown 1 true true true false false testImages
-./makeElement.sh CommentsandRecommendations "Comments and Recommendations" input 1 true true true false false testImages
-
-./makeElement.sh CRMPhoto "CRM Photos" camera 1 true true true false false testImages
-./makeElement.sh takeCRMPhoto "Take a Photo of CRM" button 1 true true true false false testImages
-cd testImages
-
-dot -Tpdf ../datastruct.gv > ../output.pdf
+/usr/local/bin/dot -Tsvg ../datastruct.gv > wireframeOutput.svg
 
 cd ..
 
 
-montage testImages/*.svg -geometry +10+10 -border 2 -tile 4 -background lightgreen  allTestImages.pdf &
+#montage testImages/*.svg -geometry +10+10 -border 2 -tile 4 -background lightgreen  allTestImages.pdf &
 
