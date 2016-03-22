@@ -289,7 +289,7 @@ helpers.expandCompositeElements(tree)
 ################################################################################
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #
 ################################################################################
-dataSchema = etree.Element("dataSchema")
+dataSchema = etree.Element('dataSchema')
 addRels (tree, dataSchema)
 addEnts (tree, dataSchema)
 addProps(tree, dataSchema)
