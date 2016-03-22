@@ -5,6 +5,16 @@ import helpers
 import re
 import tables
 
+def appendNotNone(src, dst):
+    if src == None:
+        return
+    dst.append(src)
+
+def normaliseSpace(str):
+    str = str.split()
+    str = ' '.join(str)
+    return str
+
 def parseXml(filename):
     parser = etree.XMLParser(strip_cdata=False)
     try:
@@ -403,17 +413,15 @@ def getRelName(node):
 def getLabelFromTag(node):
     label = node.tag
     label = label.replace('_', ' ')
-    label = label.split()
-    label = ' '.join(label)
+    label = normaliseSpace(label)
     return label
 
 def getLabelFromText(node):
-    if node.text == None:
-        return ''
+    if node.text == None:  return ''
+    if node.text == 'opt': return ''
 
     label = node.text
-    label = label.split()
-    label = ' '.join(label)
+    label = normaliseSpace(label)
     return label
 
 def getArch16nVal(node):
