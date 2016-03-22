@@ -40,19 +40,6 @@ def genRels(source, target):
 
         target.append(r)
 
-def isDataElement(guiDataElement):
-    if helpers.isFlagged(guiDataElement, 'nodata'):      return False
-    if helpers.isFlagged(guiDataElement, 'user'):        return False
-    if helpers.hasAttrib(guiDataElement, 'e'):           return False
-    if helpers.hasAttrib(guiDataElement, 'ec'):          return False
-    if helpers.guessType(guiDataElement) == 'button':    return False
-    if helpers.guessType(guiDataElement) == 'gpsdiag':   return False
-    if helpers.guessType(guiDataElement) == 'group':     return False
-    if helpers.guessType(guiDataElement) == 'map':       return False
-    if helpers.guessType(guiDataElement) == 'table':     return False
-    if helpers.guessType(guiDataElement) == 'viewfiles': return False
-    return True
-
 def addEnts(source, target):
     exp     = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'tab group')
     cond    = lambda e: not helpers.isFlagged(e, 'nodata')
@@ -76,7 +63,7 @@ def addProps(source, target):
     # Get data elements
     exp     = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
     matches = source.xpath(exp)
-    matches = filter(isDataElement, matches)
+    matches = filter(helpers.isDataElement, matches)
 
     for m in matches:
         addProp(m, target)
@@ -87,12 +74,12 @@ def addProp(dataElement, target):
     # make prop
     prp                = etree.Element('property')
     prp.attrib['name'] = dataElement.tag.replace('_', ' ')
-    prp.attrib['type'] = getPropType(dataSchema)
+    prp.attrib['type'] = helpers.getPropType(dataSchema)
     if helpers.isFlagged(dataElement, 'id'):
         prp.attrib['isIdentifier'] = 'true'
-    if hasFileType(dataElement):
+    if helpers.hasFileType(dataElement):
         prp.attrib['file']         = 'true'
-    if hasFileType(dataElement) and not helpers.isFlagged(dataElement):
+    if helpers.hasFileType(dataElement) and not helpers.isFlagged(dataElement):
         prp.attrib['thumbnail']    = 'true'
 
     # make description
@@ -244,38 +231,6 @@ def getDescriptionText(node):
     matches = node.xpath(exp)
     if   matches: return matches[0].text
     else        : return ''
-
-def getPropType(node):
-    if hasMeasureType(node): return 'measure'
-    if hasFileType   (node): return 'file'
-    if hasVocabType  (node): return 'vocab'
-
-    raise ValueError('An unexpected t value was encountered')
-
-def hasMeasureType(node):
-    measureTypes = (
-            'input',
-    )
-    return helpers.guessType(node) in measureTypes
-
-def hasFileType(node):
-    fileTypes    = (
-            'audio',
-            'camera',
-            'file',
-            'video',
-    )
-    return helpers.guessType(node) in fileTypes
-
-def hasVocabType(node):
-    vocabTypes   = (
-            'checkbox',
-            'dropdown',
-            'list',
-            'picture',
-            'radio',
-    )
-    return helpers.guessType(node) in vocabTypes
 
 ################################################################################
 #                                  PARSE XML                                   #

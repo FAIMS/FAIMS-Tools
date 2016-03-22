@@ -5,6 +5,53 @@ import helpers
 import re
 import tables
 
+def isDataElement(guiDataElement):
+    if helpers.isFlagged(guiDataElement, 'nodata'):      return False
+    if helpers.isFlagged(guiDataElement, 'user'):        return False
+    if helpers.hasAttrib(guiDataElement, 'e'):           return False
+    if helpers.hasAttrib(guiDataElement, 'ec'):          return False
+    if helpers.guessType(guiDataElement) == 'button':    return False
+    if helpers.guessType(guiDataElement) == 'gpsdiag':   return False
+    if helpers.guessType(guiDataElement) == 'group':     return False
+    if helpers.guessType(guiDataElement) == 'map':       return False
+    if helpers.guessType(guiDataElement) == 'table':     return False
+    if helpers.guessType(guiDataElement) == 'viewfiles': return False
+    return True
+
+def getPropType(node):
+    if hasMeasureType(node): return 'measure'
+    if hasFileType   (node): return 'file'
+    if hasVocabType  (node): return 'vocab'
+
+    raise ValueError('An unexpected t value was encountered')
+
+def hasMeasureType(node):
+    measureTypes = (
+            'input',
+    )
+    return helpers.guessType(node) in measureTypes
+
+def hasFileType(node):
+    fileTypes    = (
+            'audio',
+            'camera',
+            'file',
+            'video',
+    )
+    return helpers.guessType(node) in fileTypes
+
+def hasVocabType(node):
+    vocabTypes   = (
+            'checkbox',
+            'dropdown',
+            'list',
+            'picture',
+            'radio',
+    )
+    return helpers.guessType(node) in vocabTypes
+
+################################################################################
+
 def appendNotNone(src, dst):
     if src == None:
         return
@@ -380,12 +427,15 @@ def hasAttrib(e, a):
     except:
         return False
 
-def hasElementFlaggedWithId(tabGroup):
+def hasElementFlaggedWith(tabGroup, flag):
     exp  = './/*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
-    cond = lambda e: helpers.isFlagged(e, 'id')
+    cond = lambda e: helpers.isFlagged(e, flag)
     matches = tabGroup.xpath(exp)
     matches = filter(cond, matches)
     return len(matches) > 0
+
+def hasElementFlaggedWithId(tabGroup):
+    return hasElementFlaggedWith(tabGroup, 'id')
 
 def getParentTabGroup(node):
     exp = './ancestor::*[last()-1]'
