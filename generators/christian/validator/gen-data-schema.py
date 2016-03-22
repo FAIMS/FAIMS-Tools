@@ -40,23 +40,10 @@ def genRels(source, target):
 
         target.append(r)
 
-def isDataElement(guiDataElement):
-    if helpers.isFlagged(guiDataElement, 'nodata'):      return False
-    if helpers.isFlagged(guiDataElement, 'user'):        return False
-    if helpers.hasAttrib(guiDataElement, 'e'):           return False
-    if helpers.hasAttrib(guiDataElement, 'ec'):          return False
-    if helpers.guessType(guiDataElement) == 'button':    return False
-    if helpers.guessType(guiDataElement) == 'gpsdiag':   return False
-    if helpers.guessType(guiDataElement) == 'group':     return False
-    if helpers.guessType(guiDataElement) == 'map':       return False
-    if helpers.guessType(guiDataElement) == 'table':     return False
-    if helpers.guessType(guiDataElement) == 'viewfiles': return False
-    return True
-
 def addEnts(source, target):
     exp     = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'tab group')
     cond    = lambda e: not helpers.isFlagged(e, 'nodata')
-    matches = tree.xpath(exp)
+    matches = source.xpath(exp)
     matches = filter(cond, matches)
 
     for m in matches:
@@ -75,74 +62,175 @@ def addEnt(entNode, target):
 def addProps(source, target):
     # Get data elements
     exp     = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
-    matches = tree.xpath(exp)
-    matches = filter(isDataElement, matches)
+    matches = source.xpath(exp)
+    matches = filter(helpers.isDataElement, matches)
 
     for m in matches:
         addProp(m, target)
-    sortPropsByFmtStr(target)
+    sortPropsByPos(target)
+    delPosNodes   (target)
 
 def addProp(dataElement, target):
     # make prop
-    p                = etree.Element('property')
-    p.attrib['name'] = dataElement.tag.replace('_', ' ')
-    p.attrib['type'] = getPropType(dataSchema)
+    prp                = etree.Element('property')
+    prp.attrib['name'] = dataElement.tag.replace('_', ' ')
+    prp.attrib['type'] = helpers.getPropType(dataSchema)
     if helpers.isFlagged(dataElement, 'id'):
-        p.attrib['isIdentifier'] = 'true'
-    if hasFileType(dataElement):
-        p.attrib['file']         = 'true'
-    if hasFileType(dataElement) and not helpers.isFlagged(dataElement):
-        p.attrib['thumbnail']    = 'true'
+        prp.attrib['isIdentifier'] = 'true'
+    if helpers.hasFileType(dataElement):
+        prp.attrib['file']         = 'true'
+    if helpers.hasFileType(dataElement) and not helpers.isFlagged(dataElement):
+        prp.attrib['thumbnail']    = 'true'
 
     # make description
-    d      = etree.Element('description')
-    d.text = getDescriptionText(dataElement)
+    dsc      = etree.Element('description')
+    dsc.text = getDescriptionText(dataElement)
 
-    # make format and append character strings
+    # make (1) format and (2) append character strings.
+    # (3) make <lookup> nodes
+    # (4) make <pos> nodes
+    fmtDefault  = '{{if $1 then $1}}{{if and($1, $2) then " " }}'
+    fmtDefault += '{{if $2 then $2}}{{if $3 then " ($3)"}}'
+    fmtDefault += '{{if between($4,0,0.49) then "??"'
+    fmtDefault += ' elsif lessThan($4,1) then "?" }}'
+    appDefault  = ' - '
 
-    # find correct parent
-    # add prop to parent
+    # (1) format string
+    exp     = './str/fmt'
+    matches = dataElement.xpath(exp)
+    fmtText = ''
+    if matches:
+        fmtText = matches[0].text
+    if not fmtText:
+        fmtText = fmtDefault
 
-def sortPropsByFmtStr(dataSchema):
-    pass
+    fmt      = etree.Element('formatString')
+    fmt.text = fmtText
+
+    # (2) append character string
+    exp     = './str/app'
+    matches = dataElement.xpath(exp)
+    appText = ''
+    if matches:
+        appText = matches[0].text
+    if not appText:
+        appText = appDefault
+
+    app      = etree.Element('appendCharacterString')
+    app.text = appText
+
+    # (3) lookup nodes
+    lup = makeLookup(dataElement)
+
+    # (4) pos nodes
+    exp     = './str/pos'
+    matches = dataElement.xpath(exp)
+    posText = ''
+    if matches:
+        posText = matches[0].text
+
+    pos      = etree.Element('pos')
+    pos.text = posText
+
+    # find correct parent arch ent
+    archName = helpers.getParentTabGroup(dataElement)
+    archName = archName.tag
+    archName = archName.replace('_', ' ')
+
+    exp     = './ArchaeologicalElement[@%s="%s"]' % ('name', archName)
+    matches = target.xpath(exp)
+    archEnt = matches[0]
+
+    # append prp's (property's) children to it
+    appendNotNone = helpers.appendNotNone
+    appendNotNone (dsc, prp)
+    appendNotNone (fmt, prp)
+    appendNotNone (app, prp)
+    appendNotNone (lup, prp)
+    appendNotNone (pos, prp)
+    # append prp to parent archent
+    archEnt.append(prp)
+
+def makeLookup(dataElement):
+    exp     = './opts'
+    matches = dataElement.xpath(exp)
+    if not matches:
+        return None
+
+    lookup  = etree.Element('lookup')
+
+    exp     = './opts/opt'
+    matches = dataElement.xpath(exp)
+    for m in matches:
+        addTerm(m, lookup)
+
+    return lookup
+
+def getDescText(node):
+    exp     = './desc'
+    matches = node.xpath(exp)
+    if matches:
+        return matches[0].text
+    else:
+        return ''
+
+# `source` is an <opt> element. `target` is a <lookup> or <term> element which
+# an option (<opt>) should be added to as a child.
+def addTerm(source, target):
+    term = etree.Element('term')
+
+    if 'p' in source.attrib:
+        term.attrib['pictureURL'] = 'files/data/' + source.attrib['p']
+
+    dsc      = etree.Element('description')
+    dsc.text = getDescText(source)
+
+    term.text = helpers.getArch16nKey(source)
+    term.text = '{%s}\n' % term.text
+
+    term  .append(dsc)
+    target.append(term)
+
+    exp     = './opt'
+    matches = source.xpath(exp)
+    for m in matches:
+        addTerm(m, term)
+
+# Returns a key for sorted() such that <description> elements appear at the
+# start of their parent <ArchaeologicalElement>, elements not having (text in)
+# <pos> tags appear at the end of their parent <ArchaeologicalElement>, and all
+# other elements are sorted in ascending order of the text in their <pos> tags.
+# The text is interpreted as an integer.
+def propKey(prop):
+    startPos = - sys.maxint - 1  # sys.minint isn't defined, so we make our own
+    endPos   =   sys.maxint
+
+    # Effectively, leave <descriptions> at the start
+    if prop.tag != 'property': return startPos
+
+    exp     = './pos'
+    matches = prop.xpath(exp)
+    if not matches:            return endPos
+    pos     = matches[0]
+    key     = pos.text
+    if not key:                return endPos
+    else:                      return int(key)
+
+def sortPropsByPos(dataSchema):
+    exp      = './ArchaeologicalElement'
+    archEnts = dataSchema.xpath(exp)
+    for archEnt in archEnts:
+        archEnt[:] = sorted(archEnt, key=propKey)
+
+def delPosNodes(dataSchema):
+    for pos in dataSchema.xpath('//pos'):
+        pos.getparent().remove(pos)
 
 def getDescriptionText(node):
     exp     = './desc'
     matches = node.xpath(exp)
     if   matches: return matches[0].text
     else        : return ''
-
-def getPropType(node):
-    if hasMeasureType(node): return 'measure'
-    if hasFileType   (node): return 'file'
-    if hasVocabType  (node): return 'vocab'
-
-    raise ValueError('An unexpected t value was encountered')
-
-def hasMeasureType(node):
-    measureTypes = (
-            'input',
-    )
-    return helpers.guessType(node) in measureTypes
-
-def hasFileType(node):
-    fileTypes    = (
-            'audio',
-            'camera',
-            'file',
-            'video',
-    )
-    return helpers.guessType(node) in fileTypes
-
-def hasVocabType(node):
-    vocabTypes   = (
-            'checkbox',
-            'dropdown',
-            'list',
-            'picture',
-            'radio',
-    )
-    return helpers.guessType(node) in vocabTypes
 
 ################################################################################
 #                                  PARSE XML                                   #
@@ -156,10 +244,10 @@ helpers.expandCompositeElements(tree)
 ################################################################################
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #
 ################################################################################
-dataSchema = etree.Element("dataSchema")
+dataSchema = etree.Element('dataSchema')
 addRels (tree, dataSchema)
 addEnts (tree, dataSchema)
-#addProps(tree, dataSchema)
+addProps(tree, dataSchema)
 
 print etree.tostring(
         dataSchema,
