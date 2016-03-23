@@ -1,5 +1,6 @@
 #!/bin/bash
 set -euo pipefail
+tmp=$(mktemp)
 
 
 #Takes as arguments: Name, Label, type, numColumns, HasAnnotation, HasCertainty, HasInfo, Required, ReadOnly, Path
@@ -40,7 +41,7 @@ width=`echo "(200/$4)" | bc`
 echo $2 $3 $width
 
 
-rm -f /tmp/drawfile.mvg
+rm -f $tmp/drawfile.mvg
 pwd=`pwd`
 height=1;
 
@@ -51,12 +52,12 @@ case "$3" in
 		color="black"
 	else
 		color="gray"
-	cat >> /tmp/drawfile.mvg <<- EOM
+	cat >> $tmp/drawfile.mvg <<- EOM
 		<text x="7" y="30" font-family="Roboto" font-size="8" fill="gray"> Read only </text>
 	EOM
 	fi
 
-	cat >> /tmp/drawfile.mvg <<- EOM
+	cat >> $tmp/drawfile.mvg <<- EOM
 
 	<path d="M 5 30 L 5 35 L $[$width-5] 35 L $[$width-5] 30" stroke="$color" fill="white" stroke-width="1"/>
 		
@@ -73,7 +74,7 @@ case "$3" in
 
 	dropdown)
 
-	cat >> /tmp/drawfile.mvg <<- EOM
+	cat >> $tmp/drawfile.mvg <<- EOM
 
 	<path d="M 5 35 L $[$width-5] 35" stroke="black" fill="black" stroke-width="1"/>
 	<path d="M $[$width-15] 35 L $[$width-5] 35 L $[$width-5] 25 Z" stroke="black" fill="black" stroke-width="1"/>
@@ -103,7 +104,7 @@ case "$3" in
 	radio)
 
 
-	cat >> /tmp/drawfile.mvg <<- EOM
+	cat >> $tmp/drawfile.mvg <<- EOM
  		
  		<ellipse cx="7" cy="30" rx="5" ry="5"  style="fill:white;stroke:black;stroke-width:1" />
  		<ellipse cx="57" cy="30" rx="5" ry="5"  style="fill:white;stroke:black;stroke-width:1" />
@@ -146,7 +147,7 @@ case "$3" in
 
 	button)
 
-	cat >> /tmp/drawfile.mvg <<- EOM
+	cat >> $tmp/drawfile.mvg <<- EOM
 
 		<path d="M 5 5 L $[$width-5] 5 L $[$width-5] 35 L 5 35 Z" fill="lightgray"/>
 		<text x="$[$width/2]" y="24" font-family="Roboto" font-size="14" fill="black" text-anchor="middle"> $2 </text>
@@ -183,7 +184,7 @@ case "$3" in
 
 	list)
 
-	cat >> /tmp/drawfile.mvg <<- EOM
+	cat >> $tmp/drawfile.mvg <<- EOM
 		<path d="M 15 35 L $[$width-15] 35 
 		         M 15 55 L $[$width-15] 55 
 		         M 15 75 L $[$width-15] 75
@@ -221,7 +222,7 @@ text 15,110 "List"
 
 	checkbox)
 
-	cat >> /tmp/drawfile.mvg <<- EOM
+	cat >> $tmp/drawfile.mvg <<- EOM
 
 		fill white
 		stroke gray
@@ -260,27 +261,27 @@ text 15,110 "List"
 		
 	EOM
 	if [ "$5" = "true" ]; then
-		#echo "<image width='20' height='20' x='$[$width-60]' y='4' xlink:href='$pwd/pencil.svg'/>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-30],20) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-30],40) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-30],60) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-30],80) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
+		#echo "<image width='20' height='20' x='$[$width-60]' y='4' xlink:href='$pwd/pencil.svg'/>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-30],20) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-30],40) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-30],60) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-30],80) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
 
 
-		#echo "image src-over $[$width-60],4 20,20 \"annotation.png\"" >> /tmp/drawfile.mvg
+		#echo "image src-over $[$width-60],4 20,20 \"annotation.png\"" >> $tmp/drawfile.mvg
 	fi
 
 	if [ "$6" = "true" ]; then
-		#echo "image src-over $[$width-40],4 20,20 \"certainty.png\"" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-15],20) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-15],40) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-15],60) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-15],80) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
+		#echo "image src-over $[$width-40],4 20,20 \"certainty.png\"" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-15],20) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-15],40) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-15],60) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-15],80) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
 		
 	fi
 	if [ "$7" = "true" ]; then
-		#echo "image src-over $[$width-20],4 20,20 \"info.png\"" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-15],0) scale(.6)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> /tmp/drawfile.mvg
+		#echo "image src-over $[$width-20],4 20,20 \"info.png\"" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-15],0) scale(.6)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> $tmp/drawfile.mvg
 	fi
 
 
@@ -295,7 +296,7 @@ text 15,110 "List"
 
 	map)
 
-	cat >> /tmp/drawfile.mvg <<- EOM
+	cat >> $tmp/drawfile.mvg <<- EOM
 
 		<rect x="5" y="5" width="190" height="255" style="fill:gray;stroke-width:1;stroke:black"/>
 		<text x="100" y="100" anchor="middle" font-family="Roboto" font-size="14" fill="black" text-anchor="middle"> Map Page </text>
@@ -338,7 +339,7 @@ text 15,110 "List"
 	;;
 
 	webview)
-	cat >> /tmp/drawfile.mvg <<- EOM
+	cat >> $tmp/drawfile.mvg <<- EOM
 		<path d="M 5 5 L $[$width-5] 5 L $[$width-5] 75 L 5 75 Z" fill="#f0f0f0" stroke="black"/>
 		<text x="$[$width/2]" y="46" font-family="Roboto" font-size="14" fill="black" text-anchor="middle"> $2 </text>
 
@@ -364,7 +365,7 @@ text 15,110 "List"
 	;;
 
 	pictureGallery)
-	cat >> /tmp/drawfile.mvg <<- EOM
+	cat >> $tmp/drawfile.mvg <<- EOM
 
 		<rect x="5" y="35" width="40" height="42" style="fill:white;stroke-width:1;stroke:black"/>
 		<rect x="55" y="35" width="40" height="42" style="fill:white;stroke-width:1;stroke:black"/>
@@ -408,7 +409,7 @@ text 15,110 "List"
 	;;
 
 	camera)
-	cat >> /tmp/drawfile.mvg <<- EOM
+	cat >> $tmp/drawfile.mvg <<- EOM
 
 		<path d="M 5 30 L 95 30 L 95 80 L 5 80 Z" fill="white" stroke="black" stroke-width="1"/>
 		<path d="M 105 30 L 195 30 L 195 80 L 105 80 Z" fill="white" stroke="black" stroke-width="1"/>
@@ -434,21 +435,21 @@ text 15,110 "List"
 	EOM
 
 	if [ "$5" = "true" ]; then
-		#echo "<image width='20' height='20' x='$[$width-60]' y='4' xlink:href='$pwd/pencil.svg'/>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(70,17) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(170, 17) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
+		#echo "<image width='20' height='20' x='$[$width-60]' y='4' xlink:href='$pwd/pencil.svg'/>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(70,17) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(170, 17) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
 
-		#echo "image src-over $[$width-60],4 20,20 \"annotation.png\"" >> /tmp/drawfile.mvg
+		#echo "image src-over $[$width-60],4 20,20 \"annotation.png\"" >> $tmp/drawfile.mvg
 	fi
 
 	if [ "$6" = "true" ]; then
-		#echo "image src-over $[$width-40],4 20,20 \"certainty.png\"" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(80,17) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(180, 17) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg		
+		#echo "image src-over $[$width-40],4 20,20 \"certainty.png\"" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(80,17) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(180, 17) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg		
 	fi
 	if [ "$7" = "true" ]; then
-		#echo "image src-over $[$width-20],4 20,20 \"info.png\"" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-15],0) scale(.6)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> /tmp/drawfile.mvg
+		#echo "image src-over $[$width-20],4 20,20 \"info.png\"" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-15],0) scale(.6)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> $tmp/drawfile.mvg
 	fi
 
 	
@@ -460,7 +461,7 @@ text 15,110 "List"
 
 	file)
 
-	cat >> /tmp/drawfile.mvg <<- EOM
+	cat >> $tmp/drawfile.mvg <<- EOM
 
 		<path d="M 20 40 L $[$width-20] 40 M 20 60 L $[$width-20] 60 M 20 80 L $[$width-20] 80 M 20 100 $[$width-20] 100" fill="white" stroke="gray" stroke-width="1"/>
 		<text x="25" y="35" font-family="Roboto" font-size="8pt" fill="gray"> File List </text>
@@ -496,26 +497,26 @@ text 15,110 "List"
 		
 	EOM
 	if [ "$5" = "true" ]; then
-		#echo "<image width='20' height='20' x='$[$width-60]' y='4' xlink:href='$pwd/pencil.svg'/>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-50],25) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-50],45) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-50],65) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-50],85) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-50],105) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		#echo "image src-over $[$width-60],4 20,20 \"annotation.png\"" >> /tmp/drawfile.mvg
+		#echo "<image width='20' height='20' x='$[$width-60]' y='4' xlink:href='$pwd/pencil.svg'/>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-50],25) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-50],45) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-50],65) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-50],85) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-50],105) scale(.4)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		#echo "image src-over $[$width-60],4 20,20 \"annotation.png\"" >> $tmp/drawfile.mvg
 	fi
 
 	if [ "$6" = "true" ]; then
-		#echo "image src-over $[$width-40],4 20,20 \"certainty.png\"" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-40],25) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-40],45) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-40],65) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg		
-		echo "<g transform='translate($[$width-40],85) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-40],105) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
+		#echo "image src-over $[$width-40],4 20,20 \"certainty.png\"" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-40],25) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-40],45) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-40],65) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg		
+		echo "<g transform='translate($[$width-40],85) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-40],105) scale(.4)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
 	fi
 	if [ "$7" = "true" ]; then
-		#echo "image src-over $[$width-20],4 20,20 \"info.png\"" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-15],0) scale(.6)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> /tmp/drawfile.mvg
+		#echo "image src-over $[$width-20],4 20,20 \"info.png\"" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-15],0) scale(.6)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> $tmp/drawfile.mvg
 	fi
 
 
@@ -530,7 +531,7 @@ text 15,110 "List"
 
 	latlong)
 
-	cat >> /tmp/drawfile.mvg <<- EOM
+	cat >> $tmp/drawfile.mvg <<- EOM
 
 
 	<text x="5" y="12" font-family="Roboto" font-size="10pt" fill="black"> Latitude </text>
@@ -551,32 +552,32 @@ text 15,110 "List"
 
 
 	if [ "$5" = "true" ]; then
-		#echo "<image width='20' height='20' x='$[$width-60]' y='4' xlink:href='$pwd/pencil.svg'/>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(64,0) scale(.5)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(164,0) scale(.5)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(64,40) scale(.5)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(164,40) scale(.5)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(164,120) scale(.5)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		#echo "image src-over $[$width-60],4 20,20 \"annotation.png\"" >> /tmp/drawfile.mvg
+		#echo "<image width='20' height='20' x='$[$width-60]' y='4' xlink:href='$pwd/pencil.svg'/>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(64,0) scale(.5)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(164,0) scale(.5)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(64,40) scale(.5)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(164,40) scale(.5)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(164,120) scale(.5)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		#echo "image src-over $[$width-60],4 20,20 \"annotation.png\"" >> $tmp/drawfile.mvg
 	fi
 
 	if [ "$6" = "true" ]; then
-		#echo "image src-over $[$width-40],4 20,20 \"certainty.png\"" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(76,0) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(176,0) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(76,40) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(176,40) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(176,120) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
+		#echo "image src-over $[$width-40],4 20,20 \"certainty.png\"" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(76,0) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(176,0) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(76,40) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(176,40) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(176,120) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
 
 
 	fi
 	if [ "$7" = "true" ]; then
-		#echo "image src-over $[$width-20],4 20,20 \"info.png\"" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(88,0) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(188,0) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(88,40) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(188,40) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate(188,120) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> /tmp/drawfile.mvg
+		#echo "image src-over $[$width-20],4 20,20 \"info.png\"" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(88,0) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(188,0) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(88,40) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(188,40) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate(188,120) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> $tmp/drawfile.mvg
 
 	fi
 
@@ -610,7 +611,7 @@ esac
 
 if [ $label = true ]; then
 	if [ "$8" = "true" ]; then
-		cat >> /tmp/drawfile.mvg <<- EOM
+		cat >> $tmp/drawfile.mvg <<- EOM
 			<text x="5" y="12" font-family="Roboto" font-size="10pt" fill="red"> $2 </text>
 			stroke red
 			fill red
@@ -619,7 +620,7 @@ if [ $label = true ]; then
 			font-size 16
 	EOM
 	else
-		cat >> /tmp/drawfile.mvg <<- EOM
+		cat >> $tmp/drawfile.mvg <<- EOM
 			<text x="5" y="12" font-family="Roboto" font-size="10pt" fill="black"> $2 </text>
 			stroke black
 			fill black
@@ -638,18 +639,18 @@ if [ $normalFlags = true ]; then
 
 	#echo $5 $6 $7
 	if [ "$5" = "true" ]; then
-		#echo "<image width='20' height='20' x='$[$width-60]' y='4' xlink:href='$pwd/pencil.svg'/>" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-36],0) scale(.5)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> /tmp/drawfile.mvg
-		#echo "image src-over $[$width-60],4 20,20 \"annotation.png\"" >> /tmp/drawfile.mvg
+		#echo "<image width='20' height='20' x='$[$width-60]' y='4' xlink:href='$pwd/pencil.svg'/>" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-36],0) scale(.5)'><path d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z' /></g>" >> $tmp/drawfile.mvg
+		#echo "image src-over $[$width-60],4 20,20 \"annotation.png\"" >> $tmp/drawfile.mvg
 	fi
 
 	if [ "$6" = "true" ]; then
-		#echo "image src-over $[$width-40],4 20,20 \"certainty.png\"" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-24],0) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> /tmp/drawfile.mvg
+		#echo "image src-over $[$width-40],4 20,20 \"certainty.png\"" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-24],0) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M10,19H13V22H10V19M12,2A6,6 0 0,1 18,8C17.67,9.33 17.33,10.67 16.5,11.67C15.67,12.67 14.33,13.33 13.67,14.17C13,15 13,16 13,17H10C10,15.33 10,13.92 10.67,12.92C11.33,11.92 12.67,11.33 13.5,10.67C14.33,10 14.67,9 15,8A3,3 0 0,0 12,5A3,3 0 0,0 9,8H6A6,6 0 0,1 12,2Z' /></g>" >> $tmp/drawfile.mvg
 	fi
 	if [ "$7" = "true" ]; then
-		#echo "image src-over $[$width-20],4 20,20 \"info.png\"" >> /tmp/drawfile.mvg
-		echo "<g transform='translate($[$width-12],0) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> /tmp/drawfile.mvg
+		#echo "image src-over $[$width-20],4 20,20 \"info.png\"" >> $tmp/drawfile.mvg
+		echo "<g transform='translate($[$width-12],0) scale(.5)'><path  width='20' height='20' x='$[$width-40]' y='4' d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></g>" >> $tmp/drawfile.mvg
 	fi
 fi
 cat > ${10}/$1.svg <<- EOM
@@ -672,16 +673,17 @@ cat > ${10}/$1.svg <<- EOM
 EOM
 
 
-#cat /tmp/drawfile.mvg
+#cat $tmp/drawfile.mvg
 #convert  ${10}/$1.svg ${10}/$1.png
 
 
-cat /tmp/drawfile.mvg >> ${10}/$1.svg
+cat $tmp/drawfile.mvg >> ${10}/$1.svg
 
 cat >> ${10}/$1.svg <<- EOM
 </svg>
 EOM
 
+rm -rf $tmp
 
 #cat ${10}/$1.svg
 #convert ${10}/$1.svg ${10}/$1.png 

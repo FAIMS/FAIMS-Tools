@@ -275,7 +275,7 @@ mkdir false wireframeOutput
 ./makeElement.sh takeCRMPhoto "Take a Photo of CRM" button 1 true true true false false wireframeOutput
 cd wireframeOutput
 
-/usr/local/bin/dot -Tsvg ../datastruct.gv > wireframeOutput.svg
+dot -Tsvg ../datastruct.gv > wireframeOutput.svg
 
 cd ..
 
