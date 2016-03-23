@@ -276,6 +276,7 @@ mkdir false wireframeOutput
 cd wireframeOutput
 
 dot -Tsvg ../datastruct.gv > wireframeOutput.svg
+cp -r . ~/www/
 
 cd ..
 

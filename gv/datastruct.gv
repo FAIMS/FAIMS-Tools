@@ -1,86 +1,67 @@
 digraph g {
 	graph [
-		rankdir = "LR" 	
+		rankdir = "LR"
 		fontname="Roboto"
 
 	];
-	fontname="Roboto"
 	node [
-		fontsize = "12"
-		shape=plaintext;
+		fontsize="12"
+		shape=plaintext
 		fontname="Roboto"
 		margin=0
 		shape=none
-		rank="same"
-
-	];
-	edge [
 	];
 
 	subgraph cluster_Login{
 		label="Login"
 		bgcolor="lightblue"
+
 		subgraph cluster_LoginTab{
-			label="";
+			label=""
 			bgcolor="white"
 
 			structLabelLoginTab[
 			label=<
-			<TABLE BORDER="1" HEIGHT="10" CELLBORDER="3" CELLSPACING="0" CELLPADDING="5"  width="150">
-				<TR ><TD port="records" ALIGN="TEXT" SIDES="b">Login</TD></TR>
-			</TABLE>		
+				<TABLE BORDER="1" HEIGHT="10" CELLBORDER="3" CELLSPACING="0" CELLPADDING="5"  width="150">
+					<TR ><TD port="records" ALIGN="TEXT" SIDES="b">Login</TD></TR>
+				</TABLE>
 			>
-
 			];
 			
-
-			
-			fontsize="14pt";
-
 			structLogin [label=<
 			<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" width="150" height="80">
-
 				<TR><TD BORDER="0" ALIGN="LEFT" port="userlist">	<img src="userList.svg"/></TD></TR>
-				
-	
 			</TABLE>
-	
-			>			
-
+			>
 			];
 		}
 	}
 
 	subgraph cluster_Control{
-		label="Control";
+		label="Control"
 		bgcolor="lightblue"
 		subgraph cluster_Records{
-			label="";
+			label=""
 			bgcolor="white"
 			structLabelRecords[
 			label=<
-			<TABLE BORDER="1" HEIGHT="10" CELLBORDER="3" CELLSPACING="5" CELLPADDING="5"  width="165">
-				<TR ><TD port="records" ALIGN="TEXT" SIDES="b">Records</TD><TD sides="b" border="1">...</TD></TR>
-			</TABLE>
-			
+				<TABLE BORDER="1" HEIGHT="10" CELLBORDER="3" CELLSPACING="5" CELLPADDING="5"  width="165">
+					<TR ><TD port="records" ALIGN="TEXT" SIDES="b">Records</TD><TD sides="b" border="1">...</TD></TR>
+				</TABLE>
 			>];
-			fontsize=14;
 
-			structRecords [label=<
-			<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" width="165">
-				
-				<TR><TD port="takeFeature"><img src="takeFeatureButton.svg"/></TD></TR>
-				<TR><TD ><img src="startingBurialID.svg"/></TD></TR>						
-				<TR><TD ><img src="gpsDiagnostics.svg"/></TD></TR>
-				
-	
-			</TABLE>
-			
-	
+			structRecords [
+			label=<
+				<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" width="165">
+					<TR><TD port="takeFeature"><img src="takeFeatureButton.svg"/></TD></TR>
+					<TR><TD ><img src="startingBurialID.svg"/></TD></TR>
+					<TR><TD ><img src="gpsDiagnostics.svg"/></TD></TR>
+				</TABLE>
 			>];
 		}
+
 		subgraph cluster_Search{
-			label="";
+			label=""
 			bgcolor="white"
 			structLabelSearch[
 			label=<
@@ -91,22 +72,17 @@ digraph g {
 			>];
 
 			structSearch [label=<
-			<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" width="150">			
-				<TR><TD><IMG SRC="searchTerm.svg"/></TD><TD><IMG SRC="search.svg"/></TD></TR>				
-				<TR><TD><IMG SRC="entityTypes.svg"/></TD><TD><IMG SRC="selectTrench.svg"/></TD></TR>				
+			<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" width="150">
+				<TR><TD><IMG SRC="searchTerm.svg"/></TD><TD><IMG SRC="search.svg"/></TD></TR>
+				<TR><TD><IMG SRC="entityTypes.svg"/></TD><TD><IMG SRC="selectTrench.svg"/></TD></TR>
 			</TABLE>>];
 			structSearchList [label=<
 			<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" width="150">
-				<TR><TD><img src="searchList.svg"/></TD></TR>				
-			</TABLE>				
-	
-			
-			
-	
+				<TR><TD><img src="searchList.svg"/></TD></TR>
+			</TABLE>
 			>];
 		}
 		structLabelRecords->structLabelSearch;
-
 	}
 
 
@@ -125,15 +101,14 @@ digraph g {
 			</TABLE>
 			
 			>];
-			fontsize=14;
 
 			structBurialGeneral [label=<
 			<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" width="150">
-				<TR><TD><img src="objectID.svg"/></TD></TR>				
-				<TR><TD><img src="createdAt.svg"/></TD></TR>				
-				<TR><TD><img src="createdBy.svg"/></TD></TR>				
-				<TR><TD><img src="type.svg"/></TD></TR>				
-				<TR><TD><img src="siteSignificance.svg"/></TD></TR>				
+				<TR><TD><img src="objectID.svg"/></TD></TR>
+				<TR><TD><img src="createdAt.svg"/></TD></TR>
+				<TR><TD><img src="createdBy.svg"/></TD></TR>
+				<TR><TD><img src="type.svg"/></TD></TR>
+				<TR><TD><img src="siteSignificance.svg"/></TD></TR>
 				<TR><TD><img src="name.svg"/></TD></TR>
 				<TR><TD><img src="description.svg"/></TD></TR>
 				<TR><TD><img src="source.svg"/></TD></TR>
@@ -146,15 +121,7 @@ digraph g {
 				<TR><TD><img src="takeShape.svg"/></TD></TR>
 				<TR><TD><img src="generalPhoto.svg"/></TD></TR>
 				<TR><TD><img src="takePhoto.svg"/></TD></TR>
-				
-				
-
 			</TABLE>>];
-
-
-			
-	
-			
 		}
 		subgraph cluster_BurialDimensions{
 			label="";
@@ -162,43 +129,30 @@ digraph g {
 
 			structLabelBurialDimensions[
 			label=<
-			<TABLE BORDER="1" HEIGHT="10" CELLBORDER="3" CELLSPACING="5" CELLPADDING="5"  width="150">
-				<TR ><TD sides="b" border="1">...</TD><TD port="search" ALIGN="TEXT" SIDES="b">Dimensions</TD><TD sides="b" border="1">...</TD></TR>
-			</TABLE>
-			
+				<TABLE BORDER="1" HEIGHT="10" CELLBORDER="3" CELLSPACING="5" CELLPADDING="5"  width="150">
+					<TR ><TD sides="b" border="1">...</TD><TD port="search" ALIGN="TEXT" SIDES="b">Dimensions</TD><TD sides="b" border="1">...</TD></TR>
+				</TABLE>
 			>];
-			fontsize=14;
 
 			structBurialDimensions [label=<
-			<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" >
-				
-				<TR><TD ><IMG SRC="profile.svg"/></TD></TR>
-				
-				
-				<TR><TD ><IMG SRC="plan.svg"/></TD></TR>
-				
-			</TABLE>
-			
-	
+				<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" >
+					<TR><TD ><IMG SRC="profile.svg"/></TD></TR>
+					<TR><TD ><IMG SRC="plan.svg"/></TD></TR>
+				</TABLE>
 			>];
 
 			structBurialtwocol [label=<
 			<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5" >
 
-				<TR><TD BORDER="0"><IMG SRC="lengthmax.svg"/></TD><TD BORDER="0"><IMG SRC="lengthmin.svg"/></TD></TR>		
-
-
-				<TR><TD BORDER="0"><IMG SRC="widthmax.svg"/></TD><TD BORDER="0"><IMG SRC="widthmin.svg"/></TD></TR>		
-				<TR><TD BORDER="0"><IMG SRC="heightmax.svg"/></TD><TD BORDER="0"><IMG SRC="heightmin.svg"/></TD></TR>		
-
-
-				<TR><TD BORDER="0"><IMG SRC="areamax.svg"/></TD><TD BORDER="0"><IMG SRC="areamin.svg"/></TD></TR>	
-				</TABLE>	
+				<TR><TD BORDER="0"><IMG SRC="lengthmax.svg"/></TD><TD BORDER="0"><IMG SRC="lengthmin.svg"/></TD></TR>
+				<TR><TD BORDER="0"><IMG SRC="widthmax.svg"/></TD><TD BORDER="0"><IMG SRC="widthmin.svg"/></TD></TR>
+				<TR><TD BORDER="0"><IMG SRC="heightmax.svg"/></TD><TD BORDER="0"><IMG SRC="heightmin.svg"/></TD></TR>
+				<TR><TD BORDER="0"><IMG SRC="areamax.svg"/></TD><TD BORDER="0"><IMG SRC="areamin.svg"/></TD></TR>
+				</TABLE>
 			>];
 
 			structBurialRest [label=<
 			<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" >
-				
 				<TR><TD BORDER="0"><IMG SRC="otherdim.svg"/></TD></TR>
 				<TR><TD BORDER="0"><IMG SRC="dimnotes.svg"/></TD></TR>
 				<TR><TD BORDER="0"><IMG SRC="attachSketch.svg"/></TD></TR>
@@ -206,12 +160,8 @@ digraph g {
 				<TR><TD BORDER="0"><IMG SRC="listSketch.svg"/></TD></TR>
 				<TR><TD BORDER="0"><IMG SRC="dimensionPhoto.svg"/></TD></TR>
 				<TR><TD BORDER="0"><IMG SRC="takeSketchPhoto.svg"/></TD></TR>
-
-
-
 			</TABLE>
 			>];
-
 		}
 		subgraph cluster_BurialMaterial{
 			label="";
@@ -222,9 +172,7 @@ digraph g {
 			<TABLE BORDER="1" HEIGHT="10" CELLBORDER="3" CELLSPACING="5" CELLPADDING="5"  width="150">
 				<TR ><TD sides="b" border="1">...</TD><TD port="search" ALIGN="TEXT" SIDES="b">Material</TD><TD sides="b" border="1">...</TD></TR>
 			</TABLE>
-			
 			>];
-			fontsize=14;
 
 			structBurialMaterial [label=<
 			<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" >
@@ -233,13 +181,9 @@ digraph g {
 				<TR><TD><img src="surfaceDense.svg"/></TD></TR>
 				<TR><TD><img src="surfaceDesc.svg"/></TD></TR>
 				<TR><TD><img src="sampleColl.svg"/></TD></TR>
-
 				<TR><TD><img src="materialPhoto.svg"/></TD></TR>
 				<TR><TD><img src="takematerialPhoto.svg"/></TD></TR>
-
 			</TABLE>
-			
-	
 			>];
 
 		}
@@ -252,13 +196,10 @@ digraph g {
 			<TABLE BORDER="1" HEIGHT="10" CELLBORDER="3" CELLSPACING="5" CELLPADDING="5"  width="150">
 				<TR ><TD sides="b" border="1">...</TD><TD port="search" ALIGN="TEXT" SIDES="b">CRM</TD><TD sides="b" border="1">...</TD></TR>
 			</TABLE>
-			
 			>];
-			fontsize=14;
 
 			structBurialCRM [label=<
 			<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" >
-				
 				<TR><TD><img src="disturbanceKind.svg"/></TD></TR>
 				<TR><TD><img src="disturbanceFactors.svg"/></TD></TR>
 				<TR><TD><img src="principalFactors.svg"/></TD></TR>
@@ -272,17 +213,12 @@ digraph g {
 				<TR><TD><img src="Affect.svg"/></TD></TR>
 				<TR><TD><img src="Impact.svg"/></TD></TR>
 				<TR><TD><img src="CommentsandRecommendations.svg"/></TD></TR>
-
 				<TR><TD><img src="CRMPhoto.svg"/></TD></TR>
 				<TR><TD><img src="takeCRMPhoto.svg"/></TD></TR>
-
-
 			</TABLE>
-			
-	
 			>];
 
-		}	
+		}
 		subgraph cluster_BurialMap{
 			label="";
 			bgcolor="white"
@@ -292,23 +228,15 @@ digraph g {
 			<TABLE BORDER="1" HEIGHT="10" CELLBORDER="3" CELLSPACING="5" CELLPADDING="5"  width="150">
 				<TR ><TD sides="b" border="1">...</TD><TD port="search" ALIGN="TEXT" SIDES="b">Map</TD></TR>
 			</TABLE>
-			
 			>];
-			fontsize=14;
 
 			structBurialMap [label=<
 			<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" >
-				
 				<TR><TD><img src="map1.svg"/></TD></TR>
-				
-
-
 			</TABLE>
-			
-	
 			>];
 
-		}							
+		}
 	}
 	structRecords:takeFeature->structLabelBurialGeneral;
 	structLogin:userlist->structLabelRecords;
