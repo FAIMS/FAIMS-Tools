@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-tmp=$(mktemp)
+tmp=$(mktemp -d)
 
 
 #Takes as arguments: Name, Label, type, numColumns, HasAnnotation, HasCertainty, HasInfo, Required, ReadOnly, Path
