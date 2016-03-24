@@ -494,6 +494,9 @@ def getArch16nVal(node):
         return getLabelFromText(node)
     return getLabelFromTag(node)
 
+def getLabel(node):
+    return getArch16nVal(node)
+
 def getArch16nKey(node):
     return getArch16nVal(node).replace(' ', '_')
 
