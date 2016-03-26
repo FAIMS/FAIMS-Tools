@@ -69,6 +69,7 @@ GUI/data element     | 0 <= <str>  <= 1      |
 
 <col>           | 1 <= GUI/data element      |
 
+<opt>           | 0 <= <desc> <= 1      |
 <opt>           | 0 <= <opt>            |
 '''
 
@@ -107,6 +108,8 @@ GUI/data element     | str         | <str>
 <opts>               | opt         | <opt>
 
 <opt>                | opt         | <opt>
+
+<opt>                | desc        | <desc>
 '''
 
 # Types (t attribute in module.xml schema) of menu-like items

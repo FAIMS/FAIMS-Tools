@@ -1,6 +1,7 @@
 from   lxml import etree
 import consts
 import copy
+import hashlib
 import helpers
 import re
 import tables
@@ -443,6 +444,28 @@ def getParentTabGroup(node):
     if matches:
         return matches[0]
     return None
+
+def getPath(node):
+    nodeTypes = ['GUI/data element', 'tab group', 'tab']
+
+    if node == None:
+        return []
+    if consts.RESERVED_XML_TYPE not in node.attrib:
+        return getPath(node.getparent()) + []
+    if node.attrib[consts.RESERVED_XML_TYPE] not in nodeTypes:
+        return getPath(node.getparent()) + []
+    else:
+        return getPath(node.getparent()) + [node.tag]
+
+def getPathString(node):
+    return '/'.join(getPath(node))
+
+def nodeHash(node, hashLen=10):
+    path = helpers.getPathString(node)
+    hash = hashlib.sha256(path)
+    hash = hash.hexdigest()
+    hash = hash[:hashLen]
+    return hash
 
 def getRelName(node):
     if not hasAttrib(node, 'lc'):
