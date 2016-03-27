@@ -252,8 +252,8 @@ class GuiBlock(object):
         # What we're about to do will probably modify `node` if we don't copy it
         node = copy.deepcopy(node)
 
-        # NORMALISATION: Take GUI/data elements which are direct children of
-        # <cols> and puts them <col> tags.
+        # NORMALISATION: Take GUI/data elements which are direct descendants of
+        # <cols> and put them in <col> tags.
         for i, child in enumerate(node):
             if child.attrib[consts.RESERVED_XML_TYPE] == 'GUI/data element':
                 node[i] = etree.Element('col')
@@ -272,7 +272,7 @@ class GuiBlock(object):
             for j, elm in enumerate(col):
                 table[j][i] = elm
 
-        # TRANSFORMATION 2: Generate block string.
+        # TRANSFORMATION 2: Convert `table` to markup code.
         self.block = ''
         for row in table:
             tdElms = ''
