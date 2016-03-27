@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-#TODO: <autonum/> + f="autonum" doesn't work yet
-
 from   lxml import etree
 import consts
 import copy

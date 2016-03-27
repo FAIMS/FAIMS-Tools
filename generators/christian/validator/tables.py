@@ -147,6 +147,8 @@ REPLACEMENTS_BY_T_ATTRIB = {
 }
 REPLACEMENTS_BY_TAG = {
         'author'    : '<Author t="input" f="readonly nodata"/>',
+        'autonum'   : '<Next___REPLACE__ t="input" b="decimal"\
+                                       f="readonly notnull"/>',
         'gps'       : '<Colgroup_GPS t="group"/>              \
                        <Latitude     t="input" f="readonly"/> \
                        <Longitude    t="input" f="readonly"/> \

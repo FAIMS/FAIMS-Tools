@@ -2,21 +2,20 @@ from   lxml import etree
 import consts
 import copy
 import hashlib
-import helpers
 import re
 import tables
 
 def isDataElement(guiDataElement):
-    if helpers.isFlagged(guiDataElement, 'nodata'):      return False
-    if helpers.isFlagged(guiDataElement, 'user'):        return False
-    if helpers.hasAttrib(guiDataElement, 'e'):           return False
-    if helpers.hasAttrib(guiDataElement, 'ec'):          return False
-    if helpers.guessType(guiDataElement) == 'button':    return False
-    if helpers.guessType(guiDataElement) == 'gpsdiag':   return False
-    if helpers.guessType(guiDataElement) == 'group':     return False
-    if helpers.guessType(guiDataElement) == 'map':       return False
-    if helpers.guessType(guiDataElement) == 'table':     return False
-    if helpers.guessType(guiDataElement) == 'viewfiles': return False
+    if isFlagged(guiDataElement, 'nodata'):      return False
+    if isFlagged(guiDataElement, 'user'):        return False
+    if hasAttrib(guiDataElement, 'e'):           return False
+    if hasAttrib(guiDataElement, 'ec'):          return False
+    if guessType(guiDataElement) == 'button':    return False
+    if guessType(guiDataElement) == 'gpsdiag':   return False
+    if guessType(guiDataElement) == 'group':     return False
+    if guessType(guiDataElement) == 'map':       return False
+    if guessType(guiDataElement) == 'table':     return False
+    if guessType(guiDataElement) == 'viewfiles': return False
     return True
 
 def getPropType(node):
@@ -30,7 +29,7 @@ def hasMeasureType(node):
     measureTypes = (
             'input',
     )
-    return helpers.guessType(node) in measureTypes
+    return guessType(node) in measureTypes
 
 def hasFileType(node):
     fileTypes    = (
@@ -39,7 +38,7 @@ def hasFileType(node):
             'file',
             'video',
     )
-    return helpers.guessType(node) in fileTypes
+    return guessType(node) in fileTypes
 
 def hasVocabType(node):
     vocabTypes   = (
@@ -49,7 +48,7 @@ def hasVocabType(node):
             'picture',
             'radio',
     )
-    return helpers.guessType(node) in vocabTypes
+    return guessType(node) in vocabTypes
 
 ################################################################################
 
@@ -74,7 +73,7 @@ def parseXml(filename):
     return tree
 
 def filterUnannotated(nodes):
-    cond = lambda e: helpers.isAnnotated(e)
+    cond = lambda e: isAnnotated(e)
     return filter(cond, nodes)
 
 def isAnnotated(e):
@@ -113,24 +112,30 @@ def annotateWithTypes(tree):
         flagAll(matches, consts.RESERVED_XML_TYPE, matchType)
 
 
-def replaceElement(element, replacements, tag=''):
+def replaceElement(element, replacements, tag='__REPLACE__'):
+    replacements = replacements.replace('\n', ' ')
+    replacements = replacements.replace('\r', ' ')
     replacements = re.sub('>\s+<', '><', replacements)
     replacements = replacements.replace('__REPLACE__', tag)
     replacements = '<root>%s</root>' % replacements
     replacements = etree.fromstring(replacements)
 
     originalSourceline = element.sourceline
-    helpers.setSourceline(replacements, originalSourceline)
+    setSourceline(replacements, originalSourceline)
 
     # Insert each element in `replacements` at the location of `element`. The
     # phrasing is a bit opaque here because lxml *moves* nodes from
     # `replacements` instead of copying them, when `insert(index, r)` is called.
+    returnVal = []
     index = element.getparent().index(element)
     while len(replacements):
         r = replacements[-1]
         element.getparent().insert(index, r)
 
+        returnVal.append(r)
+
     element.getparent().remove(element)
+    return returnVal
 
 def isFlagged(element, flags, checkAncestors=True, attribName='f'):
     if type(flags) is list:
@@ -430,7 +435,7 @@ def hasAttrib(e, a):
 
 def hasElementFlaggedWith(tabGroup, flag):
     exp  = './/*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
-    cond = lambda e: helpers.isFlagged(e, flag)
+    cond = lambda e: isFlagged(e, flag)
     matches = tabGroup.xpath(exp)
     matches = filter(cond, matches)
     return len(matches) > 0
@@ -461,7 +466,7 @@ def getPathString(node):
     return '/'.join(getPath(node))
 
 def nodeHash(node, hashLen=10):
-    path = helpers.getPathString(node)
+    path = getPathString(node)
     hash = hashlib.sha256(path)
     hash = hash.hexdigest()
     hash = hash[:hashLen]
@@ -470,10 +475,10 @@ def nodeHash(node, hashLen=10):
 def getRelName(node):
     if not hasAttrib(node, 'lc'):
         return None
-    if helpers.getParentTabGroup(node) == None:
+    if getParentTabGroup(node) == None:
         return None
 
-    parentName = helpers.getParentTabGroup(node)
+    parentName = getParentTabGroup(node)
     parentName = parentName.tag
     parentName = parentName.replace('_', ' ')
 
@@ -524,16 +529,41 @@ def getArch16nKey(node):
     return getArch16nVal(node).replace(' ', '_')
 
 def expandCompositeElements(tree):
+    # (1) REPLACE ELEMENTS HAVING A CERTAIN T ATTRIBUTE
     for attrib, replacements in tables.REPLACEMENTS_BY_T_ATTRIB.iteritems():
-        exp = '//*[@%s and @t="%s"]' % (consts.RESERVED_XML_TYPE, attrib)
+        exp     = '//*[@%s]' % consts.RESERVED_XML_TYPE
+        cond    = lambda e: guessType(e) == attrib
         matches = tree.xpath(exp)
-        for m in matches:
-            helpers.replaceElement(m, replacements, m.tag)
+        matches = filter(cond, matches)
 
+        for m in matches:
+            replaceElement(m, replacements, m.tag)
+
+    # (2) REPLACE ELEMENTS HAVING A CERTAIN TAG NAME
+    # <autonum> tags get special treatment
+    tagMatches  = tree.xpath('//autonum')
+    if tagMatches:
+        tagMatch = tagMatches[0]
+
+        cond        = lambda e: isFlagged(e, 'autonum')
+        flagMatches = tree.xpath('//*')
+        flagMatches = filter(cond, flagMatches)
+
+        replacements = tables.REPLACEMENTS_BY_TAG['autonum'] * len(flagMatches)
+        replacements = replaceElement(tagMatch, replacements)
+
+        for autonumDest, autonumSrc in zip(flagMatches, replacements):
+            needle      = '__REPLACE__'
+            haystack    = autonumSrc .tag
+            replacement = autonumDest.tag
+
+            autonumSrc.tag = haystack.replace(needle, replacement)
+
+    # Replace non-<autonum> tags similarly to in (1).
     for tag, replacements in tables.REPLACEMENTS_BY_TAG.iteritems():
         exp = '//%s[@%s]' % (tag, consts.RESERVED_XML_TYPE)
         matches = tree.xpath(exp)
         for m in matches:
-            helpers.replaceElement(m, replacements)
+            replaceElement(m, replacements)
 
     annotateWithTypes(tree)
