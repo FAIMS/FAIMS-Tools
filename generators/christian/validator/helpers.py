@@ -290,7 +290,7 @@ def isValidLink(root, link, linkType):
         result &= '/' != link[ 0]
         result &= '/' != link[-1]
         return result
-    elif linkType == 'tabgroup':
+    elif linkType in ('tabgroup', 'tab group'):
         result  = True
         try:
             result &= bool(root.xpath('/module/' + link))
@@ -462,8 +462,8 @@ def getPath(node):
     else:
         return getPath(node.getparent()) + [node.tag]
 
-def getPathString(node):
-    return '/'.join(getPath(node))
+def getPathString(node, sep='/'):
+    return sep.join(getPath(node))
 
 def nodeHash(node, hashLen=10):
     path = getPathString(node)

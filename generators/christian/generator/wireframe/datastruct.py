@@ -66,15 +66,18 @@ class GraphModule(object):
 
             # Determine `nodeFrom` and `nodeTo`
             nodeFrom = n; parFrom = n.getparent()
-            if   helpers.isValidLink(n, n.attrib[attrib], 'tab'):
-                nodeTo = n.xpath('/module/%s' % n.attrib[attrib])[0]
-            else:
-                nodeTo = n.xpath('/module/%s/*[1]' % n.attrib[attrib])[0]
+            if helpers.isValidLink(n, n.attrib[attrib], 'tab group'):
+                exp     = '/module/%s/*[@%s="%s"][1]'
+            if helpers.isValidLink(n, n.attrib[attrib], 'tab'):
+                exp     = '/module/%s[@%s="%s"]'
+            exp    %= n.attrib[attrib], consts.RESERVED_XML_TYPE, 'tab'
+            matches = n.xpath(exp)
+            nodeTo  = matches[0]
 
             # Determine `idFrom` and `idTo`
             idFrom  = '%s:%s'
-            idFrom %= (GraphTab.nodeId(parFrom), GuiBlock.nodeId(nodeFrom))
-            idTo    =  GraphTab.nodeId(nodeTo )
+            idFrom %= (GraphTab.nodeIdElems(parFrom), GuiBlock.nodeId(nodeFrom))
+            idTo    =  GraphTab.nodeIdLabel(nodeTo )
 
             # Make the link
             link = '%s -> %s' % (idFrom, idTo)
@@ -152,8 +155,12 @@ class GraphTab(object):
         self.guiBlocks = self.getGuiBlocks(node)
 
     @classmethod
-    def nodeId(cls, node):
+    def nodeIdLabel(cls, node):
         return "%s%s" % (cls.prefix_label, helpers.nodeHash(node))
+
+    @classmethod
+    def nodeIdElems(cls, node):
+        return "%s%s" % (cls.prefix_elems, helpers.nodeHash(node))
 
     def getGuiBlocks(self, node):
         matches  = getUiNodes(node, 'GUI/data element')
@@ -225,8 +232,8 @@ class GuiBlock(object):
         raise ValueError(msg)
 
     def getElementBlock(self, node):
-        guiBlock  = '\n\t\t\t\t\t<TR><TD><IMG PORT="%s%s" SRC="%s.svg"/></TD></TR>'
-        guiBlock %= GuiBlock.prefix, helpers.nodeHash(node), node.tag
+        guiBlock  = '\n\t\t\t\t\t<TR><TD PORT="%s%s"><IMG SRC="%s.svg"/></TD></TR>'
+        guiBlock %= GuiBlock.prefix, helpers.nodeHash(node), helpers.getPathString(node, '_')
         return guiBlock
 
     def getColsBlock(self, node):
@@ -261,8 +268,8 @@ class GuiBlock(object):
                 if   elm == None:
                     tdElms += '\n\t\t\t\t\t\t<TD></TD>'
                 else:
-                    tdElms += '\n\t\t\t\t\t\t<TD><IMG PORT="%s%s" SRC="%s.svg"></IMG></TD>'
-                    tdElms %= (GuiBlock.prefix, helpers.nodeHash(elm), elm.tag)
+                    tdElms += '\n\t\t\t\t\t\t<TD PORT="%s%s"><IMG SRC="%s.svg"></IMG></TD>'
+                    tdElms %= GuiBlock.prefix, helpers.nodeHash(elm), helpers.getPathString(elm, '_')
 
             guiBlock += '\n\t\t\t\t\t<TR>'
             guiBlock += tdElms
