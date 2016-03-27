@@ -31,24 +31,19 @@ class GraphModule(object):
         self.topMatter += '\n\t];'
         self.topMatter += '\n'
 
-        self.tabGroups = []
-        self.links     = []
+        self.tabGroups = self.getTabGroups(node)
+        self.links     = self.getLinks    (node)
 
-        self.addTabGroups(node)
-        self.addLinks    (node)
+    def getTabGroups(self, node):
+        return [GraphTabGroup(n) for n in getUiNodes(node, 'tab group')]
 
-    def addTabGroups(self, node):
-        matches = getUiNodes(node, 'tab group')
-        for m in matches:
-            graphTabGroup = GraphTabGroup(m)
-            self.tabGroups.append(graphTabGroup)
+    def getLinks(self, node):
+        links  = self.getTabLabelLinks     (node)
+        links += self.getUserSpecifiedLinks(node)
+        return links
 
-    def addLinks(self, node):
-        self.addTabLabelLinks     (node)
-        self.addUserSpecifiedLinks(node)
-
-    def addTabLabelLinks(self, node):
-        links = []
+    def getTabLabelLinks(self, node):
+        links = ['/* Tab label links */']
 
         tabGroups = getUiNodes(node, 'tab group')
         for tabGroup in tabGroups:
@@ -59,11 +54,10 @@ class GraphModule(object):
                 link = '%s -> %s' % (idFrom, idTo)
                 links.append(link)
 
-        self.links.append('/* Tab label links */')
-        self.links += links
+        return links
 
-    def addUserSpecifiedLinks(self, node):
-        links = []
+    def getUserSpecifiedLinks(self, node):
+        links = ['/* User-specified links */']
 
         for n in node.xpath('//*[@l or @lc]'):
             # Does `n` have an 'l' attribute, or an 'lc' attribute?
@@ -86,15 +80,14 @@ class GraphModule(object):
             link = '%s -> %s' % (idFrom, idTo)
             links.append(link)
 
-        self.links.append('/* User-specified links */')
-        self.links += links
+        return links
 
     def toString(self):
-        tabGroups = ''
-        links     = ''
-        for tabGroup in self.tabGroups: tabGroups += tabGroup.toString()
-        for link     in self.links:     links     += '\n\t' + link
-        links += '\n'
+        tabGroups = [tabGroup.toString() for tabGroup in self.tabGroups]
+        tabGroups = ''.join(tabGroups)
+
+        links = ['\n\t' + link for link in self.links] + ['\n']
+        links = ''.join(links)
 
         out  = 'digraph {'
         out += self.topMatter
@@ -117,19 +110,14 @@ class GraphTabGroup(object):
         self.topMatter += '\n\t\tbgcolor="lightblue"'
         self.topMatter += '\n'
 
-        self.tabs = []
-
-        self.addTabs(node)
+        self.tabs = self.getTabs(node)
 
     @classmethod
     def nodeId(cls, node):
         return "%s%s" % (GraphTabGroup.prefix, helpers.nodeHash(node))
 
-    def addTabs(self, node):
-        matches = getUiNodes(node, 'tab')
-        for m in matches:
-            graphTab = GraphTab(m)
-            self.tabs.append(graphTab)
+    def getTabs(self, node):
+        return [GraphTab(n) for n in getUiNodes(node, 'tab')]
 
     def toString(self):
         tabs = ''
@@ -161,21 +149,17 @@ class GraphTab(object):
         self.topMatter += '\n\t\t\tbgcolor="white"'
         self.topMatter += '\n'
 
-        self.guiBlocks = []
-
-        self.addGuiBlocks(node)
+        self.guiBlocks = self.getGuiBlocks(node)
 
     @classmethod
     def nodeId(cls, node):
         return "%s%s" % (GraphTab.prefix_label, helpers.nodeHash(node))
 
-    def addGuiBlocks(self, node):
+    def getGuiBlocks(self, node):
         matches  = getUiNodes(node, 'GUI/data element')
         matches += getUiNodes(node, '<cols>')
         matches  = sorted(matches, key=lambda e: e.getparent().index(e))
-        for m in matches:
-            guiBlock = GuiBlock(m)
-            self.guiBlocks.append(guiBlock)
+        return [GuiBlock(n) for n in matches]
 
     def getTabBarStructString(self, hasPrecedingTab, hasFollowingTab):
         out  = '\n\t\t\t%s%s [' % (GraphTab.prefix_label, self.name)
@@ -196,9 +180,8 @@ class GraphTab(object):
         if not self.guiBlocks:
             return ''
 
-        guiBlocks = ''
-        for guiBlock in self.guiBlocks:
-            guiBlocks += guiBlock.toString()
+        guiBlocks = [guiBlock.toString() for guiBlock in self.guiBlocks]
+        guiBlocks = ''.join(guiBlocks)
 
         out  = '\n\t\t\t%s%s [' % (GraphTab.prefix_elems, self.name)
         out += '\n\t\t\tlabel=<'
@@ -226,29 +209,27 @@ class GuiBlock(object):
     prefix = '_'
 
     def __init__(self, node):
-        self.block = ''
-
-        self.addBlock(node)
+        self.guiBlock = self.getBlock(node)
 
     @classmethod
     def nodeId(cls, node):
         return "%s%s" % (GuiBlock.prefix, helpers.nodeHash(node))
 
-    def addBlock(self, node):
-        if   node.attrib[consts.RESERVED_XML_TYPE] == 'GUI/data element':
-            self.addElement(node)
-        elif node.attrib[consts.RESERVED_XML_TYPE] == '<cols>':
-            self.addCols(node)
-        else:
-            msg  = 'An unexpected %s value was encountered'
-            msg %= consts.RESERVED_XML_TYPE
-            raise ValueError(msg)
+    def getBlock(self, node):
+        if node.attrib[consts.RESERVED_XML_TYPE] == 'GUI/data element':
+            return self.getElementBlock(node)
+        if node.attrib[consts.RESERVED_XML_TYPE] == '<cols>':
+            return self.getColsBlock(node)
+        msg  = 'An unexpected %s value was encountered'
+        msg %= consts.RESERVED_XML_TYPE
+        raise ValueError(msg)
 
-    def addElement(self, node):
-        self.block  = '\n\t\t\t\t\t<TR><TD><IMG PORT="%s%s" SRC="%s.svg"/></TD></TR>'
-        self.block %= GuiBlock.prefix, helpers.nodeHash(node), node.tag
+    def getElementBlock(self, node):
+        guiBlock  = '\n\t\t\t\t\t<TR><TD><IMG PORT="%s%s" SRC="%s.svg"/></TD></TR>'
+        guiBlock %= GuiBlock.prefix, helpers.nodeHash(node), node.tag
+        return guiBlock
 
-    def addCols(self, node):
+    def getColsBlock(self, node):
         # What we're about to do will probably modify `node` if we don't copy it
         node = copy.deepcopy(node)
 
@@ -273,7 +254,7 @@ class GuiBlock(object):
                 table[j][i] = elm
 
         # TRANSFORMATION 2: Convert `table` to markup code.
-        self.block = ''
+        guiBlock = ''
         for row in table:
             tdElms = ''
             for elm in row:
@@ -283,12 +264,14 @@ class GuiBlock(object):
                     tdElms += '\n\t\t\t\t\t\t<TD><IMG PORT="%s%s" SRC="%s.svg"></IMG></TD>'
                     tdElms %= (GuiBlock.prefix, helpers.nodeHash(elm), elm.tag)
 
-            self.block += '\n\t\t\t\t\t<TR>'
-            self.block += tdElms
-            self.block += '\n\t\t\t\t\t</TR>'
+            guiBlock += '\n\t\t\t\t\t<TR>'
+            guiBlock += tdElms
+            guiBlock += '\n\t\t\t\t\t</TR>'
+
+        return guiBlock
 
     def toString(self):
-        return self.block
+        return self.guiBlock
 
 ################################################################################
 #                                  PARSE XML                                   #
