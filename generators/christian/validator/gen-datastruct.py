@@ -114,7 +114,7 @@ class GraphTabGroup(object):
 
     @classmethod
     def nodeId(cls, node):
-        return "%s%s" % (GraphTabGroup.prefix, helpers.nodeHash(node))
+        return "%s%s" % (cls.prefix, helpers.nodeHash(node))
 
     def getTabs(self, node):
         return [GraphTab(n) for n in getUiNodes(node, 'tab')]
@@ -153,7 +153,7 @@ class GraphTab(object):
 
     @classmethod
     def nodeId(cls, node):
-        return "%s%s" % (GraphTab.prefix_label, helpers.nodeHash(node))
+        return "%s%s" % (cls.prefix_label, helpers.nodeHash(node))
 
     def getGuiBlocks(self, node):
         matches  = getUiNodes(node, 'GUI/data element')
@@ -213,7 +213,7 @@ class GuiBlock(object):
 
     @classmethod
     def nodeId(cls, node):
-        return "%s%s" % (GuiBlock.prefix, helpers.nodeHash(node))
+        return "%s%s" % (cls.prefix, helpers.nodeHash(node))
 
     def getBlock(self, node):
         if node.attrib[consts.RESERVED_XML_TYPE] == 'GUI/data element':
