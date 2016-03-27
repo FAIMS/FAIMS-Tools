@@ -55,6 +55,8 @@
     </Test>
   </Test>
 
+  pos tags should only contain integers
+
   Mutually exclusive flags:
     autonum      | 
     hidden       | nodata

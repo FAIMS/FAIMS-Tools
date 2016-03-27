@@ -7,7 +7,7 @@
                 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                 xmlns:fn="http://www.w3.org/2005/xpath-functions"                
                 version="2.0">
-  <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
+  <xsl:output method="text" indent="yes" omit-xml-declaration="yes"/>
 
 
 
@@ -15,9 +15,8 @@
 
 
 <xsl:template match="/">
-rmdir -rf wireframeImages/
-mkdir -p wireframeImages
-
+<xsl:text>#!/bin/bash</xsl:text>
+<xsl:text>&#xa;&#xa;</xsl:text>
 <xsl:for-each select="//*[@ref]">
 <xsl:variable name="label">
 <xsl:for-each select="child::*">
@@ -31,7 +30,7 @@ mkdir -p wireframeImages
 <xsl:variable name="arch16n">
   <xsl:choose>
     <xsl:when test="contains($label, '{')">
-      <xsl:value-of select="document('../wireframe/arch16n.xml')/arch16ns/arch16n[@k=$label]"/>
+      <xsl:value-of select="document('../../wireframe/arch16n.xml')/arch16ns/arch16n[@k=$label]"/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="$label"/>
@@ -105,13 +104,36 @@ mkdir -p wireframeImages
 
 
   <xsl:if test="name() = 'input' or name() = 'select1' or name() = 'select' or name() = 'trigger' ">
-  ./makeElement.sh <xsl:value-of select="$elementName"/> "<xsl:value-of select="$arch16n" />" <xsl:value-of select="$elementType"/><xsl:text> </xsl:text><xsl:value-of select="$cols"/><xsl:text> </xsl:text><xsl:value-of select="$annotation"/><xsl:text> </xsl:text><xsl:value-of select="$certainty"/><xsl:text> </xsl:text><xsl:value-of select="$info"/><xsl:text> </xsl:text><xsl:value-of select="$required"/><xsl:text> </xsl:text><xsl:value-of select="$readonly"/> wireframeImages/
+    <xsl:text>./makeElement.sh </xsl:text>
+    <xsl:value-of select="$elementName"/>
+    <xsl:text> "</xsl:text>
+    <xsl:value-of select="$arch16n" />
+    <xsl:text>" </xsl:text>
+    <xsl:value-of select="$elementType"/>
+    <xsl:text> </xsl:text>
+    <xsl:value-of select="$cols"/>
+    <xsl:text> </xsl:text>
+    <xsl:value-of select="$annotation"/>
+    <xsl:text> </xsl:text>
+    <xsl:value-of select="$certainty"/>
+    <xsl:text> </xsl:text>
+    <xsl:value-of select="$info"/>
+    <xsl:text> </xsl:text>
+    <xsl:value-of select="$required"/>
+    <xsl:text> </xsl:text>
+    <xsl:value-of select="$readonly"/>
+    <xsl:text> .</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
   </xsl:if>
 
 
 
 
 </xsl:for-each>
+dot -Tsvg datastruct.gv &gt; wireframe.svg
+#rm *.xml
+#rm *.datastruct.gv
+#rm *.wireframeElements.sh
 
 </xsl:template>
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ..
+cd ../../
 
 numPassed=0
 numTests=0
@@ -8,9 +8,9 @@ failures=( )
 
 if [ -z $1 ]
 then
-    inputs=$(find tests-generator/in/ -maxdepth 1 -name "*.xml" | sort)
+    inputs=$(find tests/generator/in/ -maxdepth 1 -name "*.xml" | sort)
 else
-    inputs="tests-generator/$1"
+    inputs="tests/generator/$1"
 fi
 
 for input in $inputs
@@ -20,17 +20,17 @@ do
         continue
     fi
 
-    filename=$(basename "$input")  # tests-generator/in/1.xml -> 1.xml
+    filename=$(basename "$input")  # tests/generator/in/1.xml -> 1.xml
     noextension="${filename%.*}"   # 1.xml -> 1
     subject=$( grep "@TEST:" "$input" | sed -rn 's/^\s*<!--\s*@TEST:\s*(.*[^ ])\s*-->\s*$/\1/p' )
     didPass=1
     echo "Running $filename - \"$subject\"..."
 
     ./generate.sh "$input" >/dev/null
-    for pathExpected_name_ext in $(find tests-generator/out/$noextension/ -type f | sort)
+    for pathExpected_name_ext in $(find tests/generator/out/$noextension/ -type f | sort)
     do
         name_ext=$(basename "$pathExpected_name_ext")
-        pathActual_name_ext="tests-generator/in/module/$name_ext"
+        pathActual_name_ext="tests/generator/in/module/$name_ext"
         name="${name_ext%.*}"
         ext="${name_ext##*.}"
 
@@ -70,8 +70,8 @@ do
     ((numTests++))
 done
 
-rm -rf tests-generator/in/module
-rm -rf tests-generator/in/wireframe
+rm -rf tests/generator/in/module
+rm -rf tests/generator/in/wireframe
 
 echo ""
 echo "TEST SUMMARY:"

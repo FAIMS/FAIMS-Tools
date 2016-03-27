@@ -34,15 +34,23 @@ cd - >/dev/null
 mkdir -p "$modulePath/module"
 mkdir -p "$modulePath/wireframe"
 
-$proc1 "$thisScriptPath/generator/arch16n.xsl"     $module | sort | uniq >"$modulePath/module/english.0.properties"
-$proc1 "$thisScriptPath/generator/data-schema.xsl" $module               >"$modulePath/module/data_schema.xml"
-$proc1 "$thisScriptPath/generator/ui-logic.xsl"    $module               >"$modulePath/module/ui_logic.bsh"
-$proc1 "$thisScriptPath/generator/ui-schema.xsl"   $module               >"$modulePath/module/ui_schema.xml"
-$proc1 "$thisScriptPath/generator/ui-styling.xsl"  $module               >"$modulePath/module/ui_styling.css"
-$proc1 "$thisScriptPath/generator/validation.xsl"  $module               >"$modulePath/module/validation.xml"
+$proc1 "$thisScriptPath/generator/module/arch16n.xsl"     $module | sort | uniq >"$modulePath/module/english.0.properties"
+$proc1 "$thisScriptPath/generator/module/data-schema.xsl" $module               >"$modulePath/module/data_schema.xml"
+$proc1 "$thisScriptPath/generator/module/ui-logic.xsl"    $module               >"$modulePath/module/ui_logic.bsh"
+$proc1 "$thisScriptPath/generator/module/ui-schema.xsl"   $module               >"$modulePath/module/ui_schema.xml"
+$proc1 "$thisScriptPath/generator/module/ui-styling.xsl"  $module               >"$modulePath/module/ui_styling.css"
+$proc1 "$thisScriptPath/generator/module/validation.xsl"  $module               >"$modulePath/module/validation.xml"
 
-gawk     -f "$thisScriptPath/generator/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
-$proc2 -xsl:"$thisScriptPath/generator/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
+export PYTHONPATH="$thisScriptPath/validator" #TODO: This isn't a real great idea, apparently
+gawk     -f "$thisScriptPath/generator/wireframe/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
+$proc2 -xsl:"$thisScriptPath/generator/wireframe/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
+python      "$thisScriptPath/generator/wireframe/datastruct.py"              $module                                  >"$modulePath/wireframe/datastruct.gv"
+cp          "$thisScriptPath/generator/wireframe/makeElement.sh"            "$modulePath/wireframe"
+cd "$modulePath/wireframe/"
+chmod +x wireframeElements.sh
+./wireframeElements.sh
+cd -
+
 
 ####################### HANDLE PRE-PROCESSING DIRECTIVE ########################
 # This is the clean up step mentioned near the start of this script            #
