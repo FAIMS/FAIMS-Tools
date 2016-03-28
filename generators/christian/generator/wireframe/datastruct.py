@@ -75,9 +75,8 @@ class GraphModule(object):
             nodeTo  = matches[0]
 
             # Determine `idFrom` and `idTo`
-            idFrom  = '%s:%s'
-            idFrom %= (GraphTab.nodeIdElems(parFrom), GuiBlock.nodeId(nodeFrom))
-            idTo    =  GraphTab.nodeIdLabel(nodeTo )
+            idFrom = GuiBlock.nodeId(nodeFrom)
+            idTo   = GraphTab.nodeId(nodeTo  )
 
             # Make the link
             link = '%s -> %s' % (idFrom, idTo)
@@ -106,10 +105,9 @@ class GraphTabGroup(object):
     prefix = 'cluster_'
 
     def __init__(self, node):
-        self.name  = helpers.nodeHash(node)
-        self.label = helpers.getLabel(node)
+        self.node = node
 
-        self.topMatter  = '\n\t\tlabel="%s"' % self.label
+        self.topMatter  = '\n\t\tlabel="%s"' % helpers.getLabel(node)
         self.topMatter += '\n\t\tbgcolor="lightblue"'
         self.topMatter += '\n'
 
@@ -129,7 +127,7 @@ class GraphTabGroup(object):
             hasFollowingTab = i < len(self.tabs) - 1
             tabs += tab.toString(hasPrecedingTab, hasFollowingTab)
 
-        out  = '\n\tsubgraph %s%s {' % (GraphTabGroup.prefix, self.name)
+        out  = '\n\tsubgraph %s {' % self.nodeId(self.node)
         out += self.topMatter
         out += tabs
         out += '\n\t}'
@@ -142,10 +140,10 @@ class GraphTabGroup(object):
 class GraphTab(object):
     prefix       = 'cluster_'
     prefix_label = 'struct_Label_'
-    prefix_elems = 'struct_Elems_'
 
     def __init__(self, node):
-        self.name  = helpers.nodeHash(node)
+        self.node  = node
+
         self.label = helpers.getLabel(node)
 
         self.topMatter  = '\n\t\t\tlabel=""'
@@ -155,12 +153,16 @@ class GraphTab(object):
         self.guiBlocks = self.getGuiBlocks(node)
 
     @classmethod
+    def nodeId(cls, node):
+        return cls.nodeIdLabel(node)
+
+    @classmethod
     def nodeIdLabel(cls, node):
         return "%s%s" % (cls.prefix_label, helpers.nodeHash(node))
 
     @classmethod
-    def nodeIdElems(cls, node):
-        return "%s%s" % (cls.prefix_elems, helpers.nodeHash(node))
+    def nodeIdElem (cls, node):
+        return "%s%s" % (cls.prefix,       helpers.nodeHash(node))
 
     def getGuiBlocks(self, node):
         matches  = getUiNodes(node, 'GUI/data element')
@@ -169,7 +171,7 @@ class GraphTab(object):
         return [GuiBlock(n) for n in matches]
 
     def getTabBarStructString(self, hasPrecedingTab, hasFollowingTab):
-        out  = '\n\t\t\t%s%s [' % (GraphTab.prefix_label, self.name)
+        out  = '\n\t\t\t%s [' % self.nodeIdLabel(self.node)
         out += '\n\t\t\tlabel=<'
         out += '\n\t\t\t\t<TABLE BORDER="1" CELLBORDER="3" CELLSPACING="0" CELLPADDING="5" WIDTH="150" HEIGHT="10">'
         out += '\n\t\t\t\t\t<TR>'
@@ -184,24 +186,12 @@ class GraphTab(object):
         return out
 
     def getGuiBlocksString(self):
-        if not self.guiBlocks:
-            return ''
-
         guiBlocks = [guiBlock.toString() for guiBlock in self.guiBlocks]
         guiBlocks = ''.join(guiBlocks)
-
-        out  = '\n\t\t\t%s%s [' % (GraphTab.prefix_elems, self.name)
-        out += '\n\t\t\tlabel=<'
-        out += '\n\t\t\t\t<TABLE BORDER="0" CELLSPACING="0" WIDTH="150">'
-        out += guiBlocks
-        out += '\n\t\t\t\t</TABLE>'
-        out += '\n\t\t\t>];'
-        out += '\n'
-
-        return out
+        return guiBlocks
 
     def toString(self, hasPrecedingTab=False, hasFollowingTab=False):
-        out  = '\n\t\tsubgraph %s%s {' % (GraphTab.prefix, self.name)
+        out  = '\n\t\tsubgraph %s {' % self.nodeIdElem(self.node)
         out += self.topMatter
         out += self.getTabBarStructString(hasPrecedingTab, hasFollowingTab)
         out += self.getGuiBlocksString()
@@ -213,32 +203,55 @@ class GraphTab(object):
 ################################################################################
 
 class GuiBlock(object):
-    prefix = '_'
+    prefix_elem  = '_'
+    prefix_block = 'struct_Elems_'
 
     def __init__(self, node):
         self.guiBlock = self.getBlock(node)
 
     @classmethod
     def nodeId(cls, node):
-        return "%s%s" % (cls.prefix, helpers.nodeHash(node))
+        return '%s:%s' % (cls.nodeIdBlock(node), cls.nodeIdElem(node))
+
+    @classmethod
+    def nodeIdBlock(cls, node):
+        exp     = './descendant-or-self::*[@%s="%s"][1]'
+        exp    %= consts.RESERVED_XML_TYPE, 'GUI/data element'
+        matches = node.xpath(exp)
+        match   = matches[0]
+        return "%s%s" % (cls.prefix_block, helpers.nodeHash(match))
+
+    @classmethod
+    def nodeIdElem (cls, node):
+        return "%s%s" % (cls.prefix_elem , helpers.nodeHash(node))
 
     def getBlock(self, node):
+        head  = '\n\t\t\t%s [' % GuiBlock.nodeIdBlock(node)
+        head += '\n\t\t\tlabel=<'
+        head += '\n\t\t\t\t<TABLE BORDER="0" CELLSPACING="0" WIDTH="150">'
+
+        tail  = '\n\t\t\t\t</TABLE>'
+        tail += '\n\t\t\t>];'
+        tail += '\n'
+
         if node.attrib[consts.RESERVED_XML_TYPE] == 'GUI/data element':
-            return self.getElementBlock(node)
+            return head + self.getElementBlock(node) + tail
         if node.attrib[consts.RESERVED_XML_TYPE] == '<cols>':
-            return self.getColsBlock(node)
+            return head + self.getColsBlock   (node) + tail
+
         msg  = 'An unexpected %s value was encountered'
         msg %= consts.RESERVED_XML_TYPE
         raise ValueError(msg)
 
     def getElementBlock(self, node):
-        guiBlock  = '\n\t\t\t\t\t<TR><TD PORT="%s%s"><IMG SRC="%s.svg"/></TD></TR>'
-        guiBlock %= GuiBlock.prefix, helpers.nodeHash(node), helpers.getPathString(node, '_')
+        guiBlock  = '\n\t\t\t\t\t<TR><TD PORT="%s"><IMG SRC="%s.svg"/></TD></TR>'
+        guiBlock %= GuiBlock.nodeIdElem(node), helpers.getPathString(node, '_')
         return guiBlock
 
     def getColsBlock(self, node):
-        # What we're about to do will probably modify `node` if we don't copy it
-        node = copy.deepcopy(node)
+        # What we're about to do will probably modify `node` if we don't copy
+        # it.
+        nodeCopy = copy.deepcopy(node)
 
         # NORMALISATION: Take GUI/data elements which are direct descendants of
         # <cols> and put them in <col> tags.
@@ -268,13 +281,14 @@ class GuiBlock(object):
                 if   elm == None:
                     tdElms += '\n\t\t\t\t\t\t<TD></TD>'
                 else:
-                    tdElms += '\n\t\t\t\t\t\t<TD PORT="%s%s"><IMG SRC="%s.svg"></IMG></TD>'
-                    tdElms %= GuiBlock.prefix, helpers.nodeHash(elm), helpers.getPathString(elm, '_')
+                    tdElms += '\n\t\t\t\t\t\t<TD PORT="%s"><IMG SRC="%s.svg"></IMG></TD>'
+                    tdElms %= GuiBlock.nodeIdElem(node), helpers.getPathString(elm, '_')
 
             guiBlock += '\n\t\t\t\t\t<TR>'
             guiBlock += tdElms
             guiBlock += '\n\t\t\t\t\t</TR>'
 
+        node[:] = nodeCopy
         return guiBlock
 
     def toString(self):

@@ -546,7 +546,9 @@ def expandCompositeElements(tree):
         tagMatch = tagMatches[0]
 
         cond        = lambda e: isFlagged(e, 'autonum')
-        flagMatches = tree.xpath('//*')
+        exp         = './/*[@%s="%s"]'
+        exp        %= consts.RESERVED_XML_TYPE, 'GUI/data element'
+        flagMatches = tree.xpath(exp)
         flagMatches = filter(cond, flagMatches)
 
         replacements = tables.REPLACEMENTS_BY_TAG['autonum'] * len(flagMatches)

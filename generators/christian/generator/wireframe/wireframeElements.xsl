@@ -57,8 +57,8 @@
     </xsl:when>
     <xsl:when test="name() = 'select'">
       <xsl:choose>
-        <xsl:when test="@type='camera'">camera</xsl:when>
-        <xsl:when test="@type='video'">video</xsl:when>
+        <xsl:when test="@type='camera'">file</xsl:when>
+        <xsl:when test="@type='video'">file</xsl:when>
         <xsl:when test="@type='file'">file</xsl:when>
         <xsl:otherwise>checkbox</xsl:otherwise>
       </xsl:choose>

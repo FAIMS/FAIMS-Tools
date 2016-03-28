@@ -25,8 +25,8 @@ tmp=$(mktemp -d)
 # required 	   Turns label red, TODO: write validation.xml, deploy validation tab, blankchecker logic
 # noannotation Equivalent to faims_annotation="false"
 # nocertainty  Equivalent to faims_certainty="false"
-# onlydata     Only allows code to be generated for the data schema
-# onlyui       Only allows code to be generated for the UI schema
+# noui         Only allows code to be generated for the data schema
+# nodata       Only allows code to be generated for the UI schema
 # readonly     Equivalent to faims_read_only="true"
 # decimal
 
