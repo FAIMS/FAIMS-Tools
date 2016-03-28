@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from   xml.sax.saxutils import escape
 from   lxml import etree
 import consts
 import copy
@@ -105,9 +106,12 @@ class GraphTabGroup(object):
     prefix = 'cluster_'
 
     def __init__(self, node):
-        self.node = node
+        self.node  = node
 
-        self.topMatter  = '\n\t\tlabel="%s"' % helpers.getLabel(node)
+        self.label = helpers.getLabel(node)
+        self.label = escape(self.label)
+
+        self.topMatter  = '\n\t\tlabel="%s"' % self.label
         self.topMatter += '\n\t\tbgcolor="lightblue"'
         self.topMatter += '\n'
 
@@ -145,6 +149,7 @@ class GraphTab(object):
         self.node  = node
 
         self.label = helpers.getLabel(node)
+        self.label = escape(self.label)
 
         self.topMatter  = '\n\t\t\tlabel=""'
         self.topMatter += '\n\t\t\tbgcolor="white"'
