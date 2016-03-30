@@ -158,7 +158,8 @@ REPLACEMENTS_BY_TAG = {
                            <Northing     t="input" f="readonly"/> \
                            <Easting      t="input" f="readonly"/> \
                          </col>                                   \
-                       </cols>',
+                       </cols>                                    \
+                       <Take_From_GPS    t="button"/>',
         'search'    : '<Search f="readonly nodata">    \
                          <cols>                        \
                            <Search_Term t="input"/>    \
