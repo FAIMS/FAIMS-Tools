@@ -1316,10 +1316,14 @@ search(){
 <xsl:text>
 /* Takes the current point using gps. */
 takePoint(String tabgroup) {
+</xsl:text>
+    <xsl:call-template name="take-from-gps-mappings"/>
+<xsl:text>
   String archEntType = tabgroup.replaceAll("_", " ");
   String currentUuid = getUuid(tabgroup);
   if (isNull(currentUuid)){
     showToast("Please enter data first and let a save occur.");
+    return;
   }
 
   Object position = getGPSPosition();
@@ -1338,10 +1342,10 @@ takePoint(String tabgroup) {
   ArrayList geolist = new ArrayList();
   geolist.add(samplePoint);
 
-  attributes = createAttributeList();
-  attributes.add(createEntityAttribute("Latitude", "Accuracy: "+getGPSEstimatedAccuracy(), null, null, null));
+  String accuracy = "Accuracy: " + getGPSEstimatedAccuracy();
+  setFieldAnnotation(tabgroupToTabRef.get(tabgroup) + "Latitude", accuracy);
 
-  saveArchEnt(currentUuid, archEntType, geolist, attributes, new SaveCallback() {
+  saveArchEnt(currentUuid, archEntType, geolist, null, new SaveCallback() {
     onSave(uuid, newRecord) {
       print("[takePoint()] Added geometry: " + geolist);
       fillInGPS(tabgroup);
