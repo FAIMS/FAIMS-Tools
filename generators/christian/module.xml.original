@@ -1,14 +1,24 @@
 <?xml version="1.0" ?>
-<module suppressWarnings="false">
+<module>
 
-<User f="onlyui">
+<User f="nodata">
   <User>
-    <Select_User t="dropdown" f="user"/>
-    <Login t="button" l="Control"/>
+    <!--<Select_User t="dropdown" f="user"/>-->
+    <!--<User>-->
+      <Select_User t="list" f="user">
+        <desc>Yes!</desc>
+      </Select_User>
+    <!--</User>-->
+    <Login t="button" l="Control">
+      <desc>wow</desc>
+    </Login>
+    <Yes t="list">
+      <desc>wow</desc>
+    </Yes>
   </User>
 </User>
 
-<Control f="onlyui">
+<Control f="nodata">
   <Main>
     <Record_Interview t="button" l="Interview"/>
     <GPS_Diagnostics t="gpsdiag"/>
@@ -16,14 +26,46 @@
   <search>
     Records
   </search>
+  <search>
+    Records
+  </search>
+  <!--<Search>-->
+    <!--<This/>-->
+  <!--</Search>-->
 </Control>
+
+<Test>
+  <Test>
+    <Tech f="id"/>
+    <cols>
+      <col>
+        <Daybe_1/>
+        <Daybe_2/>
+      </col>
+      <col>
+        <Maybe_1/>
+        <Maybe_2/>
+        <Maybe_3/>
+      </col>
+      <col>
+        <Ceebe_1/>
+      </col>
+      <Nutha_1/>
+    </cols>
+    <Evening/>
+  </Test>
+</Test>
 
 <Interview>
   <Interview>
+    <!--<timestamp/>-->
+    <Timestamp/>
     <Title f="id notnull">
+      <str><pos>1</pos></str>
       <desc>This title should be a sensible title, unique to each item, briefly summarising the contents of the item, for example "Ilocano songs recorded in Burgos, Ilocos Sur, Philippines, 17 April 1993"</desc>
     </Title>
     <Description f="notnull">
+      <str><pos>0</pos></str>
       <desc>Description may include but is not limited to: an abstract, table of contents, reference to a graphical representation of content, or a free-text summary account of the content. [DCMT] Description may also offer an annotation, or a qualitative or evaluative comment about the resource, such as a statement about suitability for a particular application or context.</desc>
     </Description>
     <Private t="radio" f="notnull">
@@ -146,7 +188,14 @@
         <opt>Interviewer</opt>
         <opt>Editor</opt>
         <opt>Author</opt>
-        <opt>Translator</opt>
+        <opt p="asdf.jpg">
+          Translator
+          <desc>pls no</desc>
+          <opt>
+            I get the job   done
+            <desc>Laugh all you waaaaant to</desc>
+          </opt>
+        </opt>
         <opt>Researcher</opt>
         <opt>Annotator</opt>
         <opt>Participant</opt>

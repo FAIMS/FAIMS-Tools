@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 from   lxml import etree
 import helpers
@@ -45,6 +45,38 @@ def addProp(dataElement, target):
     vdr   .append(prm)
     prp   .append(vdr)
     target.append(prp)
+
+def getValidationSchema(node):
+    validationSchema = etree.Element('ValidationSchema')
+
+    exp     = './*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'tab group')
+    cond1   = lambda e: not helpers.isFlagged(e, 'nodata')
+    cond2   = lambda e: helpers.hasElementFlaggedWith(e, 'notnull')
+    matches = node.xpath(exp)
+    matches = filter(cond1, matches)
+    matches = filter(cond2, matches)
+
+    archaeologicalElements = [getArchaeologicalElement(m) for m in matches]
+    validationSchema.extend(archaeologicalElements)
+
+    return validationSchema
+
+def getArchaeologicalElement(node):
+    archaeologicalElement = etree.Element('ArchaeologicalElement')
+
+    exp     = './/*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+    cond    = lambda e: helpers.isFlagged(e, 'notnull')
+    matches = node.xpath(exp)
+    matches = filter(cond, matches)
+    matches = filter(helpers.isDataElement, matches)
+
+    properties = [getProperty(m) for m in matches]
+    archaeologicalElement.extend(properties)
+
+    return archaeologicalElement
+
+def getProperty(node):
+    return etree.Element('property')
 
 ################################################################################
 #                                  PARSE XML                                   #
