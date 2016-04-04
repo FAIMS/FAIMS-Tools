@@ -5,92 +5,10 @@ import hashlib
 import re
 import tables
 
-def isDataElement(guiDataElement):
-    if isFlagged(guiDataElement, 'nodata'):      return False
-    if isFlagged(guiDataElement, 'user'):        return False
-    if hasAttrib(guiDataElement, 'e'):           return False
-    if hasAttrib(guiDataElement, 'ec'):          return False
-    if guessType(guiDataElement) == 'button':    return False
-    if guessType(guiDataElement) == 'gpsdiag':   return False
-    if guessType(guiDataElement) == 'group':     return False
-    if guessType(guiDataElement) == 'map':       return False
-    if guessType(guiDataElement) == 'table':     return False
-    if guessType(guiDataElement) == 'viewfiles': return False
-    return True
-
-def getPropType(node):
-    if hasMeasureType(node): return 'measure'
-    if hasFileType   (node): return 'file'
-    if hasVocabType  (node): return 'vocab'
-
-    raise ValueError('An unexpected t value was encountered')
-
-def hasMeasureType(node):
-    measureTypes = (
-            'input',
-    )
-    return guessType(node) in measureTypes
-
-def hasFileType(node):
-    fileTypes    = (
-            'audio',
-            'camera',
-            'file',
-            'video',
-    )
-    return guessType(node) in fileTypes
-
-def hasVocabType(node):
-    vocabTypes   = (
-            'checkbox',
-            'dropdown',
-            'list',
-            'picture',
-            'radio',
-    )
-    return guessType(node) in vocabTypes
-
-################################################################################
-
-def appendNotNone(src, dst):
-    if src == None:
-        return
-    dst.append(src)
-
 def normaliseSpace(str):
     str = str.split()
     str = ' '.join(str)
     return str
-
-def parseXml(filename):
-    parser = etree.XMLParser(strip_cdata=False)
-    try:
-        tree = etree.parse(filename, parser)
-    except etree.XMLSyntaxError as e:
-        print e
-        exit()
-    tree = tree.getroot()
-    return tree
-
-def filterUnannotated(nodes):
-    cond = lambda e: isAnnotated(e)
-    return filter(cond, nodes)
-
-def isAnnotated(e):
-    try:
-        return e.attrib[consts.RESERVED_XML_TYPE] != ''
-    except:
-        pass
-    return False
-
-def deleteAttribFromTree(t, attrib):
-    if t == None:
-        return
-    if hasattr(t, 'attrib') and attrib in t.attrib:
-        del t.attrib[attrib]
-
-    for e in t:
-        deleteAttribFromTree(e, attrib)
 
 def annotateWithTypes(tree):
     for t in tables.TYPES:
@@ -136,57 +54,6 @@ def replaceElement(element, replacements, tag='__REPLACE__'):
 
     element.getparent().remove(element)
     return returnVal
-
-def isFlagged(element, flags, checkAncestors=True, attribName='f'):
-    if type(flags) is list:
-        return isFlaggedList(element, flags, checkAncestors, attribName)
-    else:
-        return isFlaggedStr (element, flags, checkAncestors, attribName)
-
-def isFlaggedList(element, flags, checkAncestors=True, attribName='f'):
-    for flag in flags:
-        if isFlaggedStr(element, flag, checkAncestors, attribName):
-            return True
-    return False
-
-def isFlaggedStr(element, flag, checkAncestors=True, attribName='f'):
-    # Base case 1: We've iterated through all the ancestors
-    if element is None:
-        return False
-    # Base case 2: The flag's been found in ancestor or self
-    try:
-        flags = element.attrib[attribName].split()
-        if flag in flags: return True
-    except:
-        pass
-
-    if checkAncestors:
-        return isFlagged(element.getparent(), flag, checkAncestors, attribName)
-
-def setSourceline(t, sourceline):
-    if t == None:
-        return
-
-    t.sourceline = sourceline
-    for e in t:
-        setSourceline(e, sourceline)
-
-def getNonLower(t):
-    nodes = [i for i in t if re.search('[^a-z]', i.tag)] # TODO: Might be failing due to comments
-    return nodes
-
-def normaliseAttributes(node):
-    # Don't normalise stuff in <rels>
-    if node.xpath('./ancestor-or-self::rels'):
-        return
-    # Do normalise everything else
-    for key, val in node.attrib.iteritems():
-        val = val.split()
-        val.sort()
-        node.attrib[key] = ' '.join(val)
-
-    for n in node:
-        normaliseAttributes(n)
 
 def wMsg(notice, nodes=None, expected=[]):
     notice = 'WARNING: ' + notice
@@ -362,25 +229,6 @@ def descChildNounPhrase(childDirectness , number):
     else:
         return descendantWithGrammaticalNumber(number)
 
-def guessType(node):
-    # Don't guess the type if it's already there
-    try:
-        return node.attrib['t']
-    except:
-        pass
-
-    # Okay, fine. Go ahead and give 'er a guess.
-    isUser = 'f' in node.attrib and 'user' in node.attrib['f'].split()
-    if isUser:
-        return 'list'
-    if node.xpath('opts') and     node.xpath('.//opt[@p]'):
-        return 'picture'
-    if node.xpath('opts') and not node.xpath('.//opt[@p]'):
-        return 'dropdown'
-    if 'ec' in node.attrib:
-        return 'list'
-    return 'input'
-
 def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaType):
     assert schemaType in ['UI', 'data']
 
@@ -426,52 +274,6 @@ def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaTy
 
     deleteAttribFromTree(elements, consts.RESERVED_IGNORE)
 
-def hasAttrib(e, a):
-    try:
-        if a in e.attrib:
-            return True
-    except:
-        return False
-
-def hasElementFlaggedWith(tabGroup, flag):
-    exp  = './/*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
-    cond = lambda e: isFlagged(e, flag)
-    matches = tabGroup.xpath(exp)
-    matches = filter(cond, matches)
-    return len(matches) > 0
-
-def hasElementFlaggedWithId(tabGroup):
-    return hasElementFlaggedWith(tabGroup, 'id')
-
-def getParentTabGroup(node):
-    exp = './ancestor::*[last()-1]'
-    matches = node.xpath(exp)
-    if matches:
-        return matches[0]
-    return None
-
-def getPath(node):
-    nodeTypes = ['GUI/data element', 'tab group', 'tab']
-
-    if node == None:
-        return []
-    if consts.RESERVED_XML_TYPE not in node.attrib:
-        return getPath(node.getparent()) + []
-    if node.attrib[consts.RESERVED_XML_TYPE] not in nodeTypes:
-        return getPath(node.getparent()) + []
-    else:
-        return getPath(node.getparent()) + [node.tag]
-
-def getPathString(node, sep='/'):
-    return sep.join(getPath(node))
-
-def nodeHash(node, hashLen=10):
-    path = getPathString(node)
-    hash = hashlib.sha256(path)
-    hash = hash.hexdigest()
-    hash = hash[:hashLen]
-    return hash
-
 def getRelName(node):
     if not hasAttrib(node, 'lc'):
         return None
@@ -487,46 +289,6 @@ def getRelName(node):
 
     relName = '%s - %s' % (parentName, childName)
     return relName
-
-def getLabelFromTag(node):
-    label = node.tag
-    label = label.replace('_', ' ')
-    label = normaliseSpace(label)
-    return label
-
-def getLabelFromText(node):
-    if node.text == None:  return ''
-    if node.text == 'opt': return ''
-
-    label = node.text
-    label = normaliseSpace(label)
-    return label
-
-def getArch16nVal(node):
-    if node.xpath('./ancestor-or-self::rels'): return ''
-    if isFlagged(node, 'nolabel'):             return ''
-
-    if node.tag == 'autonum':                  return ''
-    if node.tag == 'col':                      return ''
-    if node.tag == 'cols':                     return ''
-    if node.tag == 'desc':                     return ''
-    if node.tag == 'logic':                    return ''
-    if node.tag == 'module':                   return ''
-    if node.tag == 'opts':                     return ''
-
-    if node.tag == 'author':                   return 'Author'
-    if node.tag == 'search':                   return 'Search'
-    if node.tag == 'timestamp':                return 'Timestamp'
-
-    if getLabelFromText(node):
-        return getLabelFromText(node)
-    return getLabelFromTag(node)
-
-def getLabel(node):
-    return getArch16nVal(node)
-
-def getArch16nKey(node):
-    return getArch16nVal(node).replace(' ', '_')
 
 def expandCompositeElements(tree):
     # (1) REPLACE ELEMENTS HAVING A CERTAIN T ATTRIBUTE
