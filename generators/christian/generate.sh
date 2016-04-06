@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-set -e
-
 proc1="xsltproc"    # Lord, forgive me
 proc2="saxonb-xslt"
 
