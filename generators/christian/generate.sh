@@ -28,9 +28,8 @@ then
 fi
 cd - >/dev/null
 
-############################ PERFORM THE TRANSFORMS ############################
+############################### GENERATE MODULE ################################
 mkdir -p "$modulePath/module"
-mkdir -p "$modulePath/wireframe"
 
 $proc1 "$thisScriptPath/generator/module/arch16n.xsl"     $module | sort | uniq >"$modulePath/module/english.0.properties"
 $proc1 "$thisScriptPath/generator/module/data-schema.xsl" $module               >"$modulePath/module/data_schema.xml"
@@ -38,17 +37,6 @@ $proc1 "$thisScriptPath/generator/module/ui-logic.xsl"    $module               
 $proc1 "$thisScriptPath/generator/module/ui-schema.xsl"   $module               >"$modulePath/module/ui_schema.xml"
 $proc1 "$thisScriptPath/generator/module/ui-styling.xsl"  $module               >"$modulePath/module/ui_styling.css"
 $proc1 "$thisScriptPath/generator/module/validation.xsl"  $module               >"$modulePath/module/validation.xml"
-
-export PYTHONPATH="$thisScriptPath/validator" #TODO: This isn't a real great idea, apparently
-gawk     -f "$thisScriptPath/generator/wireframe/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
-$proc2 -xsl:"$thisScriptPath/generator/wireframe/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
-python      "$thisScriptPath/generator/wireframe/datastruct.py"              $module                                  >"$modulePath/wireframe/datastruct.gv"
-cp          "$thisScriptPath/generator/wireframe/makeElement.sh"            "$modulePath/wireframe"
-cd "$modulePath/wireframe/"
-chmod +x wireframeElements.sh
-./wireframeElements.sh
-cd -
-
 
 ####################### HANDLE PRE-PROCESSING DIRECTIVE ########################
 # This is the clean up step mentioned near the start of this script            #
@@ -70,4 +58,22 @@ then
     echo "  $cmd"
     eval $cmd
 fi
+cd - >/dev/null
+
+############################## GENERATE WIREFRAME ##############################
+mkdir -p "$modulePath/wireframe"
+
+export PYTHONPATH="$thisScriptPath/validator" #TODO: This isn't a real great idea, apparently
+
+cp          "$thisScriptPath/generator/wireframe/wireframeElements.xsl"     "$modulePath/wireframe"
+cp          "$thisScriptPath/generator/wireframe/makeElement.sh"            "$modulePath/wireframe"
+
+gawk     -f "$thisScriptPath/generator/wireframe/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
+python      "$thisScriptPath/generator/wireframe/datastruct.py"              $module                                  >"$modulePath/wireframe/datastruct.gv"
+
+cd "$modulePath/wireframe/" >/dev/null
+$proc2 -xsl:wireframeElements.xsl  -s:"../module/ui_schema.xml"        >wireframeElements.sh
+chmod +x wireframeElements.sh
+./wireframeElements.sh
+dot -Tsvg datastruct.gv > wireframe.svg
 cd - >/dev/null

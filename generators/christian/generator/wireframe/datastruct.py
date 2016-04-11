@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-from   lxml import etree
+from   lxml             import etree
+from   textwrap         import wrap
+from   xml.sax.saxutils import escape
 import consts
 import copy
 import helpers
@@ -21,6 +23,9 @@ class GraphModule(object):
         self.topMatter  = '\n\tgraph ['
         self.topMatter += '\n\t\trankdir="LR"'
         self.topMatter += '\n\t\tfontname="Roboto"'
+        self.topMatter += '\n\t\tsplines=ortho'
+        self.topMatter += '\n\t\toutputorder="nodesfirst"'
+        self.topMatter += '\n\t\tranksep=2'
         self.topMatter += '\n\t];'
         self.topMatter += '\n\tnode ['
         self.topMatter += '\n\t\tfontsize="12"'
@@ -38,23 +43,58 @@ class GraphModule(object):
         return [GraphTabGroup(n) for n in getUiNodes(node, 'tab group')]
 
     def getLinks(self, node):
-        links  = self.getTabLabelLinks     (node)
-        links += self.getUserSpecifiedLinks(node)
+        links  = []
+        links += self.getTabLabelLinks         (node)
+        links += self.getGraphConstrainingLinks(node)
+        links += self.getUserSpecifiedLinks    (node)
         return links
 
     def getTabLabelLinks(self, node):
-        links = ['/* Tab label links */']
+        links = ['/* Intra-tab, label-to-label links */']
 
-        tabGroups = getUiNodes(node, 'tab group')
-        for tabGroup in tabGroups:
-            tabs = getUiNodes(tabGroup, 'tab')
-            for i in range(len(tabs) - 1):
-                tabFrom = tabs[i  ]; idFrom = GraphTab.nodeId(tabFrom)
-                tabTo   = tabs[i+1]; idTo   = GraphTab.nodeId(tabTo  )
+        for tabGroup in self.tabGroups:
+            for i in range(len(tabGroup.tabs) - 1):
+                tabFrom = tabGroup.tabs[i  ]
+                tabTo   = tabGroup.tabs[i+1]
+
+                nodeFrom = tabFrom.node
+                nodeTo   = tabTo  .node
+
+                idFrom = GraphTab.nodeId(nodeFrom)
+                idTo   = GraphTab.nodeId(nodeTo  )
+
                 link = '%s -> %s' % (idFrom, idTo)
                 links.append(link)
 
         return links
+
+    def getGraphConstrainingLinks(self, node):
+        links = ['/* Graph-constraining links */']
+
+        for n in node.xpath('//*[@l or @lc]'):
+            # Does `n` have an 'l' attribute, or an 'lc' attribute?
+            if helpers.hasAttrib(n, 'l' ): attrib = 'l'
+            if helpers.hasAttrib(n, 'lc'): attrib = 'lc'
+
+            # Determine link in l or lc attribute
+            link = n.attrib[attrib]
+            link = link.split('/') # Ensure that this is a link to a tab group
+            link = link[0]         #
+
+            # Determine `nodeFrom` and `nodeTo`
+            nodeFrom = helpers.getParentTabGroup(n)
+            nodeTo   = n.xpath('/module/%s' % link)[0]
+
+            # Determine `idFrom` and `idTo`
+            idFrom = '_%s' % helpers.nodeHash(nodeFrom)
+            idTo   = '_%s' % helpers.nodeHash(nodeTo  )
+
+            # Make the link
+            link = '%s -> %s [style=invis]' % (idFrom, idTo)
+            links.append(link)
+
+        return links
+
 
     def getUserSpecifiedLinks(self, node):
         links = ['/* User-specified links */']
@@ -63,13 +103,14 @@ class GraphModule(object):
             # Does `n` have an 'l' attribute, or an 'lc' attribute?
             if helpers.hasAttrib(n, 'l' ): attrib = 'l'
             if helpers.hasAttrib(n, 'lc'): attrib = 'lc'
+            link = n.attrib[attrib]
 
             # Determine `nodeFrom` and `nodeTo`
-            nodeFrom = n; parFrom = n.getparent()
-            if helpers.isValidLink(n, n.attrib[attrib], 'tab group'):
-                exp     = '/module/%s/*[@%s="%s"][1]'
-            if helpers.isValidLink(n, n.attrib[attrib], 'tab'):
-                exp     = '/module/%s[@%s="%s"]'
+            nodeFrom = n
+            if helpers.isValidLink(n, link, 'tab group'):
+                exp = '/module/%s/*[@%s="%s"][1]'
+            if helpers.isValidLink(n, link, 'tab'):
+                exp = '/module/%s[@%s="%s"]'
             exp    %= n.attrib[attrib], consts.RESERVED_XML_TYPE, 'tab'
             matches = n.xpath(exp)
             nodeTo  = matches[0]
@@ -79,7 +120,7 @@ class GraphModule(object):
             idTo   = GraphTab.nodeId(nodeTo  )
 
             # Make the link
-            link = '%s -> %s' % (idFrom, idTo)
+            link = '%s -> %s [constraint=false]' % (idFrom, idTo)
             links.append(link)
 
         return links
@@ -102,12 +143,18 @@ class GraphModule(object):
 ################################################################################
 
 class GraphTabGroup(object):
-    prefix = 'cluster_'
+    prefix     = 'cluster_'
+    wrap_width = 14
 
     def __init__(self, node):
-        self.node = node
+        self.node  = node
 
-        self.topMatter  = '\n\t\tlabel="%s"' % helpers.getLabel(node)
+        self.label = helpers.getLabel(node)
+        self.label = wrap(self.label, self.wrap_width)
+        self.label = [escape(s) for s in self.label]
+        self.label = '\n'.join(self.label)
+
+        self.topMatter  = '\n\t\tlabel="%s"' % self.label
         self.topMatter += '\n\t\tbgcolor="lightblue"'
         self.topMatter += '\n'
 
@@ -121,6 +168,9 @@ class GraphTabGroup(object):
         return [GraphTab(n) for n in getUiNodes(node, 'tab')]
 
     def toString(self):
+        hiddenNode  = '\n\t\t_%s [label="" fixedsize=shape width=0 height=0]'
+        hiddenNode %= helpers.nodeHash(self.node)
+
         tabs = ''
         for i, tab in enumerate(self.tabs):
             hasPrecedingTab = i > 0
@@ -129,6 +179,8 @@ class GraphTabGroup(object):
 
         out  = '\n\tsubgraph %s {' % self.nodeId(self.node)
         out += self.topMatter
+        out += hiddenNode
+        out += '\n'
         out += tabs
         out += '\n\t}'
         out += '\n'
@@ -138,6 +190,7 @@ class GraphTabGroup(object):
 ################################################################################
 
 class GraphTab(object):
+    wrap_width   = 14
     prefix       = 'cluster_'
     prefix_label = 'struct_Label_'
 
@@ -145,9 +198,13 @@ class GraphTab(object):
         self.node  = node
 
         self.label = helpers.getLabel(node)
+        self.label = wrap(self.label, self.wrap_width)
+        self.label = [escape(s) for s in self.label]
+        self.label = '<br/>'.join(self.label)
 
         self.topMatter  = '\n\t\t\tlabel=""'
         self.topMatter += '\n\t\t\tbgcolor="white"'
+        self.topMatter += '\n\t\t\tordering="in"'
         self.topMatter += '\n'
 
         self.guiBlocks = self.getGuiBlocks(node)
@@ -207,6 +264,8 @@ class GuiBlock(object):
     prefix_block = 'struct_Elems_'
 
     def __init__(self, node):
+        self.node = node
+
         self.guiBlock = self.getBlock(node)
 
     @classmethod

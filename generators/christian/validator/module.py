@@ -297,6 +297,7 @@ affectedNodes = matches
 helpers.eMsg(msg, affectedNodes)
 
 ################################################################################
+# TODO: <autonum/> is expanded before this error is checked for.
 
 msg  = 'Elements are flagged with "autonum" but <autonum> tag is not present'
 

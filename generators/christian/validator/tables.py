@@ -149,11 +149,17 @@ REPLACEMENTS_BY_TAG = {
         'author'    : '<Author t="input" f="readonly nodata"/>',
         'autonum'   : '<Next___REPLACE__ t="input" b="decimal"\
                                        f="readonly notnull"/>',
-        'gps'       : '<Colgroup_GPS t="group"/>              \
-                       <Latitude     t="input" f="readonly"/> \
-                       <Longitude    t="input" f="readonly"/> \
-                       <Northing     t="input" f="readonly"/> \
-                       <Easting      t="input" f="readonly"/>',
+        'gps'       : '<cols>                                     \
+                         <col>                                    \
+                           <Latitude     t="input" f="readonly"/> \
+                           <Longitude    t="input" f="readonly"/> \
+                         </col>                                   \
+                         <col>                                    \
+                           <Northing     t="input" f="readonly"/> \
+                           <Easting      t="input" f="readonly"/> \
+                         </col>                                   \
+                       </cols>                                    \
+                       <Take_From_GPS    t="button"/>',
         'search'    : '<Search f="readonly nodata">    \
                          <cols>                        \
                            <Search_Term t="input"/>    \
