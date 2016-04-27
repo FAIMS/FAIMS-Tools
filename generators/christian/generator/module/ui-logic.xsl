@@ -79,8 +79,6 @@ newTab(String tab, Boolean resolveTabGroups) {
       String tabgroupString = path[0];
       String tabString      = path[0] + "/" + path[1];
 
-      showWarning(tabString, tabString);
-
       redirectTab = tabString;
       String onShowTabgroup = "if (!isNull(redirectTab)) { newTab(redirectTab); redirectTab = \"\"; }";
       addOnEvent(tabgroupString, "show", onShowTabgroup);
@@ -665,8 +663,6 @@ saveTabGroup(String tabgroup, String callback) {
   SaveCallback saveCallback  = new SaveCallback() {
     onSave(uuid, newRecord) {
       setUuid(tabgroup, uuid);
-      populateAuthorAndTimestamp(tabgroup);
-
       // Make a child-parent relationship if need be.
       if (newRecord &amp;&amp; !isNull(parentTabgroup_)) {
         String rel = "";
@@ -701,7 +697,6 @@ saveTabGroup(String tabgroup, String callback) {
     }
   };
 
-  populateAuthorAndTimestamp(tabgroup);
   saveTabGroup(tabgroup, id, geometry, attributes, saveCallback, enableAutosave);
 }
 
@@ -712,30 +707,19 @@ populateAuthorAndTimestamp(String tabgroup) {
     <xsl:call-template name="populate-author" />
     <xsl:call-template name="populate-timestamp" />
 <xsl:text>
-  String uuid          = getUuid(tabgroup);
   String authorPath    = tabgroupToAuthor.get(tabgroup);
   String timestampPath = tabgroupToTimestamp.get(tabgroup);
-  if (isNull(uuid)) {
-    if (!isNull(authorPath))
-      setFieldValue(authorPath,    "Entity not yet saved");
-    if (!isNull(timestampPath))
-      setFieldValue(timestampPath, "Entity not yet saved");
-    return;
-  }
 
-  String q = "SELECT createdat, createdby " +
-             "  FROM createdmodifiedatby " +
-             " WHERE uuid = '" + uuid + "'";
-  FetchCallback callback = new FetchCallback() {
-    onFetch(result) {
-      if (!isNull(timestampPath))
-        setFieldValue(timestampPath, result.get(0));
-      if (!isNull(authorPath))
-        setFieldValue(authorPath,    result.get(1));
-    }
-  };
+  fmt     = "yyyy-MM-dd HH:mm:ss z";
+  date    = new Date();
+  dateFmt = new java.text.SimpleDateFormat(fmt);
+  dateStr = dateFmt.format(date);
 
-  fetchOne(q, callback);
+  String authorVal    = username;
+  String timestampVal = dateStr;
+
+  if (!isNull(authorPath))    setFieldValue(authorPath,    authorVal);
+  if (!isNull(timestampPath)) setFieldValue(timestampPath, timestampVal);
 }
 
 </xsl:text>
@@ -1589,7 +1573,7 @@ bindOnEvents();
       <xsl:value-of select="name(ancestor::*[last()-1])" />
       <xsl:text>/</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-2])" />
-      <xsl:text>/Author</xsl:text>
+      <xsl:text>/author</xsl:text>
       <xsl:text>");</xsl:text>
       <xsl:value-of select="$newline"/>
     </xsl:for-each>
@@ -1603,7 +1587,7 @@ bindOnEvents();
       <xsl:value-of select="name(ancestor::*[last()-1])" />
       <xsl:text>/</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-2])" />
-      <xsl:text>/Timestamp</xsl:text>
+      <xsl:text>/timestamp</xsl:text>
       <xsl:text>");</xsl:text>
       <xsl:value-of select="$newline"/>
     </xsl:for-each>
@@ -1730,7 +1714,7 @@ bindOnEvents();
 <xsl:text>
   setUuid(tabgroup, null);
   newTabGroup(tabgroup);
-
+  populateAuthorAndTimestamp(tabgroup);
 </xsl:text>
 
     <xsl:call-template name="tabgroup-new-incautonum"/>

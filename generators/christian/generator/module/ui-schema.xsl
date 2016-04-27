@@ -424,7 +424,7 @@
   </xsl:template>
 
   <xsl:template name="body-expand-author">
-    <input ref="Author" faims_read_only="true" faims_annotation="false" faims_certainty="false">
+    <input ref="Author" faims_attribute_name="author" faims_attribute_type="measure" faims_read_only="true" faims_annotation="false" faims_certainty="false">
       <xsl:call-template name="label" />
       <xsl:call-template name="warn-unexpected-attr" />
       <xsl:call-template name="warn-unexpected-flags" />
@@ -432,7 +432,7 @@
   </xsl:template>
 
   <xsl:template name="body-expand-timestamp">
-    <input ref="Timestamp" faims_read_only="true" faims_annotation="false" faims_certainty="false">
+    <input ref="Timestamp" faims_attribute_name="timestamp" faims_attribute_type="measure" faims_read_only="true" faims_annotation="false" faims_certainty="false">
       <xsl:call-template name="label" />
       <xsl:call-template name="warn-unexpected-attr" />
       <xsl:call-template name="warn-unexpected-flags" />
