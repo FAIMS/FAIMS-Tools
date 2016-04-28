@@ -1,3 +1,11 @@
+################################################################################
+#                                                                              #
+# This file contains utility functions which are used with the module.xml      #
+# schema but are, as much as possible, agnostic of any output format such as   #
+# the so called data and UI "schemas".                                         #
+#                                                                              #
+################################################################################
+
 def getPath(node):
     nodeTypes = ['GUI/data element', 'tab group', 'tab']
 

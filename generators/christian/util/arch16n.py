@@ -1,3 +1,9 @@
+################################################################################
+#                                                                              #
+# This file contains utility functions related to arch16n file generation.     #
+#                                                                              #
+################################################################################
+
 def getLabelFromTag(node):
     label = node.tag
     label = label.replace('_', ' ')

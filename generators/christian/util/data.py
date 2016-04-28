@@ -1,3 +1,9 @@
+################################################################################
+#                                                                              #
+# This file contains utility functions related to data schema generation.      #
+#                                                                              #
+################################################################################
+
 def isDataElement(guiDataElement):
     if isFlagged(guiDataElement, 'nodata'):      return False
     if isFlagged(guiDataElement, 'user'):        return False

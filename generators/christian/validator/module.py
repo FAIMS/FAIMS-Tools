@@ -1,17 +1,18 @@
 #!/usr/bin/env python2
 
-from   lxml import etree
 import consts
 import helpers
 import sys
 import tables
+import util.xml
 
 ################################################################################
 #                                  PARSE XML                                   #
 ################################################################################
 print 'Parsing XML...'
 filenameModule = sys.argv[1]
-tree = helpers.parseXml(filenameModule)
+print 'HERE!', filenameModule
+tree = util.xml.parseXml(filenameModule)
 print 'Done!'
 print
 

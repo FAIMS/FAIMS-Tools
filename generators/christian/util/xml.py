@@ -1,3 +1,5 @@
+from lxml import etree
+
 def parseXml(filename):
     parser = etree.XMLParser(strip_cdata=False)
     try:
