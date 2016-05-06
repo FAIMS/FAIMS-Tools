@@ -265,11 +265,11 @@
           <xsl:choose>
             <xsl:when test="name() = 'col'">
                 <xsl:for-each select="*">
-                  <xsl:element name="{name(.)}"/>
+                  <xsl:call-template name="model-expand-reserved-or-view" />
                 </xsl:for-each>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:element name="{name(.)}"/>
+              <xsl:call-template name="model-expand-reserved-or-view" />
             </xsl:otherwise>
           </xsl:choose>
         </xsl:element>
