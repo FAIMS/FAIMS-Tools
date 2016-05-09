@@ -1,2 +1,4 @@
-install ruby-2.1.1 
+install ruby-2.1.2 (rbenv)
+install spatialite
 install gems sqite3 and antlr3
+
