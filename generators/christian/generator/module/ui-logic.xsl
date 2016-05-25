@@ -13,8 +13,10 @@
 
 Object dialog;          // Used to help coordinate the display of a "busy..." dialog
 String parentTabgroup;  // Used to allow entities to be saved as children
+String parentTabgroup__;// Used to allow entities to be saved as children
 String redirectTab;     // makes newTab work as expected
 String username = "";
+String userid   = "";
 
 setFileSyncEnabled(true);
 setSyncDelay(5.0f);
@@ -850,7 +852,8 @@ populateAuthorAndTimestamp(String tabgroup) {
           <xsl:value-of select="$newline" />
           <xsl:text>  }</xsl:text>
           <xsl:value-of select="$newline" />
-          <xsl:text>  parentTabgroup = tabgroup;</xsl:text>
+          <xsl:text>  parentTabgroup   = tabgroup;</xsl:text>
+          <xsl:text>  parentTabgroup__ = tabgroup;</xsl:text>
           <xsl:value-of select="$newline" />
           <xsl:text>  new</xsl:text>
           <xsl:call-template name="string-replace-all">
@@ -2103,6 +2106,7 @@ selectUser () {
       );
       setUser(user);
       username = result.get(1) + " " + result.get(2);
+      userid   = result.get(0);
     }
   };
 
@@ -2134,10 +2138,15 @@ addOnEvent(userMenuPath, "click", "selectUser()");
       <xsl:otherwise>
         <xsl:text>  String userVocabId  = getFieldValue(userMenuPath);</xsl:text>
         <xsl:value-of select="$newline" />
-        <xsl:text>  if (isNull(userVocabId))</xsl:text>
+        <xsl:text>  if (isNull(userVocabId)) {</xsl:text>
+        <xsl:value-of select="$newline" />
+        <xsl:text>    username = "";</xsl:text>
+        <xsl:value-of select="$newline" />
+        <xsl:text>    userid = "";</xsl:text>
         <xsl:value-of select="$newline" />
         <xsl:text>    return;</xsl:text>
         <xsl:value-of select="$newline" />
+        <xsl:text>  }</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
