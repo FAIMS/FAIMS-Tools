@@ -2,9 +2,12 @@
 
 echo $1 $2
 
-echo "fuuuuuu"
-rvm use 2.1.1@faims
 
-$(rvm which ruby) string_formatter_tester.rb db.sqlite3 $1 > $1.output
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
 
+ruby string_formatter_tester.rb $2/db.sqlite3 $1 > /$1.output
+
+echo "Start output"
 cat $1.output
+echo "Stop output"

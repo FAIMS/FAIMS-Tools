@@ -11,9 +11,6 @@ def spatialite_library
   return 'libspatialite.so'
 end
 
-puts "What the fuck"
-
-
 db_file = ARGV.shift
 sql_file = ARGV.shift
 
@@ -38,11 +35,9 @@ db.create_function('format', -1) do |func, *args|
   end
 end
 
-puts "foo"
-
 File.open(sql_file, 'r') do |file|
   sql = ""
-  time = Benchmark.measure file.readlines.each do |line|
+  file.readlines.each do |line|
     sql += line.gsub(/--.*/, '')
     if line =~ /;/
       begin
@@ -66,6 +61,5 @@ File.open(sql_file, 'r') do |file|
   end
   
   puts sql
-  puts time
 end
 
