@@ -795,6 +795,10 @@ populateAuthorAndTimestamp(String tabgroup) {
             (contains(@f, 'noui') or
              contains(@f, 'nodata'))
           ])">
+          <xsl:text>  parentTabgroup__ = "</xsl:text>
+          <xsl:value-of select="name(ancestor::*[last()-1])"/>
+          <xsl:text>";</xsl:text>
+          <xsl:value-of select="$newline" />
           <xsl:text>  new</xsl:text>
           <xsl:call-template name="string-replace-all">
             <xsl:with-param name="text" select="$link" />
@@ -853,6 +857,7 @@ populateAuthorAndTimestamp(String tabgroup) {
           <xsl:text>  }</xsl:text>
           <xsl:value-of select="$newline" />
           <xsl:text>  parentTabgroup   = tabgroup;</xsl:text>
+          <xsl:value-of select="$newline" />
           <xsl:text>  parentTabgroup__ = tabgroup;</xsl:text>
           <xsl:value-of select="$newline" />
           <xsl:text>  new</xsl:text>
@@ -1728,8 +1733,8 @@ bindOnEvents();
 
   <xsl:template name="autonum-parent">
     <xsl:value-of select="name(//autonum/ancestor::*[last()-1])" />
-    <xsl:text>/</xsl:text>
-    <xsl:value-of select="name(//autonum/ancestor::*[last()-2])" />
+    <!--<xsl:text>/</xsl:text>-->
+    <!--<xsl:value-of select="name(//autonum/ancestor::*[last()-2])" />-->
   </xsl:template>
 
   <xsl:template name="tabgroup-new-no-id">

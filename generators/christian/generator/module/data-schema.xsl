@@ -113,7 +113,13 @@
           <xsl:with-param name="by" select="' '" />
         </xsl:call-template>
       </xsl:variable>
-      <property name="{$faims-attribute-name}">
+      <xsl:variable name="auth-time-fix">
+        <xsl:if test="name() = 'timestamp' or name() = 'author'">
+          <xsl:value-of select="name(ancestor::*[last()-1])"/>
+          <xsl:text> </xsl:text>
+        </xsl:if>
+      </xsl:variable>
+      <property name="{$auth-time-fix}{$faims-attribute-name}">
         <xsl:if test="contains(@f, 'id ') or contains(@f, ' id') or normalize-space(@f) = 'id'">
           <xsl:attribute name="isIdentifier">true</xsl:attribute>
         </xsl:if>

@@ -61,7 +61,7 @@
         <xsl:value-of select="$newline" />
         <xsl:if test="contains(@f, 'autonum')">
           <xsl:text>Next_</xsl:text>
-          <xsl:value-of select="$arch16n-key" />
+          <xsl:value-of select="name()" />
           <xsl:text>=Next </xsl:text>
           <xsl:value-of select="$arch16n-val" />
           <xsl:value-of select="$newline" />

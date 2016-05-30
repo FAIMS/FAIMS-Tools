@@ -424,7 +424,7 @@
   </xsl:template>
 
   <xsl:template name="body-expand-author">
-    <input ref="author" faims_attribute_name="author" faims_attribute_type="measure" faims_read_only="true" faims_annotation="false" faims_certainty="false">
+    <input ref="author" faims_attribute_name="{name(ancestor::*[last()-1])} author" faims_attribute_type="measure" faims_read_only="true" faims_annotation="false" faims_certainty="false">
       <xsl:call-template name="label" />
       <xsl:call-template name="warn-unexpected-attr" />
       <xsl:call-template name="warn-unexpected-flags" />
@@ -432,7 +432,7 @@
   </xsl:template>
 
   <xsl:template name="body-expand-timestamp">
-    <input ref="timestamp" faims_attribute_name="timestamp" faims_attribute_type="measure" faims_read_only="true" faims_annotation="false" faims_certainty="false">
+    <input ref="timestamp" faims_attribute_name="{name(ancestor::*[last()-1])} timestamp" faims_attribute_type="measure" faims_read_only="true" faims_annotation="false" faims_certainty="false">
       <xsl:call-template name="label" />
       <xsl:call-template name="warn-unexpected-attr" />
       <xsl:call-template name="warn-unexpected-flags" />
@@ -526,6 +526,12 @@
 
   <xsl:template name="body-expand-view">
     <xsl:choose>
+      <xsl:when test="name(.) = 'author'">
+        <xsl:call-template name="body-expand-author" />
+      </xsl:when>
+      <xsl:when test="name(.) = 'timestamp'">
+        <xsl:call-template name="body-expand-timestamp" />
+      </xsl:when>
       <xsl:when test="normalize-space(@t)='audio'">
         <xsl:element name="select">
           <xsl:attribute name="type">file</xsl:attribute>
