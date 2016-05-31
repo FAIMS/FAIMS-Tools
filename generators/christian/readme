@@ -1,41 +1,3 @@
-TODO Include buttons in map?
-TODO Move insertIntoLocalSettings functions so that they're included in all
-     modules. Write a getter function. (Must figure out how to block.)
-TODO Consider adding a Document Object Model (for static elements. It'll be
-     difficult to update for dynamic elements):
-     - Map from ref to:
-        - GUI element type
-        - entity uuid
-        - faims_archent_type
-        - faims_attribute_type
-        - faims_attribute_name
-        - Label
-        - Description
-        - Certainty (boolean)
-        - Annotation (boolean)
-        - Selected
-          - (List of selected items? Boolean for each?)
-          - (Update after each click?)
-          - Consider hierarchical entries
-        - Items in menu
-        - onEvent binding statement/string
-TODO Consider adding a map from a GUI element to its type
-TODO Tables
-       - type
-       - tag
-         - 
-TODO Users should be able to create populated lists and dropdowns even when
-     f="nodata" is used.
-TODO Options should link to tab (groups)
-TODO ui-schema.xsl:114 should prevent <search> tags from being properly
-     transformed. Find out why not and clean code for ignoring reserved tags.
-
-TODO Warn about duplicate archents
-TODO There should be a way of specifying dynamic UI fields like in Lake Mungo
-TODO There should be a way of specifying webviews' text
-TODO Automate regression tests
-________________________________________________________________________________
-
 QUICK START
 
   1. Modify the example module.xml. If you see something there which you don't
@@ -52,7 +14,7 @@ ATTRIBUTES
   c                  Alias for faims_style_class
   e="Type"           Populates the menu with entities of the type `Type`. If the
                     `Type` is the empty string, entities of all types are shown.
-  ec, lc             (See 'Child Entities')
+  ec, lc             (See 'Child Entities'.)
   f                  Flags (See 'Flags')
   l                  Link to tab or tab group in the format Tabgroup/Tab/. Links
                      to tabs are discouraged as the generated code will contain
@@ -138,29 +100,44 @@ ________________________________________________________________________________
 TYPES
 
   Types of GUI element:
-    - audio        <select type="file" faims_sync=true/>
-                   <trigger/>
-    - button       <trigger/>
-    - camera       <select type="camera" faims_sync=true/>
-                   <trigger/>
-    - checkbox     <select/>
-    - dropdown     <select1/>
-    - file         <select type="file" faims_sync=true/>
-                   <trigger/>
-        File list with a button to add a file
-
-    - gpsdiag      <input faims_read_only="true"/>...
-    - group        <group/>
-    - input        <input/>
-    - list         <select1 appearance="compact"/>
-    - map          <input faims_map="true"/>
-    - picture      <select1 type="image"/>
-    - radio        <select1 appearance="full"/>
-    - video        <select type="file" faims_sync=true/>
-                   <trigger/>
-    - viewfiles    <trigger/>
-        A button to view all files related to an archent.
-    - web[view]    <input faims_web="true"/>
+    - audio        A button which allows audio to be recorded upon being tapped.
+                   Recorded audio is saved to the tab group the button appears
+                   in.
+    - button       A button. By default, this does not perform any action. A
+                   common method of associating buttons with actions is to link
+                   them to other tabs or tab groups using the `l` or `lc`
+                   attributes. (See 'Attributes'.)
+    - camera       A button which allows photographs to be taken upon being
+                   tapped. Recorded photographs are saved to the tab group the
+                   button appears in. (Search terms: images, photos, pictures.)
+    - checkbox     A group of checkboxes. Options are specified using the <opts>
+                   tags.
+    - dropdown     A dropdown menu. Options are specified using the <opts> tags.
+    - file         A button which allows files to be attached upon being tapped.
+                   attached files are saved to the tab group the button appears
+                   in.
+    - gpsdiag      A read-only text field containing GPS diagnostic information.
+    - group        Produces a <group> element in the generated UI schema. See
+                   the "FAIMS Data, UI and Logic Cook-Book" for more information
+                   on the <group> element.
+    - input        A text field.
+    - list         A list. Entries are specified using the <opts> tags.
+    - map          A map interface. Map data must be manually added to the
+                   module by modifying the generated UI logic file.
+    - picture      A picture gallery. This is a kind of menu (like a dropdown or
+                   list), whose options have images which are displayed to the
+                   user. Options are specified with the <opts> tags. Images are
+                   specified using `p`. (See 'Attributes'.)
+    - radio        A group of radio buttons. (Also sometimes called "option
+                   buttons".) Options are specified using the <opts> tags.
+    - video        A button which allows videos to be recorded upon being
+                   tapped. Recorded videos are saved to the tab group the button
+                   appears in.
+    - viewfiles    A button to view all files related to a tab group.
+    - web[view]    A viewport which allows the rendering of HTML. HTML must be
+                   manually added to the module by modifying the generated UI
+                   logic file. See the "FAIMS Data, UI and Logic Cook-Book" for
+                   more information on web views and how they are populated.
 ________________________________________________________________________________
 
 RESERVED ELEMENT NAMES AND RECOMMENDED NAMING CONVENTIONS
@@ -463,3 +440,43 @@ GRAMMAR
   `f`                -> # Flags
   `tabs`             -> `tab` `tabs` | .
   `tab`              -> <\w `f`> # This grammar is a clustermuck
+________________________________________________________________________________
+
+TODO
+
+Include buttons in map?
+Move insertIntoLocalSettings functions so that they're included in all
+modules. Write a getter function. (Must figure out how to block.)
+Consider adding a Document Object Model (for static elements. It'll be
+difficult to update for dynamic elements):
+- Map from ref to:
+   - GUI element type
+   - entity uuid
+   - faims_archent_type
+   - faims_attribute_type
+   - faims_attribute_name
+   - Label
+   - Description
+   - Certainty (boolean)
+   - Annotation (boolean)
+   - Selected
+     - (List of selected items? Boolean for each?)
+     - (Update after each click?)
+     - Consider hierarchical entries
+   - Items in menu
+   - onEvent binding statement/string
+Consider adding a map from a GUI element to its type
+Tables
+  - type
+  - tag
+    - 
+Users should be able to create populated lists and dropdowns even when
+f="nodata" is used.
+Options should link to tab (groups)
+ui-schema.xsl:114 should prevent <search> tags from being properly
+transformed. Find out why not and clean code for ignoring reserved tags.
+
+Warn about duplicate archents
+There should be a way of specifying dynamic UI fields like in Lake Mungo
+There should be a way of specifying webviews' text
+Automate regression tests
