@@ -653,9 +653,11 @@ getUuid(String tabgroup) {
 }
 
 setUuid(String tabgroup, String uuid) {
-  if (uuid == null)
-    return;
-  tabgroupToUuid.put(tabgroup, uuid);
+  if (uuid == null) {
+    tabgroupToUuid.remove(tabgroup);
+  } else {
+    tabgroupToUuid.put(tabgroup, uuid);
+  }
 }
 
 saveTabGroup(String tabgroup) {
