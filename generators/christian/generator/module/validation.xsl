@@ -33,14 +33,15 @@
       <property name="{$faims-attribute-name}">
         <validator type="blankchecker">
           <param>
-            <xsl:if test="normalize-space(@t) = 'input' or not(@t)">
+            <xsl:if test="normalize-space(@t) = 'input' or not(@t) and not(./opts)">
               <xsl:attribute name="value">measure</xsl:attribute>
             </xsl:if>
             <xsl:if test="normalize-space(@t) = 'checkbox'
               or normalize-space(@t) = 'dropdown'
               or normalize-space(@t) = 'picture'
               or normalize-space(@t) = 'radio'
-              or normalize-space(@t) = 'list'">
+              or normalize-space(@t) = 'list'
+              or ./opts">
               <xsl:attribute name="value">vocab</xsl:attribute>
             </xsl:if>
             <xsl:attribute name="type">field</xsl:attribute>

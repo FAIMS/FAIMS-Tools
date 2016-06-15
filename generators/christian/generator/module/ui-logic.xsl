@@ -10,6 +10,7 @@
   <xsl:template match="/">
 
 <xsl:text>import android.util.Log;
+import java.util.concurrent.ConcurrentHashMap;
 
 Object dialog;          // Used to help coordinate the display of a "busy..." dialog
 String parentTabgroup;  // Used to allow entities to be saved as children
@@ -157,12 +158,12 @@ getDropdownItemValue() {
 
 </xsl:text>
     <xsl:for-each select="//*[
-        normalize-space(@t) = 'dropdown' or
         (
+          normalize-space(@t) = 'dropdown' or
           not(@t) and
-          ./opts and not(.//@p) and
-          not(ancestor-or-self::*[contains(@f, 'noui')])
-        )
+          ./opts  and not(.//@p)
+        ) and
+        not(ancestor-or-self::*[contains(@f, 'noui')])
       ]">
       <xsl:text>addOnEvent("</xsl:text>
       <xsl:call-template name="ref" />
@@ -467,12 +468,16 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
           }
           result=filteredVocab;
         }
+        Boolean hasNull =
+                vocabExclusions == null
+            || !vocabExclusions.contains("")
+            &amp;&amp; !vocabExclusions.contains(null);
         // print("makeVocab() filtered result: " + result);
         if(type.equals("CheckBoxGroup")) {
           populateCheckBoxGroup(path, result);
         } else if(type.equals("DropDown")) {
           // populateDropDown(path, result);
-          populateDropDown(path, result, true);
+          populateDropDown(path, result, hasNull);
         } else if(type.equals("RadioGroup")) {
           populateRadioGroup(path, result);
         } else if(type.equals("List")) {
@@ -639,13 +644,17 @@ validateFields(List fields, String format) {
 /******************************************************************************/
 /*                                 AUTOSAVING                                 */
 /******************************************************************************/
-Map tabgroupToUuid = new HashMap();
+ConcurrentHashMap tabgroupToUuid = new ConcurrentHashMap();
 
 getUuid(String tabgroup) {
+  if (isNull(tabgroup))
+    return null;
   tabgroupToUuid.get(tabgroup);
 }
 
 setUuid(String tabgroup, String uuid) {
+  if (uuid == null)
+    return;
   tabgroupToUuid.put(tabgroup, uuid);
 }
 
