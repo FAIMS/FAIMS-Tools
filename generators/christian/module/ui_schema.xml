@@ -16,15 +16,61 @@
               <layout_weight/>
             </large>
           </style>
-          <Tabgroup>
-            <Tab>
-              <Dummy/>
-              <Dropdown/>
-              <List/>
-              <Picture/>
-              <Radio/>
-            </Tab>
-          </Tabgroup>
+          <User>
+            <User>
+              <Select_User/>
+              <Login/>
+            </User>
+          </User>
+          <Control>
+            <Main>
+              <Record_Interview/>
+              <GPS_Diagnostics/>
+            </Main>
+            <Search>
+              <Colgroup_0>
+                <Col_0>
+                  <Search_Term/>
+                </Col_0>
+                <Col_1>
+                  <Search_Button/>
+                </Col_1>
+              </Colgroup_0>
+              <Entity_Types/>
+              <Entity_List/>
+            </Search>
+          </Control>
+          <Interview>
+            <Interview>
+              <timestamp/>
+              <Title/>
+              <Description/>
+              <Private/>
+              <Origination_Date/>
+              <Origination_Date_Narrative/>
+              <Add_Agent_Role/>
+              <List_of_Agent_Roles/>
+              <Linguistic_Data_Type/>
+              <Discourse_Type/>
+              <Linguistic_Subject/>
+              <Country/>
+              <Region_Villiage/>
+              <Language_Local_Name/>
+              <Language_Content_ISO639-3/>
+              <Language_Subject_ISO639-3/>
+              <Attached_Audio/>
+              <Button_Attached_Audio/>
+              <Attached_Video/>
+              <Button_Attached_Video/>
+            </Interview>
+          </Interview>
+          <Agent_Role>
+            <Agent_Role>
+              <First_Name/>
+              <Last_Name/>
+              <Role/>
+            </Agent_Role>
+          </Agent_Role>
         </faims>
       </instance>
     </model>
@@ -51,36 +97,207 @@
         </input>
       </group>
     </group>
-    <group ref="Tabgroup" faims_archent_type="Tabgroup">
-      <label>{Tabgroup}</label>
-      <group ref="Tab">
-        <label>{Tab}</label>
-        <input faims_attribute_type="measure" ref="Dummy" faims_attribute_name="Dummy">
-          <label>{Dummy}</label>
+    <group ref="User">
+      <label>{User}</label>
+      <group ref="User">
+        <label>{User}</label>
+        <select1 ref="Select_User">
+          <label>{Select_User}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <trigger ref="Login">
+          <label>{Login}</label>
+        </trigger>
+      </group>
+    </group>
+    <group ref="Control">
+      <label>{Control}</label>
+      <group ref="Main">
+        <label>{Main}</label>
+        <trigger ref="Record_Interview">
+          <label>{Record_Interview}</label>
+        </trigger>
+        <input faims_read_only="true" ref="GPS_Diagnostics">
+          <label>{GPS_Diagnostics}</label>
         </input>
-        <select1 faims_attribute_type="vocab" ref="Dropdown" faims_attribute_name="Dropdown">
-          <label>{Dropdown}</label>
+      </group>
+      <group ref="Search" faims_scrollable="false">
+        <label>{Records}</label>
+        <group faims_style="orientation" ref="Colgroup_0">
+          <label/>
+          <group faims_style="even" ref="Col_0">
+            <label/>
+            <input ref="Search_Term">
+              <label>{Search_Term}</label>
+            </input>
+          </group>
+          <group faims_style="large" ref="Col_1">
+            <label/>
+            <trigger ref="Search_Button">
+              <label>{Search}</label>
+            </trigger>
+          </group>
+        </group>
+        <select1 ref="Entity_Types">
+          <label>{Entity_Types}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>Options not loaded</value>
+          </item>
+        </select1>
+        <select1 appearance="compact" ref="Entity_List">
+          <label>{Entity_List}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>Options not loaded</value>
+          </item>
+        </select1>
+      </group>
+    </group>
+    <group ref="Interview" faims_archent_type="Interview">
+      <label>{Interview}</label>
+      <group ref="Interview">
+        <label>{Interview}</label>
+        <input ref="timestamp" faims_attribute_name="Interview timestamp" faims_attribute_type="measure" faims_read_only="true" faims_annotation="false" faims_certainty="false">
+          <label>{timestamp}</label>
+        </input>
+        <input faims_attribute_type="measure" ref="Title" faims_attribute_name="Title" faims_style_class="required">
+          <label>{Title}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <input faims_attribute_type="measure" ref="Description" faims_attribute_name="Description" faims_style_class="required">
+          <label>{Description}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <select1 appearance="full" faims_attribute_type="vocab" ref="Private" faims_attribute_name="Private" faims_style_class="required">
+          <label>{Private}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <select1 appearance="compact" ref="List" faims_attribute_name="List">
-          <label>{List}</label>
+        <input faims_attribute_type="measure" ref="Origination_Date" faims_attribute_name="Origination Date" faims_style_class="required">
+          <label>{Origination_Date}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <input faims_attribute_type="measure" ref="Origination_Date_Narrative" faims_attribute_name="Origination Date Narrative">
+          <label>{Origination_Date_Narrative}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <trigger ref="Add_Agent_Role">
+          <label>{Add_Agent_Role}</label>
+        </trigger>
+        <select1 ref="List_of_Agent_Roles" faims_annotation="false" faims_certainty="false">
+          <label>{List_of_Agent_Roles}</label>
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <select1 type="image" faims_attribute_type="vocab" ref="Picture" faims_attribute_name="Picture">
-          <label>{Picture}</label>
+        <select1 faims_attribute_type="vocab" ref="Linguistic_Data_Type" faims_attribute_name="Linguistic Data Type">
+          <label>{Linguistic_Data_Type}</label>
+          <!--WARNING: No type t was given for this view; assuming it is a dropdown-->
           <item>
             <label>Options not loaded</label>
             <value>0</value>
           </item>
         </select1>
-        <select1 appearance="full" faims_attribute_type="vocab" ref="Radio" faims_attribute_name="Radio">
-          <label>{Radio}</label>
+        <select1 faims_attribute_type="vocab" ref="Discourse_Type" faims_attribute_name="Discourse Type">
+          <label>{Discourse_Type}</label>
+          <!--WARNING: No type t was given for this view; assuming it is a dropdown-->
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select1 faims_attribute_type="vocab" ref="Linguistic_Subject" faims_attribute_name="Linguistic Subject">
+          <label>{Linguistic_Subject}</label>
+          <!--WARNING: No type t was given for this view; assuming it is a dropdown-->
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select1 faims_attribute_type="vocab" ref="Country" faims_attribute_name="Country" faims_style_class="required">
+          <label>{Country}</label>
+          <!--WARNING: No type t was given for this view; assuming it is a dropdown-->
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select1 faims_attribute_type="vocab" ref="Region_Villiage" faims_attribute_name="Region Villiage">
+          <label>{Region_Villiage}</label>
+          <!--WARNING: No type t was given for this view; assuming it is a dropdown-->
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select1 faims_attribute_type="vocab" ref="Language_Local_Name" faims_attribute_name="Language Local Name">
+          <label>{Language_Local_Name}</label>
+          <!--WARNING: No type t was given for this view; assuming it is a dropdown-->
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select1 faims_attribute_type="vocab" ref="Language_Content_ISO639-3" faims_attribute_name="Language Content ISO639-3">
+          <label>{Language_Content_ISO639-3}</label>
+          <!--WARNING: No type t was given for this view; assuming it is a dropdown-->
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select1 faims_attribute_type="vocab" ref="Language_Subject_ISO639-3" faims_attribute_name="Language Subject ISO639-3">
+          <label>{Language_Subject_ISO639-3}</label>
+          <!--WARNING: No type t was given for this view; assuming it is a dropdown-->
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <select type="file" faims_attribute_type="measure" faims_sync="true" ref="Attached_Audio" faims_attribute_name="Attached Audio">
+          <label>{Attached_Audio}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Attached_Audio">
+          <label>{Button_Attached_Audio}</label>
+        </trigger>
+        <select type="video" faims_attribute_type="measure" faims_sync="true" ref="Attached_Video" faims_attribute_name="Attached Video">
+          <label>{Attached_Video}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Attached_Video">
+          <label>{Button_Attached_Video}</label>
+        </trigger>
+      </group>
+    </group>
+    <group ref="Agent_Role" faims_archent_type="Agent Role">
+      <label>{Agent_Role}</label>
+      <group ref="Agent_Role">
+        <label>{Agent_Role}</label>
+        <input faims_attribute_type="measure" ref="First_Name" faims_attribute_name="First Name">
+          <label>{First_Name}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <input faims_attribute_type="measure" ref="Last_Name" faims_attribute_name="Last Name">
+          <label>{Last_Name}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <select1 faims_attribute_type="vocab" ref="Role" faims_attribute_name="Role">
+          <label>{Role}</label>
+          <!--WARNING: No type t was given for this view; assuming it is a dropdown-->
           <item>
             <label>Options not loaded</label>
             <value>0</value>
