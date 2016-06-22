@@ -2,10 +2,11 @@
 
 import helpers
 import sys
-import util.xml
-import util.schema
 import util.arch16n
 import util.consts
+import util.data
+import util.schema
+import util.xml
 
 ################################################################################
 #                                  PARSE XML                                   #
@@ -165,7 +166,7 @@ for m in matches:
 
 ################ VALIDATE CARDINALITIES FOR COMPOSITE ELEMENTS #################
 
-helpers.expandCompositeElements(tree)
+util.schema.expandCompositeElements(tree)
 
 # Check cardinality contraints
 el   = 'GUI/data element'
@@ -420,17 +421,17 @@ msg  += 'duplicate of a user-specified one'
 exp  = '//*[@lc]'
 matches = tree.xpath(exp)
 # ...Which also have valid relationships (and therefore valid relNames)...
-cond = lambda e: helpers.getRelName(e) != None
+cond = lambda e: util.data.getRelName(e) != None
 matches = filter(cond, matches)
 matches = util.schema.filterUnannotated(matches)
 # ...And conflict with entries in the <rels> tags
 exp = '//rels/*[@name="%s"]'
-cond = lambda e: len(tree.xpath(exp % helpers.getRelName(e))) > 0
+cond = lambda e: len(tree.xpath(exp % util.data.getRelName(e))) > 0
 matches = filter(cond, matches)
 
 for m in matches:
     # Find the entries in <rels> that `m` conflicts with
-    relName = helpers.getRelName(m)
+    relName = util.data.getRelName(m)
     exp = '//rels/*[@name="%s"]' % relName
     conflictingRels = tree.xpath(exp)
 

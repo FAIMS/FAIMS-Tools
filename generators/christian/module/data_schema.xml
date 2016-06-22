@@ -223,16 +223,6 @@
 <description></description></term>
       </lookup>
     </property>
-    <property name="Attached Audio" type="measure">
-      <description></description>
-      <formatString>{{if $1 then $1}}{{if and($1, $2) then " " }}{{if $2 then $2}}{{if $3 then " ($3)"}}{{if between($4,0,0.49) then "??" elsif lessThan($4,1) then "?" }}</formatString>
-      <appendCharacterString> - </appendCharacterString>
-    </property>
-    <property name="Attached Video" type="measure">
-      <description></description>
-      <formatString>{{if $1 then $1}}{{if and($1, $2) then " " }}{{if $2 then $2}}{{if $3 then " ($3)"}}{{if between($4,0,0.49) then "??" elsif lessThan($4,1) then "?" }}</formatString>
-      <appendCharacterString> - </appendCharacterString>
-    </property>
   </ArchaeologicalElement>
   <ArchaeologicalElement name="Agent Role">
     <description>Enter participant name in the format Lastname, Firstname. Choose the participant role from the closed vocabulary provided. Use the description field to provide additional information on role or agents. Enter participant name in the format Lastname, firstname. Choose the participant role from the closed vocabulary provided. Add more participants by clicking the "+" button to the right. If you need to provide extra information on the agent or the role, use the item's “Description” field to provide additional information on role or agents.</description>

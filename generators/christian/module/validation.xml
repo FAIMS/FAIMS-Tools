@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <ValidationSchema>
-  <ArchaeologicalElement name="Interview"/>
   <property name="Tech">
     <validator type="blankchecker">
       <param value="measure" type="field"/>
@@ -112,16 +111,6 @@
     </validator>
   </property>
   <property name="Language Subject ISO639-3">
-    <validator type="blankchecker">
-      <param value="vocab" type="field"/>
-    </validator>
-  </property>
-  <property name="Attached Audio">
-    <validator type="blankchecker">
-      <param value="vocab" type="field"/>
-    </validator>
-  </property>
-  <property name="Attached Video">
     <validator type="blankchecker">
       <param value="vocab" type="field"/>
     </validator>

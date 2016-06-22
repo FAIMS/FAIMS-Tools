@@ -5,7 +5,10 @@
 # the so called data and UI "schemas".                                         #
 #                                                                              #
 ################################################################################
+from   lxml import etree
 import consts
+import hashlib
+import re
 import table
 import xml
 
@@ -153,3 +156,98 @@ def annotateWithTypes(tree):
             exp %= (consts.RESERVED_XML_TYPE, parentType, pattern)
             matches = tree.xpath(exp)
         xml.flagAll(matches, consts.RESERVED_XML_TYPE, matchType)
+
+def expandCompositeElements(tree):
+    # (1) REPLACE ELEMENTS HAVING A CERTAIN T ATTRIBUTE
+    for attrib, replacements in table.REPLACEMENTS_BY_T_ATTRIB.iteritems():
+        exp     = '//*[@%s]' % consts.RESERVED_XML_TYPE
+        cond    = lambda e: guessType(e) == attrib
+        matches = tree.xpath(exp)
+        matches = filter(cond, matches)
+
+        for m in matches:
+            replaceElement(m, replacements, m.tag)
+
+    # (2) REPLACE ELEMENTS HAVING A CERTAIN TAG NAME
+    # <autonum> tags get special treatment
+    tagMatches  = tree.xpath('//autonum')
+    if tagMatches:
+        tagMatch = tagMatches[0]
+
+        cond        = lambda e: schema.isFlagged(e, 'autonum')
+        exp         = './/*[@%s="%s"]'
+        exp        %= consts.RESERVED_XML_TYPE, 'GUI/data element'
+        flagMatches = tree.xpath(exp)
+        flagMatches = filter(cond, flagMatches)
+
+        replacements = table.REPLACEMENTS_BY_TAG['autonum'] * len(flagMatches)
+        replacements = replaceElement(tagMatch, replacements)
+
+        for autonumDest, autonumSrc in zip(flagMatches, replacements):
+            needle      = '__REPLACE__'
+            haystack    = autonumSrc .tag
+            replacement = autonumDest.tag
+
+            autonumSrc.tag = haystack.replace(needle, replacement)
+
+def replaceElement(element, replacements, tag='__REPLACE__'):
+    replacements = replacements.replace('\n', ' ')
+    replacements = replacements.replace('\r', ' ')
+    replacements = re.sub('>\s+<', '><', replacements)
+    replacements = replacements.replace('__REPLACE__', tag)
+    replacements = '<root>%s</root>' % replacements
+    replacements = etree.fromstring(replacements)
+
+    originalSourceline = element.sourceline
+    xml.setSourceline(replacements, originalSourceline)
+
+    # Insert each element in `replacements` at the location of `element`. The
+    # phrasing is a bit opaque here because lxml *moves* nodes from
+    # `replacements` instead of copying them, when `insert(index, r)` is called.
+    returnVal = []
+    index = element.getparent().index(element)
+    while len(replacements):
+        r = replacements[-1]
+        element.getparent().insert(index, r)
+
+        returnVal.append(r)
+
+    element.getparent().remove(element)
+    return returnVal
+
+def hasAttrib(e, a):
+    try:
+        if a in e.attrib:
+            return True
+    except:
+        return False
+
+def isValidLink(root, link, linkType):
+    if not link:
+        return False
+
+    if   linkType == 'tab':
+        result  = True
+        try:
+            result &= bool(root.xpath('/module/' + link))
+        except:
+            result &= False
+        result &= '/'     in link
+        result &= '/' != link[ 0]
+        result &= '/' != link[-1]
+        return result
+    elif linkType in ('tabgroup', 'tab group'):
+        result  = True
+        try:
+            result &= bool(root.xpath('/module/' + link))
+        except:
+            result &= False
+        result &= '/' not in link
+        return result
+    elif linkType == 'all':
+        result  = False
+        result |= isValidLink(root, link, 'tab'     )
+        result |= isValidLink(root, link, 'tabgroup')
+        return result
+    else:
+        return False

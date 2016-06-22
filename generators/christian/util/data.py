@@ -3,18 +3,20 @@
 # This file contains utility functions related to data schema generation.      #
 #                                                                              #
 ################################################################################
+import schema
+import xml
 
 def isDataElement(guiDataElement):
-    if isFlagged(guiDataElement, 'nodata'):      return False
-    if isFlagged(guiDataElement, 'user'):        return False
-    if hasAttrib(guiDataElement, 'e'):           return False
-    if hasAttrib(guiDataElement, 'ec'):          return False
-    if guessType(guiDataElement) == 'button':    return False
-    if guessType(guiDataElement) == 'gpsdiag':   return False
-    if guessType(guiDataElement) == 'group':     return False
-    if guessType(guiDataElement) == 'map':       return False
-    if guessType(guiDataElement) == 'table':     return False
-    if guessType(guiDataElement) == 'viewfiles': return False
+    if schema.isFlagged(guiDataElement, 'nodata'):      return False
+    if schema.isFlagged(guiDataElement, 'user'):        return False
+    if schema.hasAttrib(guiDataElement, 'e'):           return False
+    if schema.hasAttrib(guiDataElement, 'ec'):          return False
+    if schema.guessType(guiDataElement) == 'button':    return False
+    if schema.guessType(guiDataElement) == 'gpsdiag':   return False
+    if schema.guessType(guiDataElement) == 'group':     return False
+    if schema.guessType(guiDataElement) == 'map':       return False
+    if schema.guessType(guiDataElement) == 'table':     return False
+    if schema.guessType(guiDataElement) == 'viewfiles': return False
     return True
 
 def getPropType(node):
@@ -28,7 +30,7 @@ def hasMeasureType(node):
     measureTypes = (
             'input',
     )
-    return guessType(node) in measureTypes
+    return schema.guessType(node) in measureTypes
 
 def hasFileType(node):
     fileTypes    = (
@@ -37,7 +39,7 @@ def hasFileType(node):
             'file',
             'video',
     )
-    return guessType(node) in fileTypes
+    return schema.guessType(node) in fileTypes
 
 def hasVocabType(node):
     vocabTypes   = (
@@ -47,4 +49,29 @@ def hasVocabType(node):
             'picture',
             'radio',
     )
-    return guessType(node) in vocabTypes
+    return schema.guessType(node) in vocabTypes
+
+def getRelName(node):
+    if not schema.hasAttrib(node, 'lc'):
+        return None
+    if schema.getParentTabGroup(node) == None:
+        return None
+
+    parentName = schema.getParentTabGroup(node)
+    parentName = parentName.tag
+    parentName = parentName.replace('_', ' ')
+
+    childName = node.attrib['lc']
+    childName = childName.replace('_', ' ')
+
+    relName = '%s - %s' % (parentName, childName)
+    return relName
+
+    # Replace non-<autonum> tags similarly to in (1).
+    for tag, replacements in table.REPLACEMENTS_BY_TAG.iteritems():
+        exp = '//%s[@%s]' % (tag, consts.RESERVED_XML_TYPE)
+        matches = tree.xpath(exp)
+        for m in matches:
+            replaceElement(m, replacements)
+
+    schema.annotateWithTypes(tree)

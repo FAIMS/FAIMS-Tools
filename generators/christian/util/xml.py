@@ -1,5 +1,6 @@
+from   lxml import etree
+import hashlib
 import re
-from lxml import etree
 
 def parseXml(filename):
     parser = etree.XMLParser(strip_cdata=False)
@@ -37,13 +38,23 @@ def appendNotNone(src, dst):
         return
     dst.append(src)
 
-def hasAttrib(e, a):
-    try:
-        if a in e.attrib:
-            return True
-    except:
-        return False
-
 def flagAll(nodes, attrib, value):
     for n in nodes:
         n.attrib[attrib] = value
+
+def getPath(node):
+    if node == None:
+        return []
+    else:
+        index = node.getparent().index(node)
+        return getPath(node.getparent()) + [index]
+
+def getPathString(node, sep='/'):
+    return sep.join(getPath(node))
+
+def nodeHash(node):
+    path = getPathString(node)
+    hash = hashlib.sha256(path)
+    hash = hash.hexdigest()
+    hash = hash[:hashLen]
+    return hash

@@ -4,6 +4,7 @@
 #                                                                              #
 ################################################################################
 import util
+import schema
 
 def getLabelFromTag(node):
     label = node.tag
@@ -21,7 +22,7 @@ def getLabelFromText(node):
 
 def getArch16nVal(node):
     if node.xpath('./ancestor-or-self::rels'): return ''
-    if isFlagged(node, 'nolabel'):             return ''
+    if schema.isFlagged(node, 'nolabel'):             return ''
 
     if node.tag == 'autonum':                  return ''
     if node.tag == 'col':                      return ''

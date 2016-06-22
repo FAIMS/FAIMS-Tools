@@ -1,10 +1,11 @@
 #!/usr/bin/env python2
-
 from   lxml import etree
-import consts
-import helpers
 import sys
-import tables
+import util.arch16n
+import util.consts
+import util.data
+import util.schema
+import util.xml
 
 def addRels(source, target):
     copyRels(source, target)
@@ -21,7 +22,7 @@ def genRels(source, target):
     matches = source.xpath(exp)
     for m in matches:
         r                = etree.Element('RelationshipElement')
-        r.attrib['name'] = helpers.getRelName(m)
+        r.attrib['name'] = util.data.getRelName(m)
         r.attrib['type'] = 'hierarchical'
 
         d       = etree.Element('description')
@@ -41,8 +42,8 @@ def genRels(source, target):
         target.append(r)
 
 def addEnts(source, target):
-    exp     = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'tab group')
-    cond    = lambda e: not helpers.isFlagged(e, 'nodata')
+    exp     = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'tab group')
+    cond    = lambda e: not util.schema.isFlagged(e, 'nodata')
     matches = source.xpath(exp)
     matches = filter(cond, matches)
 
@@ -61,9 +62,9 @@ def addEnt(entNode, target):
 
 def addProps(source, target):
     # Get data elements
-    exp     = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+    exp     = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
     matches = source.xpath(exp)
-    matches = filter(helpers.isDataElement, matches)
+    matches = filter(util.data.isDataElement, matches)
 
     for m in matches:
         addProp(m, target)
@@ -74,12 +75,12 @@ def addProp(dataElement, target):
     # make prop
     prp                = etree.Element('property')
     prp.attrib['name'] = dataElement.tag.replace('_', ' ')
-    prp.attrib['type'] = helpers.getPropType(dataSchema)
-    if helpers.isFlagged(dataElement, 'id'):
+    prp.attrib['type'] = util.data.getPropType(dataSchema)
+    if util.schema.isFlagged(dataElement, 'id'):
         prp.attrib['isIdentifier'] = 'true'
-    if helpers.hasFileType(dataElement):
+    if util.data.hasFileType(dataElement):
         prp.attrib['file']         = 'true'
-    if helpers.hasFileType(dataElement) and not helpers.isFlagged(dataElement):
+    if util.data.hasFileType(dataElement) and not util.schema.isFlagged(dataElement):
         prp.attrib['thumbnail']    = 'true'
 
     # make description
@@ -133,7 +134,7 @@ def addProp(dataElement, target):
     pos.text = posText
 
     # find correct parent arch ent
-    archName = helpers.getParentTabGroup(dataElement)
+    archName = util.schema.getParentTabGroup(dataElement)
     archName = archName.tag
     archName = archName.replace('_', ' ')
 
@@ -142,12 +143,11 @@ def addProp(dataElement, target):
     archEnt = matches[0]
 
     # append prp's (property's) children to it
-    appendNotNone = helpers.appendNotNone
-    appendNotNone (dsc, prp)
-    appendNotNone (fmt, prp)
-    appendNotNone (app, prp)
-    appendNotNone (lup, prp)
-    appendNotNone (pos, prp)
+    util.xml.appendNotNone(dsc, prp)
+    util.xml.appendNotNone(fmt, prp)
+    util.xml.appendNotNone(app, prp)
+    util.xml.appendNotNone(lup, prp)
+    util.xml.appendNotNone(pos, prp)
     # append prp to parent archent
     archEnt.append(prp)
 
@@ -185,7 +185,7 @@ def addTerm(source, target):
     dsc      = etree.Element('description')
     dsc.text = getDescText(source)
 
-    term.text = helpers.getArch16nKey(source)
+    term.text = util.arch16n.getArch16nKey(source)
     term.text = '{%s}\n' % term.text
 
     term  .append(dsc)
@@ -236,10 +236,10 @@ def getDescriptionText(node):
 #                                  PARSE XML                                   #
 ################################################################################
 filenameModule = sys.argv[1]
-tree = helpers.parseXml(filenameModule)
-helpers.normalise(tree)
-helpers.annotateWithTypes(tree)
-helpers.expandCompositeElements(tree)
+tree = util.xml.parseXml(filenameModule)
+util.schema.normalise(tree)
+util.schema.annotateWithTypes(tree)
+util.schema.expandCompositeElements(tree)
 
 ################################################################################
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #

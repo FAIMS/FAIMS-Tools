@@ -1,14 +1,15 @@
 #!/usr/bin/env python2
 
 from   lxml import etree
-import helpers
 import sys
-import consts
+import util.consts
+import util.data
+import util.schema
 
 def addEnts(source, target):
-    exp     = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'tab group')
-    cond1   = lambda e: not helpers.isFlagged(e, 'nodata')
-    cond2   = lambda e: helpers.hasElementFlaggedWith(e, 'notnull')
+    exp     = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'tab group')
+    cond1   = lambda e: not util.schema.isFlagged(e, 'nodata')
+    cond2   = lambda e:     util.schema.isFlagged(e, 'notnull')
     matches = source.xpath(exp)
     matches = filter(cond1, matches)
     matches = filter(cond2, matches)
@@ -24,9 +25,9 @@ def addEnt(entNode, target):
 
 def addProps(source, target):
     # Get data elements
-    exp     = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+    exp     = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
     matches = source.xpath(exp)
-    matches = filter(helpers.isDataElement, matches)
+    matches = filter(util.data.isDataElement, matches)
 
     for m in matches:
         addProp(m, target)
@@ -39,7 +40,7 @@ def addProp(dataElement, target):
     vdr.attrib['type'] = 'blankchecker'
 
     prm                 = etree.Element('param')
-    prm.attrib['value'] = helpers.getPropType(dataElement)
+    prm.attrib['value'] = util.data.getPropType(dataElement)
     prm.attrib['type']  = 'field'
 
     vdr   .append(prm)
@@ -49,9 +50,9 @@ def addProp(dataElement, target):
 def getValidationSchema(node):
     validationSchema = etree.Element('ValidationSchema')
 
-    exp     = './*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'tab group')
-    cond1   = lambda e: not helpers.isFlagged(e, 'nodata')
-    cond2   = lambda e: helpers.hasElementFlaggedWith(e, 'notnull')
+    exp     = './*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'tab group')
+    cond1   = lambda e: not util.schema.isFlagged(e, 'nodata')
+    cond2   = lambda e:     util.schema.isFlagged(e, 'notnull')
     matches = node.xpath(exp)
     matches = filter(cond1, matches)
     matches = filter(cond2, matches)
@@ -64,11 +65,11 @@ def getValidationSchema(node):
 def getArchaeologicalElement(node):
     archaeologicalElement = etree.Element('ArchaeologicalElement')
 
-    exp     = './/*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
-    cond    = lambda e: helpers.isFlagged(e, 'notnull')
+    exp     = './/*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
+    cond    = lambda e: util.schema.isFlagged(e, 'notnull')
     matches = node.xpath(exp)
     matches = filter(cond, matches)
-    matches = filter(helpers.isDataElement, matches)
+    matches = filter(util.data.isDataElement, matches)
 
     properties = [getProperty(m) for m in matches]
     archaeologicalElement.extend(properties)
@@ -82,10 +83,10 @@ def getProperty(node):
 #                                  PARSE XML                                   #
 ################################################################################
 filenameModule = sys.argv[1]
-tree = helpers.parseXml(filenameModule)
-helpers.normalise(tree)
-helpers.annotateWithTypes(tree)
-helpers.expandCompositeElements(tree)
+tree = util.xml.parseXml(filenameModule)
+util.schema.normalise(tree)
+util.schema.annotateWithTypes(tree)
+util.schema.expandCompositeElements(tree)
 
 ################################################################################
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #

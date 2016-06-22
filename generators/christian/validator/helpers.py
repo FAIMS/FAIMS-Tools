@@ -1,35 +1,9 @@
 from   lxml import etree
 import copy
-import hashlib
 import re
+import util.consts
 import util.schema
 import util.xml
-import util.consts
-
-def replaceElement(element, replacements, tag='__REPLACE__'):
-    replacements = replacements.replace('\n', ' ')
-    replacements = replacements.replace('\r', ' ')
-    replacements = re.sub('>\s+<', '><', replacements)
-    replacements = replacements.replace('__REPLACE__', tag)
-    replacements = '<root>%s</root>' % replacements
-    replacements = etree.fromstring(replacements)
-
-    originalSourceline = element.sourceline
-    util.xml.setSourceline(replacements, originalSourceline)
-
-    # Insert each element in `replacements` at the location of `element`. The
-    # phrasing is a bit opaque here because lxml *moves* nodes from
-    # `replacements` instead of copying them, when `insert(index, r)` is called.
-    returnVal = []
-    index = element.getparent().index(element)
-    while len(replacements):
-        r = replacements[-1]
-        element.getparent().insert(index, r)
-
-        returnVal.append(r)
-
-    element.getparent().remove(element)
-    return returnVal
 
 def wMsg(notice, nodes=None, expected=[]):
     notice = 'WARNING: ' + notice
@@ -115,36 +89,6 @@ def getAttributes(table, xmlType, rowIndex=1):
         if rowXmlType == xmlType:
             return rowAttribs
 
-def isValidLink(root, link, linkType):
-    if not link:
-        return False
-
-    if   linkType == 'tab':
-        result  = True
-        try:
-            result &= bool(root.xpath('/module/' + link))
-        except:
-            result &= False
-        result &= '/'     in link
-        result &= '/' != link[ 0]
-        result &= '/' != link[-1]
-        return result
-    elif linkType in ('tabgroup', 'tab group'):
-        result  = True
-        try:
-            result &= bool(root.xpath('/module/' + link))
-        except:
-            result &= False
-        result &= '/' not in link
-        return result
-    elif linkType == 'all':
-        result  = False
-        result |= isValidLink(root, link, 'tab'     )
-        result |= isValidLink(root, link, 'tabgroup')
-        return result
-    else:
-        return False
-
 def disallowedAttribVals(tree, m, ATTRIB_VALS):
     disallowed = []
     for attrib, oneOf, manyOf in ATTRIB_VALS:
@@ -155,7 +99,7 @@ def disallowedAttribVals(tree, m, ATTRIB_VALS):
             if '$link' in oneOf:
                 link = m.attrib[attrib]
                 linkType = oneOf[6:] # 'all', 'tab', or 'tabgroup'
-                if not isValidLink(tree, link, linkType):
+                if not util.schema.isValidLink(tree, link, linkType):
                     disallowed.append((attrib, m.attrib[attrib], m))
             else:
                 if m.attrib[attrib] not in oneOf:
@@ -245,61 +189,3 @@ def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaTy
         )
 
     util.xml.deleteAttribFromTree(elements, util.consts.RESERVED_IGNORE)
-
-def getRelName(node):
-    if not util.xml.hasAttrib(node, 'lc'):
-        return None
-    if util.schema.getParentTabGroup(node) == None:
-        return None
-
-    parentName = util.schema.getParentTabGroup(node)
-    parentName = parentName.tag
-    parentName = parentName.replace('_', ' ')
-
-    childName = node.attrib['lc']
-    childName = childName.replace('_', ' ')
-
-    relName = '%s - %s' % (parentName, childName)
-    return relName
-
-def expandCompositeElements(tree):
-    # (1) REPLACE ELEMENTS HAVING A CERTAIN T ATTRIBUTE
-    for attrib, replacements in util.table.REPLACEMENTS_BY_T_ATTRIB.iteritems():
-        exp     = '//*[@%s]' % util.consts.RESERVED_XML_TYPE
-        cond    = lambda e: util.schema.guessType(e) == attrib
-        matches = tree.xpath(exp)
-        matches = filter(cond, matches)
-
-        for m in matches:
-            replaceElement(m, replacements, m.tag)
-
-    # (2) REPLACE ELEMENTS HAVING A CERTAIN TAG NAME
-    # <autonum> tags get special treatment
-    tagMatches  = tree.xpath('//autonum')
-    if tagMatches:
-        tagMatch = tagMatches[0]
-
-        cond        = lambda e: util.schema.isFlagged(e, 'autonum')
-        exp         = './/*[@%s="%s"]'
-        exp        %= util.consts.RESERVED_XML_TYPE, 'GUI/data element'
-        flagMatches = tree.xpath(exp)
-        flagMatches = filter(cond, flagMatches)
-
-        replacements = util.table.REPLACEMENTS_BY_TAG['autonum'] * len(flagMatches)
-        replacements = replaceElement(tagMatch, replacements)
-
-        for autonumDest, autonumSrc in zip(flagMatches, replacements):
-            needle      = '__REPLACE__'
-            haystack    = autonumSrc .tag
-            replacement = autonumDest.tag
-
-            autonumSrc.tag = haystack.replace(needle, replacement)
-
-    # Replace non-<autonum> tags similarly to in (1).
-    for tag, replacements in util.table.REPLACEMENTS_BY_TAG.iteritems():
-        exp = '//%s[@%s]' % (tag, util.consts.RESERVED_XML_TYPE)
-        matches = tree.xpath(exp)
-        for m in matches:
-            replaceElement(m, replacements)
-
-    util.schema.annotateWithTypes(tree)

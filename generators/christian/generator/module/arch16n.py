@@ -1,17 +1,19 @@
 #!/usr/bin/env python2
 
 from   lxml import etree
-import helpers
-import tables
 import sys
+import util.arch16n
+import util.schema
+import util.table
+import util.xml
 
 ################################################################################
 #                                  PARSE XML                                   #
 ################################################################################
 filenameModule = sys.argv[1]
-tree = helpers.parseXml(filenameModule)
-helpers.normalise(tree)
-helpers.expandCompositeElements(tree)
+tree = util.xml.parseXml(filenameModule)
+util.schema.normalise(tree)
+util.schema.expandCompositeElements(tree)
 
 ################################################################################
 #                         GENERATE AND OUTPUT ARCH16N                          #
@@ -20,10 +22,10 @@ exp     = '//*'
 matches = tree.xpath(exp)
 
 # Generate
-arch16n = tables.ARCH16N
+arch16n = util.table.ARCH16N
 for m in matches:
-    k = helpers.getArch16nKey(m)
-    v = helpers.getArch16nVal(m)
+    k = util.arch16n.getArch16nKey(m)
+    v = util.arch16n.getArch16nVal(m)
     if k and v:
         line = '%s=%s' % (k, v)
         arch16n.append(line)

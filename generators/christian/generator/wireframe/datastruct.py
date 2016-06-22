@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 
 from   lxml import etree
-import consts
 import copy
-import helpers
 import sys
-import tables
+import util.schema
+import util.ui
 
 def getUiNodes(node, xmlType):
-    exp     = './*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, xmlType)
-    cond    = lambda e: not helpers.isFlagged(e, 'noui')
+    exp     = './*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, xmlType)
+    cond    = lambda e: not util.schema.isFlagged(e, 'noui')
     matches = node.xpath(exp)
     matches = filter(cond, matches)
     return matches
@@ -61,16 +60,16 @@ class GraphModule(object):
 
         for n in node.xpath('//*[@l or @lc]'):
             # Does `n` have an 'l' attribute, or an 'lc' attribute?
-            if helpers.hasAttrib(n, 'l' ): attrib = 'l'
-            if helpers.hasAttrib(n, 'lc'): attrib = 'lc'
+            if util.schema.hasAttrib(n, 'l' ): attrib = 'l'
+            if util.schema.hasAttrib(n, 'lc'): attrib = 'lc'
 
             # Determine `nodeFrom` and `nodeTo`
             nodeFrom = n; parFrom = n.getparent()
-            if helpers.isValidLink(n, n.attrib[attrib], 'tab group'):
+            if util.schema.isValidLink(n, n.attrib[attrib], 'tab group'):
                 exp     = '/module/%s/*[@%s="%s"][1]'
-            if helpers.isValidLink(n, n.attrib[attrib], 'tab'):
+            if util.schema.isValidLink(n, n.attrib[attrib], 'tab'):
                 exp     = '/module/%s[@%s="%s"]'
-            exp    %= n.attrib[attrib], consts.RESERVED_XML_TYPE, 'tab'
+            exp    %= n.attrib[attrib], util.consts.RESERVED_XML_TYPE, 'tab'
             matches = n.xpath(exp)
             nodeTo  = matches[0]
 
@@ -107,7 +106,7 @@ class GraphTabGroup(object):
     def __init__(self, node):
         self.node = node
 
-        self.topMatter  = '\n\t\tlabel="%s"' % helpers.getLabel(node)
+        self.topMatter  = '\n\t\tlabel="%s"' % util.ui.getLabel(node)
         self.topMatter += '\n\t\tbgcolor="lightblue"'
         self.topMatter += '\n'
 
@@ -115,7 +114,7 @@ class GraphTabGroup(object):
 
     @classmethod
     def nodeId(cls, node):
-        return "%s%s" % (cls.prefix, helpers.nodeHash(node))
+        return "%s%s" % (cls.prefix, util.schema.nodeHash(node))
 
     def getTabs(self, node):
         return [GraphTab(n) for n in getUiNodes(node, 'tab')]
@@ -144,7 +143,7 @@ class GraphTab(object):
     def __init__(self, node):
         self.node  = node
 
-        self.label = helpers.getLabel(node)
+        self.label = util.ui.getLabel(node)
 
         self.topMatter  = '\n\t\t\tlabel=""'
         self.topMatter += '\n\t\t\tbgcolor="white"'
@@ -158,11 +157,11 @@ class GraphTab(object):
 
     @classmethod
     def nodeIdLabel(cls, node):
-        return "%s%s" % (cls.prefix_label, helpers.nodeHash(node))
+        return "%s%s" % (cls.prefix_label, util.schema.nodeHash(node))
 
     @classmethod
     def nodeIdElem (cls, node):
-        return "%s%s" % (cls.prefix,       helpers.nodeHash(node))
+        return "%s%s" % (cls.prefix,       util.schema.nodeHash(node))
 
     def getGuiBlocks(self, node):
         matches  = getUiNodes(node, 'GUI/data element')
@@ -216,14 +215,14 @@ class GuiBlock(object):
     @classmethod
     def nodeIdBlock(cls, node):
         exp     = './descendant-or-self::*[@%s="%s"][1]'
-        exp    %= consts.RESERVED_XML_TYPE, 'GUI/data element'
+        exp    %= util.consts.RESERVED_XML_TYPE, 'GUI/data element'
         matches = node.xpath(exp)
         match   = matches[0]
-        return "%s%s" % (cls.prefix_block, helpers.nodeHash(match))
+        return "%s%s" % (cls.prefix_block, util.schema.nodeHash(match))
 
     @classmethod
     def nodeIdElem (cls, node):
-        return "%s%s" % (cls.prefix_elem , helpers.nodeHash(node))
+        return "%s%s" % (cls.prefix_elem , util.schema.nodeHash(node))
 
     def getBlock(self, node):
         head  = '\n\t\t\t%s [' % GuiBlock.nodeIdBlock(node)
@@ -234,18 +233,18 @@ class GuiBlock(object):
         tail += '\n\t\t\t>];'
         tail += '\n'
 
-        if node.attrib[consts.RESERVED_XML_TYPE] == 'GUI/data element':
+        if node.attrib[util.consts.RESERVED_XML_TYPE] == 'GUI/data element':
             return head + self.getElementBlock(node) + tail
-        if node.attrib[consts.RESERVED_XML_TYPE] == '<cols>':
+        if node.attrib[util.consts.RESERVED_XML_TYPE] == '<cols>':
             return head + self.getColsBlock   (node) + tail
 
         msg  = 'An unexpected %s value was encountered'
-        msg %= consts.RESERVED_XML_TYPE
+        msg %= util.consts.RESERVED_XML_TYPE
         raise ValueError(msg)
 
     def getElementBlock(self, node):
         guiBlock  = '\n\t\t\t\t\t<TR><TD PORT="%s"><IMG SRC="%s.svg"/></TD></TR>'
-        guiBlock %= GuiBlock.nodeIdElem(node), helpers.getPathString(node, '_')
+        guiBlock %= GuiBlock.nodeIdElem(node), util.schema.getPathString(node, '_')
         return guiBlock
 
     def getColsBlock(self, node):
@@ -256,7 +255,7 @@ class GuiBlock(object):
         # NORMALISATION: Take GUI/data elements which are direct descendants of
         # <cols> and put them in <col> tags.
         for i, child in enumerate(node):
-            if child.attrib[consts.RESERVED_XML_TYPE] == 'GUI/data element':
+            if child.attrib[util.consts.RESERVED_XML_TYPE] == 'GUI/data element':
                 node[i] = etree.Element('col')
                 node[i].append(child)
 
@@ -282,7 +281,7 @@ class GuiBlock(object):
                     tdElms += '\n\t\t\t\t\t\t<TD></TD>'
                 else:
                     tdElms += '\n\t\t\t\t\t\t<TD PORT="%s"><IMG SRC="%s.svg"></IMG></TD>'
-                    tdElms %= GuiBlock.nodeIdElem(node), helpers.getPathString(elm, '_')
+                    tdElms %= GuiBlock.nodeIdElem(node), util.schema.getPathString(elm, '_')
 
             guiBlock += '\n\t\t\t\t\t<TR>'
             guiBlock += tdElms
@@ -298,10 +297,10 @@ class GuiBlock(object):
 #                                  PARSE XML                                   #
 ################################################################################
 filenameModule = sys.argv[1]
-tree = helpers.parseXml(filenameModule)
-helpers.normaliseAttributes(tree)
-helpers.annotateWithTypes(tree)
-helpers.expandCompositeElements(tree)
+tree = util.xml.parseXml(filenameModule)
+util.schema.normalise(tree)
+util.schema.annotateWithTypes(tree)
+util.schema.expandCompositeElements(tree)
 
 ################################################################################
 #                        GENERATE AND OUTPUT DATASTRUCT                        #
