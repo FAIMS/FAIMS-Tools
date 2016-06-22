@@ -4,31 +4,8 @@ import copy
 import hashlib
 import re
 import tables
-
-def normaliseSpace(str):
-    str = str.split()
-    str = ' '.join(str)
-    return str
-
-def annotateWithTypes(tree):
-    for t in tables.TYPES:
-        parentType = t[0]
-        pattern    = t[1]
-        matchType  = t[2]
-
-        if   pattern == '/':
-            exp = '/*'
-            matches = tree.xpath(exp)
-        elif pattern == '/[^a-z]/':
-            exp = '//*[@%s="%s"]/*' % (consts.RESERVED_XML_TYPE, parentType)
-            matches = tree.xpath(exp)
-            matches = getNonLower(matches)
-        else:
-            exp  = '//*[@%s="%s"]/%s'
-            exp %= (consts.RESERVED_XML_TYPE, parentType, pattern)
-            matches = tree.xpath(exp)
-        flagAll(matches, consts.RESERVED_XML_TYPE, matchType)
-
+import util.schema
+import util.xml
 
 def replaceElement(element, replacements, tag='__REPLACE__'):
     replacements = replacements.replace('\n', ' ')
@@ -39,7 +16,7 @@ def replaceElement(element, replacements, tag='__REPLACE__'):
     replacements = etree.fromstring(replacements)
 
     originalSourceline = element.sourceline
-    setSourceline(replacements, originalSourceline)
+    util.xml.setSourceline(replacements, originalSourceline)
 
     # Insert each element in `replacements` at the location of `element`. The
     # phrasing is a bit opaque here because lxml *moves* nodes from
@@ -87,10 +64,6 @@ def printNotice(notice, nodes=None, expected=[]):
 
     print notice + expected + location
     print
-
-def flagAll(nodes, attrib, value):
-    for n in nodes:
-        n.attrib[attrib] = value
 
 def getExpectedTypes(table, node, reserved=False):
     attribType = '__RESERVED_XML_TYPE__'
@@ -246,8 +219,8 @@ def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaTy
                     consts.RESERVED_IGNORE
                 )
         )
-        if schemaType == 'UI'  : cond = lambda n: not isFlagged(n, 'noui')
-        if schemaType == 'data': cond = lambda n: not isFlagged(n, 'nodata')
+        if schemaType == 'UI'  : cond = lambda n: not util.schema.isFlagged(n, 'noui')
+        if schemaType == 'data': cond = lambda n: not util.schema.isFlagged(n, 'nodata')
         duplicatesAndSelf = filter(cond, duplicatesAndSelf)
 
         for original in duplicatesAndSelf: # Make sure not to re-check duplicate
@@ -272,15 +245,15 @@ def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaTy
                 duplicatesAndSelf
         )
 
-    deleteAttribFromTree(elements, consts.RESERVED_IGNORE)
+    util.xml.deleteAttribFromTree(elements, consts.RESERVED_IGNORE)
 
 def getRelName(node):
-    if not hasAttrib(node, 'lc'):
+    if not util.xml.hasAttrib(node, 'lc'):
         return None
-    if getParentTabGroup(node) == None:
+    if util.schema.getParentTabGroup(node) == None:
         return None
 
-    parentName = getParentTabGroup(node)
+    parentName = util.schema.getParentTabGroup(node)
     parentName = parentName.tag
     parentName = parentName.replace('_', ' ')
 
@@ -294,7 +267,7 @@ def expandCompositeElements(tree):
     # (1) REPLACE ELEMENTS HAVING A CERTAIN T ATTRIBUTE
     for attrib, replacements in tables.REPLACEMENTS_BY_T_ATTRIB.iteritems():
         exp     = '//*[@%s]' % consts.RESERVED_XML_TYPE
-        cond    = lambda e: guessType(e) == attrib
+        cond    = lambda e: util.schema.guessType(e) == attrib
         matches = tree.xpath(exp)
         matches = filter(cond, matches)
 
@@ -307,7 +280,7 @@ def expandCompositeElements(tree):
     if tagMatches:
         tagMatch = tagMatches[0]
 
-        cond        = lambda e: isFlagged(e, 'autonum')
+        cond        = lambda e: util.schema.isFlagged(e, 'autonum')
         exp         = './/*[@%s="%s"]'
         exp        %= consts.RESERVED_XML_TYPE, 'GUI/data element'
         flagMatches = tree.xpath(exp)
@@ -330,4 +303,4 @@ def expandCompositeElements(tree):
         for m in matches:
             replaceElement(m, replacements)
 
-    annotateWithTypes(tree)
+    util.schema.annotateWithTypes(tree)

@@ -10,7 +10,7 @@ import sys
 ################################################################################
 filenameModule = sys.argv[1]
 tree = helpers.parseXml(filenameModule)
-helpers.normaliseAttributes(tree)
+helpers.normalise(tree)
 helpers.expandCompositeElements(tree)
 
 ################################################################################

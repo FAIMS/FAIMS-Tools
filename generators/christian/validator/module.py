@@ -5,6 +5,8 @@ import helpers
 import sys
 import tables
 import util.xml
+import util.schema
+import util.arch16n
 
 ################################################################################
 #                                  PARSE XML                                   #
@@ -16,7 +18,7 @@ tree = util.xml.parseXml(filenameModule)
 print 'Done!'
 print
 
-helpers.normaliseAttributes(tree)
+util.schema.normalise(tree)
 
 ################################################################################
 #                               VALIDATE SCHEMA                                #
@@ -26,7 +28,7 @@ countWar = 0
 countErr = 0
 
 ######################### FLAG NODES WITH THEIR TYPES ##########################
-helpers.annotateWithTypes(tree)
+util.schema.annotateWithTypes(tree)
 
 # Nodes which didn't end up getting flagged...
 exp  = '//*[@%s]/*[not(@%s)]'
@@ -154,7 +156,7 @@ exp  = '//*[@%s="%s" and not(@t)]'
 exp %= (consts.RESERVED_XML_TYPE, 'GUI/data element')
 matches = tree.xpath(exp)
 for m in matches:
-    m.attrib['t'] = helpers.guessType(m)
+    m.attrib['t'] = util.schema.guessType(m)
 
     msg  = 'No value for the attribute t of the element `%s` is present.  '
     msg += 'Assuming a value of `%s`'
@@ -191,10 +193,10 @@ msg += 'binding'
 
 # Select all autonum-flagged elements which also have their b attributes set
 exp  = '//*[@b]'
-cond = lambda e: helpers.isFlagged(e, 'autonum')
+cond = lambda e: util.schema.isFlagged(e, 'autonum')
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 # Tell the user about the error(s)
 affectedNodes = matches
@@ -207,10 +209,10 @@ msg += '"autonum" flag'
 
 # Select all autonum-flagged elements which also have their b attributes set
 exp  = '//*[@c]'
-cond = lambda e: helpers.isFlagged(e, 'autonum')
+cond = lambda e: util.schema.isFlagged(e, 'autonum')
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 # Tell the user about the error(s)
 affectedNodes = matches
@@ -223,10 +225,10 @@ msg += '"notnull" flag'
 
 # Select all notnull-flagged elements which also have their b attributes set
 exp  = '//*[@c]'
-cond = lambda e: helpers.isFlagged(e, 'notnull')
+cond = lambda e: util.schema.isFlagged(e, 'notnull')
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 # Tell the user about the error(s)
 affectedNodes = matches
@@ -240,13 +242,13 @@ msg += 'may have the "user" flag'
 # Select all GUI/data elements'
 exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
 # Select all user-flagged elements from those
-cond1 = lambda e: helpers.isFlagged(e, 'user')
+cond1 = lambda e: util.schema.isFlagged(e, 'user')
 # Select all elements whose type is not dropdown nor list
-cond2 = lambda e: helpers.guessType(e) not in ('dropdown', 'list')
+cond2 = lambda e: util.schema.guessType(e) not in ('dropdown', 'list')
 matches = tree.xpath(exp)
 matches = filter(cond1, matches)
 matches = filter(cond2, matches)
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 # Tell the user about the error(s)
 affectedNodes = matches
@@ -259,10 +261,10 @@ msg  = 'Module contains more than one user login menu'
 # Select all GUI/data elements'
 exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
 # Select all user-flagged elements from those
-cond = lambda e: helpers.isFlagged(e, 'user')
+cond = lambda e: util.schema.isFlagged(e, 'user')
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 # Tell the user about the error(s)
 if len(matches) >= 2:
@@ -278,7 +280,7 @@ exp  = '//opt'
 cond = lambda e: e.text == None or e.text.strip() == ''
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 # Tell the user about the error(s)
 affectedNodes = matches
@@ -291,7 +293,7 @@ msg  = 'Elements cannot have "l" and "lc" attributes simultaneously'
 # Select all elements having l and lc attributes
 exp  = '//*[@l and @lc]'
 matches = tree.xpath(exp)
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 # Tell the user about the error(s)
 affectedNodes = matches
@@ -303,15 +305,15 @@ msg  = 'Elements are flagged with "autonum" but <autonum> tag is not present'
 
 # Select all elements flagged with autonum
 exp  = '//*'
-cond = lambda e: helpers.isFlagged(e, 'autonum')
+cond = lambda e: util.schema.isFlagged(e, 'autonum')
 matchesFlag = tree.xpath(exp)
 matchesFlag = filter(cond, matchesFlag)
-matchesFlag = helpers.filterUnannotated(matchesFlag)
+matchesFlag = util.schema.filterUnannotated(matchesFlag)
 
 # Select all <autonum> tags
 exp  = '//autonum'
 matchesTag = tree.xpath(exp)
-matchesTag = helpers.filterUnannotated(matchesTag)
+matchesTag = util.schema.filterUnannotated(matchesTag)
 
 # Tell the user about the error(s)
 if matchesFlag and not matchesTag:
@@ -326,7 +328,7 @@ msg += 'lc attribute'
 # Select all elements having @lc and @t="viewfiles"
 exp  = '//*[@lc and @t="viewfiles"]'
 matches = tree.xpath(exp)
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 # Tell the user about the error(s)
 affectedNodes = matches
@@ -338,10 +340,10 @@ msg  = 'Elements flagged with "noui" or "nodata" cannot possess the "lc" '
 msg += 'attribute'
 
 exp  = '//*[@lc]'
-cond = lambda e: helpers.isFlagged(e, ['nodata', 'noui'])
+cond = lambda e: util.schema.isFlagged(e, ['nodata', 'noui'])
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 affectedNodes = matches
 helpers.eMsg(msg, affectedNodes)
@@ -351,11 +353,11 @@ helpers.eMsg(msg, affectedNodes)
 msg  = 'Tab groups not flagged with "nodata" require at least one identifier'
 
 exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'tab group')
-cond = lambda e: not helpers.isFlagged(e, 'nodata') and \
-                 not helpers.hasElementFlaggedWithId(e)
+cond = lambda e: not util.schema.isFlagged(e, 'nodata') and \
+                 not util.schema.hasElementFlaggedWithId(e)
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 affectedNodes = matches
 helpers.eMsg(msg, affectedNodes)
@@ -368,11 +370,11 @@ msg += 'may contain <opts> tags: %s' % ', '.join(tables.MENU_TS)
 # Get <opts> tags which are the children of GUI/data elements
 exp  = '//*[@%s="%s"]/opts' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
 # Filter out <opts> tags whose element's t attrib *is* in DESC_TS
-cond = lambda e: not helpers.guessType(e.getparent()) in tables.MENU_TS
+cond = lambda e: not util.schema.guessType(e.getparent()) in tables.MENU_TS
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 # Effectively, filter out <opts> tags which were already complained about
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 affectedNodes = matches
 helpers.eMsg(msg, affectedNodes)
@@ -384,11 +386,11 @@ msg  = 'Only elements not flagged with "nodata" may contain <desc> tags'
 # Get <desc> tags
 exp  = '//desc'
 # Filter out <desc> tags not flagged with "nodata"
-cond = lambda e: helpers.isFlagged(e, 'nodata')
+cond = lambda e: util.schema.isFlagged(e, 'nodata')
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 # Effectively, filter out <desc> tags which were already complained about
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 affectedNodes = matches
 helpers.eMsg(msg, affectedNodes)
@@ -401,11 +403,11 @@ msg += 'may contain <desc> tags: %s' % ', '.join(tables.DESC_TS)
 # Get <desc> tags which are the children of GUI/data elements
 exp  = '//*[@%s="%s"]/desc' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
 # Filter out <desc> tags whose element's t attrib *is* in DESC_TS
-cond = lambda e: not helpers.guessType(e.getparent()) in tables.DESC_TS
+cond = lambda e: not util.schema.guessType(e.getparent()) in tables.DESC_TS
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 # Effectively, filter out <desc> tags which were already complained about
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 affectedNodes = matches
 helpers.eMsg(msg, affectedNodes)
@@ -421,7 +423,7 @@ matches = tree.xpath(exp)
 # ...Which also have valid relationships (and therefore valid relNames)...
 cond = lambda e: helpers.getRelName(e) != None
 matches = filter(cond, matches)
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 # ...And conflict with entries in the <rels> tags
 exp = '//rels/*[@name="%s"]'
 cond = lambda e: len(tree.xpath(exp % helpers.getRelName(e))) > 0
@@ -447,10 +449,10 @@ msg  = 'Module is missing a login menu'
 # Select all GUI/data elements'
 exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
 # Select all user-flagged elements from those
-cond = lambda e: helpers.isFlagged(e, 'user')
+cond = lambda e: util.schema.isFlagged(e, 'user')
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
-matches = helpers.filterUnannotated(matches)
+matches = util.schema.filterUnannotated(matches)
 
 # Tell the user about the error(s)
 if len(matches) == 0:
@@ -472,7 +474,7 @@ for t in types:
     exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, t)
     matches += tree.xpath(exp)
 # Retain only elements with superfluous text
-cond = lambda e: helpers.getLabelFromText(e) == helpers.getLabelFromTag(e)
+cond = lambda e: util.arch16n.getLabelFromText(e) == util.arch16n.getLabelFromTag(e)
 matches = filter(cond, matches)
 # Pretty up the output a little
 matches.sort(key=lambda e: e.sourceline)

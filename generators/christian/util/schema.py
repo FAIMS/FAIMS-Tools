@@ -5,6 +5,9 @@
 # the so called data and UI "schemas".                                         #
 #                                                                              #
 ################################################################################
+import consts
+import table
+import xml
 
 def getPath(node):
     nodeTypes = ['GUI/data element', 'tab group', 'tab']
@@ -65,6 +68,10 @@ def isFlaggedStr(element, flag, checkAncestors=True, attribName='f'):
     if checkAncestors:
         return isFlagged(element.getparent(), flag, checkAncestors, attribName)
 
+def normalise(node):
+    normaliseAttributes(node)
+    stripComments(node)
+
 def normaliseAttributes(node):
     # Don't normalise stuff in <rels>
     if node.xpath('./ancestor-or-self::rels'):
@@ -77,6 +84,13 @@ def normaliseAttributes(node):
 
     for n in node:
         normaliseAttributes(n)
+
+def stripComments(node):
+    comments = node.xpath('.//comment()')
+
+    for c in comments:
+        p = c.getparent()
+        p.remove(c)
 
 def guessType(node):
     # Don't guess the type if it's already there
@@ -120,3 +134,22 @@ def getParentTab(node):
     if matches:
         return matches[0]
     return None
+
+def annotateWithTypes(tree):
+    for t in table.TYPES:
+        parentType = t[0]
+        pattern    = t[1]
+        matchType  = t[2]
+
+        if   pattern == '/':
+            exp = '/*'
+            matches = tree.xpath(exp)
+        elif pattern == '/[^a-z]/':
+            exp = '//*[@%s="%s"]/*' % (consts.RESERVED_XML_TYPE, parentType)
+            matches = tree.xpath(exp)
+            matches = xml.getNonLower(matches)
+        else:
+            exp  = '//*[@%s="%s"]/%s'
+            exp %= (consts.RESERVED_XML_TYPE, parentType, pattern)
+            matches = tree.xpath(exp)
+        xml.flagAll(matches, consts.RESERVED_XML_TYPE, matchType)

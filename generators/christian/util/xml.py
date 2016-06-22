@@ -1,3 +1,4 @@
+import re
 from lxml import etree
 
 def parseXml(filename):
@@ -42,3 +43,7 @@ def hasAttrib(e, a):
             return True
     except:
         return False
+
+def flagAll(nodes, attrib, value):
+    for n in nodes:
+        n.attrib[attrib] = value

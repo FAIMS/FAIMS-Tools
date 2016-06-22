@@ -6,7 +6,7 @@ if [ -z $1 ]
 then
     module="$(pwd)/module.xml"
 else
-    module="$(pwd)$1"
+    module="$(pwd)/$1"
 fi
 
 cd "$thisScriptPath"

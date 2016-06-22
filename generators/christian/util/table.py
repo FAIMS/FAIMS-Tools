@@ -1,4 +1,4 @@
-import datatransformers
+import tablehelper
 
 ATTRIBS = '''
 XML TYPE      | ATTRIBUTES ALLOWED
@@ -223,8 +223,8 @@ on_and_bluetooth_connected=on and bluetooth connected
 on_and_bluetooth_disconnected=on and bluetooth disconnected
 '''
 
-ATTRIBS       = datatransformers.parseTable(ATTRIBS)
-ATTRIB_VALS   = datatransformers.parseTable(ATTRIB_VALS)
-CARDINALITIES = datatransformers.parseTable(CARDINALITIES)
-TYPES         = datatransformers.parseTable(TYPES)
+ATTRIBS       = tablehelper.parseTable(ATTRIBS)
+ATTRIB_VALS   = tablehelper.parseTable(ATTRIB_VALS)
+CARDINALITIES = tablehelper.parseTable(CARDINALITIES)
+TYPES         = tablehelper.parseTable(TYPES)
 ARCH16N       = ARCH16N.splitlines()

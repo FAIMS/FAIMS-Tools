@@ -3,11 +3,12 @@
 # This file contains utility functions related to arch16n file generation.     #
 #                                                                              #
 ################################################################################
+import util
 
 def getLabelFromTag(node):
     label = node.tag
     label = label.replace('_', ' ')
-    label = normaliseSpace(label)
+    label = util.normaliseSpace(label)
     return label
 
 def getLabelFromText(node):
@@ -15,7 +16,7 @@ def getLabelFromText(node):
     if node.text == 'opt': return ''
 
     label = node.text
-    label = normaliseSpace(label)
+    label = util.normaliseSpace(label)
     return label
 
 def getArch16nVal(node):
