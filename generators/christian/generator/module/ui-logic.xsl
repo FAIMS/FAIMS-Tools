@@ -10,7 +10,6 @@
   <xsl:template match="/">
 
 <xsl:text>import android.util.Log;
-import java.util.concurrent.ConcurrentHashMap;
 
 Object dialog;          // Used to help coordinate the display of a "busy..." dialog
 String parentTabgroup;  // Used to allow entities to be saved as children
@@ -644,20 +643,14 @@ validateFields(List fields, String format) {
 /******************************************************************************/
 /*                                 AUTOSAVING                                 */
 /******************************************************************************/
-ConcurrentHashMap tabgroupToUuid = new ConcurrentHashMap();
+Map tabgroupToUuid = Collections.synchronizedMap(new HashMap());
 
 getUuid(String tabgroup) {
-  if (isNull(tabgroup))
-    return null;
   tabgroupToUuid.get(tabgroup);
 }
 
 setUuid(String tabgroup, String uuid) {
-  if (uuid == null) {
-    tabgroupToUuid.remove(tabgroup);
-  } else {
-    tabgroupToUuid.put(tabgroup, uuid);
-  }
+  tabgroupToUuid.put(tabgroup, uuid);
 }
 
 saveTabGroup(String tabgroup) {
