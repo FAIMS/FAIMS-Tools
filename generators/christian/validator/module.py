@@ -1,12 +1,11 @@
 #!/usr/bin/env python2
 
-import consts
 import helpers
 import sys
-import tables
 import util.xml
 import util.schema
 import util.arch16n
+import util.consts
 
 ################################################################################
 #                                  PARSE XML                                   #
@@ -32,7 +31,7 @@ util.schema.annotateWithTypes(tree)
 
 # Nodes which didn't end up getting flagged...
 exp  = '//*[@%s]/*[not(@%s)]'
-exp %= (consts.RESERVED_XML_TYPE, consts.RESERVED_XML_TYPE)
+exp %= (util.consts.RESERVED_XML_TYPE, util.consts.RESERVED_XML_TYPE)
 disallowed = tree.xpath(exp)
 # ...and aren't in <rels> are disallowed
 exp  = './ancestor-or-self::rels'
@@ -43,47 +42,47 @@ disallowed = filter(cond, disallowed)
 for d in disallowed:
     msg           = 'Element `%s` disallowed here' % d.tag
     affectedNodes = [d]
-    expectedItems = helpers.getExpectedTypes(tables.TYPES, d, None)
+    expectedItems = helpers.getExpectedTypes(util.table.TYPES, d, None)
     helpers.eMsg(msg, affectedNodes, expectedItems)
 
 ############# COARSE-GRAINED VALIDATION OF ATTRIBUTES OF ELEMENTS ##############
-# Only consider nodes flagged with `consts.RESERVED_XML_TYPE`
+# Only consider nodes flagged with `util.consts.RESERVED_XML_TYPE`
 exp  = '//*[@%s]'
-exp %= (consts.RESERVED_XML_TYPE)
+exp %= (util.consts.RESERVED_XML_TYPE)
 matches = tree.xpath(exp)
 
-# Determine if nodes contain an attribute disallowed according to tables.ATTRIBS
+# Determine if nodes contain an attribute disallowed according to util.table.ATTRIBS
 disallowed = []
 for m in matches:
     mAttribs     = dict(m.attrib)
-    mXmlType     = mAttribs[consts.RESERVED_XML_TYPE]
+    mXmlType     = mAttribs[util.consts.RESERVED_XML_TYPE]
     mAttribNames = mAttribs
-    mAttribNames.pop(consts.RESERVED_XML_TYPE, None)
+    mAttribNames.pop(util.consts.RESERVED_XML_TYPE, None)
 
     for mAttribName in mAttribNames:
-        if not mAttribName in helpers.getAttributes(tables.ATTRIBS, mXmlType):
+        if not mAttribName in helpers.getAttributes(util.table.ATTRIBS, mXmlType):
             disallowed.append((mAttribName, m))
 
 # Tell the user about the error(s)
 for d in disallowed:
     disallowedAttrib   = d[0]
     disallowedNode     = d[1]
-    disallowedNodeType = d[1].attrib[consts.RESERVED_XML_TYPE]
+    disallowedNodeType = d[1].attrib[util.consts.RESERVED_XML_TYPE]
 
     msg           = 'Attribute `%s` disallowed here' % disallowedAttrib
     affectedNodes = [disallowedNode]
-    expectedItems = helpers.getAttributes(tables.ATTRIBS, disallowedNodeType)
+    expectedItems = helpers.getAttributes(util.table.ATTRIBS, disallowedNodeType)
     helpers.eMsg(msg, affectedNodes, expectedItems)
 
 ############## COARSE-GRAINED VALIDATION OF VALUES OF ATTRIBUTES ###############
-# Only consider nodes flagged with `consts.RESERVED_XML_TYPE`
-exp = '//*[@%s]' % (consts.RESERVED_XML_TYPE)
+# Only consider nodes flagged with `util.consts.RESERVED_XML_TYPE`
+exp = '//*[@%s]' % (util.consts.RESERVED_XML_TYPE)
 matches = tree.xpath(exp)
 
-# Determine if attributes contain allowed values according to tables.ATTRIB_VALS
+# Determine if attributes contain allowed values according to util.table.ATTRIB_VALS
 disallowed = []
 for m in matches:
-    disallowed.extend(helpers.disallowedAttribVals(tree, m, tables.ATTRIB_VALS))
+    disallowed.extend(helpers.disallowedAttribVals(tree, m, util.table.ATTRIB_VALS))
 
 # Tell the user about the error(s)
 for d in disallowed:
@@ -91,7 +90,7 @@ for d in disallowed:
     disallowedAttribVal = d[1]
     disallowedNode      = d[2]
 
-    ATTRIB_VALS = tables.ATTRIB_VALS
+    ATTRIB_VALS = util.table.ATTRIB_VALS
     allowedOneOf  = helpers.getAttributes(ATTRIB_VALS, disallowedAttrib, 1)
     allowedManyOf = helpers.getAttributes(ATTRIB_VALS, disallowedAttrib, 2)
     allowed       = allowedOneOf + allowedManyOf
@@ -111,14 +110,14 @@ for d in disallowed:
     helpers.eMsg(msg, affectedNodes, expectedItems)
 
 ######################## VALIDATE CARDINALITIES BY TYPE ########################
-# Only consider nodes flagged with `consts.RESERVED_XML_TYPE`
+# Only consider nodes flagged with `util.consts.RESERVED_XML_TYPE`
 disallowed = []
-for c in tables.CARDINALITIES:
+for c in util.table.CARDINALITIES:
     parentTypeName        = c[0]
     directChildContraints = c[1]
     descendantContraints  = c[2]
 
-    exp = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, parentTypeName)
+    exp = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, parentTypeName)
     matches = tree.xpath(exp)
 
     for m in matches:
@@ -153,7 +152,7 @@ for d in disallowed:
     helpers.eMsg(msg, [node])
 
 exp  = '//*[@%s="%s" and not(@t)]'
-exp %= (consts.RESERVED_XML_TYPE, 'GUI/data element')
+exp %= (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
 matches = tree.xpath(exp)
 for m in matches:
     m.attrib['t'] = util.schema.guessType(m)
@@ -240,7 +239,7 @@ msg  = 'Only elements whose t attribute is equivalent to "dropdown" or "list" '
 msg += 'may have the "user" flag'
 
 # Select all GUI/data elements'
-exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+exp  = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
 # Select all user-flagged elements from those
 cond1 = lambda e: util.schema.isFlagged(e, 'user')
 # Select all elements whose type is not dropdown nor list
@@ -259,7 +258,7 @@ helpers.eMsg(msg, affectedNodes)
 msg  = 'Module contains more than one user login menu'
 
 # Select all GUI/data elements'
-exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+exp  = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
 # Select all user-flagged elements from those
 cond = lambda e: util.schema.isFlagged(e, 'user')
 matches = tree.xpath(exp)
@@ -352,7 +351,7 @@ helpers.eMsg(msg, affectedNodes)
 
 msg  = 'Tab groups not flagged with "nodata" require at least one identifier'
 
-exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'tab group')
+exp  = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'tab group')
 cond = lambda e: not util.schema.isFlagged(e, 'nodata') and \
                  not util.schema.hasElementFlaggedWithId(e)
 matches = tree.xpath(exp)
@@ -365,12 +364,12 @@ helpers.eMsg(msg, affectedNodes)
 ################################################################################
 
 msg  = 'Only elements whose t attribute is equivalent to one of the following '
-msg += 'may contain <opts> tags: %s' % ', '.join(tables.MENU_TS)
+msg += 'may contain <opts> tags: %s' % ', '.join(util.table.MENU_TS)
 
 # Get <opts> tags which are the children of GUI/data elements
-exp  = '//*[@%s="%s"]/opts' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+exp  = '//*[@%s="%s"]/opts' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
 # Filter out <opts> tags whose element's t attrib *is* in DESC_TS
-cond = lambda e: not util.schema.guessType(e.getparent()) in tables.MENU_TS
+cond = lambda e: not util.schema.guessType(e.getparent()) in util.table.MENU_TS
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 # Effectively, filter out <opts> tags which were already complained about
@@ -398,12 +397,12 @@ helpers.eMsg(msg, affectedNodes)
 ################################################################################
 
 msg  = 'Only elements whose t attribute is equivalent to one of the following '
-msg += 'may contain <desc> tags: %s' % ', '.join(tables.DESC_TS)
+msg += 'may contain <desc> tags: %s' % ', '.join(util.table.DESC_TS)
 
 # Get <desc> tags which are the children of GUI/data elements
-exp  = '//*[@%s="%s"]/desc' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+exp  = '//*[@%s="%s"]/desc' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
 # Filter out <desc> tags whose element's t attrib *is* in DESC_TS
-cond = lambda e: not util.schema.guessType(e.getparent()) in tables.DESC_TS
+cond = lambda e: not util.schema.guessType(e.getparent()) in util.table.DESC_TS
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 # Effectively, filter out <desc> tags which were already complained about
@@ -447,7 +446,7 @@ for m in matches:
 msg  = 'Module is missing a login menu'
 
 # Select all GUI/data elements'
-exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+exp  = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
 # Select all user-flagged elements from those
 cond = lambda e: util.schema.isFlagged(e, 'user')
 matches = tree.xpath(exp)
@@ -471,7 +470,7 @@ types = [
 # Make list of nodes whose type is in `types`
 matches = []
 for t in types:
-    exp  = '//*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, t)
+    exp  = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, t)
     matches += tree.xpath(exp)
 # Retain only elements with superfluous text
 cond = lambda e: util.arch16n.getLabelFromText(e) == util.arch16n.getLabelFromTag(e)

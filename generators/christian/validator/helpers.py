@@ -1,11 +1,10 @@
 from   lxml import etree
-import consts
 import copy
 import hashlib
 import re
-import tables
 import util.schema
 import util.xml
+import util.consts
 
 def replaceElement(element, replacements, tag='__REPLACE__'):
     replacements = replacements.replace('\n', ' ')
@@ -178,7 +177,7 @@ def satisfiesTypeCardinalityConstraint(parent, constraint, children='direct'):
         children = './/'
     matches = parent.xpath(
             '%s*[@%s="%s"]' %
-            (children, consts.RESERVED_XML_TYPE, type)
+            (children, util.consts.RESERVED_XML_TYPE, type)
     )
 
     if min != None and len(matches) < min: return False
@@ -207,16 +206,16 @@ def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaTy
 
     elements = tree.xpath(
             '//*[@%s="%s"]' %
-            (consts.RESERVED_XML_TYPE, nodeTypeChild)
+            (util.consts.RESERVED_XML_TYPE, nodeTypeChild)
     )
 
     for original in elements:
         duplicatesAndSelf = original.xpath(
                 './ancestor::*[@%s="%s"]//%s[@%s="%s" and not(@%s="true")]' %
                 (
-                    consts.RESERVED_XML_TYPE, nodeTypeParent, original.tag,
-                    consts.RESERVED_XML_TYPE, nodeTypeChild,
-                    consts.RESERVED_IGNORE
+                    util.consts.RESERVED_XML_TYPE, nodeTypeParent, original.tag,
+                    util.consts.RESERVED_XML_TYPE, nodeTypeChild,
+                    util.consts.RESERVED_IGNORE
                 )
         )
         if schemaType == 'UI'  : cond = lambda n: not util.schema.isFlagged(n, 'noui')
@@ -224,7 +223,7 @@ def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaTy
         duplicatesAndSelf = filter(cond, duplicatesAndSelf)
 
         for original in duplicatesAndSelf: # Make sure not to re-check duplicate
-            original.attrib[consts.RESERVED_IGNORE] = "true"
+            original.attrib[util.consts.RESERVED_IGNORE] = "true"
         if len(duplicatesAndSelf) <= 1:
             continue # If this runs, no duplicates were found
 
@@ -245,7 +244,7 @@ def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaTy
                 duplicatesAndSelf
         )
 
-    util.xml.deleteAttribFromTree(elements, consts.RESERVED_IGNORE)
+    util.xml.deleteAttribFromTree(elements, util.consts.RESERVED_IGNORE)
 
 def getRelName(node):
     if not util.xml.hasAttrib(node, 'lc'):
@@ -265,8 +264,8 @@ def getRelName(node):
 
 def expandCompositeElements(tree):
     # (1) REPLACE ELEMENTS HAVING A CERTAIN T ATTRIBUTE
-    for attrib, replacements in tables.REPLACEMENTS_BY_T_ATTRIB.iteritems():
-        exp     = '//*[@%s]' % consts.RESERVED_XML_TYPE
+    for attrib, replacements in util.table.REPLACEMENTS_BY_T_ATTRIB.iteritems():
+        exp     = '//*[@%s]' % util.consts.RESERVED_XML_TYPE
         cond    = lambda e: util.schema.guessType(e) == attrib
         matches = tree.xpath(exp)
         matches = filter(cond, matches)
@@ -282,11 +281,11 @@ def expandCompositeElements(tree):
 
         cond        = lambda e: util.schema.isFlagged(e, 'autonum')
         exp         = './/*[@%s="%s"]'
-        exp        %= consts.RESERVED_XML_TYPE, 'GUI/data element'
+        exp        %= util.consts.RESERVED_XML_TYPE, 'GUI/data element'
         flagMatches = tree.xpath(exp)
         flagMatches = filter(cond, flagMatches)
 
-        replacements = tables.REPLACEMENTS_BY_TAG['autonum'] * len(flagMatches)
+        replacements = util.table.REPLACEMENTS_BY_TAG['autonum'] * len(flagMatches)
         replacements = replaceElement(tagMatch, replacements)
 
         for autonumDest, autonumSrc in zip(flagMatches, replacements):
@@ -297,8 +296,8 @@ def expandCompositeElements(tree):
             autonumSrc.tag = haystack.replace(needle, replacement)
 
     # Replace non-<autonum> tags similarly to in (1).
-    for tag, replacements in tables.REPLACEMENTS_BY_TAG.iteritems():
-        exp = '//%s[@%s]' % (tag, consts.RESERVED_XML_TYPE)
+    for tag, replacements in util.table.REPLACEMENTS_BY_TAG.iteritems():
+        exp = '//%s[@%s]' % (tag, util.consts.RESERVED_XML_TYPE)
         matches = tree.xpath(exp)
         for m in matches:
             replaceElement(m, replacements)
