@@ -33,10 +33,10 @@ cd - >/dev/null
 ############################ PERFORM THE TRANSFORMS ############################
 mkdir -p "$modulePath/module"
 mkdir -p "$modulePath/wireframe"
-mkdir -p "$modulePath/test"
 
 python2 -m generator.module.arch16n    $module >"$modulePath/module/english.0.properties"
 python2 -m generator.module.dataschema $module >"$modulePath/module/data_schema.xml"
+python2 -m generator.module.test       $module >"$modulePath/module/ModuleUtil.java"
 $proc1  "$thisScriptPath/generator/module/ui-logic.xsl"   $module >"$modulePath/module/ui_logic.bsh"
 $proc1  "$thisScriptPath/generator/module/ui-schema.xsl"  $module >"$modulePath/module/ui_schema.xml"
 python2 -m generator.module.uistyling  $module >"$modulePath/module/ui_styling.css"
@@ -50,8 +50,6 @@ cd "$modulePath/wireframe/"
 chmod +x wireframeElements.sh
 ./wireframeElements.sh
 cd - >/dev/null
-
-python2 -m generator.module.test    $module >"$modulePath/test/ModuleUtil.java"
 
 ####################### HANDLE PRE-PROCESSING DIRECTIVE ########################
 # This is the clean up step mentioned near the start of this script            #
