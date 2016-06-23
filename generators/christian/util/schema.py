@@ -127,16 +127,20 @@ def hasElementFlaggedWithId(tabGroup):
 def getParentTabGroup(node):
     exp = './ancestor::*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'tab group')
     matches = node.xpath(exp)
-    if matches:
-        return matches[0]
-    return None
+    if matches: return matches[0]
+    else:       return None
 
 def getParentTab(node):
     exp = './ancestor::*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'tab')
     matches = node.xpath(exp)
-    if matches:
-        return matches[0]
-    return None
+    if matches: return matches[0]
+    else:       return None
+
+def getParentGuiDataElement(node):
+    exp = './ancestor::*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, 'GUI/data element')
+    matches = node.xpath(exp)
+    if matches: return matches[0]
+    else:       return None
 
 def annotateWithTypes(tree):
     for t in table.TYPES:

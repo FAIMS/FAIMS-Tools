@@ -42,17 +42,22 @@ def flagAll(nodes, attrib, value):
     for n in nodes:
         n.attrib[attrib] = value
 
+def getIndex(node):
+    parent = node.getparent()
+    if parent == None: return 0
+    else:              return parent.index(node)
+
 def getPath(node):
     if node == None:
         return []
     else:
-        index = node.getparent().index(node)
-        return getPath(node.getparent()) + [index]
+        indexString = str(getIndex(node))
+        return getPath(node.getparent()) + [indexString]
 
 def getPathString(node, sep='/'):
     return sep.join(getPath(node))
 
-def nodeHash(node):
+def nodeHash(node, hashLen=10):
     path = getPathString(node)
     hash = hashlib.sha256(path)
     hash = hash.hexdigest()

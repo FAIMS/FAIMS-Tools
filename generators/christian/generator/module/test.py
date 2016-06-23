@@ -10,7 +10,7 @@ def getUiNodes(node, xmlType):
     matches = filter(cond, matches)
     return matches
 
-// TODO: Safely handle case where dashes are included in function name
+# TODO: Safely handle case where dashes are included in function name
 def functionName(node):
     return 'get_' + node.tag
 

@@ -3,42 +3,60 @@
 # This file contains utility functions related to arch16n file generation.     #
 #                                                                              #
 ################################################################################
-import util
+import hashlib
 import schema
+import util
+import xml
 
 def getLabelFromTag(node):
+    if node.text == 'opt':
+        return ''
+
     label = node.tag
     label = label.replace('_', ' ')
     label = util.normaliseSpace(label)
     return label
 
 def getLabelFromText(node):
-    if node.text == None:  return ''
-    if node.text == 'opt': return ''
+    if node.text == None:
+        return ''
 
     label = node.text
     label = util.normaliseSpace(label)
     return label
 
+def hasArch16Entry(node):
+    if node.xpath('./ancestor-or-self::rels'): return False
+    if schema.isFlagged(node, 'nolabel'):      return False
+
+    if node.tag == 'autonum':                  return False
+    if node.tag == 'col':                      return False
+    if node.tag == 'cols':                     return False
+    if node.tag == 'desc':                     return False
+    if node.tag == 'logic':                    return False
+    if node.tag == 'module':                   return False
+    if node.tag == 'opts':                     return False
+
+    return True
+
 def getArch16nVal(node):
-    if node.xpath('./ancestor-or-self::rels'): return ''
-    if schema.isFlagged(node, 'nolabel'):             return ''
+    if not hasArch16Entry(node): return ''
 
-    if node.tag == 'autonum':                  return ''
-    if node.tag == 'col':                      return ''
-    if node.tag == 'cols':                     return ''
-    if node.tag == 'desc':                     return ''
-    if node.tag == 'logic':                    return ''
-    if node.tag == 'module':                   return ''
-    if node.tag == 'opts':                     return ''
+    if node.tag == 'author':     return 'Author'
+    if node.tag == 'search':     return 'Search'
+    if node.tag == 'timestamp':  return 'Timestamp'
 
-    if node.tag == 'author':                   return 'Author'
-    if node.tag == 'search':                   return 'Search'
-    if node.tag == 'timestamp':                return 'Timestamp'
+    return getLabelFromText(node) or getLabelFromTag(node)
 
-    if getLabelFromText(node):
-        return getLabelFromText(node)
-    return getLabelFromTag(node)
+def getArch16nKey(node, keyLen=10):
+    if node.tag == 'opt': lastSegment = [node.text]
+    else:                 lastSegment = []
 
-def getArch16nKey(node):
-    return getArch16nVal(node).replace(' ', '_')
+    path = schema.getPath(node) + lastSegment
+    path = '/'.join(path)
+
+    hash = hashlib.sha256(path)
+    hash = hash.hexdigest()
+    hash = hash[:keyLen]
+
+    return hash

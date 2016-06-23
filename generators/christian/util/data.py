@@ -52,10 +52,8 @@ def hasVocabType(node):
     return schema.guessType(node) in vocabTypes
 
 def getRelName(node):
-    if not schema.hasAttrib(node, 'lc'):
-        return None
-    if schema.getParentTabGroup(node) == None:
-        return None
+    if not schema.hasAttrib(node, 'lc'):       return None
+    if schema.getParentTabGroup(node) == None: return None
 
     parentName = schema.getParentTabGroup(node)
     parentName = parentName.tag
