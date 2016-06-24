@@ -38,7 +38,7 @@ python2 -m generator.module.arch16n    $module >"$modulePath/module/english.0.pr
 python2 -m generator.module.dataschema $module >"$modulePath/module/data_schema.xml"
 python2 -m generator.module.test       $module >"$modulePath/module/ModuleUtil.java"
 $proc1  "$thisScriptPath/generator/module/ui-logic.xsl"   $module >"$modulePath/module/ui_logic.bsh"
-$proc1  "$thisScriptPath/generator/module/ui-schema.xsl"  $module >"$modulePath/module/ui_schema.xml"
+python2 -m generator.module.uischema   $module >"$modulePath/module/ui_schema.xml"
 python2 -m generator.module.uistyling  $module >"$modulePath/module/ui_styling.css"
 python2 -m generator.module.validation $module >"$modulePath/module/validation.xml"
 

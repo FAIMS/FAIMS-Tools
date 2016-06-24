@@ -6,13 +6,6 @@ import sys
 import util.schema
 import util.ui
 
-def getUiNodes(node, xmlType):
-    exp     = './*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, xmlType)
-    cond    = lambda e: not util.schema.isFlagged(e, 'noui')
-    matches = node.xpath(exp)
-    matches = filter(cond, matches)
-    return matches
-
 ################################################################################
 
 class GraphModule(object):
@@ -34,7 +27,7 @@ class GraphModule(object):
         self.links     = self.getLinks    (node)
 
     def getTabGroups(self, node):
-        return [GraphTabGroup(n) for n in getUiNodes(node, 'tab group')]
+        return [GraphTabGroup(n) for n in util.ui.getUiNodes(node, 'tab group')]
 
     def getLinks(self, node):
         links  = self.getTabLabelLinks     (node)
@@ -44,9 +37,9 @@ class GraphModule(object):
     def getTabLabelLinks(self, node):
         links = ['/* Tab label links */']
 
-        tabGroups = getUiNodes(node, 'tab group')
+        tabGroups = util.ui.getUiNodes(node, 'tab group')
         for tabGroup in tabGroups:
-            tabs = getUiNodes(tabGroup, 'tab')
+            tabs = util.ui.getUiNodes(tabGroup, 'tab')
             for i in range(len(tabs) - 1):
                 tabFrom = tabs[i  ]; idFrom = GraphTab.nodeId(tabFrom)
                 tabTo   = tabs[i+1]; idTo   = GraphTab.nodeId(tabTo  )
@@ -117,7 +110,7 @@ class GraphTabGroup(object):
         return "%s%s" % (cls.prefix, util.schema.nodeHash(node))
 
     def getTabs(self, node):
-        return [GraphTab(n) for n in getUiNodes(node, 'tab')]
+        return [GraphTab(n) for n in util.ui.getUiNodes(node, 'tab')]
 
     def toString(self):
         tabs = ''
@@ -164,8 +157,8 @@ class GraphTab(object):
         return "%s%s" % (cls.prefix,       util.schema.nodeHash(node))
 
     def getGuiBlocks(self, node):
-        matches  = getUiNodes(node, 'GUI/data element')
-        matches += getUiNodes(node, '<cols>')
+        matches  = util.ui.getUiNodes(node, 'GUI/data element')
+        matches += util.ui.getUiNodes(node, '<cols>')
         matches  = sorted(matches, key=lambda e: e.getparent().index(e))
         return [GuiBlock(n) for n in matches]
 

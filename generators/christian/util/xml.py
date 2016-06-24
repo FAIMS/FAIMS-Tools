@@ -63,3 +63,18 @@ def nodeHash(node, hashLen=10):
     hash = hash.hexdigest()
     hash = hash[:hashLen]
     return hash
+
+def replaceElement(element, replacements):
+    # Insert each element in `replacements` at the location of `element`. The
+    # phrasing is a bit opaque here because lxml *moves* nodes from
+    # `replacements` instead of copying them, when `insert(index, r)` is called.
+    returnVal = []
+    index = element.getparent().index(element)
+    while len(replacements):
+        r = replacements[-1]
+        element.getparent().insert(index, r)
+
+        returnVal.append(r)
+
+    element.getparent().remove(element)
+    return returnVal

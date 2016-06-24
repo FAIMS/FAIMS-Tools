@@ -1,14 +1,8 @@
 #!/usr/bin/env python2
 import sys
 import util.schema
+import util.ui
 import util.xml
-
-def getUiNodes(node, xmlType):
-    exp     = './/*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, xmlType)
-    cond    = lambda e: not util.schema.isFlagged(e, 'noui')
-    matches = node.xpath(exp)
-    matches = filter(cond, matches)
-    return matches
 
 # TODO: Safely handle case where dashes are included in function name
 def functionName(node):
@@ -42,7 +36,7 @@ def moduleToString(node):
     topMatter += '\n'
     topMatter += 'public class ModuleUtil {\n'
 
-    uiNodes   = getUiNodes(node, 'GUI/data element')
+    uiNodes   = util.ui.getUiNodes(node, 'GUI/data element')
     functions = [uiElementToString(n) for n in uiNodes]
     functions = '\n'.join(functions)
 

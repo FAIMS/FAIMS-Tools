@@ -205,19 +205,7 @@ def replaceElement(element, replacements, tag='__REPLACE__'):
     originalSourceline = element.sourceline
     xml.setSourceline(replacements, originalSourceline)
 
-    # Insert each element in `replacements` at the location of `element`. The
-    # phrasing is a bit opaque here because lxml *moves* nodes from
-    # `replacements` instead of copying them, when `insert(index, r)` is called.
-    returnVal = []
-    index = element.getparent().index(element)
-    while len(replacements):
-        r = replacements[-1]
-        element.getparent().insert(index, r)
-
-        returnVal.append(r)
-
-    element.getparent().remove(element)
-    return returnVal
+    return xml.replaceElement(element, replacements)
 
 def hasAttrib(e, a):
     try:

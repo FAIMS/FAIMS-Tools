@@ -9,7 +9,7 @@ GUI/data element   | b, c, e, ec, f, l, lc, t
 <cols>        | f
 <opts>        |
 <str>         |
-<col>         | f
+<col>         | f, s
 <opt>         | p
 <app>         |
 <author>      |
@@ -154,13 +154,17 @@ REPLACEMENTS_BY_TAG = {
                        <Longitude    t="input" f="readonly"/> \
                        <Northing     t="input" f="readonly"/> \
                        <Easting      t="input" f="readonly"/>',
-        'search'    : '<Search f="readonly nodata">    \
-                         <cols>                        \
-                           <Search_Term t="input"/>    \
-                           <Search_Button t="button"/> \
-                         </cols>                       \
-                         <Entity_Types t="input"/>     \
-                         <Entity_List t="list"/>       \
+        'search'    : '<Search f="readonly nodata">      \
+                         <cols>                          \
+                           <col s="even">                \
+                             <Search_Term t="input"/>    \
+                           </col>                        \
+                           <col s="large">               \
+                             <Search_Button t="button"/> \
+                           </col>                        \
+                         </cols>                         \
+                         <Entity_Types t="input"/>       \
+                         <Entity_List t="list"/>         \
                        </Search>',
         'timestamp' : '<Timestamp t="input" f="readonly nodata"/>'
 }

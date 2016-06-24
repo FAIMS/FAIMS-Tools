@@ -4,6 +4,7 @@
 #                                                                              #
 ################################################################################
 import arch16n
+import consts
 import schema
 
 def getLabel(node):
@@ -14,3 +15,9 @@ def isUiElement(node):
     if not schema.hasAttrib(node, consts.RESERVED_XML_TYPE): return False
     return node[consts.RESERVED_XML_TYPE] == 'GUI/data element'
 
+def getUiNodes(node, xmlType):
+    exp     = './/*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, xmlType)
+    cond    = lambda e: not schema.isFlagged(e, 'noui')
+    matches = node.xpath(exp)
+    matches = filter(cond, matches)
+    return matches
