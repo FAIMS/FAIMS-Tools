@@ -5,7 +5,7 @@ import util.schema
 import util.ui
 import util.xml
 
-# The namespaces uses in the UI schema must be defined here to help us search
+# The namespaces used in the UI schema must be defined here to help us search
 # through the uischema-template.xml using xpath.
 NS = {'x': 'http://www.w3.org/2002/xforms'}
 
