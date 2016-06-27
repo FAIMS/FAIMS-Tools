@@ -15,24 +15,31 @@ def getModel(node):
     tabGroups      = util.ui.getUiNodes(node, 'tab group')
     modelTabGroups = [getModelTabGroup(n) for n in tabGroups]
 
-    modelContainer = etree.Element('modelContainer')
-    for tg in modelTabGroups:
-        modelContainer.append(tg)
+    model = etree.Element('modelContainer')
+    model.extend(modelTabGroups)
 
-    return modelContainer
+    return model
 
 def getModelTabGroup(node):
     tabs      = util.ui.getUiNodes(node, 'tab')
     modelTabs = [getModelTab(n) for n in tabs]
 
     modelTabGroup = etree.Element(node.tag)
-    for t in modelTabs:
-        modelTabGroup.append(t)
+    modelTabGroup.extend(modelTabs)
 
     return modelTabGroup
 
 def getModelTab(node):
-    return etree.Element(node.tag)
+    #tabs            = util.ui.getUiNodes(node, 'tab')
+    #modelUiElements = [getModelUiElements(n) for n in tabs]
+
+    modelTab = etree.Element(node.tag)
+    #modelTab.extend(modelUiElements)
+
+    return modelTab
+
+def getModelUiElements(node):
+    pass
 
 ############################## BINDING GENERATION ##############################
 

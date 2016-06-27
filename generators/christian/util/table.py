@@ -1,27 +1,27 @@
 import tablehelper
 
 ATTRIBS = '''
-XML TYPE      | ATTRIBUTES ALLOWED
-module        | suppressWarnings
-tab group     | f
-tab           | f
-GUI/data element   | b, c, e, ec, f, l, lc, t
-<cols>        | f
-<opts>        |
-<str>         |
-<col>         | f, s
-<opt>         | p
-<app>         |
-<author>      |
-<autonum>     |
-<desc>        |
-<fmt>         |
-<gps>         |
-<logic>       |
-<pos>         |
-<rels>        |
-<search>      |
-<timestamp>   |
+XML TYPE           | ATTRIBUTES ALLOWED
+module             | suppressWarnings
+tab group          | f
+tab                | f
+GUI/data element   | b, c, e, ec, f, l, lc, t, s
+<cols>             | f
+<opts>             |
+<str>              |
+<col>              | f
+<opt>              | p
+<app>              |
+<author>           |
+<autonum>          |
+<desc>             |
+<fmt>              |
+<gps>              |
+<logic>            |
+<pos>              |
+<rels>             |
+<search>           |
+<timestamp>        |
 '''
 
 ATTRIB_VALS = '''
@@ -154,17 +154,17 @@ REPLACEMENTS_BY_TAG = {
                        <Longitude    t="input" f="readonly"/> \
                        <Northing     t="input" f="readonly"/> \
                        <Easting      t="input" f="readonly"/>',
-        'search'    : '<Search f="readonly nodata">      \
-                         <cols>                          \
-                           <col s="even">                \
-                             <Search_Term t="input"/>    \
-                           </col>                        \
-                           <col s="large">               \
-                             <Search_Button t="button"/> \
-                           </col>                        \
-                         </cols>                         \
-                         <Entity_Types t="input"/>       \
-                         <Entity_List t="list"/>         \
+        'search'    : '<Search f="readonly nodata">           \
+                         <Colgroup_0 t="group">               \
+                           <Col_0    t="group" s="even">      \
+                             <Search_Term t="input"/>         \
+                           </Col_0>                           \
+                           <Col_1    t="group" s="large">     \
+                             <Search_Button t="button"/>      \
+                           </Col_1>                           \
+                         </Colgroup_0>                        \
+                         <Entity_Types t="input"/>            \
+                         <Entity_List t="list"/>              \
                        </Search>',
         'timestamp' : '<Timestamp t="input" f="readonly nodata"/>'
 }
