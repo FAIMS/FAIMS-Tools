@@ -464,13 +464,13 @@
       <label/>
       <group ref="Col_0" faims_style="even">
         <label/>
-        <input ref="Latitude" faims_attribute_name="Latitude" faims_attribute_type="measure" faims_read_only="true">
+        <input ref="Latitude" faims_attribute_name="Latitude" faims_attribute_type="measure" faims_read_only="true" faims_certainty="false">
           <xsl:if test="count(..//Latitude) &gt;= 1 or count(..//gps) &gt;= 2">
             <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
           </xsl:if>
           <label>{Latitude}</label>
         </input>
-        <input ref="Northing" faims_attribute_name="Northing" faims_attribute_type="measure" faims_read_only="true">
+        <input ref="Northing" faims_attribute_name="Northing" faims_attribute_type="measure" faims_read_only="true" faims_certainty="false">
           <xsl:if test="count(..//Northing) &gt;= 1 or count(..//gps) &gt;= 2">
             <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
           </xsl:if>
@@ -479,13 +479,13 @@
       </group>
       <group ref="Col_1" faims_style="even">
         <label/>
-        <input ref="Longitude" faims_attribute_name="Longitude" faims_attribute_type="measure" faims_read_only="true">
+        <input ref="Longitude" faims_attribute_name="Longitude" faims_attribute_type="measure" faims_read_only="true" faims_certainty="false">
           <xsl:if test="count(..//Longitude) &gt;= 1 or count(..//gps) &gt;= 2">
             <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
           </xsl:if>
           <label>{Longitude}</label>
         </input>
-        <input ref="Easting" faims_attribute_name="Easting" faims_attribute_type="measure" faims_read_only="true">
+        <input ref="Easting" faims_attribute_name="Easting" faims_attribute_type="measure" faims_read_only="true" faims_certainty="false">
           <xsl:if test="count(..//Easting) &gt;= 1 or count(..//gps) &gt;= 2">
             <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
           </xsl:if>
