@@ -9,13 +9,16 @@
 
   <xsl:template match="/">
     <xsl:for-each select="//*[
+      not(name() = 'app') and
       not(name() = 'autonum') and
       not(name() = 'col') and
       not(name() = 'cols') and
       not(name() = 'desc') and
+      not(name() = 'fmt') and
+      not(name() = 'logic') and
       not(name() = 'module') and
       not(name() = 'opts') and
-      not(name() = 'logic') and
+      not(name() = 'str') and
       not(ancestor-or-self::rels) and
       not(contains(@f, 'nolabel'))]">
         <xsl:variable name="arch16n-key">
