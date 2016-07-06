@@ -1302,12 +1302,12 @@ search(){
     </xsl:if>
 
     <!-- Take From GPS Button -->
-    <xsl:if test="/module/*/*/gps">
       <xsl:text>
 /******************************************************************************/
 /*                          TAKE FROM GPS BUTTON(S)                           */
 /******************************************************************************/
 </xsl:text>
+    <xsl:if test="/module/*/*/gps">
 <xsl:call-template name="take-from-gps-bindings"/>
 <xsl:text>
 /* Takes the current point using gps. */
@@ -1376,7 +1376,9 @@ fillInGPS(String tabgroup) {
     }
   });
 }
-
+</xsl:text>
+    </xsl:if>
+<xsl:text>
 clearGpsInTabGroup(String tabgroup) {
 </xsl:text>
     <xsl:call-template name="take-from-gps-mappings"/>
@@ -1396,7 +1398,6 @@ clearGpsInTab(String tabRef) {
   setFieldValue(tabRef + "Northing"  , "");
 }
 </xsl:text>
-    </xsl:if>
 
     <xsl:if test="//*[contains(@f, 'autonum')] and not(//autonum)">
       <xsl:text>// ERROR: field(s) flagged with 'autonum' but no autonum tag exists</xsl:text>
