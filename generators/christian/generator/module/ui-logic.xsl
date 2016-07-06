@@ -1376,6 +1376,25 @@ fillInGPS(String tabgroup) {
     }
   });
 }
+
+clearGpsInTabGroup(String tabgroup) {
+</xsl:text>
+    <xsl:call-template name="take-from-gps-mappings"/>
+<xsl:text>
+
+  String tabRef = tabgroupToTabRef.get(tabgroup);
+  if (isNull(tabRef)) return;
+
+  clearGpsInTab(tabRef);
+}
+
+clearGpsInTab(String tabRef) {
+  setFieldValue(tabRef + "Accuracy"  , "");
+  setFieldValue(tabRef + "Latitude"  , "");
+  setFieldValue(tabRef + "Longitude" , "");
+  setFieldValue(tabRef + "Easting"   , "");
+  setFieldValue(tabRef + "Northing"  , "");
+}
 </xsl:text>
     </xsl:if>
 
@@ -1812,6 +1831,9 @@ bindOnEvents();
     <xsl:value-of select="$newline"/>
     <xsl:value-of select="$newline"/>
     <xsl:call-template name="tabgroup-duplicate-incautonum"/>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  clearGpsInTabGroup(tabgroup);</xsl:text>
+    <xsl:value-of select="$newline"/>
     <xsl:value-of select="$newline"/>
     <xsl:call-template name="tabgroup-duplicate-exclusions-1" />
 <xsl:text>
