@@ -1020,7 +1020,7 @@ addNavigationButtons(String tabgroup) {
       "{New}";
     }
     actionOn() {
-      if(!isNull(getUuid(tabgroup))) {
+      if(isNull(getUuid(tabgroup))) {
           newRecord(tabgroup);
           showToast("{New_record_created}");
       } else {
@@ -1338,8 +1338,8 @@ takePoint(String tabgroup) {
   ArrayList geolist = new ArrayList();
   geolist.add(samplePoint);
 
-  String accuracy = "Accuracy: " + getGPSEstimatedAccuracy();
-  setFieldAnnotation(tabgroupToTabRef.get(tabgroup) + "Latitude", accuracy);
+  String accuracy = "" + getGPSEstimatedAccuracy();
+  setFieldValue(tabgroupToTabRef.get(tabgroup) + "Accuracy", accuracy);
 
   saveArchEnt(currentUuid, archEntType, geolist, null, new SaveCallback() {
     onSave(uuid, newRecord) {
@@ -1417,20 +1417,19 @@ incField(String ref) {
 
 addOnEvent("</xsl:text><xsl:call-template name="autonum-parent"/><xsl:text>", "show", "onShowAutonum()");
 
-/* This function should only be called once since it creates event handlers,
- * otherwise multiple copies of the same handler will trigger with the event.
- */
-onShowAutonum() {
+getStartingIdPaths() {
   List l = new ArrayList();
 </xsl:text>
       <xsl:call-template name="control-starting-id-paths"/>
 <xsl:text>
+  return l;
+}
+
+onShowAutonum() {
+  List l = getStartingIdPaths();
 
   for (ref : l) {
     loadStartingId(ref);
-  }
-  for (ref : l) {
-    onFocus(ref, null,  "insertIntoLocalSettings(\"" + ref + "\", getFieldValue(\"" + ref + "\"));");
   }
 }
 
@@ -1438,13 +1437,17 @@ loadStartingId(String ref) {
   String idQ = "SELECT value FROM localSettings WHERE key = '" + ref + "';";
   fetchOne(idQ, new FetchCallback() {
     onFetch(result) {
-      if (!isNull(result)) {
-        setFieldValue(ref, result.get(0));
-      } else {
-        setFieldValue(ref, "1");
-      }
+      if (isNull(result)) setFieldValue(ref, "1"          );
+      else                setFieldValue(ref, result.get(0));
     }
   });
+}
+
+/*
+ * Sets bindings to save autonum'd fields whenever they're blurred.
+ */
+for (ref : getStartingIdPaths()) {
+  onFocus(ref, null, "insertIntoLocalSettings(\"" + ref + "\", getFieldValue(\"" + ref + "\"));");
 }
 
 </xsl:text>

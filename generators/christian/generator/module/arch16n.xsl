@@ -116,7 +116,6 @@ Disable_Sync=Disable Sync
 Duplicate=Duplicate
 Duplicated_record=Duplicated Record
 Easting=Easting
-Easting=Easting
 Enable_External_GPS=Enable External GPS
 Enable_Internal_GPS=Enable Internal GPS
 Enable_Sync=Enable Sync
