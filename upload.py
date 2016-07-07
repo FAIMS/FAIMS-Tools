@@ -11,7 +11,7 @@ import urllib2
 
 ################################################################################
 
-filenameArch16n    = 'faims.0.properties'
+filenameArch16n    = 'english.0.properties'
 filenameCss        = 'ui_styling.css'
 filenameDataSchema = 'data_schema.xml'
 filenameUiLogic    = 'ui_logic.bsh'
@@ -44,9 +44,15 @@ else:
     # Set module location to that of this script
     moduleLocation = os.path.realpath(__file__)
     moduleLocation = os.path.dirname(moduleLocation)
-# Determine module name
+
+# Determine module name using a heuristic. If the module is in a (parent)
+# directory called 'module', it's generally reasonable to assume that
+# directory was created by the autogen. In that case, the name of the
+# grandparent directory is probably a more apt name for the module. (Though this
+# heuristic could fail in a ridiculous way.)
 moduleName = moduleLocation.split(os.sep)
-moduleName = moduleName[-1]
+if moduleName[-1] == 'module': moduleName = moduleName[-2]
+else:                          moduleName = moduleName[-1]
 
 # Check that all the given paths really exist
 if not os.path.exists(moduleLocation):
