@@ -62,6 +62,20 @@ setFieldValueFromLocalSettings(String key, String ref) {
   });
 }
 
+// Regex-free string replacement function
+replaceFirst(haystack, needle, replacement) {
+  i = haystack.indexOf(needle);
+  if (i == -1)           return haystack;
+  if (needle.equals("")) return haystack;
+  pre  = haystack.substring(0, i                                   );
+  post = haystack.substring(   i+needle.length(), haystack.length());
+  return pre + replacement + post;
+}
+
+replaceFirst(haystack, replacement) {
+  return replaceFirst(haystack, "%s", replacement);
+}
+
 newTab(String tab, Boolean resolveTabGroups) {
   if (!resolveTabGroups) {
     return newTab(tab);
