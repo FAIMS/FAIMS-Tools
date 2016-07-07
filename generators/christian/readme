@@ -208,6 +208,34 @@ SEMANTICS OF <cols> TAGS
   contains Field_2 and Field_3.
 ________________________________________________________________________________
 
+USING <opts> AND <opt> TAGS
+
+  Menu entries in checkbox, dropdown, list and picture elements are specified
+  using <opts> and <opt> tags as follows:
+
+      <My_Dropdown_Menu t="dropdown">
+        <opts>
+          <opt>Option 1</opt>
+          <opt>Option 2</opt>
+        </opts>
+      </My_Dropdown_Menu>
+
+  To produce a hierarchical menu, <opt> tags can be nested:
+
+      <My_Dropdown_Menu t="dropdown">
+        <opts>
+          <opt>Parent option 1
+            <opt>child option 1.1</opt>
+            <opt>child option 1.2</opt>
+          </opt>
+          <opt>Parent option 2
+            <opt>child option 2.1</opt>
+            <opt>child option 2.2</opt>
+          </opt>
+        </opts>
+      </My_Dropdown_Menu>
+________________________________________________________________________________
+
 AUTONUMBERING
 
   Basic autonumbering can be achieved using a combination of the f="autonum"
