@@ -207,7 +207,7 @@ fetchMenuValues() {
 
 fetchMenuValues();
 
-/* Returns a menu's vocabname, instead of the very counter-intuitive vocabid.
+/* Returns a menu's vocabname, instead of the (counter-intuitive) vocabid.
  */
 getFieldValue(String ref, Boolean doConvertVocabIds) {
   if (!doConvertVocabIds) {
@@ -217,12 +217,9 @@ getFieldValue(String ref, Boolean doConvertVocabIds) {
   String val       = getFieldValue(ref);
   String vocabName = MENU_VALUES.get(val);
 
-  if (isNull(vocabName)) {
-    // This case implies that the field may not in fact be a menu.
-    return val;
-  } else {
-    return vocabName;
-  }
+  if (val       == null) return "";
+  if (vocabName == null) return "";
+  return vocabName;
 }
 
 /*
