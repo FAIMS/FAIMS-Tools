@@ -173,6 +173,66 @@ getDropdownItemValue() {
     </xsl:for-each>
 <xsl:text>
 /******************************************************************************/
+/*                             MENU VALUE GETTER                              */
+/*                                                                            */
+/* Provides simple ways of getting a menu's vocabname as opposed to the       */
+/* default, which is the vocabid.                                             */
+/******************************************************************************/
+// Map from vocabid to vocabname. Populated by `fetchMenuValues()`.
+Map MENU_VALUES = null;
+
+/*
+ * Initialises `MENU_VALUES` with the (vocabid -> vocabname) mapping of every
+ * menu.
+ */
+fetchMenuValues() {
+  MENU_VALUES = new HashMap();
+
+  String q = "";
+  q += " SELECT vocabid, vocabname";
+  q += " FROM   vocabulary";
+
+  populateHashMap = new FetchCallback() {
+    onFetch(result) {
+      for (row : result) {
+        vocabId   = row.get(0);
+        vocabName = row.get(1);
+        MENU_VALUES.put(vocabId, vocabName);
+      }
+    }
+  };
+
+  fetchAll(q, populateHashMap);
+}
+
+fetchMenuValues();
+
+/* Returns a menu's vocabname, instead of the very counter-intuitive vocabid.
+ */
+getFieldValue(String ref, Boolean doConvertVocabIds) {
+  if (!doConvertVocabIds) {
+    return getFieldValue(ref);
+  }
+
+  String val       = getFieldValue(ref);
+  String vocabName = MENU_VALUES.get(val);
+
+  if (isNull(vocabName)) {
+    // This case implies that the field may not in fact be a menu.
+    return val;
+  } else {
+    return vocabName;
+  }
+}
+
+/*
+ * Shorthand for writing getFieldValue(ref, true).
+ */
+getMenuValue(String ref) {
+  return getFieldValue(ref, true);
+}
+
+/******************************************************************************/
 /*                                 ACTION BAR                                 */
 /******************************************************************************/
 addActionBarItem("clean_synced_files", new ActionButtonCallback() {
