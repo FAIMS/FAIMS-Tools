@@ -12,8 +12,8 @@ NS = {'x': 'http://www.w3.org/2002/xforms'}
 ############################### MODEL GENERATION ###############################
 
 def getModel(node):
-    tabGroups      = util.ui.getUiNodes(node, 'tab group')
-    modelTabGroups = [getModelTabGroup(n) for n in tabGroups]
+    modelTabGroups = [getModelTabGroup(n) for n in node]
+    modelTabGroups = filter(lambda x: x != None, modelTabGroups)
 
     model = etree.Element('modelContainer')
     model.extend(modelTabGroups)
@@ -21,8 +21,13 @@ def getModel(node):
     return model
 
 def getModelTabGroup(node):
-    tabs      = util.ui.getUiNodes(node, 'tab')
-    modelTabs = [getModelTab(n) for n in tabs]
+    isTabGroup = util.schema.hasUserDefinedName(node)
+
+    if not isTabGroup:
+        return None
+
+    modelTabs = [getModelTab(n) for n in node]
+    modelTabs = filter(lambda x: x != None, modelTabs)
 
     modelTabGroup = etree.Element(node.tag)
     modelTabGroup.extend(modelTabs)
@@ -30,15 +35,21 @@ def getModelTabGroup(node):
     return modelTabGroup
 
 def getModelTab(node):
-    #tabs            = util.ui.getUiNodes(node, 'tab')
-    #modelUiElements = [getModelUiElements(n) for n in tabs]
+    isTab = util.schema.hasUserDefinedName(node)
+
+    if not isTab:
+        return None
+
+    modelTabChildren = [getModelTabChildren(n) for n in node]
+    modelTabChildren = filter(lambda x: x != None, modelTabChildren)
 
     modelTab = etree.Element(node.tag)
-    #modelTab.extend(modelUiElements)
+    modelTab.extend(modelTabChildren)
 
     return modelTab
 
-def getModelUiElements(node):
+def getModelTabChildren(node):
+    isGroup = util.schema.guessType(node) == 'group'
     pass
 
 ############################## BINDING GENERATION ##############################
@@ -89,6 +100,7 @@ tree = util.xml.parseXml(filenameModule)
 util.schema.normalise(tree)
 util.schema.annotateWithTypes(tree)
 util.schema.expandCompositeElements(tree)
+util.schema.annotateWithTypes(tree)
 
 ################################################################################
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #
@@ -102,3 +114,9 @@ print etree.tostring(
         encoding='utf-8'
 )
 
+print etree.tostring(
+        uiSchema,
+        pretty_print=True,
+        xml_declaration=True,
+        encoding='utf-8'
+)

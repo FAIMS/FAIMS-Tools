@@ -447,19 +447,76 @@ POST PROCESSING
       <!--@POSTPROC: python my-script.py-->
 ________________________________________________________________________________
 
-GRAMMAR
+GRAMMAR (Stage 1)
 
-  The empty string is denoted by a period (.), comments begin with hash symbols
-  (#), and \w is used to indicate an arbitrary tag name. Also, non-terminals and
-  starting symbols are surrounded by backticks.
+  module -> tab group | logic | rels
 
-  `start`            -> <module `suppressWarnings`> `rels` `tabGroups` </module>
-  `suppressWarnings` -> suppressWarnings=true" | .
-  `rels`             -> <rels> `rels_` </rels>
-  `rels_`            -> `rel` `rels_` | .
-  `rel`              -> # A bunch of ordinary <RelationshipElement> tags
-  `tabGroups`        -> `tabGroup` `tabGroups` | .
-  `tabGroup`         -> <\w `f`> `tabs` <\w>
-  `f`                -> # Flags
-  `tabs`             -> `tab` `tabs` | .
-  `tab`              -> <\w `f`> # This grammar is a clustermuck
+  tab group -> tab | desc | search
+
+  logic -> -
+
+  rels -> -
+
+  tab -> author | autonum | cols | gps | group | GUI/data element | timestamp
+
+  desc -> -
+
+  search -> -
+
+  author -> -
+
+  autonum -> -
+
+  cols -> col | group | GUI/data element
+
+  gps -> -
+
+  group -> author | autonum | gps | group | GUI/data element | timestamp
+
+  GUI/data element -> desc | opts | str | -
+
+  timestamp -> -
+
+  col -> group | GUI/data element
+
+  opts -> opt
+
+  opt -> opt | -
+
+  str -> app | fmt | pos
+
+  app -> -
+
+  fmt -> -
+
+  pos -> -
+
+GRAMMAR (Stage 2)
+
+  module -> tab group | logic | rels
+
+  tab group -> tab | desc
+
+  logic -> -
+
+  rels -> -
+
+  tab -> group | GUI/data element
+
+  desc -> -
+
+  group -> group | GUI/data element
+
+  GUI/data element -> desc | opts | str | -
+
+  opts -> opt
+
+  opt -> opt | -
+
+  str -> app | fmt | pos
+
+  app -> -
+
+  fmt -> -
+
+  pos -> -
