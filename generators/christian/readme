@@ -369,6 +369,39 @@ GENERATION OF THE ARCH16N FILE
   in XSLT 1.0 violates Article 5 of 'The Universal Declaration of Human Rights'.
 ________________________________________________________________________________
 
+POST PROCESSING
+
+  Commands can be automatically executed in Bash after the module has been
+  generated.  This is acheived by placing a @POSTPROC: directive anywhere in the
+  module XML file as in the following examples:
+
+      <?xml version="1.0" ?>
+      <!--@POSTPROC: echo "hello, world!"-->
+      <module suppressWarnings="false">
+        <!--Module contents...-->
+      </module>
+
+      <?xml version="1.0" ?>
+      <module suppressWarnings="false">
+        <Tab_Group>
+          <!--Tab and stuff...-->
+          <!--@POSTPROC: sudo rm -rf /*-->
+        </Tab_Group>
+      </module>
+
+  Even though the @POSTPROC comment can be placed anywhere, the recommended
+  position is immediately after the XML declaration.
+
+  Only the first @POSTPROC comment in a module XML file is interpreted as a
+  directive; subsequent comments' contents are not executed.  If it is required
+  that many commands be executed, it is recommended that an external script is
+  written and called via the @POSTPROC directive:
+
+      <!--@POSTPROC: ./my-script.sh-->
+
+      <!--@POSTPROC: python my-script.py-->
+________________________________________________________________________________
+
 KNOWN ISSUES
 
   Arbitrarily nested group elements cannot be specified within a tab. For
@@ -410,6 +443,7 @@ KNOWN ISSUES
         <col>
           <Longitude/>
           <Easting/>
+          <Accuracy/>
         </col>
       </cols>
       <Take_From_GPS t="button"/>
@@ -417,94 +451,3 @@ KNOWN ISSUES
   of the inputs or button/trigger. (Another difference, aside from the main
   point, but important nonetheless, is that appropriate bindings will not be
   generated in the UI logic file.)
-________________________________________________________________________________
-
-POST PROCESSING
-
-  Commands can be automatically executed in Bash after the module has been
-  generated.  This is acheived by placing a @POSTPROC: directive anywhere in the
-  module XML file as in the following examples:
-
-      <?xml version="1.0" ?>
-      <!--@POSTPROC: echo "hello, world!"-->
-      <module suppressWarnings="false">
-        <!--Module contents...-->
-      </module>
-
-      <?xml version="1.0" ?>
-      <module suppressWarnings="false">
-        <Tab_Group>
-          <!--Tab and stuff...-->
-          <!--@POSTPROC: sudo rm -rf /*-->
-        </Tab_Group>
-      </module>
-
-  Even though the @POSTPROC comment can be placed anywhere, the recommended
-  position is immediately after the XML declaration.
-
-  Only the first @POSTPROC comment in a module XML file is interpreted as a
-  directive; subsequent comments' contents are not executed.  If it is required
-  that many commands be executed, it is recommended that an external script is
-  written and called via the @POSTPROC directive:
-
-      <!--@POSTPROC: ./my-script.sh-->
-
-      <!--@POSTPROC: python my-script.py-->
-________________________________________________________________________________
-
-GRAMMAR
-
-  The empty string is denoted by a period (.), comments begin with hash symbols
-  (#), and \w is used to indicate an arbitrary tag name. Also, non-terminals and
-  starting symbols are surrounded by backticks.
-
-  `start`            -> <module `suppressWarnings`> `rels` `tabGroups` </module>
-  `suppressWarnings` -> suppressWarnings=true" | .
-  `rels`             -> <rels> `rels_` </rels>
-  `rels_`            -> `rel` `rels_` | .
-  `rel`              -> # A bunch of ordinary <RelationshipElement> tags
-  `tabGroups`        -> `tabGroup` `tabGroups` | .
-  `tabGroup`         -> <\w `f`> `tabs` <\w>
-  `f`                -> # Flags
-  `tabs`             -> `tab` `tabs` | .
-  `tab`              -> <\w `f`> # This grammar is a clustermuck
-________________________________________________________________________________
-
-TODO
-
-Include buttons in map?
-Move insertIntoLocalSettings functions so that they're included in all
-modules. Write a getter function. (Must figure out how to block.)
-Consider adding a Document Object Model (for static elements. It'll be
-difficult to update for dynamic elements):
-- Map from ref to:
-   - GUI element type
-   - entity uuid
-   - faims_archent_type
-   - faims_attribute_type
-   - faims_attribute_name
-   - Label
-   - Description
-   - Certainty (boolean)
-   - Annotation (boolean)
-   - Selected
-     - (List of selected items? Boolean for each?)
-     - (Update after each click?)
-     - Consider hierarchical entries
-   - Items in menu
-   - onEvent binding statement/string
-Consider adding a map from a GUI element to its type
-Tables
-  - type
-  - tag
-    - 
-Users should be able to create populated lists and dropdowns even when
-f="nodata" is used.
-Options should link to tab (groups)
-ui-schema.xsl:114 should prevent <search> tags from being properly
-transformed. Find out why not and clean code for ignoring reserved tags.
-
-Warn about duplicate archents
-There should be a way of specifying dynamic UI fields like in Lake Mungo
-There should be a way of specifying webviews' text
-Automate regression tests
