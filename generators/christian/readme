@@ -346,6 +346,15 @@ LABELS
   and faims_attribute_name, which the programmer sees. Note that it merely
   "encourages" consistency as the programmer can change the corresponding,
   generated, arch16n (english.0.properties) entry.
+
+  IMPORTANT: You may encounter 'null' prepended to labels while they are being
+    viewed in the FAIMS app. These are due to comments which the autogenerator
+    produces to provide warnings and errors. Warning comments can be suppressed
+    by using the suppressWarnings attribute as follows:
+
+        <module suppressWarnings="true">
+          <!-- Module here...-->
+        </module>
 ________________________________________________________________________________
 
 GENERATION OF THE ARCH16N FILE
