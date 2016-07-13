@@ -68,7 +68,13 @@ def tabToString(node):
 def uiElementToString(node):
     uiType   = util.schema.guessType(node)
     javaType = ''
-    if uiType == 'input' and not util.schema.isFlagged(node, 'readonly'):
+
+    isEditText  = uiType == 'input'
+    isEditText &= not util.schema.isFlagged(node, 'readonly')
+
+    if uiType == 'group':
+        return None
+    if isEditText:
         javaType = 'android.widget.EditText'
 
     s = getFunctionString(
@@ -91,9 +97,9 @@ def getModuleFunctions(node):
     guiStrings      = [uiElementToString(n) for n in guiNodes     ]
 
     # 3. Flatten the lists of strings from step 2 into plain old strings
-    flatTabGroupStrings = '\n'.join(tabGroupStrings)
-    flatTabStrings      = '\n'.join(tabStrings     )
-    flatGuiStrings      = '\n'.join(guiStrings     )
+    flatTabGroupStrings = '\n'.join(s for s in tabGroupStrings if s)
+    flatTabStrings      = '\n'.join(s for s in tabStrings      if s)
+    flatGuiStrings      = '\n'.join(s for s in guiStrings      if s)
 
     return flatTabGroupStrings + flatTabStrings + flatGuiStrings
 
