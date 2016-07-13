@@ -116,6 +116,7 @@ tree = util.xml.parseXml(filenameModule)
 util.schema.normalise(tree)
 util.schema.annotateWithTypes(tree)
 util.schema.expandCompositeElements(tree)
+util.schema.annotateWithTypes(tree)
 
 ################################################################################
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #

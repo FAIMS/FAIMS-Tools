@@ -198,6 +198,13 @@ def expandCompositeElements(tree):
 
             autonumSrc.tag = haystack.replace(needle, replacement)
 
+    # Replace non-<autonum> tags similarly to in (1).
+    for tag, replacements in table.REPLACEMENTS_BY_TAG.iteritems():
+        exp = '//%s[@%s]' % (tag, consts.RESERVED_XML_TYPE)
+        matches = tree.xpath(exp)
+        for m in matches:
+            replaceElement(m, replacements)
+
 def replaceElement(element, replacements, tag='__REPLACE__'):
     replacements = replacements.replace('\n', ' ')
     replacements = replacements.replace('\r', ' ')
@@ -247,3 +254,34 @@ def isValidLink(root, link, linkType):
         return result
     else:
         return False
+
+def hasReservedName(node):
+    return node != None and isReservedName(node.tag)
+
+def isReservedName(name):
+    reservedNames = [
+            'app',
+            'author',
+            'autonum',
+            'cols',
+            'desc',
+            'fmt',
+            'gps',
+            'logic',
+            'module',
+            'opt',
+            'opts',
+            'pos',
+            'rels',
+            'search',
+            'str',
+            'timestamp',
+    ]
+
+    return name in reservedNames
+
+def hasUserDefinedName(node):
+    return node != None and isUserDefinedName(node.tag)
+
+def isUserDefinedName(name):
+    return name != None and name.istitle()

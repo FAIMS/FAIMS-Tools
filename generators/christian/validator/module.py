@@ -167,6 +167,7 @@ for m in matches:
 ################ VALIDATE CARDINALITIES FOR COMPOSITE ELEMENTS #################
 
 util.schema.expandCompositeElements(tree)
+util.schema.annotateWithTypes(tree)
 
 # Check cardinality contraints
 el   = 'GUI/data element'
