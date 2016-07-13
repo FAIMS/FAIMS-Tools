@@ -107,12 +107,12 @@ util.schema.annotateWithTypes(tree)
 ################################################################################
 uiSchema = getUiSchema(tree)
 
-print etree.tostring(
-        tree,
-        pretty_print=True,
-        xml_declaration=True,
-        encoding='utf-8'
-)
+#print etree.tostring(
+        #tree,
+        #pretty_print=True,
+        #xml_declaration=True,
+        #encoding='utf-8'
+#)
 
 print etree.tostring(
         uiSchema,
