@@ -103,6 +103,10 @@ def guessType(node):
         pass
 
     # Okay, fine. Go ahead and give 'er a guess.
+    path = getPathString(node)
+    if path.count('/') == 0: return 'tab group'
+    if path.count('/') == 1: return 'tab'
+
     isUser = 'f' in node.attrib and 'user' in node.attrib['f'].split()
     if isUser:
         return 'list'

@@ -24,6 +24,8 @@ def getPropType(node):
     if hasFileType   (node): return 'file'
     if hasVocabType  (node): return 'vocab'
 
+    print node
+    print schema.getPathString(node)
     raise ValueError('An unexpected t value was encountered')
 
 def hasMeasureType(node):
