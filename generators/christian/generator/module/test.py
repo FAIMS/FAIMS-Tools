@@ -4,13 +4,18 @@ import util.schema
 import util.ui
 import util.xml
 
-# TODO: Safely handle case where dashes are included in function name
+def filterNonAlpha(string):
+    return filter(str.isalnum, string)
+
 def functionName(node):
     pathSegments = util.schema.getPath(node)
-    pathSegments = [path
+    pathSegments = [filterNonAlpha(s) for s in pathSegments]
 
+    #nodeHash     = util.schema.nodeHash(node, hashLen=3)
 
-    return 'get_' + node.tag
+    funName      = 'get_' + '_'.join(pathSegments) # + '_' + nodeHash
+
+    return funName
 
 def parseJavaType(javaType):
     splitted = javaType.split('.')
