@@ -777,6 +777,19 @@ saveTabGroup(String tabgroup, String callback) {
   saveTabGroup(tabgroup, id, geometry, attributes, saveCallback, enableAutosave);
 }
 
+getTimestampNow() {
+  fmt = "yyyy-MM-dd HH:mm:ssZ";
+  return getTimestampNow(fmt);
+}
+
+getTimestampNow(String fmt) {
+  date    = new Date();
+  dateFmt = new java.text.SimpleDateFormat(fmt);
+  dateStr = dateFmt.format(date);
+
+  return dateStr;
+}
+
 populateAuthorAndTimestamp(String tabgroup) {
   Map tabgroupToAuthor    = new HashMap();
   Map tabgroupToTimestamp = new HashMap();
@@ -787,13 +800,8 @@ populateAuthorAndTimestamp(String tabgroup) {
   String authorPath    = tabgroupToAuthor.get(tabgroup);
   String timestampPath = tabgroupToTimestamp.get(tabgroup);
 
-  fmt     = "yyyy-MM-dd HH:mm:ss z";
-  date    = new Date();
-  dateFmt = new java.text.SimpleDateFormat(fmt);
-  dateStr = dateFmt.format(date);
-
   String authorVal    = username;
-  String timestampVal = dateStr;
+  String timestampVal = getTimestampNow();
 
   if (!isNull(authorPath))    setFieldValue(authorPath,    authorVal);
   if (!isNull(timestampPath)) setFieldValue(timestampPath, timestampVal);
