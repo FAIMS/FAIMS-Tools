@@ -100,8 +100,7 @@
     </xsl:for-each>
     <!-- These are some entries mentioned in the staticly (as opposed to
          dynamically) generated portion of the UI schema -->
-      <xsl:text>
-A_next_ID_has_not_been_entered_please_provide_one=A next ID has not been entered. Please provide one.
+      <xsl:text>A_next_ID_has_not_been_entered_please_provide_one=A next ID has not been entered. Please provide one.
 Accuracy=Accuracy
 Alert=Alert
 All=All
@@ -154,8 +153,7 @@ no_GPS_position_could_be_found=No GPS position could be found
 off=Off
 on=On
 on_and_bluetooth_connected=On and Bluetooth Connected
-on_and_bluetooth_disconnected=On and Bluetooth Disconnected
-</xsl:text>
+on_and_bluetooth_disconnected=On and Bluetooth Disconnected</xsl:text>
   </xsl:template>
 
   <!-- WARNING:  This template assumes $string contains at most 80
