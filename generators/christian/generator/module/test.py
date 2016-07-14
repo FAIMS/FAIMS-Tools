@@ -31,9 +31,8 @@ def getFunctionString(ref, type, funName, javaType=None):
     javaTypeLong, javaTypeShort = parseJavaType(javaType)
 
     s  = '    /*\n'
-    s += '        File: ui_schema.xml\n'
     s += '        Type: {type}\n'
-    s += '        ref:  {ref}\n'
+    s += '        Ref:  {ref}\n'
     s += '     */\n'
     s += '    public static {javaTypeShort} {funName}(Solo solo) {{\n'
     s += '        String ref = "{ref}";\n'
@@ -85,18 +84,29 @@ def uiElementToString(node):
     )
     return s
 
+# Sort a list of LXML nodes by path and group them by type
+def sortedNodes(nodes):
+    nodes = sorted(nodes, key=util.schema.getPathString)
+    nodes = sorted(nodes, key=util.schema.guessType    )
+    return nodes
+
 def getModuleFunctions(node):
     # 1. Produce lists of LXML nodes
     tabGroupNodes = util.ui.getUiNodes(node, 'tab group'       )
     tabNodes      = util.ui.getUiNodes(node, 'tab'             )
     guiNodes      = util.ui.getUiNodes(node, 'GUI/data element')
 
-    # 2. Convert each LXML node into a string (i.e. a test function)
+    # 2. In each list, sort the nodes by their path and group them by type
+    tabGroupNodes = sortedNodes(tabGroupNodes)
+    tabNodes      = sortedNodes(tabNodes     )
+    guiNodes      = sortedNodes(guiNodes     )
+
+    # 3. Convert each LXML node into a string (i.e. a test function)
     tabGroupStrings = [tabGroupToString (n) for n in tabGroupNodes]
     tabStrings      = [tabToString      (n) for n in tabNodes     ]
     guiStrings      = [uiElementToString(n) for n in guiNodes     ]
 
-    # 3. Flatten the lists of strings from step 2 into plain old strings
+    # 4. Flatten the lists of strings from step 3 into plain old strings
     flatTabGroupStrings = '\n'.join(s for s in tabGroupStrings if s)
     flatTabStrings      = '\n'.join(s for s in tabStrings      if s)
     flatGuiStrings      = '\n'.join(s for s in guiStrings      if s)
