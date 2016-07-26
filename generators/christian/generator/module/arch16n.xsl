@@ -101,7 +101,7 @@
     <!-- These are some entries mentioned in the staticly (as opposed to
          dynamically) generated portion of the UI schema -->
       <xsl:text>A_next_ID_has_not_been_entered_please_provide_one=A next ID has not been entered. Please provide one.
-Accuracy=Accuracy
+Accuracy__m_=Accuracy (m)
 Alert=Alert
 All=All
 Any_unsaved_changes_will_be_lost=Any unsaved changes will be lost!

@@ -62,7 +62,7 @@ setFieldValueFromLocalSettings(String key, String ref) {
   });
 }
 
-// Regex-free string replacement function
+/*********************** REGEX-FREE STRING REPLACEMENT ************************/
 replaceFirst(haystack, needle, replacement) {
   i = haystack.indexOf(needle);
   if (i == -1)           return haystack;
@@ -74,6 +74,67 @@ replaceFirst(haystack, needle, replacement) {
 
 replaceFirst(haystack, replacement) {
   return replaceFirst(haystack, "%s", replacement);
+}
+
+/**************************** FIELD COPYING HELPER ****************************/
+/* Provides an easy way to copy field values, even between vocabs.            */
+/******************************************************************************/
+copyFieldValue(src, dst) {
+  Boolean doFindVocabId = true;
+  copyFieldValue(src, dst, doFindVocabId);
+}
+
+/* `src`           The ref of the source field.
+ * `dst`           The ref of the destination field.
+ * `doFindVocabId` If this is true, and the properties/attributes of `src` and
+ *                 `dst` are different, `copyFieldValue` treats `src` and `dst`
+ *                 as if they were menus. Therefore, to copy the value seen by
+ *                 the user (i.e. the vocabName of `src`), a database query is
+ *                 performed. The query determines the which vocabId of `dst`
+ *                 will make it display the same vocabName as `src`.
+ *
+ *                 If `doFindVocabId` is false, the value returned by
+ *                 `getFieldValue` is copied, without any database accesses.
+ */
+copyFieldValue(src, dst, doFindVocabId) {
+  String vocabIdSrc   = getFieldValue(src);
+  String vocabNameSrc = getMenuValue (src);
+
+  String attrNameSrc = src.split("\\/")[2];
+  String attrNameDst = dst.split("\\/")[2];
+
+  attrNameSrc = attrNameSrc.replaceAll("_", " ");
+  attrNameDst = attrNameDst.replaceAll("_", " ");
+
+  if (attrNameSrc.equals(attrNameDst) || !doFindVocabId) {
+    setFieldValue(dst, vocabIdSrc);
+    return;
+  }
+
+  String q = "";
+  q += "    SELECT vocabid";
+  q += "      FROM vocabulary";
+  q += " LEFT JOIN attributekey";
+  q += "     USING (attributeid)";
+  q += "     WHERE attributename = '{attrNameDst}'";
+  q += "       AND vocabname     = '{vocabNameSrc}'";
+  q  = replaceFirst(q, "{attrNameDst}",  attrNameDst);
+  q  = replaceFirst(q, "{vocabNameSrc}", vocabNameSrc);
+
+
+  FetchCallback populate = new FetchCallback() {
+    onFetch(result) {
+      if (result == null) {
+        // Fall back to dumb field copying
+        copyFieldValue(src, dst, false);
+      }
+
+      String vocabIdDst = result.get(0);
+      setFieldValue(dst, vocabIdDst);
+    }
+  };
+
+  fetchOne(q, populate);
 }
 
 newTab(String tab, Boolean resolveTabGroups) {
@@ -736,7 +797,14 @@ saveTabGroup(String tabgroup, String callback) {
   String  parentTabgroup_ = parentTabgroup;
   Boolean userWasSet      = !username.equals("");
 
+  String repopulateEntityList;
+  repopulateEntityList = "populateEntityListsInTabGroup(\"{tabGroup}\")";
+  repopulateEntityList = replaceFirst(repopulateEntityList, "{tabGroup}", parentTabgroup__);
+
+  callback = repopulateEntityList + ";" + callback;
+
   parentTabgroup = null;
+
   SaveCallback saveCallback  = new SaveCallback() {
     onSave(uuid, newRecord) {
       setUuid(tabgroup, uuid);
@@ -752,8 +820,10 @@ saveTabGroup(String tabgroup, String callback) {
           uuid,
           "Parent Of",
           "Child Of",
-          null
+          callback
         );
+      } else {
+        execute(callback);
       }
 
       // This fixes an interesting bug. Without this, if a user was not set
@@ -764,10 +834,9 @@ saveTabGroup(String tabgroup, String callback) {
       // Adding this allows subsequent saves to succeed. Presumably it plays
       // some role in helping FAIMS associate the correct user with a record.
       if (!userWasSet) {
-        saveTabGroup(tabgroup);
+        saveTabGroup(tabgroup, callback);
       }
 
-      execute(callback);
     }
     onError(message) {
       showToast(message);
@@ -786,6 +855,13 @@ getTimestampNow(String fmt) {
   date    = new Date();
   dateFmt = new java.text.SimpleDateFormat(fmt);
   dateStr = dateFmt.format(date);
+
+  // Insert colon into timezone (e.g. +1000 -> +10:00)
+  String left; String right;
+
+  left    = dateStr.substring(0, dateStr.length() - 2);
+  right   = dateStr.substring(   dateStr.length() - 2);
+  dateStr = left + ":" + right;
 
   return dateStr;
 }
@@ -1620,16 +1696,38 @@ populateMenuWithEntities (
   }
 }
 
-menus = new ArrayList();
-</xsl:text>
-      <xsl:call-template name="entity-menu" />
-      <xsl:call-template name="entity-child-menu" />
-<xsl:text>for (m : menus) {
-  String viewType       = m[0];
-  String path           = m[1];
-  String parentUuidCall = m[2];
-  String entType        = m[3];
-  String relType        = m[4];
+getTabGroup(String ref) {
+  if (isNull(ref)) {
+    return null;
+  }
+
+  String[] parts = ref.split("/");
+
+  if (parts.length >= 1) return parts[0];
+  else                   return null;
+}
+
+populateEntityListsInTabGroup(String tabGroup) {
+  if (isNull(tabGroup)) {
+    return;
+  }
+
+  for (m : ENTITY_MENUS) {
+    String path         = m[1];
+    String menuTabGroup = getTabGroup(path);
+    String functionCall = getEntityMenuPopulationFunction(m);
+
+    if (menuTabGroup.equals(tabGroup))
+      execute(functionCall);
+  }
+}
+
+getEntityMenuPopulationFunction(String[] menuDescriptor) {
+  String viewType       = menuDescriptor[0];
+  String path           = menuDescriptor[1];
+  String parentUuidCall = menuDescriptor[2];
+  String entType        = menuDescriptor[3];
+  String relType        = menuDescriptor[4];
 
   String functionCall = "";
   functionCall += "populateMenuWithEntities(";
@@ -1644,7 +1742,18 @@ menus = new ArrayList();
   functionCall += "\"" + relType        + "\"";
   functionCall += ")";
 
-  addOnEvent(path, "show", functionCall);
+  return functionCall;
+}
+
+ENTITY_MENUS = new ArrayList();
+</xsl:text>
+      <xsl:call-template name="entity-menu" />
+      <xsl:call-template name="entity-child-menu" />
+<xsl:text>for (m : ENTITY_MENUS) {
+  String path         = m[1];
+  String functionCall = getEntityMenuPopulationFunction(m);
+
+  execute(functionCall);
 }
 </xsl:text>
       <xsl:call-template name="entity-loading" />
@@ -1799,7 +1908,13 @@ bindOnEvents();
   setUuid(tabgroup, uuid);
   if (isNull(uuid)) return;
 
-  showTabGroup(tabgroup, uuid);
+  FetchCallback cb = new FetchCallback() {
+    onFetch(result) {
+      populateEntityListsInTabGroup(tabgroup);
+    }
+  };
+
+  showTabGroup(tabgroup, uuid, cb);
 }</xsl:text>
       <xsl:value-of select="$newline"/>
       <xsl:value-of select="$newline"/>
@@ -1829,6 +1944,7 @@ bindOnEvents();
   setUuid(tabgroup, null);
   newTabGroup(tabgroup);
   populateAuthorAndTimestamp(tabgroup);
+  populateEntityListsInTabGroup(tabgroup);
 </xsl:text>
 
     <xsl:call-template name="tabgroup-new-incautonum"/>
@@ -2071,9 +2187,13 @@ bindOnEvents();
 
   <xsl:template name="ref">
     <xsl:value-of select="name(ancestor::*[last()-1])"/>
-    <xsl:text>/</xsl:text>
+    <xsl:if test="name(ancestor::*[last()-1])">
+      <xsl:text>/</xsl:text>
+    </xsl:if>
     <xsl:value-of select="name(ancestor::*[last()-2])"/>
-    <xsl:text>/</xsl:text>
+    <xsl:if test="name(ancestor::*[last()-2])">
+      <xsl:text>/</xsl:text>
+    </xsl:if>
     <xsl:value-of select="name()"/>
   </xsl:template>
 
@@ -2095,7 +2215,7 @@ bindOnEvents();
 
   <xsl:template name="entity-menu">
     <xsl:for-each select="//*[@e]">
-      <xsl:text>menus.add(new String[] {</xsl:text>
+      <xsl:text>ENTITY_MENUS.add(new String[] {</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:choose>
         <xsl:when test="normalize-space(@t) = 'dropdown'">
@@ -2127,7 +2247,7 @@ bindOnEvents();
 
   <xsl:template name="entity-child-menu">
     <xsl:for-each select="//*[@ec]">
-      <xsl:text>menus.add(new String[] {</xsl:text>
+      <xsl:text>ENTITY_MENUS.add(new String[] {</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:choose>
         <xsl:when test="normalize-space(@t) = 'dropdown'">

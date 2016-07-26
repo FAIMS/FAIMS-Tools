@@ -516,7 +516,7 @@
           <xsl:if test="count(..//Accuracy) &gt;= 1 or count(..//gps) &gt;= 2">
             <xsl:comment>ERROR: View name is duplicated such that this UI schema is invalid.</xsl:comment>
           </xsl:if>
-          <label>{Accuracy}</label>
+          <label>{Accuracy__m_}</label>
         </input>
       </group>
     </group>
