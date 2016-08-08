@@ -790,12 +790,13 @@ saveTabGroup(String tabgroup) {
 }
 
 saveTabGroup(String tabgroup, String callback) {
-  Boolean enableAutosave  = true;
-  String  id              = getUuid(tabgroup);
-  List    geometry        = null;
-  List    attributes      = null;
-  String  parentTabgroup_ = parentTabgroup;
-  Boolean userWasSet      = !username.equals("");
+  Boolean enableAutosave      = true;
+  String  id                  = getUuid(tabgroup);
+  List    geometry            = null;
+  List    attributes          = null;
+  String  parentTabgroup_     = parentTabgroup;
+  String  parentTabgroupUuid_ = getUuid(parentTabgroup_);
+  Boolean userWasSet          = !username.equals("");
 
   String repopulateEntityList;
   repopulateEntityList = "populateEntityListsInTabGroup(\"{tabGroup}\")";
@@ -809,14 +810,18 @@ saveTabGroup(String tabgroup, String callback) {
     onSave(uuid, newRecord) {
       setUuid(tabgroup, uuid);
       // Make a child-parent relationship if need be.
-      if (newRecord &amp;&amp; !isNull(parentTabgroup_)) {
+      if (
+          newRecord &amp;&amp;
+          !isNull(parentTabgroup_) &amp;&amp;
+          !isNull(parentTabgroupUuid_)
+      ) {
         String rel = "";
         rel += parentTabgroup_.replaceAll("_", " ");
         rel += " - ";
         rel += tabgroup.replaceAll("_", " ");
         saveEntitiesToHierRel(
           rel,
-          getUuid(parentTabgroup_),
+          parentTabgroupUuid_,
           uuid,
           "Parent Of",
           "Child Of",
@@ -1629,7 +1634,6 @@ for (ref : getStartingIdPaths()) {
       <xsl:call-template name="incautonum"/>
     </xsl:if>
 
-    <xsl:if test="//*[@e or @ec]">
       <xsl:text>
 /******************************************************************************/
 /*                POPULATION OF ENTITY AND CHILD ENTITY LISTS                 */
@@ -1757,7 +1761,6 @@ ENTITY_MENUS = new ArrayList();
 }
 </xsl:text>
       <xsl:call-template name="entity-loading" />
-    </xsl:if>
 
     <xsl:if test="/module/logic">
       <xsl:text>
