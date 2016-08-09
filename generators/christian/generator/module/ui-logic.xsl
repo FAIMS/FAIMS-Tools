@@ -98,13 +98,10 @@ copyFieldValue(src, dst) {
  */
 copyFieldValue(src, dst, doFindVocabId) {
   String vocabIdSrc   = getFieldValue(src);
-  String vocabNameSrc = getMenuValue (src);
+  String vocabNameSrc = getFieldValue(src, true);
 
-  String attrNameSrc = src.split("\\/")[2];
-  String attrNameDst = dst.split("\\/")[2];
-
-  attrNameSrc = attrNameSrc.replaceAll("_", " ");
-  attrNameDst = attrNameDst.replaceAll("_", " ");
+  String attrNameSrc = getAttributeName(src);
+  String attrNameDst = getAttributeName(dst);
 
   if (attrNameSrc.equals(attrNameDst) || !doFindVocabId) {
     setFieldValue(dst, vocabIdSrc);
@@ -297,8 +294,8 @@ getFieldValue(String ref, Boolean doConvertVocabIds) {
   return vocabName;
 }
 
-/*
- * Shorthand for writing getFieldValue(ref, true).
+/* Shorthand for writing getFieldValue(ref, true). This function's use is
+ * discouraged in favour of writing `getFieldValue(ref, true)`.
  */
 getMenuValue(String ref) {
   return getFieldValue(ref, true);
@@ -1373,6 +1370,7 @@ loadEntityFrom(String entityID) {
   not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])
   ]">
       <xsl:call-template name="tabgroup-new" />
+      <xsl:call-template name="tabgroup-oncreate" />
       <xsl:call-template name="tabgroup-duplicate" />
       <xsl:call-template name="tabgroup-delete" />
       <xsl:call-template name="tabgroup-really-delete" />
@@ -1636,6 +1634,91 @@ for (ref : getStartingIdPaths()) {
 
       <xsl:text>
 /******************************************************************************/
+/*                           DOCUMENT OBJECT MODEL                            */
+/******************************************************************************/
+
+getTabGroupRef(String fullRef, Boolean lastPartOnly) {
+  if (isNull(fullRef)) {
+    return null;
+  }
+
+  String[] parts = fullRef.split("/");
+
+  if (parts.length &lt; 1) return null;
+  return parts[0];
+}
+
+getTabRef(String fullRef) {
+  Boolean lastPartOnly = false;
+  return getTabRef(fullRef, lastPartOnly);
+}
+
+getTabRef(String fullRef, Boolean lastPartOnly) {
+  if (isNull(fullRef)) {
+    return null;
+  }
+
+  String[] parts = fullRef.split("/");
+
+  if (parts.length &lt; 2) return null;
+  if (lastPartOnly) return                  parts[1];
+  else              return parts[0] + "/" + parts[1];
+}
+
+getLastRefPart(String ref) {
+  if (isNull(fullRef)) {
+    return null;
+  }
+
+  String[] parts = fullRef.split("/");
+  return parts[parts.length-1];
+}
+
+getGuiElementRef(String fullRef) {
+  Boolean lastPartOnly = true;
+  return getGuiElementRef(fullRef, lastPartOnly);
+}
+
+getGuiElementRef(String fullRef, Boolean lastPartOnly) {
+  if (isNull(fullRef)) {
+    return null;
+  }
+
+  String[] parts = fullRef.split("/");
+
+  if (parts.length &lt; 3) return null;
+  if (lastPartOnly) return parts[2];
+  else              return fullRef;
+}
+
+getArch16nKey(String ref) {
+  String lastRefPart = getLastRefPart(ref);
+
+  if (isNull(lastRefPart)) return null;
+  else                     return "{" + lastRefPart + "}";
+}
+
+guessArch16nVal(String ref) {
+  String arch16nKey = getArch16nKey(ref);
+
+  if (isNull(getArch16nKey)) return "";
+  arch16nKey = arch16nKey.replaceAll("_", " ");
+  arch16nKey = arch16nKey.replaceAll("^\\{", "");
+  arch16nKey = arch16nKey.replaceAll("\\}$", "");
+  return arch16nKey;
+}
+
+getAttributeName(String ref) {
+  String guiElementRef = getGuiElementRef(ref);
+  if (isNull(guiElementRef)) {
+    return null;
+  }
+
+  String attributeName = guiElementRef.replaceAll("_", " ");
+  return attributeName;
+}
+
+/******************************************************************************/
 /*                POPULATION OF ENTITY AND CHILD ENTITY LISTS                 */
 /******************************************************************************/
 /*
@@ -1698,17 +1781,6 @@ populateMenuWithEntities (
     default:
       Log.e("populateMenuWithEntities ", "Unexpected type '" + viewType + "'");
   }
-}
-
-getTabGroup(String ref) {
-  if (isNull(ref)) {
-    return null;
-  }
-
-  String[] parts = ref.split("/");
-
-  if (parts.length >= 1) return parts[0];
-  else                   return null;
 }
 
 populateEntityListsInTabGroup(String tabGroup) {
@@ -1951,6 +2023,29 @@ bindOnEvents();
 </xsl:text>
 
     <xsl:call-template name="tabgroup-new-incautonum"/>
+    <xsl:text>  onCreate</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>();</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-oncreate">
+    <xsl:variable name="camelcase-tabgroup">
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:text>onCreate</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>(){</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  return;</xsl:text>
+    <xsl:value-of select="$newline"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="$newline"/>
     <xsl:value-of select="$newline"/>

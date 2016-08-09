@@ -671,6 +671,12 @@
           <xsl:call-template name="body-expand-view-standard-nodes" />
         </xsl:element>
       </xsl:when>
+      <xsl:when test="normalize-space(@t)='webview'">
+        <xsl:element name="input">
+          <xsl:attribute name="faims_web">true</xsl:attribute>
+          <xsl:call-template name="body-expand-view-standard-nodes" />
+        </xsl:element>
+      </xsl:when>
       <xsl:when test="normalize-space(@t)='input'">
         <xsl:element name="{normalize-space(@t)}">
           <xsl:if test="not(ancestor-or-self::*[contains(@f, 'nodata')])">
