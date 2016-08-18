@@ -24,6 +24,21 @@ setSyncEnabled(true);
 setSyncMaxInterval(600.0f);
 setSyncMinInterval(5.0f);
 
+/*********************** REGEX-FREE STRING REPLACEMENT ************************/
+replaceFirst(haystack, needle, replacement) {
+  i = haystack.indexOf(needle);
+  if (i == -1)           return haystack;
+  if (needle.equals("")) return haystack;
+  pre  = haystack.substring(0, i                                   );
+  post = haystack.substring(   i+needle.length(), haystack.length());
+  return pre + replacement + post;
+}
+
+replaceFirst(haystack, replacement) {
+  return replaceFirst(haystack, "%s", replacement);
+}
+
+/******************************* LOCALSETTINGS ********************************/
 makeLocalID(){
   fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);", null);
   fetchOne("DROP VIEW IF EXISTS parentchild;", null);
@@ -43,12 +58,28 @@ makeLocalID(){
 }
 makeLocalID();
 
+insertIntoLocalSettings(String ref) {
+  String val = getFieldValue(ref);
+  insertIntoLocalSettings(ref, val);
+}
+
 insertIntoLocalSettings(String key, String val) {
   fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
 }
 
 insertIntoLocalSettings(String key, Integer val) {
   insertIntoLocalSettings(key, Integer.toString(val));
+}
+
+insertIntoLocalSettingsOnBlur(String ref) {
+  String val = getFieldValue(ref);
+
+  String focusCallback = "";
+  String blurCallback  = "";
+  blurCallback += "insertIntoLocalSettings(\"{key}\")";
+  blurCallback  = replaceFirst(blurCallback, "{key}", ref);
+
+  onFocus(ref, focusCallback, blurCallback);
 }
 
 setFieldValueFromLocalSettings(String key, String ref) {
@@ -62,18 +93,28 @@ setFieldValueFromLocalSettings(String key, String ref) {
   });
 }
 
-/*********************** REGEX-FREE STRING REPLACEMENT ************************/
-replaceFirst(haystack, needle, replacement) {
-  i = haystack.indexOf(needle);
-  if (i == -1)           return haystack;
-  if (needle.equals("")) return haystack;
-  pre  = haystack.substring(0, i                                   );
-  post = haystack.substring(   i+needle.length(), haystack.length());
-  return pre + replacement + post;
+setFieldValueFromLocalSettingsOnShow(String ref) {
+  String refTabGroup = getTabGroupRef(ref);
+
+  String event = "";
+  event += "setFieldValueFromLocalSettings(\"{key}\", \"{val}\")";
+  event  = replaceFirst(event, "{key}", ref);
+  event  = replaceFirst(event, "{val}", ref);
+
+  addOnEvent(refTabGroup, "show", event);
 }
 
-replaceFirst(haystack, replacement) {
-  return replaceFirst(haystack, "%s", replacement);
+/* Causes the value of the field given by `ref` to be saved each time it is
+ * modified (on blur). The value of the field is restored when the tab group
+ * containing the field is displayed.
+ *
+ * This function depends on `addOnEvent`. Therefore this function must be called
+ * after `addOnEvent` is defined, but before `bindOnEvents` is called. This will
+ * be so if the call is made in the autogenerator's `logic` tags.
+ */
+persistOverSessions(String ref) {
+  setFieldValueFromLocalSettingsOnShow(ref);
+  insertIntoLocalSettingsOnBlur(ref);
 }
 
 /**************************** FIELD COPYING HELPER ****************************/
@@ -165,55 +206,250 @@ newTab(String tab, Boolean resolveTabGroups) {
 }
 
 /******************************************************************************/
+/*                           DOCUMENT OBJECT MODEL                            */
+/******************************************************************************/
+String PREVIOUSLY_DISPLAYED_TAB_GROUP = "";
+String CURRENTLY_DISPLAYED_TAB_GROUP  = "";
+
+getTabGroups() {
+  List tabGroups = new ArrayList();
+</xsl:text>
+  <xsl:for-each select="/module/*[
+    not(name() = 'logic') and
+    not(name() = 'rels') and
+    not(ancestor-or-self::*[contains(@f, 'noui')])
+    ]">
+    <xsl:text>  tabGroups.add("</xsl:text>
+    <xsl:value-of select="name()" />
+    <xsl:text>");</xsl:text>
+    <xsl:value-of select="$newline" />
+  </xsl:for-each>
+  <xsl:text>
+  return tabGroups;
+}
+
+updateDisplayedTabGroup(String tabGroup) {
+  PREVIOUSLY_DISPLAYED_TAB_GROUP = CURRENTLY_DISPLAYED_TAB_GROUP;
+  CURRENTLY_DISPLAYED_TAB_GROUP  = tabGroup;
+}
+
+getPreviouslyDisplayedTabGroup() {
+  return PREVIOUSLY_DISPLAYED_TAB_GROUP;
+}
+
+getDisplayedTabGroup() {
+  return CURRENTLY_DISPLAYED_TAB_GROUP;
+}
+
+isDisplayed(String ref) {
+  return getDisplayedTabGroup().equals(ref);
+}
+
+getTabGroupRef(String fullRef) {
+  Boolean lastPartOnly = false;
+  return getTabGroupRef(fullRef, lastPartOnly);
+}
+
+getTabGroupRef(String fullRef, Boolean lastPartOnly) {
+  if (isNull(fullRef)) {
+    return null;
+  }
+
+  String[] parts = fullRef.split("/");
+
+  if (parts.length &lt; 1) return null;
+  return parts[0];
+}
+
+getTabRef(String fullRef) {
+  Boolean lastPartOnly = false;
+  return getTabRef(fullRef, lastPartOnly);
+}
+
+getTabRef(String fullRef, Boolean lastPartOnly) {
+  if (isNull(fullRef)) {
+    return null;
+  }
+
+  String[] parts = fullRef.split("/");
+
+  if (parts.length &lt; 2) return null;
+  if (lastPartOnly) return                  parts[1];
+  else              return parts[0] + "/" + parts[1];
+}
+
+getLastRefPart(String ref) {
+  if (isNull(fullRef)) {
+    return null;
+  }
+
+  String[] parts = fullRef.split("/");
+  return parts[parts.length-1];
+}
+
+getGuiElementRef(String fullRef) {
+  Boolean lastPartOnly = true;
+  return getGuiElementRef(fullRef, lastPartOnly);
+}
+
+getGuiElementRef(String fullRef, Boolean lastPartOnly) {
+  if (isNull(fullRef)) {
+    return null;
+  }
+
+  String[] parts = fullRef.split("/");
+
+  if (parts.length &lt; 3) return null;
+  if (lastPartOnly) return parts[2];
+  else              return fullRef;
+}
+
+getArch16nKey(String ref) {
+  String lastRefPart = getLastRefPart(ref);
+
+  if (isNull(lastRefPart)) return null;
+  else                     return "{" + lastRefPart + "}";
+}
+
+guessArch16nVal(String ref) {
+  String arch16nKey = getArch16nKey(ref);
+
+  if (isNull(getArch16nKey)) return "";
+  arch16nKey = arch16nKey.replaceAll("_", " ");
+  arch16nKey = arch16nKey.replaceAll("^\\{", "");
+  arch16nKey = arch16nKey.replaceAll("\\}$", "");
+  return arch16nKey;
+}
+
+getAttributeName(String ref) {
+  String guiElementRef = getGuiElementRef(ref);
+  if (isNull(guiElementRef)) {
+    return null;
+  }
+
+  String attributeName = guiElementRef.replaceAll("_", " ");
+  return attributeName;
+}
+
+/******************************************************************************/
 /*                            BINDING ACCUMULATOR                             */
 /*                                                                            */
 /* Allows onEvent bindings for the same element to accumulate over multiple   */
 /* onEvent calls instead of having later calls override earlier ones.         */
+/*                                                                            */
+/* Also adds support for a "leave" event triggered whenever a given tab group */
+/* is navigated away from. Note that this event cannot be triggered when the  */
+/* FAIMS app is exited.                                                       */
 /******************************************************************************/
-Map events = new HashMap();
-String SEP = Character.toString ((char) 0); // Beanshell is stupid and won't let me write "\0"
+String SEP = Character.toString ((char) 0); // Beanshell won't let me write "\0"
+Map    EVENTS        = new HashMap(); // (ref, event type) -> callback statement
+Set    CUSTOM_EVENTS = new HashSet(); // Events not handled by `onEvent`
+CUSTOM_EVENTS.add("leave");
+CUSTOM_EVENTS.add("focus");
+CUSTOM_EVENTS.add("blur");
+
+getKey(String ref, String event) {
+  return ref + SEP + event;
+}
 
 /* Returns the set of statements bound to an element at `ref` and occuring on
  * `event`.
  */
 getStatements(String ref, String event) {
-  String    key = ref + SEP + event;
-  ArrayList val = (ArrayList) events.get(key);
-  if (val == null) {
-    val = new ArrayList();
-    events.put(key, val);
-  }
-  return val;
+  String    key = getKey(ref, event);
+  ArrayList val = (ArrayList) EVENTS.get(key);
+
+  if (val == null) return new ArrayList();
+  else             return val;
 }
 
-addOnEvent(String ref, String event, String statement) {
-  // Calling `remove()` first ensures statement occurs once in the list, at the end.
-  while(getStatements(ref, event).remove(statement));
-  getStatements(ref, event).add(statement);
+addStatement(String ref, String event, String statement) {
+  // In the case that a statement already exists for a given (`ref`, `event`)
+  // pair, writing `val.add(statement);` will be enough to add the extra
+  // statement. This is because `getStatements` returns a reference to a list.
+  // In the case just described, the list is stored in the `EVENTS` map.
+  // However, sometimes `getStatements` returns empty lists which are not stored
+  // in that map. In this case, calling `EVENTS.put` is required.
+
+  String    key = getKey(ref, event);
+  ArrayList val = getStatements(ref, event);
+  val.add(statement);
+  EVENTS.put(key, val);
+}
+
+getStatementsString(String ref, String event) {
+  ArrayList stmts = getStatements(ref, event);
+  String stmtsStr = "";
+  for (String s : stmts) {
+    stmtsStr += s;
+    stmtsStr += "; ";
+  }
+  return stmtsStr;
 }
 
 delOnEvent(String ref, String event, String statement) {
   while(getStatements(ref, event).remove(statement));
 }
 
-bindOnEvent(String ref, String event) {
-  ArrayList stmts = getStatements(ref, event);
-  String stmtsExpr = "";
-  for (String s : stmts) {
-    stmtsExpr += s;
-    stmtsExpr += "; ";
-  }
+addOnEvent(String ref, String event, String statement) {
+  // Calling `delOnEvent()` first ensures statement occurs once in the list, at
+  // the end.
+  delOnEvent  (ref, event, statement);
+  addStatement(ref, event, statement);
+}
 
-  onEvent(ref, event, stmtsExpr);
+bindOnEvent(String ref, String event) {
+  String stmtsStr     = getStatementsString(ref, event);
+  String focusStmtStr = getStatementsString(ref, "focus");
+  String blurStmtStr  = getStatementsString(ref, "blur" );
+
+  if (!CUSTOM_EVENTS.contains(event)) {
+    onEvent(ref, event, stmtsStr);
+  } else if (event.equals("focus")) {
+    onFocus(ref, focusStmtStr, blurStmtStr);
+  } else if (event.equals("blur" )) {
+    onFocus(ref, focusStmtStr, blurStmtStr);
+  }
 }
 
 bindOnEvents() {
-  for (String key : events.keySet()) {
+  for (String key : EVENTS.keySet()) {
     refevent = key.split(SEP);
     ref   = refevent[0];
     event = refevent[1];
     bindOnEvent(ref, event);
   }
+}
+
+onLeaveTabGroup() {
+  onLeaveTabGroup(getPreviouslyDisplayedTabGroup());
+}
+
+/* Execute the "leave" event for the tab group at `ref` if a callback for it
+ * exists.
+ */
+onLeaveTabGroup(String ref) {
+  String event    = "leave";
+  String stmtsStr = getStatementsString(ref, event);
+  execute(stmtsStr);
+}
+
+/* Establishes `onEvent` bindings necessary to make the "leave" event work. The
+ * "leave" event is really triggered upon "show" of another tab.
+ */
+for (tg : getTabGroups()) {
+  String ref      = tg;
+  String event    = "show";
+  String callback;
+
+  // Update (previously) displayed tab group
+  callback = "updateDisplayedTabGroup(\"%s\")";
+  callback = replaceFirst(callback, tg);
+  addOnEvent(tg, event, callback);
+
+  // Trigger on leave tab group event
+  callback = "onLeaveTabGroup()";
+  addOnEvent(tg, event, callback);
 }
 
 /******************************************************************************/
@@ -1371,6 +1607,7 @@ loadEntityFrom(String entityID) {
   ]">
       <xsl:call-template name="tabgroup-new" />
       <xsl:call-template name="tabgroup-oncreate" />
+      <xsl:call-template name="tabgroup-onload" />
       <xsl:call-template name="tabgroup-duplicate" />
       <xsl:call-template name="tabgroup-delete" />
       <xsl:call-template name="tabgroup-really-delete" />
@@ -1632,92 +1869,7 @@ for (ref : getStartingIdPaths()) {
       <xsl:call-template name="incautonum"/>
     </xsl:if>
 
-      <xsl:text>
-/******************************************************************************/
-/*                           DOCUMENT OBJECT MODEL                            */
-/******************************************************************************/
-
-getTabGroupRef(String fullRef, Boolean lastPartOnly) {
-  if (isNull(fullRef)) {
-    return null;
-  }
-
-  String[] parts = fullRef.split("/");
-
-  if (parts.length &lt; 1) return null;
-  return parts[0];
-}
-
-getTabRef(String fullRef) {
-  Boolean lastPartOnly = false;
-  return getTabRef(fullRef, lastPartOnly);
-}
-
-getTabRef(String fullRef, Boolean lastPartOnly) {
-  if (isNull(fullRef)) {
-    return null;
-  }
-
-  String[] parts = fullRef.split("/");
-
-  if (parts.length &lt; 2) return null;
-  if (lastPartOnly) return                  parts[1];
-  else              return parts[0] + "/" + parts[1];
-}
-
-getLastRefPart(String ref) {
-  if (isNull(fullRef)) {
-    return null;
-  }
-
-  String[] parts = fullRef.split("/");
-  return parts[parts.length-1];
-}
-
-getGuiElementRef(String fullRef) {
-  Boolean lastPartOnly = true;
-  return getGuiElementRef(fullRef, lastPartOnly);
-}
-
-getGuiElementRef(String fullRef, Boolean lastPartOnly) {
-  if (isNull(fullRef)) {
-    return null;
-  }
-
-  String[] parts = fullRef.split("/");
-
-  if (parts.length &lt; 3) return null;
-  if (lastPartOnly) return parts[2];
-  else              return fullRef;
-}
-
-getArch16nKey(String ref) {
-  String lastRefPart = getLastRefPart(ref);
-
-  if (isNull(lastRefPart)) return null;
-  else                     return "{" + lastRefPart + "}";
-}
-
-guessArch16nVal(String ref) {
-  String arch16nKey = getArch16nKey(ref);
-
-  if (isNull(getArch16nKey)) return "";
-  arch16nKey = arch16nKey.replaceAll("_", " ");
-  arch16nKey = arch16nKey.replaceAll("^\\{", "");
-  arch16nKey = arch16nKey.replaceAll("\\}$", "");
-  return arch16nKey;
-}
-
-getAttributeName(String ref) {
-  String guiElementRef = getGuiElementRef(ref);
-  if (isNull(guiElementRef)) {
-    return null;
-  }
-
-  String attributeName = guiElementRef.replaceAll("_", " ");
-  return attributeName;
-}
-
+  <xsl:text>
 /******************************************************************************/
 /*                POPULATION OF ENTITY AND CHILD ENTITY LISTS                 */
 /******************************************************************************/
@@ -1790,7 +1942,7 @@ populateEntityListsInTabGroup(String tabGroup) {
 
   for (m : ENTITY_MENUS) {
     String path         = m[1];
-    String menuTabGroup = getTabGroup(path);
+    String menuTabGroup = getTabGroupRef(path);
     String functionCall = getEntityMenuPopulationFunction(m);
 
     if (menuTabGroup.equals(tabGroup))
@@ -1972,12 +2124,15 @@ bindOnEvents();
       not(name() = 'rels') and
       not(contains(@f, 'nodata'))
       ]">
+      <xsl:variable name="camelcase-tabgroup">
+        <xsl:call-template name="string-replace-all">
+          <xsl:with-param name="text" select="name()" />
+          <xsl:with-param name="replace" select="'_'" />
+          <xsl:with-param name="by" select="''" />
+        </xsl:call-template>
+      </xsl:variable>
       <xsl:text>load</xsl:text>
-      <xsl:call-template name="string-replace-all">
-        <xsl:with-param name="text" select="name()" />
-        <xsl:with-param name="replace" select="'_'" />
-        <xsl:with-param name="by" select="''" />
-      </xsl:call-template>
+      <xsl:value-of select="$camelcase-tabgroup"/>
       <xsl:text>From(String uuid) {
   String tabgroup = "</xsl:text><xsl:value-of select="name()"/><xsl:text>";
   setUuid(tabgroup, uuid);
@@ -1986,6 +2141,7 @@ bindOnEvents();
   FetchCallback cb = new FetchCallback() {
     onFetch(result) {
       populateEntityListsInTabGroup(tabgroup);
+      onLoad</xsl:text><xsl:value-of select="$camelcase-tabgroup"/><xsl:text>();
     }
   };
 
@@ -2041,6 +2197,27 @@ bindOnEvents();
       </xsl:call-template>
     </xsl:variable>
     <xsl:text>onCreate</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>(){</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  return;</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-onload">
+    <xsl:variable name="camelcase-tabgroup">
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:text>// Triggered after an existing record is loaded.</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>onLoad</xsl:text>
     <xsl:value-of select="$camelcase-tabgroup"/>
     <xsl:text>(){</xsl:text>
     <xsl:value-of select="$newline"/>
