@@ -11,8 +11,8 @@ then
 else
     module=$1
 fi
-modulePath=$( dirname  "$module" )
-moduleName=$( basename "$module" )
+modulePath=$( dirname  $( readlink -e "$module" ))
+moduleName=$( basename $( readlink -e "$module" ))
 thisScriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 ####################### HANDLE PRE-PROCESSING DIRECTIVE ########################
@@ -34,17 +34,20 @@ cd - >/dev/null
 mkdir -p "$modulePath/module"
 mkdir -p "$modulePath/wireframe"
 
-python2 -m generator.module.arch16n    $module >"$modulePath/module/english.0.properties"
-python2 -m generator.module.dataschema $module >"$modulePath/module/data_schema.xml"
-python2 -m generator.module.test       $module >"$modulePath/module/ModuleUtil.java"
-$proc1  "$thisScriptPath/generator/module/ui-logic.xsl"   $module >"$modulePath/module/ui_logic.bsh"
-python2 -m generator.module.uischema   $module >"$modulePath/module/ui_schema.xml"
-python2 -m generator.module.uistyling  $module >"$modulePath/module/ui_styling.css"
-python2 -m generator.module.validation $module >"$modulePath/module/validation.xml"
+cd "$thisScriptPath"
+python2 -m generator.module.arch16n    "$modulePath/$module" >"$modulePath/module/english.0.properties"
+python2 -m generator.module.dataschema "$modulePath/$module" >"$modulePath/module/data_schema.xml"
+python2 -m generator.module.test       "$modulePath/$module" >"$modulePath/module/ModuleUtil.java"
+$proc1  "$thisScriptPath/generator/module/ui-logic.xsl"   "$modulePath/$module" >"$modulePath/module/ui_logic.bsh"
+python2 -m generator.module.uischema   "$modulePath/$module" >"$modulePath/module/ui_schema.xml"
+python2 -m generator.module.uistyling  "$modulePath/$module" >"$modulePath/module/ui_styling.css"
+python2 -m generator.module.validation "$modulePath/$module" >"$modulePath/module/validation.xml"
 
 gawk     -f "$thisScriptPath/generator/wireframe/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
 $proc2 -xsl:"$thisScriptPath/generator/wireframe/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
-python2 -m generator.wireframe.datastruct $module                          >"$modulePath/wireframe/datastruct.gv"
+python2 -m generator.wireframe.datastruct "$modulePath/$module"            >"$modulePath/wireframe/datastruct.gv"
+cd -
+
 cp          "$thisScriptPath/generator/wireframe/makeElement.sh"            "$modulePath/wireframe"
 cd "$modulePath/wireframe/"
 chmod +x wireframeElements.sh
@@ -54,7 +57,7 @@ cd - >/dev/null
 ####################### HANDLE PRE-PROCESSING DIRECTIVE ########################
 # This is the clean up step mentioned near the start of this script            #
 ################################################################################
-mv "${module}.original" "$module"
+mv "$modulePath/{module}.original" "$modulePath/$module"
 
 ####################### HANDLE POST-PROCESSING DIRECTIVE #######################
 cd "$modulePath" >/dev/null
