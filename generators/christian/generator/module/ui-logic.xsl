@@ -71,18 +71,23 @@ insertIntoLocalSettings(String key, Integer val) {
   insertIntoLocalSettings(key, Integer.toString(val));
 }
 
-insertIntoLocalSettingsOnBlur(String ref) {
+insertIntoLocalSettingsOnChange(String ref) {
   String val = getFieldValue(ref);
 
-  String focusCallback = "";
-  String blurCallback  = "";
-  blurCallback += "insertIntoLocalSettings(\"{key}\")";
-  blurCallback  = replaceFirst(blurCallback, "{key}", ref);
+  String insertCallback  = "";
+  insertCallback += "insertIntoLocalSettings(\"{key}\")";
+  insertCallback  = replaceFirst(insertCallback, "{key}", ref);
 
-  onFocus(ref, focusCallback, blurCallback);
+  addOnEvent(ref, "blur",  insertCallback);
+  addOnEvent(ref, "click", insertCallback);
 }
 
-setFieldValueFromLocalSettings(String key, String ref) {
+setFieldValueFromLocalSettings(String key, String ref, boolean doOverwrite) {
+  String val = getFieldValue(ref);
+  if (!isNull(val) &amp;&amp; !doOverwrite) {
+    return;
+  }
+
   String q = "SELECT value FROM localSettings WHERE key = '" + key + "';";
   fetchOne(q, new FetchCallback() {
     onFetch(result) {
@@ -93,15 +98,25 @@ setFieldValueFromLocalSettings(String key, String ref) {
   });
 }
 
+setFieldValueFromLocalSettings(String ref, boolean doOverwrite) {
+  setFieldValueFromLocalSettings(ref, ref, doOverwrite);
+}
+
+setFieldValueFromLocalSettings(String ref) {
+  setFieldValueFromLocalSettings(ref, false);
+}
+
+setFieldValueFromLocalSettingsOnShow(String ref, boolean doOverwrite) {
+  String cb = "setFieldValueFromLocalSettings(\"%s\", %s)";
+  cb = replaceFirst(cb, ref);
+  cb = replaceFirst(cb, doOverwrite + "");
+
+  addOnEvent(ref, "show", cb);
+}
+
 setFieldValueFromLocalSettingsOnShow(String ref) {
-  String refTabGroup = getTabGroupRef(ref);
-
-  String event = "";
-  event += "setFieldValueFromLocalSettings(\"{key}\", \"{val}\")";
-  event  = replaceFirst(event, "{key}", ref);
-  event  = replaceFirst(event, "{val}", ref);
-
-  addOnEvent(refTabGroup, "show", event);
+  boolean doOverwrite = false;
+  setFieldValueFromLocalSettingsOnShow(ref, doOverwrite);
 }
 
 /* Causes the value of the field given by `ref` to be saved each time it is
@@ -114,7 +129,7 @@ setFieldValueFromLocalSettingsOnShow(String ref) {
  */
 persistOverSessions(String ref) {
   setFieldValueFromLocalSettingsOnShow(ref);
-  insertIntoLocalSettingsOnBlur(ref);
+  insertIntoLocalSettingsOnChange     (ref);
 }
 
 /**************************** FIELD COPYING HELPER ****************************/
@@ -233,6 +248,10 @@ updateDisplayedTabGroup(String tabGroup) {
   CURRENTLY_DISPLAYED_TAB_GROUP  = tabGroup;
 }
 
+getPreviousTabGroup() {
+  return getPreviouslyDisplayedTabGroup();
+}
+
 getPreviouslyDisplayedTabGroup() {
   return PREVIOUSLY_DISPLAYED_TAB_GROUP;
 }
@@ -278,7 +297,7 @@ getTabRef(String fullRef, Boolean lastPartOnly) {
   else              return parts[0] + "/" + parts[1];
 }
 
-getLastRefPart(String ref) {
+getLastRefPart(String fullRef) {
   if (isNull(fullRef)) {
     return null;
   }
@@ -314,7 +333,7 @@ getArch16nKey(String ref) {
 guessArch16nVal(String ref) {
   String arch16nKey = getArch16nKey(ref);
 
-  if (isNull(getArch16nKey)) return "";
+  if (isNull(arch16nKey)) return "";
   arch16nKey = arch16nKey.replaceAll("_", " ");
   arch16nKey = arch16nKey.replaceAll("^\\{", "");
   arch16nKey = arch16nKey.replaceAll("\\}$", "");
@@ -331,22 +350,51 @@ getAttributeName(String ref) {
   return attributeName;
 }
 
+getArchEntType(String ref) {
+  String tabGroupRef = getTabGroupRef(ref);
+  if (isNull(tabGroupRef)) {
+    return null;
+  }
+
+  String archEntType = tabGroupRef.replaceAll("_", " ");
+  return archEntType;
+}
+
 /******************************************************************************/
 /*                            BINDING ACCUMULATOR                             */
 /*                                                                            */
-/* Allows onEvent bindings for the same element to accumulate over multiple   */
-/* onEvent calls instead of having later calls override earlier ones.         */
+/* The binding accumulator allows onEvent bindings for the same element to    */
+/* accumulate over multiple onEvent calls instead of having later calls       */
+/* override earlier ones.                                                     */
 /*                                                                            */
-/* Also adds support for a "leave" event triggered whenever a given tab group */
-/* is navigated away from. Note that this event cannot be triggered when the  */
-/* FAIMS app is exited.                                                       */
+/* It also adds support for a several additional events:                      */
+/*   - "blur" --- This is merely an interface to make code for adding "blur"  */
+/*         events more consistent.                                            */
+/*   - "create" --- Triggered after a record is first created.                */
+/*   - "fetch" --- Triggered after a record is fetched and displayed in a     */
+/*         given tab group.                                                   */
+/*   - "focus" --- This is merely an interface to make code for adding        */
+/*         "focus" events more consistent.                                    */
+/*   - "leave" --- Triggered after a given tab group is navigated away        */
+/*         from. Note that this event cannot be triggered when the FAIMS app  */
+/*         is exited.                                                         */
+/*   - "save" --- Triggered each time a tab group is saved. This includes the */
+/*         first time the tab group is saved as well as subsequent            */
+/*         onSave(String, Boolean) calls.                                     */
+/*                                                                            */
+/* A single call to `bindOnEvents` must occur after all the `addOnEvent` and  */
+/* `delOnEvents` calls. Calling `bindOnEvents` is what actually establishes   */
+/* the bindings once they have been added to the accumulator.                 */
 /******************************************************************************/
 String SEP = Character.toString ((char) 0); // Beanshell won't let me write "\0"
 Map    EVENTS        = new HashMap(); // (ref, event type) -> callback statement
 Set    CUSTOM_EVENTS = new HashSet(); // Events not handled by `onEvent`
-CUSTOM_EVENTS.add("leave");
-CUSTOM_EVENTS.add("focus");
 CUSTOM_EVENTS.add("blur");
+CUSTOM_EVENTS.add("create");
+CUSTOM_EVENTS.add("fetch");
+CUSTOM_EVENTS.add("focus");
+CUSTOM_EVENTS.add("leave");
+CUSTOM_EVENTS.add("save");
 
 getKey(String ref, String event) {
   return ref + SEP + event;
@@ -409,6 +457,8 @@ bindOnEvent(String ref, String event) {
     onFocus(ref, focusStmtStr, blurStmtStr);
   } else if (event.equals("blur" )) {
     onFocus(ref, focusStmtStr, blurStmtStr);
+  } else {
+    ; // Other events are implemented using auto-generated callback functions
   }
 }
 
@@ -1122,23 +1172,29 @@ populateAuthorAndTimestamp(String tabgroup) {
 }
 
 </xsl:text>
-<xsl:for-each select="/module/*[
-  not(name() = 'logic') and
-  not(name() = 'rels') and
-  not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])
-  ]">
+    <xsl:for-each select="/module/*[
+      not(name() = 'logic') and
+      not(name() = 'rels') and
+      not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])
+      ]">
+      <xsl:variable name="camelcase-tabgroup">
+        <xsl:call-template name="string-replace-all">
+          <xsl:with-param name="text" select="name()" />
+          <xsl:with-param name="replace" select="'_'" />
+          <xsl:with-param name="by" select="''" />
+        </xsl:call-template>
+      </xsl:variable>
       <xsl:text>onShow</xsl:text>
-      <xsl:call-template name="string-replace-all">
-        <xsl:with-param name="text" select="name()" />
-        <xsl:with-param name="replace" select="'_'" />
-        <xsl:with-param name="by" select="''" />
-      </xsl:call-template>
+      <xsl:value-of select="$camelcase-tabgroup"/>
 <xsl:text> () {
   // TODO: Add some things which should happen when this tabgroup is shown
   saveTabGroup("</xsl:text>
       <xsl:value-of select="name()" />
-<xsl:text>");
-}</xsl:text>
+      <xsl:text>", "onSave</xsl:text>
+      <xsl:value-of select="$camelcase-tabgroup"/>
+      <xsl:text>__()");</xsl:text>
+      <xsl:value-of select="$newline" />
+      <xsl:text>}</xsl:text>
       <xsl:value-of select="$newline" />
     </xsl:for-each>
     <xsl:value-of select="$newline" />
@@ -1607,7 +1663,8 @@ loadEntityFrom(String entityID) {
   ]">
       <xsl:call-template name="tabgroup-new" />
       <xsl:call-template name="tabgroup-oncreate" />
-      <xsl:call-template name="tabgroup-onload" />
+      <xsl:call-template name="tabgroup-onfetch" />
+      <xsl:call-template name="tabgroup-onsave" />
       <xsl:call-template name="tabgroup-duplicate" />
       <xsl:call-template name="tabgroup-delete" />
       <xsl:call-template name="tabgroup-really-delete" />
@@ -1830,8 +1887,6 @@ incField(String ref) {
   return incField(ref, 1);
 }
 
-addOnEvent("</xsl:text><xsl:call-template name="autonum-parent"/><xsl:text>", "show", "onShowAutonum()");
-
 getStartingIdPaths() {
   List l = new ArrayList();
 </xsl:text>
@@ -1840,15 +1895,15 @@ getStartingIdPaths() {
   return l;
 }
 
-onShowAutonum() {
-  List l = getStartingIdPaths();
-
-  for (ref : l) {
-    loadStartingId(ref);
-  }
-}
-
 loadStartingId(String ref) {
+  // If there's already a value in the field, we don't need to load one.
+  String val = getFieldValue(ref);
+  if (!isNull(val)) {
+    return;
+  }
+
+  // Load a value into the field. Set it to 1 if no value has been previously
+  // saved.
   String idQ = "SELECT value FROM localSettings WHERE key = '" + ref + "';";
   fetchOne(idQ, new FetchCallback() {
     onFetch(result) {
@@ -1857,6 +1912,16 @@ loadStartingId(String ref) {
     }
   });
 }
+
+loadStartingIds() {
+  List l = getStartingIdPaths();
+
+  for (ref : l) {
+    loadStartingId(ref);
+  }
+}
+
+addOnEvent("</xsl:text><xsl:call-template name="autonum-parent"/><xsl:text>", "show", "loadStartingIds()");
 
 /*
  * Sets bindings to save autonum'd fields whenever they're blurred.
@@ -2141,7 +2206,10 @@ bindOnEvents();
   FetchCallback cb = new FetchCallback() {
     onFetch(result) {
       populateEntityListsInTabGroup(tabgroup);
-      onLoad</xsl:text><xsl:value-of select="$camelcase-tabgroup"/><xsl:text>();
+      // WARNING: The default behaviour of calling `onFetch</xsl:text>
+      <xsl:value-of select="$camelcase-tabgroup"/>
+      <xsl:text>()` upon fetching an entity is deprecated in this version of FAIMS Tools. If you never implemented this function, this warning can safely be ignored.
+      onFetch</xsl:text><xsl:value-of select="$camelcase-tabgroup"/><xsl:text>__();
     }
   };
 
@@ -2181,7 +2249,13 @@ bindOnEvents();
     <xsl:call-template name="tabgroup-new-incautonum"/>
     <xsl:text>  onCreate</xsl:text>
     <xsl:value-of select="$camelcase-tabgroup"/>
-    <xsl:text>();</xsl:text>
+    <xsl:text>__();</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  // WARNING: The default behaviour of calling `</xsl:text>
+    <xsl:text>onCreate</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>()` upon entity creation is deprecated in this version of FAIMS Tools. If you never implemented this function, this warning can safely be ignored.</xsl:text>
     <xsl:value-of select="$newline"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="$newline"/>
@@ -2196,18 +2270,27 @@ bindOnEvents();
         <xsl:with-param name="by" select="''" />
       </xsl:call-template>
     </xsl:variable>
+    <xsl:value-of select="$newline"/>
     <xsl:text>onCreate</xsl:text>
     <xsl:value-of select="$camelcase-tabgroup"/>
-    <xsl:text>(){</xsl:text>
+    <xsl:text>__(){</xsl:text>
     <xsl:value-of select="$newline"/>
-    <xsl:text>  return;</xsl:text>
+    <xsl:text>  String ref      = "</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String event    = "create";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String stmtsStr = getStatementsString(ref, event);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  execute(stmtsStr);</xsl:text>
     <xsl:value-of select="$newline"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="$newline"/>
     <xsl:value-of select="$newline"/>
   </xsl:template>
 
-  <xsl:template name="tabgroup-onload">
+  <xsl:template name="tabgroup-onfetch">
     <xsl:variable name="camelcase-tabgroup">
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text" select="name()" />
@@ -2215,13 +2298,54 @@ bindOnEvents();
         <xsl:with-param name="by" select="''" />
       </xsl:call-template>
     </xsl:variable>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
     <xsl:text>// Triggered after an existing record is loaded.</xsl:text>
     <xsl:value-of select="$newline"/>
-    <xsl:text>onLoad</xsl:text>
+    <xsl:text>onFetch</xsl:text>
     <xsl:value-of select="$camelcase-tabgroup"/>
-    <xsl:text>(){</xsl:text>
+    <xsl:text>__(){</xsl:text>
     <xsl:value-of select="$newline"/>
-    <xsl:text>  return;</xsl:text>
+    <xsl:text>  String ref      = "</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String event    = "fetch";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String stmtsStr = getStatementsString(ref, event);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  execute(stmtsStr);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-onsave">
+    <xsl:variable name="camelcase-tabgroup">
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>// Triggered after an existing record is saved.</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>onSave</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>__(){</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String ref      = "</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String event    = "save";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String stmtsStr = getStatementsString(ref, event);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  execute(stmtsStr);</xsl:text>
     <xsl:value-of select="$newline"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="$newline"/>
