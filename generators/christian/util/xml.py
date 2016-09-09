@@ -1,6 +1,7 @@
 from   lxml import etree
 import hashlib
 import re
+import consts
 
 def parseXml(filename):
     parser = etree.XMLParser(strip_cdata=False)
@@ -50,12 +51,20 @@ def getIndex(node):
 def getPath(node):
     if node == None:
         return []
-    else:
-        indexString = str(getIndex(node))
-        return getPath(node.getparent()) + [indexString]
+    if node is node.getroottree().getroot():
+        return []
+
+    return getPath(node.getparent()) + [node.tag]
 
 def getPathString(node, sep='/'):
     return sep.join(getPath(node))
+
+def getPathIndex(node):
+    nodes = getPath(node)
+    return [str(getIndex(n)) for n in nodes]
+
+def getPathIndexString(node, sep='/'):
+    return sep.join(getPathIndex(node))
 
 def nodeHash(node, hashLen=10):
     path = getPathString(node)
@@ -78,3 +87,10 @@ def replaceElement(element, replacements):
 
     element.getparent().remove(element)
     return returnVal
+
+def getType(node):
+    if node == None:
+        return ''
+    if not consts.RESERVED_XML_TYPE in node.attrib:
+        return ''
+    return node.attrib[consts.RESERVED_XML_TYPE]

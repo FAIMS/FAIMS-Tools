@@ -4,6 +4,9 @@ import sys
 import util.schema
 import util.ui
 import util.xml
+import util.consts
+
+# TODO: <cols> need to be expanded into groups
 
 # The namespaces used in the UI schema must be defined here to help us search
 # through the uischema-template.xml using xpath.
@@ -15,13 +18,13 @@ def getModel(node):
     modelTabGroups = [getModelTabGroup(n) for n in node]
     modelTabGroups = filter(lambda x: x != None, modelTabGroups)
 
-    model = etree.Element('modelContainer')
+    model = etree.Element('MODEL_CONTAINER')
     model.extend(modelTabGroups)
 
     return model
 
 def getModelTabGroup(node):
-    isTabGroup = util.schema.hasUserDefinedName(node)
+    isTabGroup = util.xml.getType(node) == util.consts.TYPE_TAB_GROUP
 
     if not isTabGroup:
         return None
@@ -67,12 +70,30 @@ def getModelTabChildren(node):
 ############################## BINDING GENERATION ##############################
 
 def getBindings(node):
-    return etree.Element('Bindings')
+    bindings = etree.Element('BINDINGS_CONTAINER')
+    bindings.extend([getBinding(n) for n in node.xpath('//*[@b]')])
+
+    return bindings
+
+def getBinding(node):
+    type    = node.attrib['b']
+    nodeset = '/faims/' + util.xml.getPathString(node)
+
+    return etree.Element('bind', type=type, nodeset=nodeset)
 
 ############################### BODY GENERATION ################################
 
 def getBody(node):
-    return etree.Element('Body')
+    bodyTabGroups = [getBodyTabGroup(n) for n in node]
+    bodyTabGroups = filter(lambda x: x != None, bodyTabGroups)
+
+    body = etree.Element('BODY_CONTAINER')
+    body.extend(bodyTabGroups)
+
+    return body
+
+def getBodyTabGroup(node):
+    return None
 
 ################################################################################
 

@@ -306,26 +306,7 @@ def hasReservedName(node):
     return node != None and isReservedName(node.tag)
 
 def isReservedName(name):
-    reservedNames = [
-            'app',
-            'author',
-            'autonum',
-            'cols',
-            'desc',
-            'fmt',
-            'gps',
-            'logic',
-            'module',
-            'opt',
-            'opts',
-            'pos',
-            'rels',
-            'search',
-            'str',
-            'timestamp',
-    ]
-
-    return name in reservedNames
+    return name in consts.TYPES
 
 def hasUserDefinedName(node):
     return node != None and isUserDefinedName(node.tag)

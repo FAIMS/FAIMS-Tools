@@ -1,6 +1,8 @@
 RESERVED_XML_TYPE = '__RESERVED_XML_TYPE__'
 RESERVED_IGNORE   = '__RESERVED_IGNORE__'
 
+
+
 TYPE_APP       = 'app'
 TYPE_AUTHOR    = 'author'
 TYPE_AUTONUM   = 'autonum'
@@ -22,3 +24,4 @@ TYPE_STR       = 'str'
 TYPE_TAB       = 'tab'
 TYPE_TAB_GROUP = 'tab group'
 TYPE_TIMESTAMP = 'timestamp'
+TYPES = [v for k, v in dict(globals()).iteritems() if k.startswith('TYPE_')]
