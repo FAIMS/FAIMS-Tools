@@ -72,4 +72,4 @@ def getRelName(node):
         for m in matches:
             replaceElement(m, replacements)
 
-    schema.annotateWithTypes(tree)
+    schema.annotateWithXmlTypes(tree)

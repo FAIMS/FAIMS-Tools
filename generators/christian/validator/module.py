@@ -28,7 +28,7 @@ countWar = 0
 countErr = 0
 
 ######################### FLAG NODES WITH THEIR TYPES ##########################
-util.schema.annotateWithTypes(tree)
+util.schema.annotateWithXmlTypes(tree)
 
 # Nodes which didn't end up getting flagged...
 exp  = '//*[@%s]/*[not(@%s)]'
@@ -167,7 +167,7 @@ for m in matches:
 ################ VALIDATE CARDINALITIES FOR COMPOSITE ELEMENTS #################
 
 util.schema.expandCompositeElements(tree)
-util.schema.annotateWithTypes(tree)
+util.schema.annotateWithXmlTypes(tree)
 
 # Check cardinality contraints
 el   = 'GUI/data element'

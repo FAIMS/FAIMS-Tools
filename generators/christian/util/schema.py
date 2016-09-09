@@ -11,6 +11,8 @@ import hashlib
 import re
 import table
 import xml
+import util
+import schema
 
 def getPath(node):
     nodeTypes = ['GUI/data element', 'tab group', 'tab']
@@ -102,7 +104,7 @@ def guessType(node):
     except:
         pass
 
-    # Okay, fine. Go ahead and give 'er a guess.
+    # Go ahead and give 'er a guess.
     isUser = 'f' in node.attrib and 'user' in node.attrib['f'].split()
     if isUser:
         return 'list'
@@ -142,24 +144,69 @@ def getParentGuiDataElement(node):
     if matches: return matches[0]
     else:       return None
 
-def annotateWithTypes(tree):
-    for t in table.TYPES:
-        parentType = t[0]
-        pattern    = t[1]
-        matchType  = t[2]
+def annotateWithXmlTypes(node):
+    if node == []:   return
+    if node == None: return
 
-        if   pattern == '/':
-            exp = '/*'
-            matches = tree.xpath(exp)
-        elif pattern == '/[^a-z]/':
-            exp = '//*[@%s="%s"]/*' % (consts.RESERVED_XML_TYPE, parentType)
-            matches = tree.xpath(exp)
-            matches = xml.getNonLower(matches)
-        else:
-            exp  = '//*[@%s="%s"]/%s'
-            exp %= (consts.RESERVED_XML_TYPE, parentType, pattern)
-            matches = tree.xpath(exp)
-        xml.flagAll(matches, consts.RESERVED_XML_TYPE, matchType)
+    # Determine parent and its type
+    parent = node.getparent()
+    if parent != None and consts.RESERVED_XML_TYPE in parent.attrib:
+        parentType = parent.attrib[consts.RESERVED_XML_TYPE]
+    else:
+        parentType = ''
+
+    # Guess UI type
+    guessedType = schema.guessType(node)
+
+    # Determine XML type
+    type = ''
+    if   parent == None:
+        type = consts.TYPE_MODULE
+    elif parentType == consts.TYPE_MODULE:
+        if   util.isNonLower(node.tag):          type = consts.TYPE_TAB_GROUP
+        elif node.tag == consts.TYPE_LOGIC:      type = consts.TYPE_LOGIC
+        elif node.tag == consts.TYPE_RELS:       type = consts.TYPE_RELS
+    elif parentType == consts.TYPE_TAB_GROUP:
+        if   util.isNonLower(node.tag):          type = consts.TYPE_TAB
+        elif node.tag == consts.TYPE_LOGIC:      type = consts.TYPE_DESC
+        elif node.tag == consts.TYPE_SEARCH:     type = consts.TYPE_SEARCH
+    elif parentType == consts.TYPE_TAB:
+        if   guessedType == consts.TYPE_GROUP:   type = consts.TYPE_GROUP
+        elif util.isNonLower(node.tag):          type = consts.TYPE_GUI_DATA
+        elif node.tag == consts.TYPE_AUTHOR:     type = consts.TYPE_AUTHOR
+        elif node.tag == consts.TYPE_AUTONUM:    type = consts.TYPE_AUTONUM
+        elif node.tag == consts.TYPE_COLS:       type = consts.TYPE_COLS
+        elif node.tag == consts.TYPE_GPS:        type = consts.TYPE_GPS
+        elif node.tag == consts.TYPE_TIMESTAMP:  type = consts.TYPE_TIMESTAMP
+    elif parentType == consts.TYPE_GROUP:
+        if   guessedType == consts.TYPE_GROUP:   type = consts.TYPE_GROUP
+        elif util.isNonLower(node.tag):          type = consts.TYPE_GUI_DATA
+    elif parentType == consts.TYPE_COLS:
+        if   util.isNonLower(node.tag):          type = consts.TYPE_GUI_DATA
+        elif node.tag == consts.TYPE_COL:        type = consts.TYPE_COL
+    elif parentType == consts.TYPE_COL:
+        if   util.isNonLower(node.tag):          type = consts.TYPE_GUI_DATA
+    elif parentType == consts.TYPE_GUI_DATA:
+        if   node.tag == consts.TYPE_DESC:       type = consts.TYPE_DESC
+        elif node.tag == consts.TYPE_OPTS:       type = consts.TYPE_OPTS
+        elif node.tag == consts.TYPE_STR:        type = consts.TYPE_STR
+    elif parentType == consts.TYPE_STR:
+        if   node.tag == consts.TYPE_APP:        type = consts.TYPE_APP
+        elif node.tag == consts.TYPE_FMT:        type = consts.TYPE_FMT
+        elif node.tag == consts.TYPE_STR:        type = consts.TYPE_STR
+    elif parentType == consts.TYPE_OPTS:
+        if   node.tag == consts.TYPE_OPT:        type = consts.TYPE_OPT
+    elif parentType == consts.TYPE_OPT:
+        if   node.tag == consts.TYPE_OPT:        type = consts.TYPE_OPT
+        elif node.tag == consts.TYPE_DESC:       type = consts.TYPE_DESC
+
+    # Annotate current node
+    if type:
+        node.attrib[consts.RESERVED_XML_TYPE] = type
+
+    # Recurse
+    for child in node:
+        annotateWithXmlTypes(child)
 
 def expandCompositeElements(tree):
     # (1) REPLACE ELEMENTS HAVING A CERTAIN T ATTRIBUTE

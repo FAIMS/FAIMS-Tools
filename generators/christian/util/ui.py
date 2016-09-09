@@ -13,7 +13,7 @@ def getLabel(node):
 def isUiElement(node):
     if     schema.isFlagged(node, 'noui'):                   return False
     if not schema.hasAttrib(node, consts.RESERVED_XML_TYPE): return False
-    return node[consts.RESERVED_XML_TYPE] == 'GUI/data element'
+    return node.attrib[consts.RESERVED_XML_TYPE] == 'GUI/data element'
 
 def getUiNodes(node, xmlType):
     exp     = './/*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, xmlType)
