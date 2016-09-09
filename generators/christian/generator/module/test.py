@@ -50,9 +50,9 @@ def moduleToString(node):
 filenameModule = sys.argv[1]
 tree = util.xml.parseXml(filenameModule)
 util.schema.normalise(tree)
-util.schema.annotateWithTypes(tree)
+util.schema.annotateWithXmlTypes(tree)
 util.schema.expandCompositeElements(tree)
-util.schema.annotateWithTypes(tree)
+util.schema.annotateWithXmlTypes(tree)
 
 ################################################################################
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #

@@ -50,7 +50,19 @@ def getModelTab(node):
 
 def getModelTabChildren(node):
     isGroup = util.schema.guessType(node) == 'group'
-    pass
+    isUi    = util.ui.isUiElement  (node)
+
+    if node == None:             return None
+    if node == []:               return None
+    if not isUi and not isGroup: return None
+
+    modelTabGrandChildren = [getModelTabChildren(n) for n in node]
+    modelTabGrandChildren = filter(lambda x: x != None, modelTabGrandChildren)
+
+    modelTabChildren = etree.Element(node.tag)
+    modelTabChildren.extend(modelTabGrandChildren)
+
+    return modelTabChildren
 
 ############################## BINDING GENERATION ##############################
 
@@ -98,9 +110,9 @@ def getUiSchema(node):
 filenameModule = sys.argv[1]
 tree = util.xml.parseXml(filenameModule)
 util.schema.normalise(tree)
-util.schema.annotateWithTypes(tree)
+util.schema.annotateWithXmlTypes(tree)
 util.schema.expandCompositeElements(tree)
-util.schema.annotateWithTypes(tree)
+util.schema.annotateWithXmlTypes(tree)
 
 ################################################################################
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #
