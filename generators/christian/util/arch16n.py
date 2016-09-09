@@ -48,7 +48,7 @@ def getArch16nVal(node):
 
     return getLabelFromText(node) or getLabelFromTag(node)
 
-def getArch16nKey(node, keyLen=10):
+def getArch16nKey(node, keyLen=10, doAddCurlies=False):
     if node.tag == 'opt': lastSegment = [node.text]
     else:                 lastSegment = []
 
@@ -58,5 +58,8 @@ def getArch16nKey(node, keyLen=10):
     hash = hashlib.sha256(path)
     hash = hash.hexdigest()
     hash = hash[:keyLen]
+
+    if doAddCurlies:
+        hash = '{' + hash + '}'
 
     return hash

@@ -11,8 +11,8 @@ def getLabel(node):
     return arch16n.getArch16nVal(node)
 
 def isUiElement(node):
-    if     schema.isFlagged(node, 'noui'):                   return False
-    if not schema.hasAttrib(node, consts.RESERVED_XML_TYPE): return False
+    if     schema.isFlagged(node, 'noui'): return False
+    if not schema.isGuiDataElement(node):  return False
     return node.attrib[consts.RESERVED_XML_TYPE] == 'GUI/data element'
 
 def getUiNodes(node, xmlType):

@@ -19,6 +19,22 @@ def isDataElement(guiDataElement):
     if schema.guessType(guiDataElement) == 'viewfiles': return False
     return True
 
+def getArchEntName(node, doRecurse=False):
+    if node is None:
+        return ''
+    if schema.isTabGroup(node) and isDataElement(node):
+        return node.tag.replace('_', ' ')
+    if doRecurse:
+        return getArchEntName(node.getparent())
+
+def getAttribName(node, doRecurse=False):
+    if node is None:
+        return ''
+    if isDataElement(node):
+        return node.tag.replace('_', ' ')
+    if doRecurse:
+        return getArchEntName(node.getparent())
+
 def getPropType(node):
     if hasMeasureType(node): return 'measure'
     if hasFileType   (node): return 'file'

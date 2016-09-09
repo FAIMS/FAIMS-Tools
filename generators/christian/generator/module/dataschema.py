@@ -52,7 +52,7 @@ def addEnts(source, target):
 
 def addEnt(entNode, target):
     a                = etree.Element('ArchaeologicalElement')
-    a.attrib['name'] = entNode.tag.replace('_', ' ')
+    a.attrib['name'] = util.data.getArchEntName(entNode)
 
     d      = etree.Element('description')
     d.text = getDescriptionText(entNode)
@@ -74,7 +74,7 @@ def addProps(source, target):
 def addProp(dataElement, target):
     # make prop
     prp                = etree.Element('property')
-    prp.attrib['name'] = dataElement.tag.replace('_', ' ')
+    prp.attrib['name'] = util.data.getAttribName(dataElement)
     prp.attrib['type'] = util.data.getPropType(dataElement)
     if util.schema.isFlagged(dataElement, 'id'):
         prp.attrib['isIdentifier'] = 'true'

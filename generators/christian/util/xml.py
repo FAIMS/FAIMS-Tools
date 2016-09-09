@@ -87,10 +87,3 @@ def replaceElement(element, replacements):
 
     element.getparent().remove(element)
     return returnVal
-
-def getType(node):
-    if node == None:
-        return ''
-    if not consts.RESERVED_XML_TYPE in node.attrib:
-        return ''
-    return node.attrib[consts.RESERVED_XML_TYPE]

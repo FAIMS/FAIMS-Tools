@@ -97,7 +97,13 @@ def stripComments(node):
         p = c.getparent()
         p.remove(c)
 
+# TODO: Choose better names for this and getType
 def guessType(node):
+    '''
+    Returns the value of the node's `t` attribute if it has been defined.
+    Otherwise, a guess of what it might have been intended to be is returned
+    instead.
+    '''
     # Don't guess the type if it's already there
     try:
         return node.attrib['t']
@@ -105,9 +111,9 @@ def guessType(node):
         pass
 
     # Go ahead and give 'er a guess.
-    path = getPathString(node)
-    if path.count('/') == 0: return 'tab group'
-    if path.count('/') == 1: return 'tab'
+    path = getPath(node)
+    if len(path) == 1: return consts.TYPE_TAB_GROUP
+    if len(path) == 2: return consts.TYPE_TAB
 
     isUser = 'f' in node.attrib and 'user' in node.attrib['f'].split()
     if isUser:
@@ -313,3 +319,22 @@ def hasUserDefinedName(node):
 
 def isUserDefinedName(name):
     return name != None and name.istitle()
+
+def getType(node):
+    '''
+    Returns the type assigned during annotation with `annotateWithXmlTypes`.
+    '''
+    if node == None:
+        return ''
+    if not consts.RESERVED_XML_TYPE in node.attrib:
+        return ''
+    return node.attrib[consts.RESERVED_XML_TYPE]
+
+def isTabGroup(node):
+    return getType(node) == consts.TYPE_TAB_GROUP
+
+def isTab(node):
+    return getType(node) == consts.TYPE_TAB
+
+def isGuiDataElement(node):
+    return getType(node) == consts.TYPE_GUI_DATA

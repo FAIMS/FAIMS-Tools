@@ -2,6 +2,8 @@
 from   lxml import etree
 import sys
 import util.schema
+import util.data
+import util.arch16n
 import util.ui
 import util.xml
 import util.consts
@@ -15,41 +17,37 @@ NS = {'x': 'http://www.w3.org/2002/xforms'}
 ############################### MODEL GENERATION ###############################
 
 def getModel(node):
-    modelTabGroups = [getModelTabGroup(n) for n in node]
-    modelTabGroups = filter(lambda x: x != None, modelTabGroups)
+    tabGroups = [getModelTabGroup(n) for n in node]
+    tabGroups = filter(lambda x: x != None, tabGroups)
 
     model = etree.Element('MODEL_CONTAINER')
-    model.extend(modelTabGroups)
+    model.extend(tabGroups)
 
     return model
 
 def getModelTabGroup(node):
-    isTabGroup = util.xml.getType(node) == util.consts.TYPE_TAB_GROUP
-
-    if not isTabGroup:
+    if not util.schema.isTabGroup(node):
         return None
 
-    modelTabs = [getModelTab(n) for n in node]
-    modelTabs = filter(lambda x: x != None, modelTabs)
+    tabs = [getModelTab(n) for n in node]
+    tabs = filter(lambda x: x != None, tabs)
 
-    modelTabGroup = etree.Element(node.tag)
-    modelTabGroup.extend(modelTabs)
+    tabGroup = etree.Element(node.tag)
+    tabGroup.extend(tabs)
 
-    return modelTabGroup
+    return tabGroup
 
 def getModelTab(node):
-    isTab = util.schema.hasUserDefinedName(node)
-
-    if not isTab:
+    if not util.schema.isTab(node):
         return None
 
-    modelTabChildren = [getModelTabChildren(n) for n in node]
-    modelTabChildren = filter(lambda x: x != None, modelTabChildren)
+    tabChildren = [getModelTabChildren(n) for n in node]
+    tabChildren = filter(lambda x: x != None, tabChildren)
 
-    modelTab = etree.Element(node.tag)
-    modelTab.extend(modelTabChildren)
+    tab = etree.Element(node.tag)
+    tab.extend(tabChildren)
 
-    return modelTab
+    return tab
 
 def getModelTabChildren(node):
     isGroup = util.schema.guessType(node) == 'group'
@@ -59,13 +57,13 @@ def getModelTabChildren(node):
     if node == []:               return None
     if not isUi and not isGroup: return None
 
-    modelTabGrandChildren = [getModelTabChildren(n) for n in node]
-    modelTabGrandChildren = filter(lambda x: x != None, modelTabGrandChildren)
+    tabGrandChildren = [getModelTabChildren(n) for n in node]
+    tabGrandChildren = filter(lambda x: x != None, tabGrandChildren)
 
-    modelTabChildren = etree.Element(node.tag)
-    modelTabChildren.extend(modelTabGrandChildren)
+    tabChildren = etree.Element(node.tag)
+    tabChildren.extend(tabGrandChildren)
 
-    return modelTabChildren
+    return tabChildren
 
 ############################## BINDING GENERATION ##############################
 
@@ -84,16 +82,66 @@ def getBinding(node):
 ############################### BODY GENERATION ################################
 
 def getBody(node):
-    bodyTabGroups = [getBodyTabGroup(n) for n in node]
-    bodyTabGroups = filter(lambda x: x != None, bodyTabGroups)
+    tabGroup = [getBodyTabGroup(n) for n in node]
+    tabGroup = filter(lambda x: x != None, tabGroup)
 
     body = etree.Element('BODY_CONTAINER')
-    body.extend(bodyTabGroups)
+    body.extend(tabGroup)
 
     return body
 
 def getBodyTabGroup(node):
-    return None
+    if not util.schema.isTabGroup(node):
+        return None
+
+    tabs = [getBodyTab(n) for n in node]
+    tabs = filter(lambda x: x != None, tabs)
+
+    # Create `tabGroup`
+    tabGroup = etree.Element('group')
+
+    # Add attributes
+    archEntName = util.data.getArchEntName(node)
+    if archEntName: tabGroup.attrib['faims_archent_type'] = archEntName
+
+    tabGroup.attrib['ref'] = node.tag
+
+    # Add children
+    label      = etree.Element('label')
+    label.text = util.arch16n.getArch16nKey(node, doAddCurlies=True)
+
+    tabGroup.append(label)
+    tabGroup.extend(tabs)
+
+    return tabGroup
+
+def getBodyTab(node):
+    if not util.schema.isTab(node):
+        return None
+
+    tabChildren = [getBodyTabChildren(n) for n in node]
+    tabChildren = filter(lambda x: x != None, tabChildren)
+
+    bodyTab = etree.Element('group', ref=node.tag)
+    bodyTab.extend(tabChildren)
+
+    return bodyTab
+
+def getBodyTabChildren(node):
+    isGroup = util.schema.guessType(node) == 'group'
+    isUi    = util.ui.isUiElement  (node)
+
+    if node == None:             return None
+    if node == []:               return None
+    if not isUi and not isGroup: return None
+
+    bodyTabGrandChildren = [getBodyTabChildren(n) for n in node]
+    bodyTabGrandChildren = filter(lambda x: x != None, bodyTabGrandChildren)
+
+    bodyTabChildren = etree.Element(node.tag)
+    bodyTabChildren.extend(bodyTabGrandChildren)
+
+    return bodyTabChildren
 
 ################################################################################
 
