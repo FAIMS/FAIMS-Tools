@@ -24,4 +24,29 @@ TYPE_STR       = 'str'
 TYPE_TAB       = 'tab'
 TYPE_TAB_GROUP = 'tab group'
 TYPE_TIMESTAMP = 'timestamp'
-TYPES = [v for k, v in dict(globals()).iteritems() if k.startswith('TYPE_')]
+TYPES = [
+        v for k, v in dict(globals()).iteritems()
+        if k.startswith('TYPE_')
+]
+
+UI_TYPE_AUDIO     = 'audio'
+UI_TYPE_BUTTON    = 'button'
+UI_TYPE_CAMERA    = 'camera'
+UI_TYPE_CHECKBOX  = 'checkbox'
+UI_TYPE_DROPDOWN  = 'dropdown'
+UI_TYPE_FILE      = 'file'
+UI_TYPE_GPSDIAG   = 'gpsdiag'
+UI_TYPE_GROUP     = 'group'
+UI_TYPE_INPUT     = 'input'
+UI_TYPE_LIST      = 'list'
+UI_TYPE_MAP       = 'map'
+UI_TYPE_PICTURE   = 'picture'
+UI_TYPE_RADIO     = 'radio'
+UI_TYPE_VIDEO     = 'video'
+UI_TYPE_VIEWFILES = 'viewfiles'
+UI_TYPE_WEB       = 'web'
+UI_TYPE_WEBVIEW   = 'webview'
+UI_TYPES = [
+        v for k, v in dict(globals()).iteritems()
+        if k.startswith('UI_TYPES_')
+]

@@ -4,7 +4,8 @@ from   lxml import etree
 import copy
 import sys
 import util.schema
-import util.ui
+import util.gui
+import util.consts
 
 ################################################################################
 
@@ -27,7 +28,7 @@ class GraphModule(object):
         self.links     = self.getLinks    (node)
 
     def getTabGroups(self, node):
-        return [GraphTabGroup(n) for n in util.ui.getUiNodes(node, 'tab group')]
+        return [GraphTabGroup(n) for n in util.gui.getTabGroups(node)]
 
     def getLinks(self, node):
         links  = self.getTabLabelLinks     (node)
@@ -37,9 +38,9 @@ class GraphModule(object):
     def getTabLabelLinks(self, node):
         links = ['/* Tab label links */']
 
-        tabGroups = util.ui.getUiNodes(node, 'tab group')
+        tabGroups = util.gui.getTabGroups(node)
         for tabGroup in tabGroups:
-            tabs = util.ui.getUiNodes(tabGroup, 'tab')
+            tabs = util.gui.getTabs(node)
             for i in range(len(tabs) - 1):
                 tabFrom = tabs[i  ]; idFrom = GraphTab.nodeId(tabFrom)
                 tabTo   = tabs[i+1]; idTo   = GraphTab.nodeId(tabTo  )
@@ -99,7 +100,7 @@ class GraphTabGroup(object):
     def __init__(self, node):
         self.node = node
 
-        self.topMatter  = '\n\t\tlabel="%s"' % util.ui.getLabel(node)
+        self.topMatter  = '\n\t\tlabel="%s"' % util.gui.getLabel(node)
         self.topMatter += '\n\t\tbgcolor="lightblue"'
         self.topMatter += '\n'
 
@@ -110,7 +111,7 @@ class GraphTabGroup(object):
         return "%s%s" % (cls.prefix, util.schema.nodeHash(node))
 
     def getTabs(self, node):
-        return [GraphTab(n) for n in util.ui.getUiNodes(node, 'tab')]
+        return [GraphTab(n) for n in util.gui.getTabs(node)]
 
     def toString(self):
         tabs = ''
@@ -136,7 +137,7 @@ class GraphTab(object):
     def __init__(self, node):
         self.node  = node
 
-        self.label = util.ui.getLabel(node)
+        self.label = util.gui.getLabel(node)
 
         self.topMatter  = '\n\t\t\tlabel=""'
         self.topMatter += '\n\t\t\tbgcolor="white"'
@@ -157,8 +158,8 @@ class GraphTab(object):
         return "%s%s" % (cls.prefix,       util.schema.nodeHash(node))
 
     def getGuiBlocks(self, node):
-        matches  = util.ui.getUiNodes(node, 'GUI/data element')
-        matches += util.ui.getUiNodes(node, '<cols>')
+        matches  = util.gui.getGuiElements(node)
+        matches += util.gui.getGuiNodes(node, '<cols>')
         matches  = sorted(matches, key=lambda e: e.getparent().index(e))
         return [GuiBlock(n) for n in matches]
 
@@ -210,7 +211,8 @@ class GuiBlock(object):
         exp     = './descendant-or-self::*[@%s="%s"][1]'
         exp    %= util.consts.RESERVED_XML_TYPE, 'GUI/data element'
         matches = node.xpath(exp)
-        match   = matches[0]
+        match = None
+        if matches: match = matches[0]
         return "%s%s" % (cls.prefix_block, util.schema.nodeHash(match))
 
     @classmethod
@@ -226,13 +228,18 @@ class GuiBlock(object):
         tail += '\n\t\t\t>];'
         tail += '\n'
 
-        if node.attrib[util.consts.RESERVED_XML_TYPE] == 'GUI/data element':
+        if node.attrib[util.consts.RESERVED_XML_TYPE] == util.consts.TYPE_GUI_DATA:
             return head + self.getElementBlock(node) + tail
-        if node.attrib[util.consts.RESERVED_XML_TYPE] == '<cols>':
+        if node.attrib[util.consts.RESERVED_XML_TYPE] == util.consts.TYPE_COLS:
+            return head + self.getColsBlock   (node) + tail
+        if node.attrib[util.consts.RESERVED_XML_TYPE] == util.consts.TYPE_GROUP:
             return head + self.getColsBlock   (node) + tail
 
-        msg  = 'An unexpected %s value was encountered'
-        msg %= util.consts.RESERVED_XML_TYPE
+        msg  = 'An unexpected %s value was encountered: %s'
+        msg %= (
+                util.consts.RESERVED_XML_TYPE,
+                node.attrib[util.consts.RESERVED_XML_TYPE]
+        )
         raise ValueError(msg)
 
     def getElementBlock(self, node):
@@ -241,6 +248,9 @@ class GuiBlock(object):
         return guiBlock
 
     def getColsBlock(self, node):
+        #TODO: Re-write this to make use of the fact that <cols> are expanded
+        return ''
+
         # What we're about to do will probably modify `node` if we don't copy
         # it.
         nodeCopy = copy.deepcopy(node)
@@ -293,7 +303,7 @@ filenameModule = sys.argv[1]
 tree = util.xml.parseXml(filenameModule)
 util.schema.normalise(tree)
 util.schema.annotateWithXmlTypes(tree)
-util.schema.expandCompositeElements(tree)
+util.schema.canonicalise(tree)
 
 ################################################################################
 #                        GENERATE AND OUTPUT DATASTRUCT                        #

@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
-from   lxml import etree
+from   lxml       import etree
+from   lxml.etree import Element, SubElement
 import sys
 import util.schema
 import util.data
@@ -8,67 +9,34 @@ import util.ui
 import util.xml
 import util.consts
 
-# TODO: <cols> need to be expanded into groups
-
 # The namespaces used in the UI schema must be defined here to help us search
 # through the uischema-template.xml using xpath.
 NS = {'x': 'http://www.w3.org/2002/xforms'}
 
+CONTAINER = 'CONTAINER'
+
 ############################### MODEL GENERATION ###############################
-
 def getModel(node):
-    tabGroups = [getModelTabGroup(n) for n in node]
-    tabGroups = filter(lambda x: x != None, tabGroups)
+    body = getBody(node)
+    return getModelFromBody(body)
 
-    model = etree.Element('MODEL_CONTAINER')
-    model.extend(tabGroups)
+def getModelFromBody(node):
+    # Make a `modelNode`
+    modelNode = None
+    if   'ref' in node.attrib:  modelNode = Element(node.attrib['ref'])
+    elif node.tag == CONTAINER: modelNode = Element(CONTAINER)
 
-    return model
+    # Add children to the `modelNode`
+    if modelNode is not None:
+        modelChildNodes = [getModelFromBody(n) for n in node]
+        modelChildNodes = filter(lambda x: x != None, modelChildNodes)
+        modelNode.extend(modelChildNodes)
 
-def getModelTabGroup(node):
-    if not util.schema.isTabGroup(node):
-        return None
-
-    tabs = [getModelTab(n) for n in node]
-    tabs = filter(lambda x: x != None, tabs)
-
-    tabGroup = etree.Element(node.tag)
-    tabGroup.extend(tabs)
-
-    return tabGroup
-
-def getModelTab(node):
-    if not util.schema.isTab(node):
-        return None
-
-    tabChildren = [getModelTabChildren(n) for n in node]
-    tabChildren = filter(lambda x: x != None, tabChildren)
-
-    tab = etree.Element(node.tag)
-    tab.extend(tabChildren)
-
-    return tab
-
-def getModelTabChildren(node):
-    isGroup = util.schema.guessType(node) == 'group'
-    isUi    = util.ui.isUiElement  (node)
-
-    if node == None:             return None
-    if node == []:               return None
-    if not isUi and not isGroup: return None
-
-    tabGrandChildren = [getModelTabChildren(n) for n in node]
-    tabGrandChildren = filter(lambda x: x != None, tabGrandChildren)
-
-    tabChildren = etree.Element(node.tag)
-    tabChildren.extend(tabGrandChildren)
-
-    return tabChildren
+    return modelNode
 
 ############################## BINDING GENERATION ##############################
-
 def getBindings(node):
-    bindings = etree.Element('BINDINGS_CONTAINER')
+    bindings = Element(CONTAINER)
     bindings.extend([getBinding(n) for n in node.xpath('//*[@b]')])
 
     return bindings
@@ -77,15 +45,14 @@ def getBinding(node):
     type    = node.attrib['b']
     nodeset = '/faims/' + util.xml.getPathString(node)
 
-    return etree.Element('bind', type=type, nodeset=nodeset)
+    return Element('bind', type=type, nodeset=nodeset)
 
 ############################### BODY GENERATION ################################
-
 def getBody(node):
     tabGroup = [getBodyTabGroup(n) for n in node]
     tabGroup = filter(lambda x: x != None, tabGroup)
 
-    body = etree.Element('BODY_CONTAINER')
+    body = Element(CONTAINER)
     body.extend(tabGroup)
 
     return body
@@ -94,23 +61,16 @@ def getBodyTabGroup(node):
     if not util.schema.isTabGroup(node):
         return None
 
-    tabs = [getBodyTab(n) for n in node]
-    tabs = filter(lambda x: x != None, tabs)
-
     # Create `tabGroup`
-    tabGroup = etree.Element('group')
+    tabGroup = getBodyLabelled(node, 'group')
 
-    # Add attributes
+    # Add faims_archent_type
     archEntName = util.data.getArchEntName(node)
     if archEntName: tabGroup.attrib['faims_archent_type'] = archEntName
 
-    tabGroup.attrib['ref'] = node.tag
-
-    # Add children
-    label      = etree.Element('label')
-    label.text = util.arch16n.getArch16nKey(node, doAddCurlies=True)
-
-    tabGroup.append(label)
+    # Add child elements (`tabs`)
+    tabs = [getBodyTab(n) for n in node]
+    tabs = filter(lambda x: x != None, tabs)
     tabGroup.extend(tabs)
 
     return tabGroup
@@ -119,29 +79,143 @@ def getBodyTab(node):
     if not util.schema.isTab(node):
         return None
 
+    # Create `tab`
+    tab = getBodyLabelled(node, 'group')
+
+    # Add child elements (GUI elements, etc)
     tabChildren = [getBodyTabChildren(n) for n in node]
     tabChildren = filter(lambda x: x != None, tabChildren)
+    util.xml.extendFlatly(tab, tabChildren)
+    #tab.extend(tabChildren)
 
-    bodyTab = etree.Element('group', ref=node.tag)
-    bodyTab.extend(tabChildren)
-
-    return bodyTab
+    return tab
 
 def getBodyTabChildren(node):
-    isGroup = util.schema.guessType(node) == 'group'
-    isUi    = util.ui.isUiElement  (node)
+    type    = util.schema.guessType(node)
+    hasType = bool(type)
 
-    if node == None:             return None
-    if node == []:               return None
-    if not isUi and not isGroup: return None
+    if node == None: return None
+    if node == []:   return None
+    if not hasType:  return None
 
     bodyTabGrandChildren = [getBodyTabChildren(n) for n in node]
     bodyTabGrandChildren = filter(lambda x: x != None, bodyTabGrandChildren)
 
-    bodyTabChildren = etree.Element(node.tag)
-    bodyTabChildren.extend(bodyTabGrandChildren)
+    if type == util.consts.UI_TYPE_AUDIO:     return getBodyAudio    (node)
+    if type == util.consts.UI_TYPE_BUTTON:    return getBodyButton   (node)
+    if type == util.consts.UI_TYPE_CAMERA:    return getBodyCamera   (node)
+    if type == util.consts.UI_TYPE_CHECKBOX:  return getBodyCheckbox (node)
+    if type == util.consts.UI_TYPE_DROPDOWN:  return getBodyDropdown (node)
+    if type == util.consts.UI_TYPE_FILE:      return getBodyFile     (node)
+    if type == util.consts.UI_TYPE_GPSDIAG:   return getBodyGpsDiag  (node)
+    if type == util.consts.UI_TYPE_GROUP:     return getBodyGroup    (node)
+    if type == util.consts.UI_TYPE_INPUT:     return getBodyInput    (node)
+    if type == util.consts.UI_TYPE_LIST:      return getBodyList     (node)
+    if type == util.consts.UI_TYPE_MAP:       return getBodyMap      (node)
+    if type == util.consts.UI_TYPE_PICTURE:   return getBodyPicture  (node)
+    if type == util.consts.UI_TYPE_RADIO:     return getBodyRadio    (node)
+    if type == util.consts.UI_TYPE_VIDEO:     return getBodyVideo    (node)
+    if type == util.consts.UI_TYPE_VIEWFILES: return getBodyViewfiles(node)
+    if type == util.consts.UI_TYPE_WEB:       return getBodyWebview  (node)
+    if type == util.consts.UI_TYPE_WEBVIEW:   return getBodyWebview  (node)
+    return None
 
-    return bodyTabChildren
+def getBodyAudio(node):
+    return getBodySelect(node, faims_sync='true', type='file')
+
+def getBodyButton(node):
+    button = getBodyLabelled(node, 'trigger')
+    return button
+
+def getBodyCamera(node):
+    return getBodySelect(node, faims_sync='true')
+
+def getBodyCheckbox(node):
+    return getBodySelect(node)
+
+def getBodyDropdown(node):
+    return getBodySelect1(node)
+
+def getBodyFile(node):
+    return getBodySelect(node, type='file', faims_sync='true')
+
+def getBodyGpsDiag(node):
+    return Element('input', faims_read_only='true', ref=node.tag)
+
+def getBodyGroup(node):
+    children = [getBodyTabChildren(n) for n in node]
+    children = filter(lambda x: x != None, children)
+
+
+    group = Element('group', ref=node.tag)
+    group.append(Element('label'))
+    group.extend(children)
+
+    faimsStyle = util.xml.getAttrib(node, 's')
+    if faimsStyle: group.attrib['faims_style'] = faimsStyle
+
+    return group
+
+def getBodyInput(node, **kwargs):
+    return getBodyLabelled(node, 'input', **kwargs)
+
+def getBodyList(node):
+    return getBodySelect1(node, appearance='compact')
+
+def getBodyMap(node):
+    map = getBodyInput(node, faims_map='true')
+    return map
+
+def getBodyPicture(node):
+    return getBodySelect(node, type='image')
+
+def getBodyRadio(node):
+    return getBodySelect(node, appearance='full')
+
+def getBodyVideo(node):
+    return getBodySelect(node, type='video', faims_sync='true')
+
+def getBodyViewfiles(node):
+    return getBodyButton(node)
+
+def getBodyWebview(node):
+    webview = getBodyInput(node, faims_web='true')
+    return webview
+
+def getBodySelect(node, **kwargs):
+    select = getBodyLabelled(node, 'select', **kwargs)
+
+    item  = SubElement(select, 'item')
+    label = SubElement(item,   'label'); label.text = 'Options not loaded'
+    value = SubElement(item,   'value'); value.text = '0'
+
+    return select
+
+def getBodySelect1(node, **kwargs):
+    select1 = getBodySelect(node, **kwargs)
+    select1.tag = 'select1'
+    return select1
+
+def getBodyLabelled(node, name, **kwargs):
+    isBlank = util.schema.isFlagged(node, 'nolabel', checkAncestors=False)
+
+    labelled = Element(name, **kwargs)
+    labelled.append(getBodyLabel(node, isBlank))
+
+    attribName = util.data.getAttribName(node)
+    attribType = util.data.getAttribType(node)
+    ref        = node.tag
+    if attribName: labelled.attrib['faims_attribute_name'] = attribName
+    if attribType: labelled.attrib['faims_attribute_type'] = attribType
+    if ref:        labelled.attrib['ref']                  = ref
+
+    return labelled
+
+def getBodyLabel(node, isBlank=False):
+    label      = Element('label')
+    if not isBlank:
+        label.text = util.arch16n.getArch16nKey(node, doAddCurlies=True)
+    return label
 
 ################################################################################
 
@@ -180,8 +254,7 @@ filenameModule = sys.argv[1]
 tree = util.xml.parseXml(filenameModule)
 util.schema.normalise(tree)
 util.schema.annotateWithXmlTypes(tree)
-util.schema.expandCompositeElements(tree)
-util.schema.annotateWithXmlTypes(tree)
+util.schema.canonicalise(tree)
 
 ################################################################################
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #

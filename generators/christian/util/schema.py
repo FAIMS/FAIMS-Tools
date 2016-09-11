@@ -5,7 +5,8 @@
 # the so called data and UI "schemas".                                         #
 #                                                                              #
 ################################################################################
-from   lxml import etree
+from   lxml       import etree
+from   lxml.etree import Element, SubElement
 import consts
 import hashlib
 import re
@@ -13,6 +14,7 @@ import table
 import xml
 import util
 import schema
+import gui
 
 def getPath(node):
     nodeTypes = ['GUI/data element', 'tab group', 'tab']
@@ -109,6 +111,10 @@ def guessType(node):
         return node.attrib['t']
     except:
         pass
+
+    # It doesn't have a type
+    if not gui.isGuiElement(node):
+        return ''
 
     # Go ahead and give 'er a guess.
     path = getPath(node)
@@ -214,9 +220,182 @@ def annotateWithXmlTypes(node):
     if type:
         node.attrib[consts.RESERVED_XML_TYPE] = type
 
-    # Recurse
-    for child in node:
-        annotateWithXmlTypes(child)
+        # Annotate child nodes
+        for child in node:
+            annotateWithXmlTypes(child)
+
+def canonicalise(node):
+    canonicaliseRec(node)
+    canonicaliseCols(node)
+    canonicaliseMedia(node)
+
+# TODO: The roles of this and `schema.normalise` are easily confused
+def canonicaliseRec(node):
+    newNodes = None
+    if getType(node) == consts.TYPE_AUTHOR:    newNodes = getAuthor   (node)
+    if getType(node) == consts.TYPE_AUTONUM:   newNodes = getAutonum  (node)
+    if getType(node) == consts.TYPE_GPS:       newNodes = getGps      (node)
+    if getType(node) == consts.TYPE_SEARCH:    newNodes = getSearch   (node)
+    if getType(node) == consts.TYPE_TIMESTAMP: newNodes = getTimestamp(node)
+    newNodes = xml.replaceElement(node, newNodes)
+
+    for n in node:
+        canonicaliseRec(n)
+
+def canonicaliseCols(node):
+    colsList = xml.getAll(node, keep=lambda e: getType(e) == consts.TYPE_COLS)
+
+    # 1. Transform this...
+    #
+    #       <cols __RESERVED_XML_TYPE__="cols">
+    #         <My_Input b="decimal" __RESERVED_XML_TYPE__="GUI/data element"/>
+    #       </cols>
+    #
+    # ...into this:
+    #
+    #       <cols __RESERVED_XML_TYPE__="cols">
+    #         <col __RESERVED_XML_TYPE__="col">
+    #           <My_Input b="decimal" __RESERVED_XML_TYPE__="GUI/data element"/>
+    #         </col>
+    #       </cols>
+    #
+    for cols in colsList:
+        for child in cols:
+            if getType(child) == consts.TYPE_GUI_DATA:
+                newCol = Element(
+                        'col',
+                        { consts.RESERVED_XML_TYPE : consts.TYPE_COL }
+                )
+
+                xml.insertAfter(child, nodeToInsert=newCol)
+                newCol.append(child) # Moves `child` into `newCol`
+
+    # 2. Re-write the cols as t="group" elements.
+    for cols in colsList:
+        cols.tag = 'Colgroup'
+        cols.attrib['t'] = 'group'
+        cols.attrib['s'] = 'orientation'
+        for col in cols:
+            col.tag = 'Col'
+            col.attrib['t'] = 'group'
+            col.attrib['s'] = 'even'
+
+    # 3. Rename the cols elements to eliminate duplicates
+    pars = set([cols.getparent() for cols in colsList])
+    for par in pars:
+        numberDuplicates(par, consts.TYPE_COLS)
+
+    # 4. Rename the col elements to eliminate duplicates
+    pars = set(colsList)
+    for par in pars:
+        numberDuplicates(par, consts.TYPE_COL)
+
+def canonicaliseMedia(node):
+    mediaTypes = (
+            consts.UI_TYPE_AUDIO,
+            consts.UI_TYPE_VIDEO,
+            consts.UI_TYPE_CAMERA,
+            consts.UI_TYPE_FILE,
+    )
+    mediaList = xml.getAll(node, keep=lambda e: guessType(e) in mediaTypes)
+
+    for media in mediaList:
+        button = Element(
+                media.tag + '_Button',
+                { consts.RESERVED_XML_TYPE : 'tmp' },
+                t='button'
+        )
+        xml.insertAfter(media, button)
+
+    pars = set([media.getparent() for media in mediaList])
+    for par in pars:
+        numberDuplicates(par, 'tmp')
+
+    # Re-annotate new buttons with their conventional XML type
+    newButtons = xml.getAll(node, keep=lambda e: getType(e) == 'tmp')
+    for button in newButtons:
+        annotateWithXmlTypes(button)
+
+def numberDuplicates(node, xmlType):
+    '''
+    Numbers each child in `node` whose XML type is `xmlType` such it does not
+    share its name with any other child of `node`.
+    '''
+    children      = [n for n in node]
+    typedChildren = [n for n in node if getType(n) == xmlType]
+
+    # Names of children whose XML type is `xmlType`
+    typedChildNames = [n.tag for n in typedChildren]
+
+    # The elements whose names we cannot use
+    taken      = set(children) - set(typedChildren)
+    takenNames = [n.tag for n in taken]
+
+    # New node names
+    numbered = util.numberDuplicates(typedChildNames, takenNames)
+
+    # Actually rename columns
+    for cols, newName in zip(typedChildren, numbered):
+        cols.tag = newName
+
+def getAuthor(node):
+    return Element(
+            'Author',
+            { consts.RESERVED_XML_TYPE : getType(node) },
+            t='input',
+            f='readonly nodata',
+    ),
+
+def getAutonum(node):
+    #TODO
+    return None
+
+def getGps(node):
+    gps = Element(
+            'Colgroup_GPS',
+            { consts.RESERVED_XML_TYPE : consts.TYPE_GROUP },
+            t='group',
+    )
+    gps.append(Element('Latitude',  t='input', f='readonly'))
+    gps.append(Element('Longitude', t='input', f='readonly'))
+    gps.append(Element('Northing',  t='input', f='readonly'))
+    gps.append(Element('Easting',   t='input', f='readonly'))
+
+    for n in gps:
+        annotateWithXmlTypes(n)
+    gps.attrib[consts.RESERVED_XML_TYPE] = consts.TYPE_GPS
+
+    return gps,
+
+def getSearch(node):
+    search = Element(
+            'Search',
+            { consts.RESERVED_XML_TYPE : consts.TYPE_TAB },
+            f='readonly nodata noscroll'
+    )
+    cols = SubElement(search, 'Colgroup_0', t='group', s='orientation')
+    lCol = SubElement(cols,   'Col_0',      t='group', s='even')
+    rCol = SubElement(cols,   'Col_1',      t='group', s='large')
+
+    term = SubElement(lCol,   'Search_Term',   t='input')
+    btn  = SubElement(rCol,   'Search_Button', t='button')
+
+    SubElement(search, 'Entity_Types', t='input')
+    SubElement(search, 'Entity_List',  t='list')
+
+    for n in search:
+        annotateWithXmlTypes(n)
+    search.attrib[consts.RESERVED_XML_TYPE] = consts.TYPE_SEARCH
+
+    return search,
+
+def getTimestamp(node):
+    return Element(
+            'Timestamp',
+            { consts.RESERVED_XML_TYPE : getType(node) },
+            t='input',
+            f='readonly nodata'
+    ),
 
 def expandCompositeElements(tree):
     # (1) REPLACE ELEMENTS HAVING A CERTAIN T ATTRIBUTE
@@ -334,7 +513,15 @@ def isTabGroup(node):
     return getType(node) == consts.TYPE_TAB_GROUP
 
 def isTab(node):
-    return getType(node) == consts.TYPE_TAB
+    return getType(node) in (consts.TYPE_TAB, consts.TYPE_SEARCH)
 
 def isGuiDataElement(node):
-    return getType(node) == consts.TYPE_GUI_DATA
+    return getType(node) in (
+            consts.TYPE_GUI_DATA,
+            consts.TYPE_GROUP,
+            consts.TYPE_COLS
+    )
+
+def getTabGroups      (node): return xml.getAll(node, isTabGroup)
+def getTabs           (node): return xml.getAll(node, isTab)
+def getGuiDataElements(node): return xml.getAll(node, isGuiDataElement)

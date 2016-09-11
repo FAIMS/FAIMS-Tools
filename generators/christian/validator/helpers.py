@@ -5,15 +5,21 @@ import util.consts
 import util.schema
 import util.xml
 
-def wMsg(notice, nodes=None, expected=[]):
+def wMsg(notice, nodes=None, expected=None):
+    if expected is None: expected = []
+
     notice = 'WARNING: ' + notice
     printNotice(notice, nodes, expected)
 
-def eMsg(notice, nodes=None, expected=[]):
+def eMsg(notice, nodes=None, expected=None):
+    if expected is None: expected = []
+
     notice = 'ERROR:   ' + notice
     printNotice(notice, nodes, expected)
 
-def printNotice(notice, nodes=None, expected=[]):
+def printNotice(notice, nodes=None, expected=None):
+    if expected is None: expected = []
+
     if   nodes      == None:
         location = ''
     elif len(nodes) == 0:

@@ -27,22 +27,21 @@ def getArchEntName(node, doRecurse=False):
     if doRecurse:
         return getArchEntName(node.getparent())
 
-def getAttribName(node, doRecurse=False):
+def getAttribName(node):
     if node is None:
         return ''
     if isDataElement(node):
         return node.tag.replace('_', ' ')
-    if doRecurse:
-        return getArchEntName(node.getparent())
+    return ''
 
-def getPropType(node):
+def getAttribType(node):
+    if not isDataElement(node): return ''
+
     if hasMeasureType(node): return 'measure'
-    if hasFileType   (node): return 'file'
+    if hasFileType   (node): return 'measure'
     if hasVocabType  (node): return 'vocab'
 
-    print node
-    print schema.getPathString(node)
-    raise ValueError('An unexpected t value was encountered')
+    return ''
 
 def hasMeasureType(node):
     measureTypes = (

@@ -40,7 +40,7 @@ def addProp(dataElement, target):
     vdr.attrib['type'] = 'blankchecker'
 
     prm                 = etree.Element('param')
-    prm.attrib['value'] = util.data.getPropType(dataElement)
+    prm.attrib['value'] = util.data.getAttribType(dataElement)
     prm.attrib['type']  = 'field'
 
     vdr   .append(prm)

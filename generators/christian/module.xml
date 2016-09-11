@@ -8,7 +8,7 @@
   </User>
 </User>
 
-<Control f="nodata">
+<Control f="nodata nolabel">
   <Main>
     <Record_Asset t="button" l="Asset"/>
     <GPS_Diagnostics t="gpsdiag"/>
@@ -20,6 +20,7 @@
 
 <Asset>
   <Customer>
+    <author t="input"/>
     <Customer f="notnull" t="dropdown">
       <desc>Name of the customer whose piece of hardware this "belongs to"</desc>
       <opts>
@@ -30,9 +31,21 @@
     </Customer>
   </Customer>
   <Hardware>
-    <Manufacture_Date t="input">
+    <cols>
+      <Theta_a b="decimal"/>
+      <Theta_b b="decimal"/>
+      <Theta_c b="decimal"/>
+    </cols>
+    <cols>
+      <Theta b="decimal"/>
+    </cols>
+    <Colgroup t="group"/>
+    <Manufacture_Date t="input" b="decimal">
       <desc>Approximate date of hardware manufacture</desc>
     </Manufacture_Date>
+    <My_Audio t="audio"/>
+    <My_Audio_Button t="button"/>
+    <My_Video t="video"/>
     <Make f="id" t="input">
       <desc>Make/brand/manufacturer of the hardware</desc>
     </Make>

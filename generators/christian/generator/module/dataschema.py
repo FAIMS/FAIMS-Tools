@@ -75,13 +75,14 @@ def addProp(dataElement, target):
     # make prop
     prp                = etree.Element('property')
     prp.attrib['name'] = util.data.getAttribName(dataElement)
-    prp.attrib['type'] = util.data.getPropType(dataElement)
+    prp.attrib['type'] = util.data.getAttribType(dataElement)
     if util.schema.isFlagged(dataElement, 'id'):
         prp.attrib['isIdentifier'] = 'true'
     if util.data.hasFileType(dataElement):
         prp.attrib['file']         = 'true'
-    if util.data.hasFileType(dataElement) and not util.schema.isFlagged(dataElement):
-        prp.attrib['thumbnail']    = 'true'
+    # TODO:
+    #if util.data.hasFileType(dataElement) and not util.schema.isFlagged(dataElement):
+        #prp.attrib['thumbnail']    = 'true'
 
     # make description
     dsc      = etree.Element('description')

@@ -5,6 +5,7 @@
     <model>
       <instance>
         <faims id="FILL_THIS_IN">
+          <!--START: Style-->
           <style>
             <orientation>
               <orientation/>
@@ -16,6 +17,7 @@
               <layout_weight/>
             </large>
           </style>
+          <!--END: Style-->
           <MODEL_ANCHOR>
             <!--This element is replaced with the model upon module generation-->
           </MODEL_ANCHOR>
@@ -27,6 +29,7 @@
     </model>
   </h:head>
   <h:body>
+    <!--START: Style-->
     <group ref="style">
       <label/>
       <group ref="orientation">
@@ -48,6 +51,7 @@
         </input>
       </group>
     </group>
+    <!--END: Style-->
     <BODY_ANCHOR>
         <!--This element is replaced with the body upon module generation-->
     </BODY_ANCHOR>

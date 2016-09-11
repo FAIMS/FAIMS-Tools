@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 import sys
 import util.schema
-import util.ui
+import util.gui
 import util.xml
 
 def filterNonAlpha(string):
@@ -92,9 +92,9 @@ def sortedNodes(nodes):
 
 def getModuleFunctions(node):
     # 1. Produce lists of LXML nodes
-    tabGroupNodes = util.ui.getUiNodes(node, 'tab group'       )
-    tabNodes      = util.ui.getUiNodes(node, 'tab'             )
-    guiNodes      = util.ui.getUiNodes(node, 'GUI/data element')
+    tabGroupNodes = util.gui.getGuiNodes(node, 'tab group'       )
+    tabNodes      = util.gui.getGuiNodes(node, 'tab'             )
+    guiNodes      = util.gui.getGuiNodes(node, 'GUI/data element')
 
     # 2. In each list, sort the nodes by their path and group them by type
     tabGroupNodes = sortedNodes(tabGroupNodes)
