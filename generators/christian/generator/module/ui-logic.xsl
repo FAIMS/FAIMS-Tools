@@ -1654,7 +1654,7 @@ void makeDuplicateRelationships(fetchedAttributes, String newUuid){
     String parentUuid             = savedAttribute.get(3);
     String childArchEntType       = savedAttribute.get(5);
 
-    String onSaveRel              = "onSave" + childArchEntType + "__()";
+    String onSaveRel              = "onSave" + childArchEntType.replaceAll(" ", "") + "__()";
 
     saveEntitiesToHierRel(
         relntypename,
