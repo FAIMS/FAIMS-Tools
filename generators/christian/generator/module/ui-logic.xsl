@@ -2080,6 +2080,9 @@ void populateEntityListsInTabGroup(String tabGroup) {
   }
 }
 
+/* Populates each list containing records whose archent type is the same as that
+ * of `tabGroup`.
+ */
 void populateEntityListsOfArchEnt(String tabGroup) {
   if (isNull(tabGroup)) {
     return;
@@ -2566,6 +2569,8 @@ bindOnEvents();
     <xsl:value-of select="$newline"/>
     <xsl:text>  String uuidOld = getUuid(tabgroup);</xsl:text>
     <xsl:value-of select="$newline"/>
+    <xsl:text>  setUuid(tabgroup, "");</xsl:text>
+    <xsl:value-of select="$newline"/>
     <xsl:value-of select="$newline"/>
     <xsl:text>  disableAutoSave(tabgroup);</xsl:text>
     <xsl:value-of select="$newline"/>
@@ -2574,6 +2579,8 @@ bindOnEvents();
     <xsl:text>  clearGpsInTabGroup(tabgroup);</xsl:text>
     <xsl:value-of select="$newline"/>
     <xsl:text>  populateAuthorAndTimestamp(tabgroup);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  populateEntityListsInTabGroup(tabgroup);</xsl:text>
     <xsl:value-of select="$newline"/>
     <xsl:call-template name="tabgroup-duplicate-exclusions-1" />
     <xsl:value-of select="$newline"/>
@@ -2607,7 +2614,7 @@ bindOnEvents();
   };
 
   String extraDupeAttributes = "";
-  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
+  fetchAll(getDuplicateAttributeQuery(uuidOld, extraDupeAttributes), new FetchCallback(){
     onFetch(result) {
       excludeAttributes = new ArrayList();
 </xsl:text>
