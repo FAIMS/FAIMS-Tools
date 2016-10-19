@@ -2026,7 +2026,7 @@ void populateMenuWithEntities (
     " WHERE relationshipid IN (SELECT relationshipid  " +
     "                            FROM latestnondeletedrelationship JOIN relntype USING (relntypeid) " +
     "                           WHERE relntypename = '"+relType+"') " +
-    "   AND parentuuid = " + parentUuid + " " +
+    "   AND parentuuid = '" + parentUuid + "' " +
     "   AND (childaenttypename = '"+entType+"' OR '"+entType+"' = '') " +
     " ORDER BY createdat DESC ";
 
