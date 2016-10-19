@@ -224,12 +224,12 @@ def annotateWithXmlTypes(node):
         for child in node:
             annotateWithXmlTypes(child)
 
+# TODO: The roles of this and `schema.normalise` are easily confused
 def canonicalise(node):
     canonicaliseRec(node)
     canonicaliseCols(node)
     canonicaliseMedia(node)
 
-# TODO: The roles of this and `schema.normalise` are easily confused
 def canonicaliseRec(node):
     newNodes = None
     if getType(node) == consts.TYPE_AUTHOR:    newNodes = getAuthor   (node)
@@ -243,7 +243,7 @@ def canonicaliseRec(node):
         canonicaliseRec(n)
 
 def canonicaliseCols(node):
-    colsList = xml.getAll(node, keep=lambda e: getType(e) == consts.TYPE_COLS)
+    colsList = xml.getAll(node, keep=lambda e: e.tag == consts.TAG_COLS)
 
     # 1. Transform this...
     #
@@ -347,25 +347,30 @@ def getAuthor(node):
     ),
 
 def getAutonum(node):
-    #TODO
+    autonumbered = xml.getAll(
+            node,
+            keep=lambda e: isFlagged(e, consts.FLAG_AUTONUM),
+            descendantOrSelf=False
+    )
+    # TODO: do something with `autonumbered`
     return None
 
 def getGps(node):
-    gps = Element(
-            'Colgroup_GPS',
-            { consts.RESERVED_XML_TYPE : consts.TYPE_GROUP },
-            t='group',
-    )
-    gps.append(Element('Latitude',  t='input', f='readonly'))
-    gps.append(Element('Longitude', t='input', f='readonly'))
-    gps.append(Element('Northing',  t='input', f='readonly'))
-    gps.append(Element('Easting',   t='input', f='readonly'))
+    colsTop = Element('cols', { consts.RESERVED_XML_TYPE : consts.TYPE_COLS })
+    colsBot = Element('cols', { consts.RESERVED_XML_TYPE : consts.TYPE_COLS })
 
-    for n in gps:
-        annotateWithXmlTypes(n)
-    gps.attrib[consts.RESERVED_XML_TYPE] = consts.TYPE_GPS
+    colsTop.append(Element('Latitude',  t='input', f='readonly'))
+    colsTop.append(Element('Longitude', t='input', f='readonly'))
 
-    return gps,
+    colsBot.append(Element('Northing',  t='input', f='readonly'))
+    colsBot.append(Element('Easting',   t='input', f='readonly'))
+    colsBot.append(Element('Accuracy',  t='input', f='readonly'))
+
+    for n in colsTop: annotateWithXmlTypes(n)
+    for n in colsBot: annotateWithXmlTypes(n)
+    colsTop.attrib[consts.RESERVED_XML_TYPE] = consts.TYPE_GPS
+
+    return colsTop, colsBot
 
 def getSearch(node):
     search = Element(

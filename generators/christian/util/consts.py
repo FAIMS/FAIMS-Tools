@@ -1,7 +1,48 @@
 RESERVED_XML_TYPE = '__RESERVED_XML_TYPE__'
 RESERVED_IGNORE   = '__RESERVED_IGNORE__'
 
+FLAG_AUTONUM      = 'autonum'
+FLAG_HIDDEN       = 'hidden'
+FLAG_ID           = 'id'
+FLAG_NOANNOTATION = 'noannotation'
+FLAG_NOCERTAINTY  = 'nocertainty'
+FLAG_NODATA       = 'nodata'
+FLAG_NOLABEL      = 'nolabel'
+FLAG_NOSCROLL     = 'noscroll'
+FLAG_NOSYNC       = 'nosync'
+FLAG_NOTHUMB      = 'nothumb'
+FLAG_NOTHUMBNAIL  = 'nothumbnail'
+FLAG_NOTNULL      = 'notnull'
+FLAG_NOUI         = 'noui'
+FLAG_READONLY     = 'readonly'
+FLAG_USER         = 'user'
+TYPES = [
+        v for k, v in dict(globals()).iteritems()
+        if k.startswith('FLAG_')
+]
 
+TAG_APP       = 'app'
+TAG_AUTHOR    = 'author'
+TAG_AUTONUM   = 'autonum'
+TAG_COLS      = 'cols'
+TAG_COL       = 'col'
+TAG_DESC      = 'desc'
+TAG_FMT       = 'fmt'
+TAG_GPS       = 'gps'
+TAG_GROUP     = 'group'
+TAG_LOGIC     = 'logic'
+TAG_MODULE    = 'module'
+TAG_OPT       = 'opt'
+TAG_OPTS      = 'opts'
+TAG_POS       = 'pos'
+TAG_RELS      = 'rels'
+TAG_SEARCH    = 'search'
+TAG_STR       = 'str'
+TAG_TIMESTAMP = 'timestamp'
+TAGS = [
+        v for k, v in dict(globals()).iteritems()
+        if k.startswith('TYPE_')
+]
 
 TYPE_APP       = 'app'
 TYPE_AUTHOR    = 'author'
