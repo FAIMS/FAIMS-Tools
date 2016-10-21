@@ -190,17 +190,34 @@ void copyFieldValue(String src, String dst, Boolean doFindVocabId) {
   fetchOne(q, populate);
 }
 
-void inheritFieldValue(String src, String dst, boolean doFindVocabId) {
+void inheritFieldValue(
+    String src,
+    String dst,
+    boolean doCheckParent,
+    boolean doFindVocabId
+) {
   String fun = "";
-  fun = "copyFieldValue(\"{src}\", \"{dst}\", false)";
-  fun = replaceFirst(fun, "{src}", src);
-  fun = replaceFirst(fun, "{dst}", dst);
+  fun += "if (!{check} || getDisplayedTabGroup().equals(\"{parent}\"))";
+  fun += "  copyFieldValue(\"{src}\", \"{dst}\", {find})";
+
+  fun = replaceFirst(fun, "{check}",  doCheckParent + "");
+  fun = replaceFirst(fun, "{parent}", getTabGroupRef(src));
+  fun = replaceFirst(fun, "{src}",    src);
+  fun = replaceFirst(fun, "{dst}",    dst);
+  fun = replaceFirst(fun, "{find}",   doFindVocabId + "");
 
   addOnEvent(getTabGroupRef(dst), "create", fun);
 }
 
+/* If `doCheckParent`, then the value at `src` will only be inherited to `dst`
+ * if `getTabGroupRef(src)` was the previously displayed tab group.
+ */
+void inheritFieldValue(String src, String dst, boolean doCheckParent) {
+  inheritFieldValue(src, dst, doCheckParent, false);
+}
+
 void inheritFieldValue(String src, String dst) {
-  inheritFieldValue(src, dst, false);
+  inheritFieldValue(src, dst, true);
 }
 
 newTab(String tab, Boolean resolveTabGroups) {
@@ -1496,10 +1513,10 @@ void addNavigationButtons(String tabgroup) {
     }
     actionOn() {
       if(isNull(getUuid(tabgroup))) {
-          newRecord(tabgroup, true);
-          showToast("{New_record_created}");
+        showAlert("{Warning}", "{The_current_record_has_not_been_saved_yet}", "newRecord(\""+tabgroup+"\", true)", "");
       } else {
-          showAlert("{Warning}", "{Any_unsaved_changes_will_be_lost}", "newRecord(\""+tabgroup+"\", true)", "");
+        newRecord(tabgroup, true);
+        showToast("{New_record_created}");
       }
     }
   }, "success");
@@ -1509,9 +1526,9 @@ void addNavigationButtons(String tabgroup) {
     }
     actionOn() {
       if(!isNull(getUuid(tabgroup))) {
-          duplicateRecord(tabgroup);
+        duplicateRecord(tabgroup);
       } else {
-          showWarning("{Warning}", "{This_record_is_unsaved_and_cannot_be_duplicated}");
+        showWarning("{Warning}", "{This_record_is_unsaved_and_cannot_be_duplicated}");
       }
     }
   }, "primary");

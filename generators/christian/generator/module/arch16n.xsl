@@ -104,7 +104,7 @@
 Accuracy__m_=Accuracy (m)
 Alert=Alert
 All=All
-Any_unsaved_changes_will_be_lost=Any unsaved changes will be lost!
+The_current_record_has_not_been_saved_yet=The current record has not been saved yet. Please wait 10 seconds to prevent data loss if you have entered data recently. Otherwise, press 'OK' to create a new record without waiting for any new data to be saved.
 Clean_Synced_Files=Clean Synced Files
 Confirm_Deletion=Confirm Deletion
 Delete=Delete
