@@ -1,6 +1,30 @@
 RESERVED_XML_TYPE = '__RESERVED_XML_TYPE__'
 RESERVED_IGNORE   = '__RESERVED_IGNORE__'
 
+ATTRIB_B  = 'b'
+ATTRIB_C  = 'c'
+ATTRIB_E  = 'e'
+ATTRIB_EC = 'ec'
+ATTRIB_F  = 'f'
+ATTRIB_L  = 'l'
+ATTRIB_LC = 'lc'
+ATTRIB_P  = 'p'
+ATTRIB_S  = 's'
+ATTRIB_T  = 't'
+ATTRIBS = [
+        v for k, v in dict(globals()).iteritems()
+        if k.startswith('ATTRIB_')
+]
+
+BIND_DATE    = 'date'
+BIND_DECIMAL = 'decimal'
+BIND_STRING  = 'string'
+BIND_TIME    = 'time'
+BINDS = [
+        v for k, v in dict(globals()).iteritems()
+        if k.startswith('BIND_')
+]
+
 FLAG_AUTONUM      = 'autonum'
 FLAG_HIDDEN       = 'hidden'
 FLAG_ID           = 'id'
@@ -16,7 +40,7 @@ FLAG_NOTNULL      = 'notnull'
 FLAG_NOUI         = 'noui'
 FLAG_READONLY     = 'readonly'
 FLAG_USER         = 'user'
-TYPES = [
+FLAGS = [
         v for k, v in dict(globals()).iteritems()
         if k.startswith('FLAG_')
 ]
@@ -41,7 +65,7 @@ TAG_STR       = 'str'
 TAG_TIMESTAMP = 'timestamp'
 TAGS = [
         v for k, v in dict(globals()).iteritems()
-        if k.startswith('TYPE_')
+        if k.startswith('TAG_')
 ]
 
 TYPE_APP       = 'app'

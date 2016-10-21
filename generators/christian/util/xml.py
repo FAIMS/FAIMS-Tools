@@ -22,10 +22,26 @@ def deleteAttribFromTree(t, attrib):
     for e in t:
         deleteAttribFromTree(e, attrib)
 
-def getAttrib(node, attribName):
+def getAttribVal(node, attribName):
     if hasattr(node, 'attrib') and attribName in node.attrib:
         return node.attrib[attribName]
     return None
+
+def appendToAttrib(node, attribName, attribVal):
+    oldAttribVal = getAttribVal(node, attribName)
+    if oldAttribVal == None:
+        oldAttribVal = ''
+    if not attribVal:
+        return
+    if attribVal in oldAttribVal.split():
+        return
+
+    if oldAttribVal:
+        newAttribVal = oldAttribVal + ' ' + attribVal
+    else:
+        newAttribVal = attribVal
+
+    node.attrib[attribName] = newAttribVal
 
 def setSourceline(t, sourceline):
     if t == None:

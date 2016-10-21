@@ -151,7 +151,7 @@ def getBodyGroup(node):
     group.append(Element('label'))
     group.extend(children)
 
-    faimsStyle = util.xml.getAttrib(node, 's')
+    faimsStyle = util.xml.getAttribVal(node, 's')
     if faimsStyle: group.attrib['faims_style'] = faimsStyle
 
     return group
@@ -205,16 +205,21 @@ def getBodyLabelled(node, name, **kwargs):
     attribName = util.data.getAttribName(node)
     attribType = util.data.getAttribType(node)
     ref        = node.tag
+    styleClass = util.xml.getAttribVal(node, util.consts.ATTRIB_C)
     if attribName: labelled.attrib['faims_attribute_name'] = attribName
     if attribType: labelled.attrib['faims_attribute_type'] = attribType
     if ref:        labelled.attrib['ref']                  = ref
+    if styleClass: labelled.attrib['faims_style_class']    = styleClass
 
     return labelled
 
 def getBodyLabel(node, isBlank=False):
-    label      = Element('label')
-    if not isBlank:
-        label.text = util.arch16n.getArch16nKey(node, doAddCurlies=True)
+    label = Element('label')
+    if isBlank:
+        return label
+
+    label.text = util.arch16n.getArch16nKey(node, doAddCurlies=True)
+
     return label
 
 ################################################################################
@@ -260,13 +265,6 @@ util.schema.canonicalise(tree)
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #
 ################################################################################
 uiSchema = getUiSchema(tree)
-
-print etree.tostring(
-        tree,
-        pretty_print=True,
-        xml_declaration=True,
-        encoding='utf-8'
-)
 
 print etree.tostring(
         uiSchema,
