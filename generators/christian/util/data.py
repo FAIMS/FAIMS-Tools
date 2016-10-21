@@ -9,8 +9,8 @@ import xml
 def isDataElement(guiDataElement):
     if schema.isFlagged(guiDataElement, 'nodata'):      return False
     if schema.isFlagged(guiDataElement, 'user'):        return False
-    if schema.hasAttrib(guiDataElement, 'e'):           return False
-    if schema.hasAttrib(guiDataElement, 'ec'):          return False
+    if    xml.hasAttrib(guiDataElement, 'e'):           return False
+    if    xml.hasAttrib(guiDataElement, 'ec'):          return False
     if schema.guessType(guiDataElement) == 'button':    return False
     if schema.guessType(guiDataElement) == 'gpsdiag':   return False
     if schema.guessType(guiDataElement) == 'group':     return False
@@ -69,7 +69,7 @@ def hasVocabType(node):
     return schema.guessType(node) in vocabTypes
 
 def getRelName(node):
-    if not schema.hasAttrib(node, 'lc'):       return None
+    if not xml.hasAttrib(node, 'lc'):       return None
     if schema.getParentTabGroup(node) == None: return None
 
     parentName = schema.getParentTabGroup(node)

@@ -13,6 +13,13 @@ def parseXml(filename):
     tree = tree.getroot()
     return tree
 
+def hasAttrib(e, a):
+    try:
+        if a in e.attrib:
+            return True
+    except:
+        return False
+
 def deleteAttribFromTree(t, attrib):
     if t == None:
         return

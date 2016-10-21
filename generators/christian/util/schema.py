@@ -456,13 +456,6 @@ def replaceElement(element, replacements, tag='__REPLACE__'):
 
     return xml.replaceElement(element, replacements)
 
-def hasAttrib(e, a):
-    try:
-        if a in e.attrib:
-            return True
-    except:
-        return False
-
 def isValidLink(root, link, linkType):
     if not link:
         return False

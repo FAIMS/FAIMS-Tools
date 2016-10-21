@@ -54,8 +54,8 @@ class GraphModule(object):
 
         for n in node.xpath('//*[@l or @lc]'):
             # Does `n` have an 'l' attribute, or an 'lc' attribute?
-            if util.schema.hasAttrib(n, 'l' ): attrib = 'l'
-            if util.schema.hasAttrib(n, 'lc'): attrib = 'lc'
+            if util.xml.hasAttrib(n, 'l' ): attrib = 'l'
+            if util.xml.hasAttrib(n, 'lc'): attrib = 'lc'
 
             # Determine `nodeFrom` and `nodeTo`
             nodeFrom = n; parFrom = n.getparent()
