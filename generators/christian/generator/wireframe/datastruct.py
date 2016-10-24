@@ -5,7 +5,7 @@ import copy
 import sys
 import util.schema
 import util.gui
-import util.consts
+from   util.consts import *
 
 ################################################################################
 
@@ -40,7 +40,7 @@ class GraphModule(object):
 
         tabGroups = util.gui.getTabGroups(node)
         for tabGroup in tabGroups:
-            tabs = util.gui.getTabs(node)
+            tabs = util.gui.getTabs(tabGroup)
             for i in range(len(tabs) - 1):
                 tabFrom = tabs[i  ]; idFrom = GraphTab.nodeId(tabFrom)
                 tabTo   = tabs[i+1]; idTo   = GraphTab.nodeId(tabTo  )
@@ -59,11 +59,11 @@ class GraphModule(object):
 
             # Determine `nodeFrom` and `nodeTo`
             nodeFrom = n; parFrom = n.getparent()
-            if util.schema.isValidLink(n, n.attrib[attrib], 'tab group'):
+            if util.schema.isValidLink(n, n.attrib[attrib], TYPE_TAB_GROUP):
                 exp     = '/module/%s/*[@%s="%s"][1]'
-            if util.schema.isValidLink(n, n.attrib[attrib], 'tab'):
+            if util.schema.isValidLink(n, n.attrib[attrib], TYPE_TAB):
                 exp     = '/module/%s[@%s="%s"]'
-            exp    %= n.attrib[attrib], util.consts.RESERVED_XML_TYPE, 'tab'
+            exp    %= n.attrib[attrib], RESERVED_XML_TYPE, TYPE_TAB
             matches = n.xpath(exp)
             nodeTo  = matches[0]
 
@@ -72,7 +72,7 @@ class GraphModule(object):
             idTo   = GraphTab.nodeId(nodeTo  )
 
             # Make the link
-            link = '%s -> %s' % (idFrom, idTo)
+            link = '%s -> %s [constraint=false]' % (idFrom, idTo)
             links.append(link)
 
         return links
@@ -158,10 +158,7 @@ class GraphTab(object):
         return "%s%s" % (cls.prefix,       util.schema.nodeHash(node))
 
     def getGuiBlocks(self, node):
-        matches  = util.gui.getGuiElements(node)
-        matches += util.gui.getGuiNodes(node, '<cols>')
-        matches  = sorted(matches, key=lambda e: e.getparent().index(e))
-        return [GuiBlock(n) for n in matches]
+        return [GuiBlock(n) for n in node if util.gui.isGuiElement(n)]
 
     def getTabBarStructString(self, hasPrecedingTab, hasFollowingTab):
         out  = '\n\t\t\t%s [' % self.nodeIdLabel(self.node)
@@ -209,7 +206,7 @@ class GuiBlock(object):
     @classmethod
     def nodeIdBlock(cls, node):
         exp     = './descendant-or-self::*[@%s="%s"][1]'
-        exp    %= util.consts.RESERVED_XML_TYPE, 'GUI/data element'
+        exp    %= RESERVED_XML_TYPE, 'GUI/data element'
         matches = node.xpath(exp)
         match = None
         if matches: match = matches[0]
@@ -228,17 +225,17 @@ class GuiBlock(object):
         tail += '\n\t\t\t>];'
         tail += '\n'
 
-        if node.attrib[util.consts.RESERVED_XML_TYPE] == util.consts.TYPE_GUI_DATA:
+        if node.attrib[RESERVED_XML_TYPE] in (TYPE_GUI_DATA, TYPE_AUTHOR, TYPE_TIMESTAMP):
             return head + self.getElementBlock(node) + tail
-        if node.attrib[util.consts.RESERVED_XML_TYPE] == util.consts.TYPE_COLS:
+        if node.attrib[RESERVED_XML_TYPE] in (TYPE_COLS, TYPE_GPS):
             return head + self.getColsBlock   (node) + tail
-        if node.attrib[util.consts.RESERVED_XML_TYPE] == util.consts.TYPE_GROUP:
-            return head + self.getColsBlock   (node) + tail
+        if node.attrib[RESERVED_XML_TYPE] == TYPE_GROUP:
+            return ''
 
         msg  = 'An unexpected %s value was encountered: %s'
         msg %= (
-                util.consts.RESERVED_XML_TYPE,
-                node.attrib[util.consts.RESERVED_XML_TYPE]
+                RESERVED_XML_TYPE,
+                node.attrib[RESERVED_XML_TYPE]
         )
         raise ValueError(msg)
 
@@ -248,20 +245,6 @@ class GuiBlock(object):
         return guiBlock
 
     def getColsBlock(self, node):
-        #TODO: Re-write this to make use of the fact that <cols> are expanded
-        return ''
-
-        # What we're about to do will probably modify `node` if we don't copy
-        # it.
-        nodeCopy = copy.deepcopy(node)
-
-        # NORMALISATION: Take GUI/data elements which are direct descendants of
-        # <cols> and put them in <col> tags.
-        for i, child in enumerate(node):
-            if child.attrib[util.consts.RESERVED_XML_TYPE] == 'GUI/data element':
-                node[i] = etree.Element('col')
-                node[i].append(child)
-
         # TRANSFORMATION 1 (PREPARATION): Make a 2D array with the dimensions of
         # the desired table.
         numCols = len(node)
@@ -290,7 +273,6 @@ class GuiBlock(object):
             guiBlock += tdElms
             guiBlock += '\n\t\t\t\t\t</TR>'
 
-        node[:] = nodeCopy
         return guiBlock
 
     def toString(self):
@@ -308,5 +290,12 @@ util.schema.canonicalise(tree)
 ################################################################################
 #                        GENERATE AND OUTPUT DATASTRUCT                        #
 ################################################################################
+#print etree.tostring(
+        #tree,
+        #pretty_print=True,
+        #xml_declaration=True,
+        #encoding='utf-8'
+#)
+
 gm = GraphModule(tree)
 print gm.toString()

@@ -4,7 +4,7 @@
 #                                                                              #
 ################################################################################
 import arch16n
-import consts
+from   consts import *
 import schema
 import xml
 
@@ -12,11 +12,11 @@ def getLabel(node):
     return arch16n.getArch16nVal(node)
 
 def isGuiNode(node):
-    return not schema.isFlagged(node, 'noui')
+    return not schema.isFlagged(node, FLAG_NOUI)
 
 def getGuiNodes(node, xmlType):
-    exp     = './/*[@%s="%s"]' % (consts.RESERVED_XML_TYPE, xmlType)
-    cond    = lambda e: not schema.isFlagged(e, 'noui')
+    exp     = './/*[@%s="%s"]' % (RESERVED_XML_TYPE, xmlType)
+    cond    = lambda e: not schema.isFlagged(e, FLAG_NOUI)
     matches = node.xpath(exp)
     matches = filter(cond, matches)
     return matches

@@ -57,7 +57,7 @@ cd - >/dev/null
 ####################### HANDLE PRE-PROCESSING DIRECTIVE ########################
 # This is the clean up step mentioned near the start of this script            #
 ################################################################################
-mv "$modulePath/{module}.original" "$modulePath/$module"
+mv "$modulePath/${module}.original" "$modulePath/$module"
 
 ####################### HANDLE POST-PROCESSING DIRECTIVE #######################
 cd "$modulePath" >/dev/null

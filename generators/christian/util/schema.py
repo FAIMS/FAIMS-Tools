@@ -15,9 +15,17 @@ import xml
 import util
 import schema
 import gui
+import arch16n
 
 def getPath(node):
-    nodeTypes = ['GUI/data element', 'tab group', 'tab']
+    nodeTypes = [
+            TYPE_GUI_DATA,
+            TYPE_SEARCH,
+            TYPE_TAB,
+            TYPE_TAB_GROUP,
+            TYPE_AUTHOR,
+            TYPE_TIMESTAMP,
+    ]
 
     if node == None:
         return []
@@ -42,41 +50,52 @@ def filterUnannotated(nodes):
     cond = lambda e: isAnnotated(e)
     return filter(cond, nodes)
 
-def isAnnotated(e):
+def isAnnotated(node):
+    ''' Returns `True` iff `node` was annotated with an XML TYPE from `consts`.
+    '''
     try:
-        return e.attrib[RESERVED_XML_TYPE] != ''
+        return node.attrib[RESERVED_XML_TYPE] != ''
     except:
         pass
     return False
 
-def isFlagged(element, flags, checkAncestors=True, attribName='f'):
-    if type(flags) is list:
-        return isFlaggedList(element, flags, checkAncestors, attribName)
-    else:
-        return isFlaggedStr (element, flags, checkAncestors, attribName)
+def getFlags(node, attribName='f'):
+    try:
+        flags = node.attrib[attribName].split()
+        return flags
+    except:
+        return []
 
-def isFlaggedList(element, flags, checkAncestors=True, attribName='f'):
+def isFlagged(node, flags, checkAncestors=None, attribName='f'):
+    if type(flags) is list:
+        return isFlaggedList(node, flags, checkAncestors, attribName)
+    else:
+        return isFlaggedStr (node, flags, checkAncestors, attribName)
+
+def isFlaggedList(node, flags, checkAncestors=True, attribName='f'):
     for flag in flags:
-        if isFlaggedStr(element, flag, checkAncestors, attribName):
+        if isFlaggedStr(node, flag, checkAncestors, attribName):
             return True
     return False
 
-def isFlaggedStr(element, flag, checkAncestors=True, attribName='f'):
-    # Base case 1: We've iterated through all the ancestors
-    if element is None:
-        return False
-    # Base case 2: The flag's been found in ancestor or self
-    try:
-        flags = element.attrib[attribName].split()
-        if flag in flags: return True
-    except:
-        pass
+def isFlaggedStr(node, flag, checkAncestors=None, attribName='f'):
+    # Set the default value of `checkAncestors` if it hasn't been passed
+    requiresAncestorCheck = (FLAG_NODATA, FLAG_NOUI)
+    if checkAncestors == None:
+        checkAncestors = flag in requiresAncestorCheck
 
+    # Base cases
+    if node is None:
+        return False
+    if flag in getFlags(node, attribName):
+        return True
+
+    # Recursive case
     if checkAncestors:
-        return isFlagged(element.getparent(), flag, checkAncestors, attribName)
+        return isFlagged(node.getparent(), flag, checkAncestors, attribName)
 
 def nextFreeName(baseName, node):
-    parent     = node.getparent()
+    parent = node.getparent()
     if parent == None:
         return None
 
@@ -141,7 +160,7 @@ def guessType(node):
     return 'input'
 
 def hasElementFlaggedWith(tabGroup, flag):
-    exp  = './/*[@%s="%s"]' % (RESERVED_XML_TYPE, 'GUI/data element')
+    exp  = './/*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
     cond = lambda e: isFlagged(e, flag)
     matches = tabGroup.xpath(exp)
     matches = filter(cond, matches)
@@ -151,19 +170,19 @@ def hasElementFlaggedWithId(tabGroup):
     return hasElementFlaggedWith(tabGroup, 'id')
 
 def getParentTabGroup(node):
-    exp = './ancestor::*[@%s="%s"]' % (RESERVED_XML_TYPE, 'tab group')
+    exp = './ancestor::*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_TAB_GROUP)
     matches = node.xpath(exp)
     if matches: return matches[0]
     else:       return None
 
 def getParentTab(node):
-    exp = './ancestor::*[@%s="%s"]' % (RESERVED_XML_TYPE, 'tab')
+    exp = './ancestor::*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_TAB)
     matches = node.xpath(exp)
     if matches: return matches[0]
     else:       return None
 
 def getParentGuiDataElement(node):
-    exp = './ancestor::*[@%s="%s"]' % (RESERVED_XML_TYPE, 'GUI/data element')
+    exp = './ancestor::*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
     matches = node.xpath(exp)
     if matches: return matches[0]
     else:       return None
@@ -186,47 +205,50 @@ def annotateWithXmlTypes(node):
     type = ''
     if   parent == None:
         type = TYPE_MODULE
-    elif parentType == TYPE_MODULE:
+    elif parentType == TAG_MODULE:
         if   util.isNonLower(node.tag):   type = TYPE_TAB_GROUP
-        elif node.tag == TYPE_LOGIC:      type = TYPE_LOGIC
-        elif node.tag == TYPE_RELS:       type = TYPE_RELS
+        elif node.tag == TAG_LOGIC:       type = TYPE_LOGIC
+        elif node.tag == TAG_RELS:        type = TYPE_RELS
     elif parentType == TYPE_TAB_GROUP:
         if   util.isNonLower(node.tag):   type = TYPE_TAB
-        elif node.tag == TYPE_LOGIC:      type = TYPE_DESC
-        elif node.tag == TYPE_SEARCH:     type = TYPE_SEARCH
+        elif node.tag == TAG_LOGIC:       type = TYPE_DESC
+        elif node.tag == TAG_SEARCH:      type = TYPE_SEARCH
     elif parentType == TYPE_TAB:
-        if   guessedType == TYPE_GROUP:   type = TYPE_GROUP
+        if   guessedType == TAG_GROUP:    type = TYPE_GROUP
         elif util.isNonLower(node.tag):   type = TYPE_GUI_DATA
-        elif node.tag == TYPE_AUTHOR:     type = TYPE_AUTHOR
-        elif node.tag == TYPE_AUTONUM:    type = TYPE_AUTONUM
-        elif node.tag == TYPE_COLS:       type = TYPE_COLS
-        elif node.tag == TYPE_GPS:        type = TYPE_GPS
-        elif node.tag == TYPE_TIMESTAMP:  type = TYPE_TIMESTAMP
+        elif node.tag == TAG_AUTHOR:      type = TYPE_AUTHOR
+        elif node.tag == TAG_AUTONUM:     type = TYPE_AUTONUM
+        elif node.tag == TAG_COLS:        type = TYPE_COLS
+        elif node.tag == TAG_GPS:         type = TYPE_GPS
+        elif node.tag == TAG_TIMESTAMP:   type = TYPE_TIMESTAMP
     elif parentType == TYPE_GROUP:
-        if   guessedType == TYPE_GROUP:   type = TYPE_GROUP
+        if   guessedType == TAG_GROUP:    type = TYPE_GROUP
         elif util.isNonLower(node.tag):   type = TYPE_GUI_DATA
     elif parentType == TYPE_COLS:
         if   util.isNonLower(node.tag):   type = TYPE_GUI_DATA
-        elif node.tag == TYPE_COL:        type = TYPE_COL
+        elif node.tag == TAG_COL:         type = TYPE_COL
+        elif node.tag == TAG_AUTHOR:      type = TYPE_AUTHOR
+        elif node.tag == TAG_TIMESTAMP:   type = TYPE_TIMESTAMP
     elif parentType == TYPE_COL:
         if   util.isNonLower(node.tag):   type = TYPE_GUI_DATA
     elif parentType == TYPE_GUI_DATA:
-        if   node.tag == TYPE_DESC:       type = TYPE_DESC
-        elif node.tag == TYPE_OPTS:       type = TYPE_OPTS
-        elif node.tag == TYPE_STR:        type = TYPE_STR
+        if   node.tag == TAG_DESC:        type = TYPE_DESC
+        elif node.tag == TAG_OPTS:        type = TYPE_OPTS
+        elif node.tag == TAG_STR:         type = TYPE_STR
     elif parentType == TYPE_STR:
-        if   node.tag == TYPE_APP:        type = TYPE_APP
-        elif node.tag == TYPE_FMT:        type = TYPE_FMT
-        elif node.tag == TYPE_STR:        type = TYPE_STR
+        if   node.tag == TAG_APP:         type = TYPE_APP
+        elif node.tag == TAG_FMT:         type = TYPE_FMT
+        elif node.tag == TAG_STR:         type = TYPE_STR
     elif parentType == TYPE_OPTS:
-        if   node.tag == TYPE_OPT:        type = TYPE_OPT
+        if   node.tag == TAG_OPT:         type = TYPE_OPT
     elif parentType == TYPE_OPT:
-        if   node.tag == TYPE_OPT:        type = TYPE_OPT
-        elif node.tag == TYPE_DESC:       type = TYPE_DESC
+        if   node.tag == TAG_OPT:         type = TYPE_OPT
+        elif node.tag == TAG_DESC:        type = TYPE_DESC
 
     # Annotate current node
     if type:
-        node.attrib[RESERVED_XML_TYPE] = type
+        if not xml.hasAttrib(node, RESERVED_XML_TYPE):
+            node.attrib[RESERVED_XML_TYPE] = type
 
         # Annotate child nodes
         for child in node:
@@ -270,7 +292,7 @@ def canonicaliseCols(node):
     #
     for cols in colsList:
         for child in cols:
-            if getType(child) == TYPE_GUI_DATA:
+            if getType(child) in (TYPE_GUI_DATA, TYPE_AUTHOR, TYPE_TIMESTAMP):
                 newCol = Element(
                         'col',
                         { RESERVED_XML_TYPE : TYPE_COL }
@@ -304,6 +326,7 @@ def canonicaliseMedia(node):
                 { RESERVED_XML_TYPE : TYPE_GUI_DATA },
                 t='button'
         )
+        button.text = arch16n.getArch16nVal(media)
         xml.insertAfter(media, button)
 
 def canonicaliseImplied(node):
@@ -319,12 +342,14 @@ def canonicaliseImplied(node):
         xml.appendToAttrib(n, ATTRIB_C, 'required')
 
 def getAuthor(node):
-    return Element(
+    e = Element(
             'Author',
             { RESERVED_XML_TYPE : getType(node) },
             t=UI_TYPE_INPUT,
             f='readonly nodata',
-    ),
+    )
+    e.text = node.text
+    return e,
 
 def getAutonum(node):
     # Get the nodes flagged with f="notnull"
@@ -379,15 +404,15 @@ def getSearch(node):
             { RESERVED_XML_TYPE : TYPE_TAB },
             f='readonly nodata noscroll'
     )
-    cols = SubElement(search, 'Colgroup_0', t='group', s='orientation')
-    lCol = SubElement(cols,   'Col_0',      t='group', s='even')
-    rCol = SubElement(cols,   'Col_1',      t='group', s='large')
+    cols = SubElement(search, 'Colgroup_0', { RESERVED_XML_TYPE : TYPE_COLS }, t=UI_TYPE_GROUP, s='orientation')
+    lCol = SubElement(cols,   'Col_0',      { RESERVED_XML_TYPE : TYPE_COL  }, t=UI_TYPE_GROUP, s='even')
+    rCol = SubElement(cols,   'Col_1',      { RESERVED_XML_TYPE : TYPE_COL  }, t=UI_TYPE_GROUP, s='large')
 
     term = SubElement(lCol,   'Search_Term',   t=UI_TYPE_INPUT)
-    btn  = SubElement(rCol,   'Search_Button', t='button')
+    btn  = SubElement(rCol,   'Search_Button', t=UI_TYPE_BUTTON)
 
     SubElement(search, 'Entity_Types', t=UI_TYPE_INPUT)
-    SubElement(search, 'Entity_List',  t='list')
+    SubElement(search, 'Entity_List',  t=UI_TYPE_LIST)
 
     for n in search:
         annotateWithXmlTypes(n)
@@ -396,12 +421,14 @@ def getSearch(node):
     return search,
 
 def getTimestamp(node):
-    return Element(
+    e = Element(
             'Timestamp',
             { RESERVED_XML_TYPE : getType(node) },
             t=UI_TYPE_INPUT,
             f='readonly nodata'
-    ),
+    )
+    e.text = node.text
+    return e,
 
 def expandCompositeElements(tree):
     # (1) REPLACE ELEMENTS HAVING A CERTAIN T ATTRIBUTE
@@ -422,7 +449,7 @@ def expandCompositeElements(tree):
 
         cond        = lambda e: schema.isFlagged(e, 'autonum')
         exp         = './/*[@%s="%s"]'
-        exp        %= RESERVED_XML_TYPE, 'GUI/data element'
+        exp        %= RESERVED_XML_TYPE, TYPE_GUI_DATA
         flagMatches = tree.xpath(exp)
         flagMatches = filter(cond, flagMatches)
 
@@ -460,7 +487,7 @@ def isValidLink(root, link, linkType):
     if not link:
         return False
 
-    if   linkType == 'tab':
+    if   linkType in ('tab', TYPE_TAB):
         result  = True
         try:
             result &= bool(root.xpath('/module/' + link))
@@ -470,7 +497,7 @@ def isValidLink(root, link, linkType):
         result &= '/' != link[ 0]
         result &= '/' != link[-1]
         return result
-    elif linkType in ('tabgroup', 'tab group'):
+    elif linkType in ('tabgroup', TYPE_TAB_GROUP):
         result  = True
         try:
             result &= bool(root.xpath('/module/' + link))
@@ -480,8 +507,8 @@ def isValidLink(root, link, linkType):
         return result
     elif linkType == 'all':
         result  = False
-        result |= isValidLink(root, link, 'tab'     )
-        result |= isValidLink(root, link, 'tabgroup')
+        result |= isValidLink(root, link, TYPE_TAB)
+        result |= isValidLink(root, link, TYPE_TAB_GROUP)
         return result
     else:
         return False
@@ -516,9 +543,12 @@ def isTab(node):
 
 def isGuiDataElement(node):
     return getType(node) in (
-            TYPE_GUI_DATA,
+            TYPE_AUTHOR,
+            TYPE_COLS,
+            TYPE_GPS,
             TYPE_GROUP,
-            TYPE_COLS
+            TYPE_GUI_DATA,
+            TYPE_TIMESTAMP,
     )
 
 def getTabGroups      (node): return xml.getAll(node, isTabGroup)

@@ -5,9 +5,9 @@ import sys
 import util.schema
 import util.data
 import util.arch16n
-import util.ui
+import util.gui
 import util.xml
-import util.consts
+from   util.consts import *
 
 # The namespaces used in the UI schema must be defined here to help us search
 # through the uischema-template.xml using xpath.
@@ -101,31 +101,30 @@ def getBodyTabChildren(node):
     bodyTabGrandChildren = [getBodyTabChildren(n) for n in node]
     bodyTabGrandChildren = filter(lambda x: x != None, bodyTabGrandChildren)
 
-    if type == util.consts.UI_TYPE_AUDIO:     return getBodyAudio    (node)
-    if type == util.consts.UI_TYPE_BUTTON:    return getBodyButton   (node)
-    if type == util.consts.UI_TYPE_CAMERA:    return getBodyCamera   (node)
-    if type == util.consts.UI_TYPE_CHECKBOX:  return getBodyCheckbox (node)
-    if type == util.consts.UI_TYPE_DROPDOWN:  return getBodyDropdown (node)
-    if type == util.consts.UI_TYPE_FILE:      return getBodyFile     (node)
-    if type == util.consts.UI_TYPE_GPSDIAG:   return getBodyGpsDiag  (node)
-    if type == util.consts.UI_TYPE_GROUP:     return getBodyGroup    (node)
-    if type == util.consts.UI_TYPE_INPUT:     return getBodyInput    (node)
-    if type == util.consts.UI_TYPE_LIST:      return getBodyList     (node)
-    if type == util.consts.UI_TYPE_MAP:       return getBodyMap      (node)
-    if type == util.consts.UI_TYPE_PICTURE:   return getBodyPicture  (node)
-    if type == util.consts.UI_TYPE_RADIO:     return getBodyRadio    (node)
-    if type == util.consts.UI_TYPE_VIDEO:     return getBodyVideo    (node)
-    if type == util.consts.UI_TYPE_VIEWFILES: return getBodyViewfiles(node)
-    if type == util.consts.UI_TYPE_WEB:       return getBodyWebview  (node)
-    if type == util.consts.UI_TYPE_WEBVIEW:   return getBodyWebview  (node)
+    if type == UI_TYPE_AUDIO:     return getBodyAudio    (node)
+    if type == UI_TYPE_BUTTON:    return getBodyButton   (node)
+    if type == UI_TYPE_CAMERA:    return getBodyCamera   (node)
+    if type == UI_TYPE_CHECKBOX:  return getBodyCheckbox (node)
+    if type == UI_TYPE_DROPDOWN:  return getBodyDropdown (node)
+    if type == UI_TYPE_FILE:      return getBodyFile     (node)
+    if type == UI_TYPE_GPSDIAG:   return getBodyGpsDiag  (node)
+    if type == UI_TYPE_GROUP:     return getBodyGroup    (node)
+    if type == UI_TYPE_INPUT:     return getBodyInput    (node)
+    if type == UI_TYPE_LIST:      return getBodyList     (node)
+    if type == UI_TYPE_MAP:       return getBodyMap      (node)
+    if type == UI_TYPE_PICTURE:   return getBodyPicture  (node)
+    if type == UI_TYPE_RADIO:     return getBodyRadio    (node)
+    if type == UI_TYPE_VIDEO:     return getBodyVideo    (node)
+    if type == UI_TYPE_VIEWFILES: return getBodyViewfiles(node)
+    if type == UI_TYPE_WEB:       return getBodyWebview  (node)
+    if type == UI_TYPE_WEBVIEW:   return getBodyWebview  (node)
     return None
 
 def getBodyAudio(node):
     return getBodySelect(node, faims_sync='true', type='file')
 
 def getBodyButton(node):
-    button = getBodyLabelled(node, 'trigger')
-    return button
+    return getBodyLabelled(node, 'trigger')
 
 def getBodyCamera(node):
     return getBodySelect(node, faims_sync='true')
@@ -140,7 +139,7 @@ def getBodyFile(node):
     return getBodySelect(node, type='file', faims_sync='true')
 
 def getBodyGpsDiag(node):
-    return Element('input', faims_read_only='true', ref=node.tag)
+    return getBodyInput(node, faims_read_only='true')
 
 def getBodyGroup(node):
     children = [getBodyTabChildren(n) for n in node]
@@ -151,7 +150,7 @@ def getBodyGroup(node):
     group.append(Element('label'))
     group.extend(children)
 
-    faimsStyle = util.xml.getAttribVal(node, 's')
+    faimsStyle = util.xml.getAttribVal(node, ATTRIB_S)
     if faimsStyle: group.attrib['faims_style'] = faimsStyle
 
     return group
@@ -197,7 +196,7 @@ def getBodySelect1(node, **kwargs):
     return select1
 
 def getBodyLabelled(node, name, **kwargs):
-    isBlank = util.schema.isFlagged(node, 'nolabel', checkAncestors=False)
+    isBlank = util.schema.isFlagged(node, FLAG_NOLABEL)
 
     labelled = Element(name, **kwargs)
     labelled.append(getBodyLabel(node, isBlank))
@@ -205,7 +204,7 @@ def getBodyLabelled(node, name, **kwargs):
     attribName = util.data.getAttribName(node)
     attribType = util.data.getAttribType(node)
     ref        = node.tag
-    styleClass = util.xml.getAttribVal(node, util.consts.ATTRIB_C)
+    styleClass = util.xml.getAttribVal(node, ATTRIB_C)
     if attribName: labelled.attrib['faims_attribute_name'] = attribName
     if attribType: labelled.attrib['faims_attribute_type'] = attribType
     if ref:        labelled.attrib['ref']                  = ref

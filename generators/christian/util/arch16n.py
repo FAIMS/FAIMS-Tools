@@ -7,10 +7,15 @@ import hashlib
 import schema
 import util
 import xml
+from  consts import *
 
 def getLabelFromTag(node):
-    if node.text == 'opt':
+    if node.tag == TAG_OPT:
         return ''
+
+    if node.tag == TAG_AUTHOR:     return 'Author'
+    if node.tag == TAG_SEARCH:     return 'Search'
+    if node.tag == TAG_TIMESTAMP:  return 'Timestamp'
 
     label = node.tag
     label = label.replace('_', ' ')
@@ -27,30 +32,33 @@ def getLabelFromText(node):
 
 def hasArch16Entry(node):
     if node.xpath('./ancestor-or-self::rels'): return False
-    if schema.isFlagged(node, 'nolabel'):      return False
+    if schema.isFlagged(node, FLAG_NOLABEL):   return False
 
-    if node.tag == 'autonum':                  return False
-    if node.tag == 'col':                      return False
-    if node.tag == 'cols':                     return False
-    if node.tag == 'desc':                     return False
-    if node.tag == 'logic':                    return False
-    if node.tag == 'module':                   return False
-    if node.tag == 'opts':                     return False
+    if schema.getType(node) ==    TYPE_COLS:   return False
+    if schema.getType(node) ==    TYPE_COL:    return False
+    if schema.getType(node) == UI_TYPE_GROUP:  return False
+
+    if node.tag == TAG_COL:                    return False
+    if node.tag == TAG_COLS:                   return False
+    if node.tag == TAG_DESC:                   return False
+    if node.tag == TAG_FMT:                    return False
+    if node.tag == TAG_GROUP:                  return False
+    if node.tag == TAG_LOGIC:                  return False
+    if node.tag == TAG_MODULE:                 return False
+    if node.tag == TAG_OPTS:                   return False
+    if node.tag == TAG_POS:                    return False
+    if node.tag == TAG_STR:                    return False
 
     return True
 
 def getArch16nVal(node):
     if not hasArch16Entry(node): return ''
 
-    if node.tag == 'author':     return 'Author'
-    if node.tag == 'search':     return 'Search'
-    if node.tag == 'timestamp':  return 'Timestamp'
-
     return getLabelFromText(node) or getLabelFromTag(node)
 
 def getArch16nKey(node, keyLen=10, doAddCurlies=False):
-    if node.tag == 'opt': lastSegment = [node.text]
-    else:                 lastSegment = []
+    if node.tag == TAG_OPT: lastSegment = [node.text]
+    else:                   lastSegment = []
 
     path = schema.getPath(node) + lastSegment
     path = '/'.join(path)

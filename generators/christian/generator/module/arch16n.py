@@ -14,7 +14,7 @@ filenameModule = sys.argv[1]
 tree = util.xml.parseXml(filenameModule)
 util.schema.normalise(tree)
 util.schema.annotateWithXmlTypes(tree)
-util.schema.expandCompositeElements(tree)
+util.schema.canonicalise(tree)
 
 ################################################################################
 #                         GENERATE AND OUTPUT ARCH16N                          #
