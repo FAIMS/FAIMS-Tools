@@ -14,6 +14,9 @@ class GraphModule(object):
         self.topMatter  = '\n\tgraph ['
         self.topMatter += '\n\t\trankdir="LR"'
         self.topMatter += '\n\t\tfontname="Roboto"'
+        self.topMatter += '\n\t\tsplines=ortho'
+        self.topMatter += '\n\t\toutputorder="nodesfirst"'
+        self.topMatter += '\n\t\tranksep=2'
         self.topMatter += '\n\t];'
         self.topMatter += '\n\tnode ['
         self.topMatter += '\n\t\tfontsize="12"'
@@ -31,12 +34,13 @@ class GraphModule(object):
         return [GraphTabGroup(n) for n in util.gui.getTabGroups(node)]
 
     def getLinks(self, node):
-        links  = self.getTabLabelLinks     (node)
-        links += self.getUserSpecifiedLinks(node)
+        links  = self.getTabLabelLinks         (node)
+        links += self.getGraphConstrainingLinks(node)
+        links += self.getUserSpecifiedLinks    (node)
         return links
 
     def getTabLabelLinks(self, node):
-        links = ['/* Tab label links */']
+        links = ['/* Intra-tab, label-to-label links */']
 
         tabGroups = util.gui.getTabGroups(node)
         for tabGroup in tabGroups:
@@ -77,6 +81,33 @@ class GraphModule(object):
 
         return links
 
+    def getGraphConstrainingLinks(self, node):
+        links = ['/* Graph-constraining links */']
+
+        for n in node.xpath('//*[@l or @lc]'):
+            # Does `n` have an 'l' attribute, or an 'lc' attribute?
+            if util.xml.hasAttrib(n, 'l' ): attrib = 'l'
+            if util.xml.hasAttrib(n, 'lc'): attrib = 'lc'
+
+            # Determine link in l or lc attribute
+            link = n.attrib[attrib]
+            link = link.split('/') # Ensure that this is a link to a tab group
+            link = link[0]         #
+
+            # Determine `nodeFrom` and `nodeTo`
+            nodeFrom = util.schema.getParentTabGroup(n)
+            nodeTo   = n.xpath('/module/%s' % link)[0]
+
+            # Determine `idFrom` and `idTo`
+            idFrom = GraphTabGroup.nodeIdAnchor(nodeFrom)
+            idTo   = GraphTabGroup.nodeIdAnchor(nodeTo  )
+
+            # Make the link
+            link = '%s -> %s [style=invis]' % (idFrom, idTo)
+            links.append(link)
+
+        return links
+
     def toString(self):
         tabGroups = [tabGroup.toString() for tabGroup in self.tabGroups]
         tabGroups = ''.join(tabGroups)
@@ -95,16 +126,25 @@ class GraphModule(object):
 ################################################################################
 
 class GraphTabGroup(object):
-    prefix = 'cluster_'
+    prefix       = 'cluster_'
+    prefix_anchor = 'cluster_anchor_'
 
     def __init__(self, node):
         self.node = node
 
-        self.topMatter  = '\n\t\tlabel="%s"' % util.gui.getLabel(node)
+        self.topMatter  = '\n\t\tlabel="%s"'
+        self.topMatter %= util.gui.getLabel(node)
         self.topMatter += '\n\t\tbgcolor="lightblue"'
+        self.topMatter += '\n'
+        self.topMatter += '\n\t\t%s [label="" fixedsize=shape width=0 height=0]'
+        self.topMatter %= self.nodeIdAnchor(node)
         self.topMatter += '\n'
 
         self.tabs = self.getTabs(node)
+
+    @classmethod
+    def nodeIdAnchor(cls, node):
+        return "%s%s" % (cls.prefix_anchor, util.xml.nodeHash(node))
 
     @classmethod
     def nodeId(cls, node):
