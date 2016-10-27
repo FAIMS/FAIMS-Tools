@@ -108,7 +108,7 @@ class GraphTabGroup(object):
 
     @classmethod
     def nodeId(cls, node):
-        return "%s%s" % (cls.prefix, util.schema.nodeHash(node))
+        return "%s%s" % (cls.prefix, util.xml.nodeHash(node))
 
     def getTabs(self, node):
         return [GraphTab(n) for n in util.gui.getTabs(node)]
@@ -151,11 +151,11 @@ class GraphTab(object):
 
     @classmethod
     def nodeIdLabel(cls, node):
-        return "%s%s" % (cls.prefix_label, util.schema.nodeHash(node))
+        return "%s%s" % (cls.prefix_label, util.xml.nodeHash(node))
 
     @classmethod
     def nodeIdElem (cls, node):
-        return "%s%s" % (cls.prefix,       util.schema.nodeHash(node))
+        return "%s%s" % (cls.prefix,       util.xml.nodeHash(node))
 
     def getGuiBlocks(self, node):
         return [GuiBlock(n) for n in node if util.gui.isGuiElement(n)]
@@ -205,16 +205,20 @@ class GuiBlock(object):
 
     @classmethod
     def nodeIdBlock(cls, node):
-        exp     = './descendant-or-self::*[@%s="%s"][1]'
-        exp    %= RESERVED_XML_TYPE, 'GUI/data element'
+        path = util.xml.getPath(node)
+        path = path[:3]
+
+        pathString = '/'.join(path)
+
+        exp  = '/module/' + pathString
         matches = node.xpath(exp)
-        match = None
         if matches: match = matches[0]
-        return "%s%s" % (cls.prefix_block, util.schema.nodeHash(match))
+        else:       match = None
+        return "%s%s" % (cls.prefix_block, util.xml.nodeHash(match))
 
     @classmethod
     def nodeIdElem (cls, node):
-        return "%s%s" % (cls.prefix_elem , util.schema.nodeHash(node))
+        return "%s%s" % (cls.prefix_elem, util.xml.nodeHash(node))
 
     def getBlock(self, node):
         head  = '\n\t\t\t%s [' % GuiBlock.nodeIdBlock(node)
@@ -267,7 +271,7 @@ class GuiBlock(object):
                     tdElms += '\n\t\t\t\t\t\t<TD></TD>'
                 else:
                     tdElms += '\n\t\t\t\t\t\t<TD PORT="%s"><IMG SRC="%s.svg"></IMG></TD>'
-                    tdElms %= GuiBlock.nodeIdElem(node), util.schema.getPathString(elm, '_')
+                    tdElms %= GuiBlock.nodeIdElem(elm), util.schema.getPathString(elm, '_')
 
             guiBlock += '\n\t\t\t\t\t<TR>'
             guiBlock += tdElms
