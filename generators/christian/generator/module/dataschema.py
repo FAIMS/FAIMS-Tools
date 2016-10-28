@@ -2,7 +2,7 @@
 from   lxml import etree
 import sys
 import util.arch16n
-import util.consts
+from   util.consts import *
 import util.data
 import util.schema
 import util.xml
@@ -15,6 +15,7 @@ def copyRels(source, target):
     exp     = '//rels/*'
     matches = source.xpath(exp)
     for m in matches:
+        m.tail = None
         target.append(m)
 
 def genRels(source, target):
@@ -42,32 +43,34 @@ def genRels(source, target):
         target.append(r)
 
 def addEnts(source, target):
-    exp     = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'tab group')
-    cond    = lambda e: not util.schema.isFlagged(e, 'nodata')
+    exp     = '//*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_TAB_GROUP)
+    cond    = lambda e: not util.schema.isFlagged(e, FLAG_NODATA)
     matches = source.xpath(exp)
     matches = filter(cond, matches)
 
     for m in matches:
         addEnt(m, target)
 
-def addEnt(entNode, target):
+def addEnt(node, target):
     a                = etree.Element('ArchaeologicalElement')
-    a.attrib['name'] = util.data.getArchEntName(entNode)
+    a.attrib['name'] = util.data.getArchEntName(node)
 
     d      = etree.Element('description')
-    d.text = getDescriptionText(entNode)
+    d.text = getDescriptionText(node)
 
     a.append(d)
     target.append(a)
 
+    addProps(node, a)
+
 def addProps(source, target):
     # Get data elements
-    exp     = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
-    matches = source.xpath(exp)
-    matches = filter(util.data.isDataElement, matches)
+    f = lambda e: util.data.isDataElement(e) and util.schema.isGuiDataElement(e)
+    matches = util.xml.getAll(source, f)
 
     for m in matches:
         addProp(m, target)
+
     sortPropsByPos(target)
     delPosNodes   (target)
 
@@ -76,13 +79,12 @@ def addProp(dataElement, target):
     prp                = etree.Element('property')
     prp.attrib['name'] = util.data.getAttribName(dataElement)
     prp.attrib['type'] = util.data.getAttribType(dataElement)
-    if util.schema.isFlagged(dataElement, 'id'):
+    if util.schema.isFlagged(dataElement, FLAG_ID):
         prp.attrib['isIdentifier'] = 'true'
     if util.data.hasFileType(dataElement):
         prp.attrib['file']         = 'true'
-    # TODO:
-    #if util.data.hasFileType(dataElement) and not util.schema.isFlagged(dataElement):
-        #prp.attrib['thumbnail']    = 'true'
+    if util.data.hasFileType(dataElement) and not util.schema.isFlagged(dataElement, [FLAG_NOTHUMB, FLAG_NOTHUMBNAIL]):
+        prp.attrib['thumbnail']    = 'true'
 
     # make description
     dsc      = etree.Element('description')
@@ -131,17 +133,8 @@ def addProp(dataElement, target):
     if matches:
         posText = matches[0].text
 
-    pos      = etree.Element('pos')
+    pos      = etree.Element(TAG_POS)
     pos.text = posText
-
-    # find correct parent arch ent
-    archName = util.schema.getParentTabGroup(dataElement)
-    archName = archName.tag
-    archName = archName.replace('_', ' ')
-
-    exp     = './ArchaeologicalElement[@%s="%s"]' % ('name', archName)
-    matches = target.xpath(exp)
-    archEnt = matches[0]
 
     # append prp's (property's) children to it
     util.xml.appendNotNone(dsc, prp)
@@ -150,7 +143,7 @@ def addProp(dataElement, target):
     util.xml.appendNotNone(lup, prp)
     util.xml.appendNotNone(pos, prp)
     # append prp to parent archent
-    archEnt.append(prp)
+    target.append(prp)
 
 def makeLookup(dataElement):
     exp     = './opts'
@@ -233,6 +226,14 @@ def getDescriptionText(node):
     if   matches: return matches[0].text
     else        : return ''
 
+def getDataSchema(node):
+    dataSchema = etree.Element('dataSchema')
+
+    addRels (node, dataSchema)
+    addEnts (node, dataSchema)
+
+    return dataSchema
+
 ################################################################################
 #                                  PARSE XML                                   #
 ################################################################################
@@ -240,16 +241,12 @@ filenameModule = sys.argv[1]
 tree = util.xml.parseXml(filenameModule)
 util.schema.normalise(tree)
 util.schema.annotateWithXmlTypes(tree)
-util.schema.expandCompositeElements(tree)
-util.schema.annotateWithXmlTypes(tree)
+util.schema.canonicalise(tree)
 
 ################################################################################
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #
 ################################################################################
-dataSchema = etree.Element('dataSchema')
-addRels (tree, dataSchema)
-addEnts (tree, dataSchema)
-addProps(tree, dataSchema)
+dataSchema = getDataSchema(tree)
 
 print etree.tostring(
         dataSchema,

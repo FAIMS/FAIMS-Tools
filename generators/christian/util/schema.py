@@ -139,14 +139,14 @@ def guessType(node):
     except:
         pass
 
-    # It doesn't have a type
-    if not gui.isGuiElement(node):
-        return ''
-
     # Go ahead and give 'er a guess.
     path = getPath(node)
     if len(path) == 1: return TYPE_TAB_GROUP
     if len(path) == 2: return TYPE_TAB
+
+    # It doesn't have a type
+    if not gui.isGuiElement(node):
+        return ''
 
     isUser = 'f' in node.attrib and 'user' in node.attrib['f'].split()
     if isUser:
@@ -343,12 +343,15 @@ def canonicaliseImplied(node):
 
 def getAuthor(node):
     e = Element(
-            'Author',
+            schema.getParentTabGroup(node).tag + '_author',
             { RESERVED_XML_TYPE : getType(node) },
             t=UI_TYPE_INPUT,
-            f='readonly nodata',
+            f='readonly',
     )
-    e.text = node.text
+
+    if node.text: e.text = node.text
+    else:          e.text = 'Author'
+
     return e,
 
 def getAutonum(node):
@@ -422,12 +425,15 @@ def getSearch(node):
 
 def getTimestamp(node):
     e = Element(
-            'Timestamp',
+            schema.getParentTabGroup(node).tag + '_timestamp',
             { RESERVED_XML_TYPE : getType(node) },
             t=UI_TYPE_INPUT,
-            f='readonly nodata'
+            f='readonly'
     )
-    e.text = node.text
+
+    if node.text: e.text = node.text
+    else:         e.text = 'Timestamp'
+
     return e,
 
 def expandCompositeElements(tree):

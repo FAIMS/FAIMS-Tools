@@ -43,10 +43,8 @@ def appendToAttrib(node, attribName, attribVal):
     if attribVal in oldAttribVal.split():
         return
 
-    if oldAttribVal:
-        newAttribVal = oldAttribVal + ' ' + attribVal
-    else:
-        newAttribVal = attribVal
+    if oldAttribVal: newAttribVal = oldAttribVal + ' ' + attribVal
+    else:            newAttribVal =                      attribVal
 
     node.attrib[attribName] = newAttribVal
 
@@ -64,7 +62,6 @@ def getAll(node, keep=None, descendantOrSelf=True):
     assert keepIsNone or keepIsFunction
 
     # Get all nodes
-    all = []
     if descendantOrSelf: all = node.xpath('.//*')
     else:                all = node.xpath(' //*')
 

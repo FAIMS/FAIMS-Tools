@@ -5,19 +5,28 @@
 ################################################################################
 import schema
 import xml
+from   consts import *
 
-def isDataElement(guiDataElement):
-    if schema.isFlagged(guiDataElement, 'nodata'):      return False
-    if schema.isFlagged(guiDataElement, 'user'):        return False
-    if    xml.hasAttrib(guiDataElement, 'e'):           return False
-    if    xml.hasAttrib(guiDataElement, 'ec'):          return False
-    if schema.guessType(guiDataElement) == 'button':    return False
-    if schema.guessType(guiDataElement) == 'gpsdiag':   return False
-    if schema.guessType(guiDataElement) == 'group':     return False
-    if schema.guessType(guiDataElement) == 'map':       return False
-    if schema.guessType(guiDataElement) == 'table':     return False
-    if schema.guessType(guiDataElement) == 'viewfiles': return False
-    return True
+def isDataElement(node):
+    if node is None:                        return False
+    if schema.isFlagged(node, FLAG_NODATA): return False
+    if schema.isFlagged(node, FLAG_USER):   return False
+    if    xml.hasAttrib(node, ATTRIB_E):    return False
+    if    xml.hasAttrib(node, ATTRIB_EC):   return False
+
+    dataTypes = [
+        UI_TYPE_AUDIO,
+        UI_TYPE_CAMERA,
+        UI_TYPE_CHECKBOX,
+        UI_TYPE_DROPDOWN,
+        UI_TYPE_FILE,
+        UI_TYPE_INPUT,
+        UI_TYPE_LIST,
+        UI_TYPE_PICTURE,
+        UI_TYPE_RADIO,
+        UI_TYPE_VIDEO,
+    ]
+    return schema.isTabGroup(node) or schema.guessType(node) in dataTypes
 
 def getArchEntName(node, doRecurse=False):
     if node is None:
@@ -26,13 +35,11 @@ def getArchEntName(node, doRecurse=False):
         return node.tag.replace('_', ' ')
     if doRecurse:
         return getArchEntName(node.getparent())
+    return ''
 
 def getAttribName(node):
-    if node is None:
-        return ''
-    if isDataElement(node):
-        return node.tag.replace('_', ' ')
-    return ''
+    if isDataElement(node): return node.tag.replace('_', ' ')
+    else:                   return ''
 
 def getAttribType(node):
     if not isDataElement(node): return ''
