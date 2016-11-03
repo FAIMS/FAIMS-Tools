@@ -142,4 +142,4 @@ util.schema.annotateWithXmlTypes(tree)
 ################################################################################
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #
 ################################################################################
-print moduleToString(tree)
+print moduleToString(tree),

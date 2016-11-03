@@ -13,8 +13,10 @@
 
 Object dialog;          // Used to help coordinate the display of a "busy..." dialog
 String parentTabgroup;  // Used to allow entities to be saved as children
+String parentTabgroup__;// Used to allow entities to be saved as children
 String redirectTab;     // makes newTab work as expected
 String username = "";
+String userid   = "";
 
 setFileSyncEnabled(true);
 setSyncDelay(5.0f);
@@ -22,7 +24,22 @@ setSyncEnabled(true);
 setSyncMaxInterval(600.0f);
 setSyncMinInterval(5.0f);
 
-makeLocalID(){
+/*********************** REGEX-FREE STRING REPLACEMENT ************************/
+String replaceFirst(String haystack, String needle, String replacement) {
+  i = haystack.indexOf(needle);
+  if (i == -1)           return haystack;
+  if (needle.equals("")) return haystack;
+  pre  = haystack.substring(0, i                                   );
+  post = haystack.substring(   i+needle.length(), haystack.length());
+  return pre + replacement + post;
+}
+
+String replaceFirst(String haystack, String replacement) {
+  return replaceFirst(haystack, "%s", replacement);
+}
+
+/******************************* LOCALSETTINGS ********************************/
+void makeLocalID(){
   fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);", null);
   fetchOne("DROP VIEW IF EXISTS parentchild;", null);
   fetchOne("CREATE VIEW parentchild AS "+
@@ -41,15 +58,36 @@ makeLocalID(){
 }
 makeLocalID();
 
-insertIntoLocalSettings(String key, String val) {
+void insertIntoLocalSettings(String ref) {
+  String val = getFieldValue(ref);
+  insertIntoLocalSettings(ref, val);
+}
+
+void insertIntoLocalSettings(String key, String val) {
   fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
 }
 
-insertIntoLocalSettings(String key, Integer val) {
+void insertIntoLocalSettings(String key, Integer val) {
   insertIntoLocalSettings(key, Integer.toString(val));
 }
 
-setFieldValueFromLocalSettings(String key, String ref) {
+void insertIntoLocalSettingsOnChange(String ref) {
+  String val = getFieldValue(ref);
+
+  String insertCallback  = "";
+  insertCallback += "insertIntoLocalSettings(\"{key}\")";
+  insertCallback  = replaceFirst(insertCallback, "{key}", ref);
+
+  addOnEvent(ref, "blur",  insertCallback);
+  addOnEvent(ref, "click", insertCallback);
+}
+
+void setFieldValueFromLocalSettings(String key, String ref, boolean doOverwrite) {
+  String val = getFieldValue(ref);
+  if (!isNull(val) &amp;&amp; !doOverwrite) {
+    return;
+  }
+
   String q = "SELECT value FROM localSettings WHERE key = '" + key + "';";
   fetchOne(q, new FetchCallback() {
     onFetch(result) {
@@ -58,6 +96,128 @@ setFieldValueFromLocalSettings(String key, String ref) {
       }
     }
   });
+}
+
+void setFieldValueFromLocalSettings(String ref, boolean doOverwrite) {
+  setFieldValueFromLocalSettings(ref, ref, doOverwrite);
+}
+
+void setFieldValueFromLocalSettings(String ref) {
+  setFieldValueFromLocalSettings(ref, false);
+}
+
+void setFieldValueFromLocalSettingsOnShow(String ref, boolean doOverwrite) {
+  String cb = "setFieldValueFromLocalSettings(\"%s\", %s)";
+  cb = replaceFirst(cb, ref);
+  cb = replaceFirst(cb, doOverwrite + "");
+
+  addOnEvent(ref, "show", cb);
+}
+
+void setFieldValueFromLocalSettingsOnShow(String ref) {
+  boolean doOverwrite = false;
+  setFieldValueFromLocalSettingsOnShow(ref, doOverwrite);
+}
+
+/* Causes the value of the field given by `ref` to be saved each time it is
+ * modified (on blur). The value of the field is restored when the tab group
+ * containing the field is displayed.
+ *
+ * This function depends on `addOnEvent`. Therefore this function must be called
+ * after `addOnEvent` is defined, but before `bindOnEvents` is called. This will
+ * be so if the call is made in the autogenerator's `logic` tags.
+ */
+void persistOverSessions(String ref) {
+  setFieldValueFromLocalSettingsOnShow(ref);
+  insertIntoLocalSettingsOnChange     (ref);
+}
+
+/*************************** FIELD COPYING HELPERS ****************************/
+/* Provides an easy way to copy field values, even between vocabs.            */
+/******************************************************************************/
+void copyFieldValue(String src, String dst) {
+  Boolean doFindVocabId = true;
+  copyFieldValue(src, dst, doFindVocabId);
+}
+
+/* `src`           The ref of the source field.
+ * `dst`           The ref of the destination field.
+ * `doFindVocabId` If this is true, and the properties/attributes of `src` and
+ *                 `dst` are different, `copyFieldValue` treats `src` and `dst`
+ *                 as if they were menus. Therefore, to copy the value seen by
+ *                 the user (i.e. the vocabName of `src`), a database query is
+ *                 performed. The query determines the which vocabId of `dst`
+ *                 will make it display the same vocabName as `src`.
+ *
+ *                 If `doFindVocabId` is false, the value returned by
+ *                 `getFieldValue` is copied, without any database accesses.
+ */
+void copyFieldValue(String src, String dst, Boolean doFindVocabId) {
+  String vocabIdSrc   = getFieldValue(src);
+  String vocabNameSrc = getFieldValue(src, true);
+
+  String attrNameSrc = getAttributeName(src);
+  String attrNameDst = getAttributeName(dst);
+
+  if (attrNameSrc.equals(attrNameDst) || !doFindVocabId) {
+    setFieldValue(dst, vocabIdSrc);
+    return;
+  }
+
+  String q = "";
+  q += "    SELECT vocabid";
+  q += "      FROM vocabulary";
+  q += " LEFT JOIN attributekey";
+  q += "     USING (attributeid)";
+  q += "     WHERE attributename = '{attrNameDst}'";
+  q += "       AND vocabname     = '{vocabNameSrc}'";
+  q  = replaceFirst(q, "{attrNameDst}",  attrNameDst);
+  q  = replaceFirst(q, "{vocabNameSrc}", vocabNameSrc);
+
+
+  FetchCallback populate = new FetchCallback() {
+    onFetch(result) {
+      if (result == null) {
+        // Fall back to dumb field copying
+        copyFieldValue(src, dst, false);
+      }
+
+      String vocabIdDst = result.get(0);
+      setFieldValue(dst, vocabIdDst);
+    }
+  };
+
+  fetchOne(q, populate);
+}
+
+void inheritFieldValue(
+    String src,
+    String dst,
+    boolean doCheckParent,
+    boolean doFindVocabId
+) {
+  String fun = "";
+  fun += "if (!{check} || getDisplayedTabGroup().equals(\"{parent}\"))";
+  fun += "  copyFieldValue(\"{src}\", \"{dst}\", {find})";
+
+  fun = replaceFirst(fun, "{check}",  doCheckParent + "");
+  fun = replaceFirst(fun, "{parent}", getTabGroupRef(src));
+  fun = replaceFirst(fun, "{src}",    src);
+  fun = replaceFirst(fun, "{dst}",    dst);
+  fun = replaceFirst(fun, "{find}",   doFindVocabId + "");
+
+  addOnEvent(getTabGroupRef(dst), "create", fun);
+}
+
+/* If `doCheckParent`, then the value at `src` will only be inherited to `dst`
+ * if `getTabGroupRef(src)` was the previously displayed tab group.
+ */
+void inheritFieldValue(String src, String dst, boolean doCheckParent) {
+  inheritFieldValue(src, dst, doCheckParent, false);
+}
+
+void inheritFieldValue(String src, String dst) {
+  inheritFieldValue(src, dst, true);
 }
 
 newTab(String tab, Boolean resolveTabGroups) {
@@ -79,8 +239,6 @@ newTab(String tab, Boolean resolveTabGroups) {
       String tabgroupString = path[0];
       String tabString      = path[0] + "/" + path[1];
 
-      showWarning(tabString, tabString);
-
       redirectTab = tabString;
       String onShowTabgroup = "if (!isNull(redirectTab)) { newTab(redirectTab); redirectTab = \"\"; }";
       addOnEvent(tabgroupString, "show", onShowTabgroup);
@@ -93,50 +251,263 @@ newTab(String tab, Boolean resolveTabGroups) {
 }
 
 /******************************************************************************/
+/*                           DOCUMENT OBJECT MODEL                            */
+/******************************************************************************/
+String PREVIOUSLY_DISPLAYED_TAB_GROUP = "";
+String CURRENTLY_DISPLAYED_TAB_GROUP  = "";
+
+List getTabGroups() {
+  List tabGroups = new ArrayList();
+</xsl:text>
+  <xsl:for-each select="/module/*[
+    not(name() = 'logic') and
+    not(name() = 'rels') and
+    not(ancestor-or-self::*[contains(@f, 'noui')])
+    ]">
+    <xsl:text>  tabGroups.add("</xsl:text>
+    <xsl:value-of select="name()" />
+    <xsl:text>");</xsl:text>
+    <xsl:value-of select="$newline" />
+  </xsl:for-each>
+  <xsl:text>
+  return tabGroups;
+}
+
+void updateDisplayedTabGroup(String tabGroup) {
+  PREVIOUSLY_DISPLAYED_TAB_GROUP = CURRENTLY_DISPLAYED_TAB_GROUP;
+  CURRENTLY_DISPLAYED_TAB_GROUP  = tabGroup;
+}
+
+String getPreviousTabGroup() {
+  return getPreviouslyDisplayedTabGroup();
+}
+
+String getPreviouslyDisplayedTabGroup() {
+  return PREVIOUSLY_DISPLAYED_TAB_GROUP;
+}
+
+String getDisplayedTabGroup() {
+  return CURRENTLY_DISPLAYED_TAB_GROUP;
+}
+
+boolean isDisplayed(String ref) {
+  return getDisplayedTabGroup().equals(ref);
+}
+
+String getTabGroupRef(String fullRef) {
+  Boolean lastPartOnly = false;
+  return getTabGroupRef(fullRef, lastPartOnly);
+}
+
+String getTabGroupRef(String fullRef, Boolean lastPartOnly) {
+  if (isNull(fullRef)) {
+    return null;
+  }
+
+  String[] parts = fullRef.split("/");
+
+  if (parts.length &lt; 1) return null;
+  return parts[0];
+}
+
+String getTabRef(String fullRef) {
+  Boolean lastPartOnly = false;
+  return getTabRef(fullRef, lastPartOnly);
+}
+
+String getTabRef(String fullRef, Boolean lastPartOnly) {
+  if (isNull(fullRef)) {
+    return null;
+  }
+
+  String[] parts = fullRef.split("/");
+
+  if (parts.length &lt; 2) return null;
+  if (lastPartOnly) return                  parts[1];
+  else              return parts[0] + "/" + parts[1];
+}
+
+String getLastRefPart(String fullRef) {
+  if (isNull(fullRef)) {
+    return null;
+  }
+
+  String[] parts = fullRef.split("/");
+  return parts[parts.length-1];
+}
+
+String getGuiElementRef(String fullRef) {
+  Boolean lastPartOnly = true;
+  return getGuiElementRef(fullRef, lastPartOnly);
+}
+
+String getGuiElementRef(String fullRef, Boolean lastPartOnly) {
+  if (isNull(fullRef)) {
+    return null;
+  }
+
+  String[] parts = fullRef.split("/");
+
+  if (parts.length &lt; 3) return null;
+  if (lastPartOnly) return parts[2];
+  else              return fullRef;
+}
+
+String getArch16nKey(String ref) {
+  String lastRefPart = getLastRefPart(ref);
+
+  if (isNull(lastRefPart)) return null;
+  else                     return "{" + lastRefPart + "}";
+}
+
+String guessArch16nVal(String ref) {
+  String arch16nKey = getArch16nKey(ref);
+
+  if (isNull(arch16nKey)) return "";
+  arch16nKey = arch16nKey.replaceAll("_", " ");
+  arch16nKey = arch16nKey.replaceAll("^\\{", "");
+  arch16nKey = arch16nKey.replaceAll("\\}$", "");
+  return arch16nKey;
+}
+
+String getAttributeName(String ref) {
+  String guiElementRef = getGuiElementRef(ref);
+  if (isNull(guiElementRef)) {
+    return null;
+  }
+
+  String attributeName = guiElementRef.replaceAll("_", " ");
+  return attributeName;
+}
+
+String getArchEntType(String ref) {
+  String tabGroupRef = getTabGroupRef(ref);
+  if (isNull(tabGroupRef)) {
+    return null;
+  }
+
+  String archEntType = tabGroupRef.replaceAll("_", " ");
+  return archEntType;
+}
+
+String getArchEntTypePascalCased(String ref) {
+  String archEntType = getArchEntType(ref);
+  if (archEntType == null) {
+    return archEntType;
+  }
+
+  return archEntType.replaceAll(" ", "");
+}
+
+/******************************************************************************/
 /*                            BINDING ACCUMULATOR                             */
 /*                                                                            */
-/* Allows onEvent bindings for the same element to accumulate over multiple   */
-/* onEvent calls instead of having later calls override earlier ones.         */
+/* The binding accumulator allows onEvent bindings for the same element to    */
+/* accumulate over multiple onEvent calls instead of having later calls       */
+/* override earlier ones.                                                     */
+/*                                                                            */
+/* It also adds support for a several additional events:                      */
+/*   - "blur" --- This is merely an interface to make code for adding "blur"  */
+/*         events more consistent.                                            */
+/*   - "copy" --- Triggered as a record is duplicated, immediately before it  */
+/*         is first saved.                                                    */
+/*   - "create" --- Triggered after a record is first created.                */
+/*   - "delete" --- Triggered after a record is deleted.                      */
+/*   - "fetch" --- Triggered after a record is fetched and displayed in a     */
+/*         given tab group.                                                   */
+/*   - "focus" --- This is merely an interface to make code for adding        */
+/*         "focus" events more consistent.                                    */
+/*   - "leave" --- Triggered after a given tab group is navigated away        */
+/*         from. Note that this event cannot be triggered when the FAIMS app  */
+/*         is exited.                                                         */
+/*   - "save" --- Triggered each time a tab group is saved. This includes the */
+/*         first time the tab group is saved as well as subsequent            */
+/*         onSave(String, Boolean) calls.                                     */
+/*                                                                            */
+/* A single call to `bindOnEvents` must occur after all the `addOnEvent` and  */
+/* `delOnEvents` calls. Calling `bindOnEvents` is what actually establishes   */
+/* the bindings once they have been added to the accumulator.                 */
 /******************************************************************************/
-Map events = new HashMap();
-String SEP = Character.toString ((char) 0); // Beanshell is stupid and won't let me write "\0"
+String SEP = Character.toString ((char) 0); // Beanshell won't let me write "\0"
+Map    EVENTS        = new HashMap(); // (ref, event type) -> callback statement
+Set    CUSTOM_EVENTS = new HashSet(); // Events not handled by `onEvent`
+CUSTOM_EVENTS.add("blur");
+CUSTOM_EVENTS.add("copy");
+CUSTOM_EVENTS.add("create");
+CUSTOM_EVENTS.add("delete");
+CUSTOM_EVENTS.add("fetch");
+CUSTOM_EVENTS.add("focus");
+CUSTOM_EVENTS.add("leave");
+CUSTOM_EVENTS.add("save");
+
+String getKey(String ref, String event) {
+  return ref + SEP + event;
+}
 
 /* Returns the set of statements bound to an element at `ref` and occuring on
  * `event`.
  */
-getStatements(String ref, String event) {
-  String    key = ref + SEP + event;
-  ArrayList val = (ArrayList) events.get(key);
-  if (val == null) {
-    val = new ArrayList();
-    events.put(key, val);
-  }
-  return val;
+ArrayList getStatements(String ref, String event) {
+  String    key = getKey(ref, event);
+  ArrayList val = (ArrayList) EVENTS.get(key);
+
+  if (val == null) return new ArrayList();
+  else             return val;
 }
 
-addOnEvent(String ref, String event, String statement) {
-  // Calling `remove()` first ensures statement occurs once in the list, at the end.
-  while(getStatements(ref, event).remove(statement));
-  getStatements(ref, event).add(statement);
+void addStatement(String ref, String event, String statement) {
+  // In the case that a statement already exists for a given (`ref`, `event`)
+  // pair, writing `val.add(statement);` will be enough to add the extra
+  // statement. This is because `getStatements` returns a reference to a list.
+  // In the case just described, the list is stored in the `EVENTS` map.
+  // However, sometimes `getStatements` returns empty lists which are not stored
+  // in that map. In this case, calling `EVENTS.put` is required.
+
+  String    key = getKey(ref, event);
+  ArrayList val = getStatements(ref, event);
+  val.add(statement);
+  EVENTS.put(key, val);
 }
 
-delOnEvent(String ref, String event, String statement) {
-  while(getStatements(ref, event).remove(statement));
-}
-
-bindOnEvent(String ref, String event) {
+String getStatementsString(String ref, String event) {
   ArrayList stmts = getStatements(ref, event);
-  String stmtsExpr = "";
+  String stmtsStr = "";
   for (String s : stmts) {
-    stmtsExpr += s;
-    stmtsExpr += "; ";
+    stmtsStr += s;
+    stmtsStr += "; ";
   }
-
-  onEvent(ref, event, stmtsExpr);
+  return stmtsStr;
 }
 
-bindOnEvents() {
-  for (String key : events.keySet()) {
+void delOnEvent(String ref, String event, String statement) {
+  while(getStatements(ref, event).remove(statement));
+}
+
+void addOnEvent(String ref, String event, String statement) {
+  // Calling `delOnEvent()` first ensures statement occurs once in the list, at
+  // the end.
+  delOnEvent  (ref, event, statement);
+  addStatement(ref, event, statement);
+}
+
+void bindOnEvent(String ref, String event) {
+  String stmtsStr     = getStatementsString(ref, event);
+  String focusStmtStr = getStatementsString(ref, "focus");
+  String blurStmtStr  = getStatementsString(ref, "blur" );
+
+  if (!CUSTOM_EVENTS.contains(event)) {
+    onEvent(ref, event, stmtsStr);
+  } else if (event.equals("focus")) {
+    onFocus(ref, focusStmtStr, blurStmtStr);
+  } else if (event.equals("blur" )) {
+    onFocus(ref, focusStmtStr, blurStmtStr);
+  } else {
+    ; // Other events are implemented using auto-generated callback functions
+  }
+}
+
+void bindOnEvents() {
+  for (String key : EVENTS.keySet()) {
     refevent = key.split(SEP);
     ref   = refevent[0];
     event = refevent[1];
@@ -144,34 +515,122 @@ bindOnEvents() {
   }
 }
 
+void onLeaveTabGroup() {
+  onLeaveTabGroup(getPreviouslyDisplayedTabGroup());
+}
+
+/* Execute the "leave" event for the tab group at `ref` if a callback for it
+ * exists.
+ */
+void onLeaveTabGroup(String ref) {
+  String event    = "leave";
+  String stmtsStr = getStatementsString(ref, event);
+  execute(stmtsStr);
+}
+
+/* Establishes `onEvent` bindings necessary to make the "leave" event work. The
+ * "leave" event is really triggered upon "show" of another tab.
+ */
+for (tg : getTabGroups()) {
+  String ref      = tg;
+  String event    = "show";
+  String callback;
+
+  // Update (previously) displayed tab group
+  callback = "updateDisplayedTabGroup(\"%s\")";
+  callback = replaceFirst(callback, tg);
+  addOnEvent(tg, event, callback);
+
+  // Trigger on leave tab group event
+  callback = "onLeaveTabGroup()";
+  addOnEvent(tg, event, callback);
+}
+
 /******************************************************************************/
 /*                           DROPDOWN VALUE GETTER                            */
 /*                                                                            */
 /* For consistency with `getListItemValue()`.                                 */
 /******************************************************************************/
-String dropdownItemValue = null;
+String DROPDOWN_ITEM_VALUE = null;
 
-getDropdownItemValue() {
-  return dropdownItemValue;
+String getDropdownItemValue() {
+  return DROPDOWN_ITEM_VALUE;
 }
 
 </xsl:text>
     <xsl:for-each select="//*[
-        normalize-space(@t) = 'dropdown' or
         (
+          normalize-space(@t) = 'dropdown' or
           not(@t) and
-          ./opts and not(.//@p) and
-          not(ancestor-or-self::*[contains(@f, 'noui')])
-        )
+          ./opts  and not(.//@p)
+        ) and
+        not(ancestor-or-self::*[contains(@f, 'noui')])
       ]">
       <xsl:text>addOnEvent("</xsl:text>
       <xsl:call-template name="ref" />
-      <xsl:text>", "click", "dropdownItemValue = getFieldValue(\"</xsl:text>
+      <xsl:text>", "click", "DROPDOWN_ITEM_VALUE = getFieldValue(\"</xsl:text>
       <xsl:call-template name="ref" />
       <xsl:text>\")");</xsl:text>
       <xsl:value-of select="$newline" />
     </xsl:for-each>
 <xsl:text>
+/******************************************************************************/
+/*                             MENU VALUE GETTER                              */
+/*                                                                            */
+/* Provides simple ways of getting a menu's vocabname as opposed to the       */
+/* default, which is the vocabid.                                             */
+/******************************************************************************/
+// Map from vocabid to vocabname. Populated by `fetchMenuValues()`.
+Map MENU_VALUES = null;
+
+/*
+ * Initialises `MENU_VALUES` with the (vocabid -> vocabname) mapping of every
+ * menu.
+ */
+void fetchMenuValues() {
+  MENU_VALUES = new HashMap();
+
+  String q = "";
+  q += " SELECT vocabid, vocabname";
+  q += " FROM   vocabulary";
+
+  populateHashMap = new FetchCallback() {
+    onFetch(result) {
+      for (row : result) {
+        vocabId   = row.get(0);
+        vocabName = row.get(1);
+        MENU_VALUES.put(vocabId, vocabName);
+      }
+    }
+  };
+
+  fetchAll(q, populateHashMap);
+}
+
+fetchMenuValues();
+
+/* Returns a menu's vocabname, instead of the (counter-intuitive) vocabid.
+ */
+String getFieldValue(String ref, Boolean doConvertVocabIds) {
+  if (!doConvertVocabIds) {
+    return getFieldValue(ref);
+  }
+
+  String val       = getFieldValue(ref);
+  String vocabName = MENU_VALUES.get(val);
+
+  if (val       == null) return "";
+  if (vocabName == null) return "";
+  return vocabName;
+}
+
+/* Shorthand for writing getFieldValue(ref, true). This function's use is
+ * discouraged in favour of writing `getFieldValue(ref, true)`.
+ */
+String getMenuValue(String ref) {
+  return getFieldValue(ref, true);
+}
+
 /******************************************************************************/
 /*                                 ACTION BAR                                 */
 /******************************************************************************/
@@ -275,7 +734,7 @@ addActionBarItem("external_gps", new ToggleActionButtonCallback() {
 </xsl:text>
 <xsl:call-template name="gps-diag-update" />
 <xsl:text>
-updateGPSDiagnostics() {
+void updateGPSDiagnostics() {
   String diagnosticsRef = "</xsl:text>
   <xsl:call-template name="gps-diag-ref" />
   <xsl:text>";</xsl:text>
@@ -298,7 +757,7 @@ updateGPSDiagnostics() {
       error = getFieldValue(diagnosticsRef);
 
       // check that error message wasn't previously appended to the previous status message.
-      if (previousStatus.length()    >= error.length() &amp;&amp;
+      if (previousStatus.length()    &gt;= error.length() &amp;&amp;
           previousStatus.subSequence(0, error.length()).equals(error)) {
         status = previousStatus;
       } else {
@@ -378,10 +837,10 @@ setUser(user);
 /*                              MENU POPULATION                               */
 /******************************************************************************/
 /** Fetches the contents of a specifed vocabulary and stores it in the given list. **/
-fetchVocab(String vocabName, List storageList) {
+void fetchVocab(String vocabName, List storageList) {
   fetchVocab(vocabName, storageList, null);
 }
-fetchVocab(String vocabName, List storageList, String callbackFunction) {
+void fetchVocab(String vocabName, List storageList, String callbackFunction) {
   fetchAll("select vocabid, vocabname from vocabulary left join attributekey using (attributeid) where attributename = '" + vocabName + "';", new FetchCallback() {
     onFetch(result) {
       storageList.addAll(result);
@@ -394,20 +853,20 @@ fetchVocab(String vocabName, List storageList, String callbackFunction) {
 }
 
 /** Wrapper for to make a vocab without an exlusion list **/
-makeVocab(String type, String path, String attrib) {
+void makeVocab(String type, String path, String attrib) {
   makeVocab(type, path, attrib, null);
 }
 
 /** Vocab Population **/
 /* Populates the path specified vocabulary from the database based on the given attribute name, where type 
 is the type of the vocab to populate (PictureGallery, HierarchicalPictureGallery, CheckBoxGroup, DropDown, HierarchicalDropDown, RadioGroup or List). */
-makeVocab(String type, String path, String attrib, List vocabExclusions) {
+void makeVocab(String type, String path, String attrib, List vocabExclusions) {
     makeVocab(type, path, attrib, vocabExclusions, null);
 }
 
 /* Populates the path specified vocabulary from the database based on the given attribute name, where type 
 is the type of the vocab to populate (PictureGallery, HierarchicalPictureGallery, CheckBoxGroup, DropDown, HierarchicalDropDown, RadioGroup or List). */
-makeVocab(String type, String path, String attrib, List vocabExclusions, String callbackFunction){
+void makeVocab(String type, String path, String attrib, List vocabExclusions, String callbackFunction){
   if (isNull(type) || isNull(path) || isNull(attrib)) {
     Log.e("makeVocab()", "Can't make populate a vocab when the given type, path or attribute is Null");
     return;
@@ -467,12 +926,16 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
           }
           result=filteredVocab;
         }
+        Boolean hasNull =
+                vocabExclusions == null
+            || !vocabExclusions.contains("")
+            &amp;&amp; !vocabExclusions.contains(null);
         // print("makeVocab() filtered result: " + result);
         if(type.equals("CheckBoxGroup")) {
           populateCheckBoxGroup(path, result);
         } else if(type.equals("DropDown")) {
           // populateDropDown(path, result);
-          populateDropDown(path, result, true);
+          populateDropDown(path, result, hasNull);
         } else if(type.equals("RadioGroup")) {
           populateRadioGroup(path, result);
         } else if(type.equals("List")) {
@@ -546,7 +1009,7 @@ makeVocab(String type, String path, String attrib, List vocabExclusions, String 
  *
  *  Returns a field pair (really just an ArrayList).
  */
-fieldPair(String ref, String name, String cond) {
+List fieldPair(String ref, String name, String cond) {
   List fp = new ArrayList();
   fp.add(ref);
   fp.add(name);
@@ -554,19 +1017,19 @@ fieldPair(String ref, String name, String cond) {
   return fp;
 }
 
-fieldPair(String ref, String name) {
+List fieldPair(String ref, String name) {
   String t = "true";
   return fieldPair(ref, name, t);
 }
 
 /* Returns true if field specified by `ref` is valid. False otherwise.
  */
-isValidField(String ref) {
+boolean isValidField(String ref) {
   return !isNull(getFieldValue(ref));
 }
 /* `format` can either be HTML or PLAINTEXT
  */
-validateFields(List fields, String format) {
+String validateFields(List fields, String format) {
   Integer numInvalid = 0;
 
   /* Build validation message string (and count how many invalid fields exist) */
@@ -603,7 +1066,7 @@ validateFields(List fields, String format) {
 
 </xsl:text>
     <xsl:for-each select="/module/*[.//*[contains(@f, 'notnull')]]">
-      <xsl:text>validate</xsl:text>
+      <xsl:text>void validate</xsl:text>
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text" select="name()" />
         <xsl:with-param name="replace" select="'_'" />
@@ -639,48 +1102,56 @@ validateFields(List fields, String format) {
 /******************************************************************************/
 /*                                 AUTOSAVING                                 */
 /******************************************************************************/
-Map tabgroupToUuid = new HashMap();
+Map tabgroupToUuid = Collections.synchronizedMap(new HashMap());
 
-getUuid(String tabgroup) {
-  tabgroupToUuid.get(tabgroup);
+String getUuid(String tabgroup) {
+  return tabgroupToUuid.get(tabgroup);
 }
 
-setUuid(String tabgroup, String uuid) {
+void setUuid(String tabgroup, String uuid) {
   tabgroupToUuid.put(tabgroup, uuid);
 }
 
-saveTabGroup(String tabgroup) {
+void saveTabGroup(String tabgroup) {
   saveTabGroup(tabgroup, "");
 }
 
-saveTabGroup(String tabgroup, String callback) {
-  Boolean enableAutosave  = true;
-  String  id              = getUuid(tabgroup);
-  List    geometry        = null;
-  List    attributes      = null;
-  String  parentTabgroup_ = parentTabgroup;
-  Boolean userWasSet      = !username.equals("");
+void saveTabGroup(String tabgroup, String callback) {
+  Boolean enableAutosave      = true;
+  String  id                  = getUuid(tabgroup);
+  List    geometry            = null;
+  List    attributes          = null;
+  String  parentTabgroup_     = parentTabgroup;
+  String  parentTabgroupUuid_ = getUuid(parentTabgroup_);
+  Boolean userWasSet          = !username.equals("");
+
+  callback += "; onSave" + getArchEntTypePascalCased(tabgroup) + "__()";
 
   parentTabgroup = null;
+
   SaveCallback saveCallback  = new SaveCallback() {
     onSave(uuid, newRecord) {
       setUuid(tabgroup, uuid);
-      populateAuthorAndTimestamp(tabgroup);
-
       // Make a child-parent relationship if need be.
-      if (newRecord &amp;&amp; !isNull(parentTabgroup_)) {
+      if (
+          newRecord &amp;&amp;
+          !isNull(parentTabgroup_) &amp;&amp;
+          !isNull(parentTabgroupUuid_)
+      ) {
         String rel = "";
         rel += parentTabgroup_.replaceAll("_", " ");
         rel += " - ";
         rel += tabgroup.replaceAll("_", " ");
         saveEntitiesToHierRel(
           rel,
-          getUuid(parentTabgroup_),
+          parentTabgroupUuid_,
           uuid,
           "Parent Of",
           "Child Of",
-          null
+          callback
         );
+      } else {
+        execute(callback);
       }
 
       // This fixes an interesting bug. Without this, if a user was not set
@@ -691,71 +1162,82 @@ saveTabGroup(String tabgroup, String callback) {
       // Adding this allows subsequent saves to succeed. Presumably it plays
       // some role in helping FAIMS associate the correct user with a record.
       if (!userWasSet) {
-        saveTabGroup(tabgroup);
+        saveTabGroup(tabgroup, callback);
       }
 
-      execute(callback);
     }
     onError(message) {
       showToast(message);
     }
   };
 
-  populateAuthorAndTimestamp(tabgroup);
   saveTabGroup(tabgroup, id, geometry, attributes, saveCallback, enableAutosave);
 }
 
-populateAuthorAndTimestamp(String tabgroup) {
+void setToTimestampNow(String ref) {
+  String now = getTimestampNow();
+  setFieldValue(ref, now);
+}
+
+String getTimestampNow() {
+  String fmt = "yyyy-MM-dd HH:mm:ssZ";
+  return getTimestampNow(fmt);
+}
+
+String getTimestampNow(String fmt) {
+  date    = new Date();
+  dateFmt = new java.text.SimpleDateFormat(fmt);
+  dateStr = dateFmt.format(date);
+
+  // Insert colon into timezone (e.g. +1000 -> +10:00)
+  String left; String right;
+
+  left    = dateStr.substring(0, dateStr.length() - 2);
+  right   = dateStr.substring(   dateStr.length() - 2);
+  dateStr = left + ":" + right;
+
+  return dateStr;
+}
+
+void populateAuthorAndTimestamp(String tabgroup) {
   Map tabgroupToAuthor    = new HashMap();
   Map tabgroupToTimestamp = new HashMap();
 </xsl:text>
     <xsl:call-template name="populate-author" />
     <xsl:call-template name="populate-timestamp" />
 <xsl:text>
-  String uuid          = getUuid(tabgroup);
   String authorPath    = tabgroupToAuthor.get(tabgroup);
   String timestampPath = tabgroupToTimestamp.get(tabgroup);
-  if (isNull(uuid)) {
-    if (!isNull(authorPath))
-      setFieldValue(authorPath,    "Entity not yet saved");
-    if (!isNull(timestampPath))
-      setFieldValue(timestampPath, "Entity not yet saved");
-    return;
-  }
 
-  String q = "SELECT createdat, createdby " +
-             "  FROM createdmodifiedatby " +
-             " WHERE uuid = '" + uuid + "'";
-  FetchCallback callback = new FetchCallback() {
-    onFetch(result) {
-      if (!isNull(timestampPath))
-        setFieldValue(timestampPath, result.get(0));
-      if (!isNull(authorPath))
-        setFieldValue(authorPath,    result.get(1));
-    }
-  };
+  String authorVal    = username;
+  String timestampVal = getTimestampNow();
 
-  fetchOne(q, callback);
+  if (!isNull(authorPath))    setFieldValue(authorPath,    authorVal);
+  if (!isNull(timestampPath)) setFieldValue(timestampPath, timestampVal);
 }
 
 </xsl:text>
-<xsl:for-each select="/module/*[
-  not(name() = 'logic') and
-  not(name() = 'rels') and
-  not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])
-  ]">
-      <xsl:text>onShow</xsl:text>
-      <xsl:call-template name="string-replace-all">
-        <xsl:with-param name="text" select="name()" />
-        <xsl:with-param name="replace" select="'_'" />
-        <xsl:with-param name="by" select="''" />
-      </xsl:call-template>
+    <xsl:for-each select="/module/*[
+      not(name() = 'logic') and
+      not(name() = 'rels') and
+      not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])
+      ]">
+      <xsl:variable name="camelcase-tabgroup">
+        <xsl:call-template name="string-replace-all">
+          <xsl:with-param name="text" select="name()" />
+          <xsl:with-param name="replace" select="'_'" />
+          <xsl:with-param name="by" select="''" />
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:text>void onShow</xsl:text>
+      <xsl:value-of select="$camelcase-tabgroup"/>
 <xsl:text> () {
   // TODO: Add some things which should happen when this tabgroup is shown
   saveTabGroup("</xsl:text>
       <xsl:value-of select="name()" />
-<xsl:text>");
-}</xsl:text>
+      <xsl:text>");</xsl:text>
+      <xsl:value-of select="$newline" />
+      <xsl:text>}</xsl:text>
       <xsl:value-of select="$newline" />
     </xsl:for-each>
     <xsl:value-of select="$newline" />
@@ -787,7 +1269,7 @@ populateAuthorAndTimestamp(String tabgroup) {
     </xsl:for-each>
     <!-- Triggers/buttons which link to a tab or tabgroup -->
     <xsl:for-each select="//*[@l]">
-      <xsl:text>onClick</xsl:text>
+      <xsl:text>void onClick</xsl:text>
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text" select="name(ancestor::*[last()-1])" />
         <xsl:with-param name="replace" select="'_'" />
@@ -809,6 +1291,10 @@ populateAuthorAndTimestamp(String tabgroup) {
             (contains(@f, 'noui') or
              contains(@f, 'nodata'))
           ])">
+          <xsl:text>  parentTabgroup__ = "</xsl:text>
+          <xsl:value-of select="name(ancestor::*[last()-1])"/>
+          <xsl:text>";</xsl:text>
+          <xsl:value-of select="$newline" />
           <xsl:text>  new</xsl:text>
           <xsl:call-template name="string-replace-all">
             <xsl:with-param name="text" select="$link" />
@@ -832,7 +1318,7 @@ populateAuthorAndTimestamp(String tabgroup) {
       <xsl:value-of select="$newline" />
     </xsl:for-each>
     <xsl:for-each select="//*[@lc]">
-      <xsl:text>onClick</xsl:text>
+      <xsl:text>void onClick</xsl:text>
       <xsl:call-template name="string-replace-all">
         <xsl:with-param name="text" select="name(ancestor::*[last()-1])" />
         <xsl:with-param name="replace" select="'_'" />
@@ -866,7 +1352,9 @@ populateAuthorAndTimestamp(String tabgroup) {
           <xsl:value-of select="$newline" />
           <xsl:text>  }</xsl:text>
           <xsl:value-of select="$newline" />
-          <xsl:text>  parentTabgroup = tabgroup;</xsl:text>
+          <xsl:text>  parentTabgroup   = tabgroup;</xsl:text>
+          <xsl:value-of select="$newline" />
+          <xsl:text>  parentTabgroup__ = tabgroup;</xsl:text>
           <xsl:value-of select="$newline" />
           <xsl:text>  new</xsl:text>
           <xsl:call-template name="string-replace-all">
@@ -1006,14 +1494,14 @@ populateAuthorAndTimestamp(String tabgroup) {
 /******************************************************************************/
 /*                             NAVIGATION DRAWER                              */
 /******************************************************************************/
-removeNavigationButtons() {
+void removeNavigationButtons() {
   removeNavigationButton("new");
   removeNavigationButton("duplicate");
   removeNavigationButton("delete");
   removeNavigationButton("validate");
 }
 
-addNavigationButtons(String tabgroup) {
+void addNavigationButtons(String tabgroup) {
   removeNavigationButtons();
   List tabgroupsToValidate = new ArrayList();
 </xsl:text>
@@ -1024,11 +1512,11 @@ addNavigationButtons(String tabgroup) {
       "{New}";
     }
     actionOn() {
-      if(!isNull(getUuid(tabgroup))) {
-          newRecord(tabgroup);
-          showToast("{New_record_created}");
+      if(isNull(getUuid(tabgroup))) {
+        showAlert("{Warning}", "{The_current_record_has_not_been_saved_yet}", "newRecord(\""+tabgroup+"\", true)", "");
       } else {
-          showAlert("{Warning}", "{Any_unsaved_changes_will_be_lost}", "newRecord(\""+tabgroup+"\")", "");
+        newRecord(tabgroup, true);
+        showToast("{New_record_created}");
       }
     }
   }, "success");
@@ -1038,9 +1526,9 @@ addNavigationButtons(String tabgroup) {
     }
     actionOn() {
       if(!isNull(getUuid(tabgroup))) {
-          duplicateRecord(tabgroup);
+        duplicateRecord(tabgroup);
       } else {
-          showWarning("{Warning}", "{This_record_is_unsaved_and_cannot_be_duplicated}");
+        showWarning("{Warning}", "{This_record_is_unsaved_and_cannot_be_duplicated}");
       }
     }
   }, "primary");
@@ -1069,20 +1557,20 @@ addNavigationButtons(String tabgroup) {
 /*        ENTITY AND RELATIONSHIP SAVING AND LOADING HELPER FUNCTIONS         */
 /******************************************************************************/
 /** Saves two entity id's as a relation. **/
-saveEntitiesToRel(String type, String entity1, String entity2) {
+void saveEntitiesToRel(String type, String entity1, String entity2) {
   String callback = null;
   saveEntitiesToRel(type, entity1, entity2, callback);
 }
 
 /** Saves two entity id's as a relation with some callback executed. **/
-saveEntitiesToRel(String type, String entity1, String entity2, String callback) {
+void saveEntitiesToRel(String type, String entity1, String entity2, String callback) {
   String e1verb = null;
   String e2verb = null;
   saveEntitiesToHierRel(type, entity1, entity2, e1verb, e2verb, callback);
 }
 
 /** Saves two entity id's as a hierachical relation with some callback executed. **/
-saveEntitiesToHierRel(String type, String entity1, String entity2, String e1verb, String e2verb, String callback) {
+void saveEntitiesToHierRel(String type, String entity1, String entity2, String e1verb, String e2verb, String callback) {
   if (isNull(entity1) || isNull(entity2)) return;
   saveRel(null, type, null, null, new SaveCallback() {
     onSave(rel_id, newRecord) {
@@ -1100,8 +1588,34 @@ saveEntitiesToHierRel(String type, String entity1, String entity2, String e1verb
 }
 
 // Makes a new record of the given tabgroup
-newRecord(String tabgroup) {
-  cancelTabGroup(tabgroup, false);
+void newRecord(String tabgroup) {
+  boolean doUpdateRelVars = false;
+  newRecord(tabgroup, doUpdateRelVars);
+}
+
+void newRecord(String tabgroup, boolean doUpdateRelVars) {
+  if (doUpdateRelVars) {
+    String uuidOld = getUuid(getDisplayedTabGroup());
+    String q       = getDuplicateRelnQuery(uuidOld); // We're not duplicating
+                                                     // anything, just getting
+                                                     // the parent's UUID.
+
+    cancelTabGroup(tabgroup, false);
+
+    FetchCallback updateRelVars = new FetchCallback() {
+      onFetch(result) {
+        if (result != null &amp;&amp; result.size() &gt;= 1) {
+          parentTabgroup   = result.get(0).get(4);
+          parentTabgroup   = parentTabgroup.replaceAll(" ", "_");
+          parentTabgroup__ = parentTabgroup;
+        }
+
+        newRecord(tabgroup, false);
+      }
+    };
+    fetchAll(q, updateRelVars);
+    return;
+  }
 
   String newTabGroupFunction = "new" + tabgroup.replaceAll("_", "") + "()"; // Typical value: "newTabgroup()"
   eval(newTabGroupFunction);
@@ -1110,7 +1624,7 @@ newRecord(String tabgroup) {
 }
 
 // Deletes the current record of the given tabgroup
-deleteRecord(String tabgroup) {
+void deleteRecord(String tabgroup) {
   String deleteTabGroupFunction = "delete" + tabgroup.replaceAll("_", "") + "()"; // Typical value: "deleteTabgroup()"
   eval(deleteTabGroupFunction);
 
@@ -1118,7 +1632,7 @@ deleteRecord(String tabgroup) {
 }
 
 // Duplicates the current record of the given tabgroup
-duplicateRecord(String tabgroup) {
+void duplicateRecord(String tabgroup) {
   dialog = showBusy("Duplicating", "Please wait...");
 
   String duplicateTabGroupFunction = "duplicate" + tabgroup.replaceAll("_", "") + "()"; // Typical value: "duplicateTabgroup()"
@@ -1128,7 +1642,7 @@ duplicateRecord(String tabgroup) {
 }
 
 // generic fetch saved attributes query
-getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
+String getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
   if (attributesToDupe.equals("")) {
     attributesToDupe = "''";
   }
@@ -1139,8 +1653,8 @@ getDuplicateAttributeQuery(String originalRecordID, String attributesToDupe) {
   return duplicateQuery;
 }
 
-getDuplicateRelnQuery(String originalRecordID) {
-  String dupeRelnQuery = "SELECT relntypename, parentparticipatesverb, childparticipatesverb, parentuuid "+
+String getDuplicateRelnQuery(String originalRecordID) {
+  String dupeRelnQuery = "SELECT relntypename, parentparticipatesverb, childparticipatesverb, parentuuid, parentaenttypename, childaenttypename"+
                          "  FROM parentchild join relationship using (relationshipid) "+
                          "  JOIN relntype using (relntypeid) "+
                          " WHERE childuuid = '"+originalRecordID+"' " +
@@ -1148,21 +1662,30 @@ getDuplicateRelnQuery(String originalRecordID) {
   return dupeRelnQuery;
 }
 
-makeDuplicateRelationships(fetchedAttributes, String newuuid){
+void makeDuplicateRelationships(fetchedAttributes, String newUuid){
   Log.e("Module", "makeDuplicateRelationships");
   for (savedAttribute : fetchedAttributes){
-    //  saveEntitiesToHierRel(relnname, parent, child, parentverb, childverb, relSaveCallback);
-    //relntypename, parentparticipatesverb, childparticipatesverb, childuuid
     String relntypename           = savedAttribute.get(0);
     String parentparticipatesverb = savedAttribute.get(1);
     String childparticipatesverb  = savedAttribute.get(2);
-    String childuuid              = savedAttribute.get(3);
-    saveEntitiesToHierRel(relntypename, newuuid, childuuid, parentparticipatesverb, childparticipatesverb, null);
+    String parentUuid             = savedAttribute.get(3);
+    String childArchEntType       = savedAttribute.get(5);
+
+    String onSaveRel              = "onSave" + childArchEntType.replaceAll(" ", "") + "__()";
+
+    saveEntitiesToHierRel(
+        relntypename,
+        parentUuid,
+        newUuid,
+        parentparticipatesverb,
+        childparticipatesverb,
+        onSaveRel
+    );
   }
 }
 
 // generic get extra attributes
-getExtraAttributes(fetchedAttributes) {
+List getExtraAttributes(fetchedAttributes) {
   List extraAttributes = createAttributeList();
   Log.d("Module", "Duplicating fetched attributes: " + fetchedAttributes.toString());
   for (savedAttribute : fetchedAttributes) {
@@ -1179,10 +1702,10 @@ getExtraAttributes(fetchedAttributes) {
   return extraAttributes;
 }
 
-loadEntity() {
+void loadEntity() {
   loadEntity(false);
 }
-loadEntity(Boolean isDropdown) {
+void loadEntity(Boolean isDropdown) {
   if (isDropdown) {
     loadEntityFrom(getDropdownItemValue());
   } else {
@@ -1190,7 +1713,7 @@ loadEntity(Boolean isDropdown) {
   }
 }
 
-loadEntityFrom(String entityID) {
+void loadEntityFrom(String entityID) {
   if (isNull(entityID)) {
     Log.e("Module", "Cannot load an entity with a null ID.");
     return;
@@ -1217,12 +1740,17 @@ loadEntityFrom(String entityID) {
   not(ancestor-or-self::*[contains(@f, 'nodata') or contains(@f, 'noui')])
   ]">
       <xsl:call-template name="tabgroup-new" />
+      <xsl:call-template name="tabgroup-oncreate" />
+      <xsl:call-template name="tabgroup-onfetch" />
+      <xsl:call-template name="tabgroup-onsave" />
+      <xsl:call-template name="tabgroup-oncopy" />
+      <xsl:call-template name="tabgroup-ondelete" />
       <xsl:call-template name="tabgroup-duplicate" />
       <xsl:call-template name="tabgroup-delete" />
       <xsl:call-template name="tabgroup-really-delete" />
     </xsl:for-each>
 <xsl:text>
-doNotDelete(){
+void doNotDelete(){
   showToast("{Delete_Cancelled}");
 }
 </xsl:text>
@@ -1263,11 +1791,11 @@ addOnEvent("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:te
 </xsl:text>
       <xsl:call-template name="search-entities" />
       <xsl:text>
-clearSearch(){
+void clearSearch(){
   setFieldValue("</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>/Search/Search_Term","");
 }
 
-search(){
+void search(){
   String tabgroup = "</xsl:text><xsl:value-of select="name(/module/*[./search])"/><xsl:text>";
   String refEntityList  = tabgroup + "/Search/Entity_List";
   String refSearchTerm  = tabgroup + "/Search/Search_Term";
@@ -1306,24 +1834,30 @@ search(){
     </xsl:if>
 
     <!-- Take From GPS Button -->
-    <xsl:if test="/module/*/*/gps">
       <xsl:text>
 /******************************************************************************/
 /*                          TAKE FROM GPS BUTTON(S)                           */
 /******************************************************************************/
 </xsl:text>
+    <xsl:if test="/module/*/*/gps">
 <xsl:call-template name="take-from-gps-bindings"/>
 <xsl:text>
 /* Takes the current point using gps. */
-takePoint(String tabgroup) {
+void takePoint(String tabgroup) {
+</xsl:text>
+    <xsl:call-template name="take-from-gps-mappings"/>
+<xsl:text>
   String archEntType = tabgroup.replaceAll("_", " ");
   String currentUuid = getUuid(tabgroup);
   if (isNull(currentUuid)){
     showToast("Please enter data first and let a save occur.");
+    return;
   }
 
-  Object position = getGPSPosition();
-  if (position == null) {
+  boolean isInternalGPSOff = !isInternalGPSOn();
+  boolean isExternalGPSOff = !isExternalGPSOn();
+  Object  position = getGPSPosition();
+  if (position == null || isInternalGPSOff &amp;&amp; isExternalGPSOff) {
     showToast("{GPS_Not_Initialised}");
     return;
   }
@@ -1338,10 +1872,10 @@ takePoint(String tabgroup) {
   ArrayList geolist = new ArrayList();
   geolist.add(samplePoint);
 
-  attributes = createAttributeList();
-  attributes.add(createEntityAttribute("Latitude", "Accuracy: "+getGPSEstimatedAccuracy(), null, null, null));
+  String accuracy = "" + getGPSEstimatedAccuracy();
+  setFieldValue(tabgroupToTabRef.get(tabgroup) + "Accuracy", accuracy);
 
-  saveArchEnt(currentUuid, archEntType, geolist, attributes, new SaveCallback() {
+  saveArchEnt(currentUuid, archEntType, geolist, null, new SaveCallback() {
     onSave(uuid, newRecord) {
       print("[takePoint()] Added geometry: " + geolist);
       fillInGPS(tabgroup);
@@ -1350,7 +1884,7 @@ takePoint(String tabgroup) {
 }
 
 /* Sets the value of GPS views for the given tab path. */
-fillInGPS(String tabgroup) {
+void fillInGPS(String tabgroup) {
 </xsl:text>
     <xsl:call-template name="take-from-gps-mappings"/>
 <xsl:text>
@@ -1378,6 +1912,26 @@ fillInGPS(String tabgroup) {
 }
 </xsl:text>
     </xsl:if>
+<xsl:text>
+void clearGpsInTabGroup(String tabgroup) {
+</xsl:text>
+    <xsl:call-template name="take-from-gps-mappings"/>
+<xsl:text>
+
+  String tabRef = tabgroupToTabRef.get(tabgroup);
+  if (isNull(tabRef)) return;
+
+  clearGpsInTab(tabRef);
+}
+
+void clearGpsInTab(String tabRef) {
+  setFieldValue(tabRef + "Accuracy"  , "");
+  setFieldValue(tabRef + "Latitude"  , "");
+  setFieldValue(tabRef + "Longitude" , "");
+  setFieldValue(tabRef + "Easting"   , "");
+  setFieldValue(tabRef + "Northing"  , "");
+}
+</xsl:text>
 
     <xsl:if test="//*[contains(@f, 'autonum')] and not(//autonum)">
       <xsl:text>// ERROR: field(s) flagged with 'autonum' but no autonum tag exists</xsl:text>
@@ -1393,7 +1947,7 @@ fillInGPS(String tabgroup) {
  *
  * Returns the value the field was updated to.
  */
-incField(String ref, Integer defaultVal) {
+Integer incField(String ref, Integer defaultVal) {
   String val = getFieldValue(ref);
 
   if (isNull(val)) {
@@ -1411,48 +1965,58 @@ incField(String ref, Integer defaultVal) {
 /* Increments the field at `ref` or returns null if it does not contain a
  * number.
  */
-incField(String ref) {
+Integer incField(String ref) {
   return incField(ref, 1);
 }
 
-addOnEvent("</xsl:text><xsl:call-template name="autonum-parent"/><xsl:text>", "show", "onShowAutonum()");
-
-/* This function should only be called once since it creates event handlers,
- * otherwise multiple copies of the same handler will trigger with the event.
- */
-onShowAutonum() {
+List getStartingIdPaths() {
   List l = new ArrayList();
 </xsl:text>
       <xsl:call-template name="control-starting-id-paths"/>
 <xsl:text>
+  return l;
+}
+
+void loadStartingId(String ref) {
+  // If there's already a value in the field, we don't need to load one.
+  String val = getFieldValue(ref);
+  if (!isNull(val)) {
+    return;
+  }
+
+  // Load a value into the field. Set it to 1 if no value has been previously
+  // saved.
+  String idQ = "SELECT value FROM localSettings WHERE key = '" + ref + "';";
+  fetchOne(idQ, new FetchCallback() {
+    onFetch(result) {
+      if (isNull(result)) setFieldValue(ref, "1"          );
+      else                setFieldValue(ref, result.get(0));
+    }
+  });
+}
+
+loadStartingIds() {
+  List l = getStartingIdPaths();
 
   for (ref : l) {
     loadStartingId(ref);
   }
-  for (ref : l) {
-    onFocus(ref, null,  "insertIntoLocalSettings(\"" + ref + "\", getFieldValue(\"" + ref + "\"));");
-  }
 }
 
-loadStartingId(String ref) {
-  String idQ = "SELECT value FROM localSettings WHERE key = '" + ref + "';";
-  fetchOne(idQ, new FetchCallback() {
-    onFetch(result) {
-      if (!isNull(result)) {
-        setFieldValue(ref, result.get(0));
-      } else {
-        setFieldValue(ref, "1");
-      }
-    }
-  });
+addOnEvent("</xsl:text><xsl:call-template name="autonum-parent"/><xsl:text>", "show", "loadStartingIds()");
+
+/*
+ * Sets bindings to save autonum'd fields whenever they're blurred.
+ */
+for (ref : getStartingIdPaths()) {
+  onFocus(ref, null, "insertIntoLocalSettings(\"" + ref + "\", getFieldValue(\"" + ref + "\"));");
 }
 
 </xsl:text>
       <xsl:call-template name="incautonum"/>
     </xsl:if>
 
-    <xsl:if test="//*[@e or @ec]">
-      <xsl:text>
+  <xsl:text>
 /******************************************************************************/
 /*                POPULATION OF ENTITY AND CHILD ENTITY LISTS                 */
 /******************************************************************************/
@@ -1465,7 +2029,7 @@ loadStartingId(String ref) {
  * `relType`    the name of the relationship the children are to be in with the
  *              entity denoted by `parentUuid`.
  */
-populateMenuWithEntities (
+void populateMenuWithEntities (
   String viewType,
   String path,
   String parentUuid,
@@ -1479,7 +2043,7 @@ populateMenuWithEntities (
     " WHERE relationshipid IN (SELECT relationshipid  " +
     "                            FROM latestnondeletedrelationship JOIN relntype USING (relntypeid) " +
     "                           WHERE relntypename = '"+relType+"') " +
-    "   AND parentuuid = " + parentUuid + " " +
+    "   AND parentuuid = '" + parentUuid + "' " +
     "   AND (childaenttypename = '"+entType+"' OR '"+entType+"' = '') " +
     " ORDER BY createdat DESC ";
 
@@ -1518,16 +2082,46 @@ populateMenuWithEntities (
   }
 }
 
-menus = new ArrayList();
-</xsl:text>
-      <xsl:call-template name="entity-menu" />
-      <xsl:call-template name="entity-child-menu" />
-<xsl:text>for (m : menus) {
-  String viewType       = m[0];
-  String path           = m[1];
-  String parentUuidCall = m[2];
-  String entType        = m[3];
-  String relType        = m[4];
+void populateEntityListsInTabGroup(String tabGroup) {
+  if (isNull(tabGroup)) {
+    return;
+  }
+
+  for (m : ENTITY_MENUS) {
+    String path         = m[1];
+    String menuTabGroup = getTabGroupRef(path);
+    String functionCall = getEntityMenuPopulationFunction(m);
+
+    if (menuTabGroup.equals(tabGroup))
+      execute(functionCall);
+  }
+}
+
+/* Populates each list containing records whose archent type is the same as that
+ * of `tabGroup`.
+ */
+void populateEntityListsOfArchEnt(String tabGroup) {
+  if (isNull(tabGroup)) {
+    return;
+  }
+
+  String archEntTypeToPopulate = getArchEntType(tabGroup);
+
+  for (m : ENTITY_MENUS) {
+    String archEntType  = m[3];
+    String functionCall = getEntityMenuPopulationFunction(m);
+
+    if (archEntType.equals(archEntTypeToPopulate))
+      execute(functionCall);
+  }
+}
+
+String getEntityMenuPopulationFunction(String[] menuDescriptor) {
+  String viewType       = menuDescriptor[0];
+  String path           = menuDescriptor[1];
+  String parentUuidCall = menuDescriptor[2];
+  String entType        = menuDescriptor[3];
+  String relType        = menuDescriptor[4];
 
   String functionCall = "";
   functionCall += "populateMenuWithEntities(";
@@ -1542,11 +2136,21 @@ menus = new ArrayList();
   functionCall += "\"" + relType        + "\"";
   functionCall += ")";
 
-  addOnEvent(path, "show", functionCall);
+  return functionCall;
+}
+
+ENTITY_MENUS = new ArrayList();
+</xsl:text>
+      <xsl:call-template name="entity-menu" />
+      <xsl:call-template name="entity-child-menu" />
+<xsl:text>for (m : ENTITY_MENUS) {
+  String path         = m[1];
+  String functionCall = getEntityMenuPopulationFunction(m);
+
+  execute(functionCall);
 }
 </xsl:text>
       <xsl:call-template name="entity-loading" />
-    </xsl:if>
 
     <xsl:if test="/module/logic">
       <xsl:text>
@@ -1585,7 +2189,7 @@ bindOnEvents();
       <xsl:value-of select="name(ancestor::*[last()-1])" />
       <xsl:text>/</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-2])" />
-      <xsl:text>/Author</xsl:text>
+      <xsl:text>/author</xsl:text>
       <xsl:text>");</xsl:text>
       <xsl:value-of select="$newline"/>
     </xsl:for-each>
@@ -1599,14 +2203,14 @@ bindOnEvents();
       <xsl:value-of select="name(ancestor::*[last()-1])" />
       <xsl:text>/</xsl:text>
       <xsl:value-of select="name(ancestor::*[last()-2])" />
-      <xsl:text>/Timestamp</xsl:text>
+      <xsl:text>/timestamp</xsl:text>
       <xsl:text>");</xsl:text>
       <xsl:value-of select="$newline"/>
     </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="incautonum">
-    <xsl:text>incAutoNum(String destPath) {</xsl:text>
+    <xsl:text>void incAutoNum(String destPath) {</xsl:text>
     <xsl:value-of select="$newline"/>
     <xsl:text>  Map destToSource = new HashMap();</xsl:text>
     <xsl:value-of select="$newline"/>
@@ -1686,18 +2290,31 @@ bindOnEvents();
       not(name() = 'rels') and
       not(contains(@f, 'nodata'))
       ]">
-      <xsl:text>load</xsl:text>
-      <xsl:call-template name="string-replace-all">
-        <xsl:with-param name="text" select="name()" />
-        <xsl:with-param name="replace" select="'_'" />
-        <xsl:with-param name="by" select="''" />
-      </xsl:call-template>
+      <xsl:variable name="camelcase-tabgroup">
+        <xsl:call-template name="string-replace-all">
+          <xsl:with-param name="text" select="name()" />
+          <xsl:with-param name="replace" select="'_'" />
+          <xsl:with-param name="by" select="''" />
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:text>void load</xsl:text>
+      <xsl:value-of select="$camelcase-tabgroup"/>
       <xsl:text>From(String uuid) {
   String tabgroup = "</xsl:text><xsl:value-of select="name()"/><xsl:text>";
   setUuid(tabgroup, uuid);
   if (isNull(uuid)) return;
 
-  showTabGroup(tabgroup, uuid);
+  FetchCallback cb = new FetchCallback() {
+    onFetch(result) {
+      populateEntityListsInTabGroup(tabgroup);
+      // WARNING: The default behaviour of calling `onFetch</xsl:text>
+      <xsl:value-of select="$camelcase-tabgroup"/>
+      <xsl:text>()` upon fetching an entity is deprecated in this version of FAIMS Tools. If you never implemented this function, this warning can safely be ignored.
+      onFetch</xsl:text><xsl:value-of select="$camelcase-tabgroup"/><xsl:text>__();
+    }
+  };
+
+  showTabGroup(tabgroup, uuid, cb);
 }</xsl:text>
       <xsl:value-of select="$newline"/>
       <xsl:value-of select="$newline"/>
@@ -1713,7 +2330,7 @@ bindOnEvents();
       </xsl:call-template>
     </xsl:variable>
 
-    <xsl:text>new</xsl:text>
+    <xsl:text>void new</xsl:text>
     <xsl:value-of select="$camelcase-tabgroup"/>
     <xsl:text>(){</xsl:text>
     <xsl:value-of select="$newline"/>
@@ -1726,10 +2343,175 @@ bindOnEvents();
 <xsl:text>
   setUuid(tabgroup, null);
   newTabGroup(tabgroup);
-
+  populateAuthorAndTimestamp(tabgroup);
+  populateEntityListsInTabGroup(tabgroup);
 </xsl:text>
 
     <xsl:call-template name="tabgroup-new-incautonum"/>
+    <xsl:text>  onCreate</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>__();</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  // WARNING: The default behaviour of calling `</xsl:text>
+    <xsl:text>onCreate</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>()` upon entity creation is deprecated in this version of FAIMS Tools. If you never implemented this function, this warning can safely be ignored.</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-oncreate">
+    <xsl:variable name="camelcase-tabgroup">
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>void onCreate</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>__(){</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String ref      = "</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String event    = "create";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String stmtsStr = getStatementsString(ref, event);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  execute(stmtsStr);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-onfetch">
+    <xsl:variable name="camelcase-tabgroup">
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>// Triggered after an existing record is loaded.</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>void onFetch</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>__(){</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String ref      = "</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String event    = "fetch";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String stmtsStr = getStatementsString(ref, event);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  execute(stmtsStr);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-onsave">
+    <xsl:variable name="camelcase-tabgroup">
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>// Triggered after an existing record is saved.</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>void onSave</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>__(){</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String ref      = "</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String event    = "save";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String stmtsStr = getStatementsString(ref, event);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  execute(stmtsStr);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+
+    <xsl:text>addOnEvent("</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>", "save", "</xsl:text>
+    <xsl:text>populateEntityListsOfArchEnt(\"</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>\")");</xsl:text>
+    <xsl:value-of select="$newline"/>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-oncopy">
+    <xsl:variable name="camelcase-tabgroup">
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>// Triggered as a record is duplicated but before it's saved.</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>void onCopy</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>__(){</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String ref      = "</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String event    = "copy";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String stmtsStr = getStatementsString(ref, event);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  execute(stmtsStr);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:value-of select="$newline"/>
+  </xsl:template>
+
+  <xsl:template name="tabgroup-ondelete">
+    <xsl:variable name="camelcase-tabgroup">
+      <xsl:call-template name="string-replace-all">
+        <xsl:with-param name="text" select="name()" />
+        <xsl:with-param name="replace" select="'_'" />
+        <xsl:with-param name="by" select="''" />
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>void onDelete</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup"/>
+    <xsl:text>__(){</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String ref      = "</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String event    = "delete";</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  String stmtsStr = getStatementsString(ref, event);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  execute(stmtsStr);</xsl:text>
+    <xsl:value-of select="$newline"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="$newline"/>
     <xsl:value-of select="$newline"/>
@@ -1737,8 +2519,8 @@ bindOnEvents();
 
   <xsl:template name="autonum-parent">
     <xsl:value-of select="name(//autonum/ancestor::*[last()-1])" />
-    <xsl:text>/</xsl:text>
-    <xsl:value-of select="name(//autonum/ancestor::*[last()-2])" />
+    <!--<xsl:text>/</xsl:text>-->
+    <!--<xsl:value-of select="name(//autonum/ancestor::*[last()-2])" />-->
   </xsl:template>
 
   <xsl:template name="tabgroup-new-no-id">
@@ -1794,7 +2576,7 @@ bindOnEvents();
       </xsl:call-template>
     </xsl:variable>
 
-    <xsl:text>duplicate</xsl:text>
+    <xsl:text>void duplicate</xsl:text>
     <xsl:value-of select="$camelcase-tabgroup"/>
     <xsl:text>(){</xsl:text>
     <xsl:value-of select="$newline"/>
@@ -1804,41 +2586,52 @@ bindOnEvents();
     <xsl:value-of select="$newline"/>
     <xsl:text>  String uuidOld = getUuid(tabgroup);</xsl:text>
     <xsl:value-of select="$newline"/>
+    <xsl:text>  setUuid(tabgroup, "");</xsl:text>
+    <xsl:value-of select="$newline"/>
     <xsl:value-of select="$newline"/>
     <xsl:text>  disableAutoSave(tabgroup);</xsl:text>
     <xsl:value-of select="$newline"/>
-    <xsl:value-of select="$newline"/>
     <xsl:call-template name="tabgroup-duplicate-incautonum"/>
     <xsl:value-of select="$newline"/>
+    <xsl:text>  clearGpsInTabGroup(tabgroup);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  populateAuthorAndTimestamp(tabgroup);</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  populateEntityListsInTabGroup(tabgroup);</xsl:text>
+    <xsl:value-of select="$newline"/>
     <xsl:call-template name="tabgroup-duplicate-exclusions-1" />
+    <xsl:value-of select="$newline"/>
+    <xsl:text>  onCopy</xsl:text>
+    <xsl:value-of select="$camelcase-tabgroup" />
+    <xsl:text>__();</xsl:text>
 <xsl:text>
 
   saveCallback = new SaveCallback() {
     onSave(uuid, newRecord) {
       setUuid(tabgroup, uuid);
-      populateAuthorAndTimestamp(tabgroup);
-
-      Boolean enable_autosave = true;
 
       fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){
         onFetch(result) {
           Log.e("Module", result.toString());
+
+          if (result != null &amp;&amp; result.size() &gt;= 1) {
+            parentTabgroup__ = result.get(0).get(4);
+            parentTabgroup__ = parentTabgroup__.replaceAll(" ", "_");
+          }
+
           makeDuplicateRelationships(result, getUuid(tabgroup));
+
           showToast("{Duplicated_record}");
           dialog.dismiss();
         }
       });
 
-      saveTabGroup(tabgroup, getUuid(tabgroup), null, null, new SaveCallback(){
-        onSave(autosaveUuid, autosaveNewRecord) {
-          setUuid(tabgroup, autosaveUuid);
-        }
-      }, enable_autosave);
+      saveTabGroup(tabgroup);
     }
   };
 
   String extraDupeAttributes = "";
-  fetchAll(getDuplicateAttributeQuery(getUuid(tabgroup), extraDupeAttributes), new FetchCallback(){
+  fetchAll(getDuplicateAttributeQuery(uuidOld, extraDupeAttributes), new FetchCallback(){
     onFetch(result) {
       excludeAttributes = new ArrayList();
 </xsl:text>
@@ -1913,7 +2706,7 @@ bindOnEvents();
       </xsl:call-template>
     </xsl:variable>
 
-    <xsl:text>delete</xsl:text>
+    <xsl:text>void delete</xsl:text>
     <xsl:value-of select="$camelcase-tabgroup" />
     <xsl:text>(){</xsl:text>
     <xsl:value-of select="$newline" />
@@ -1943,7 +2736,7 @@ bindOnEvents();
       </xsl:call-template>
     </xsl:variable>
 
-    <xsl:text>reallyDelete</xsl:text>
+    <xsl:text>void reallyDelete</xsl:text>
     <xsl:value-of select="$camelcase-tabgroup" />
     <xsl:text>(){</xsl:text>
     <xsl:value-of select="$newline" />
@@ -1953,6 +2746,8 @@ bindOnEvents();
 <xsl:text>
   deleteArchEnt(getUuid(tabgroup));
   cancelTabGroup(tabgroup, false);
+  populateEntityListsOfArchEnt(tabgroup);
+  onDelete</xsl:text><xsl:value-of select="$camelcase-tabgroup" /><xsl:text>__();
 }
 </xsl:text>
     <xsl:value-of select="$newline"/>
@@ -1966,9 +2761,13 @@ bindOnEvents();
 
   <xsl:template name="ref">
     <xsl:value-of select="name(ancestor::*[last()-1])"/>
-    <xsl:text>/</xsl:text>
+    <xsl:if test="name(ancestor::*[last()-1])">
+      <xsl:text>/</xsl:text>
+    </xsl:if>
     <xsl:value-of select="name(ancestor::*[last()-2])"/>
-    <xsl:text>/</xsl:text>
+    <xsl:if test="name(ancestor::*[last()-2])">
+      <xsl:text>/</xsl:text>
+    </xsl:if>
     <xsl:value-of select="name()"/>
   </xsl:template>
 
@@ -1990,7 +2789,7 @@ bindOnEvents();
 
   <xsl:template name="entity-menu">
     <xsl:for-each select="//*[@e]">
-      <xsl:text>menus.add(new String[] {</xsl:text>
+      <xsl:text>ENTITY_MENUS.add(new String[] {</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:choose>
         <xsl:when test="normalize-space(@t) = 'dropdown'">
@@ -2022,7 +2821,7 @@ bindOnEvents();
 
   <xsl:template name="entity-child-menu">
     <xsl:for-each select="//*[@ec]">
-      <xsl:text>menus.add(new String[] {</xsl:text>
+      <xsl:text>ENTITY_MENUS.add(new String[] {</xsl:text>
       <xsl:value-of select="$newline" />
       <xsl:choose>
         <xsl:when test="normalize-space(@t) = 'dropdown'">
@@ -2085,7 +2884,7 @@ bindOnEvents();
 <xsl:text>
 String userMenuPath = "</xsl:text><xsl:call-template name="ref" /><xsl:text>";
 
-populateListForUsers(){
+void populateListForUsers(){
   String getNonDeletedUsersQuery = "SELECT userid, fname || ' ' || lname "+
                                    "  FROM user "+
                                    " WHERE userdeleted is null;";
@@ -2099,7 +2898,7 @@ populateListForUsers(){
   });
 }
 
-selectUser () {
+void selectUser() {
 </xsl:text>
     <xsl:call-template name="users-vocabid"/>
 <xsl:text>
@@ -2115,6 +2914,7 @@ selectUser () {
       );
       setUser(user);
       username = result.get(1) + " " + result.get(2);
+      userid   = result.get(0);
     }
   };
 
@@ -2146,10 +2946,15 @@ addOnEvent(userMenuPath, "click", "selectUser()");
       <xsl:otherwise>
         <xsl:text>  String userVocabId  = getFieldValue(userMenuPath);</xsl:text>
         <xsl:value-of select="$newline" />
-        <xsl:text>  if (isNull(userVocabId))</xsl:text>
+        <xsl:text>  if (isNull(userVocabId)) {</xsl:text>
+        <xsl:value-of select="$newline" />
+        <xsl:text>    username = "";</xsl:text>
+        <xsl:value-of select="$newline" />
+        <xsl:text>    userid = "";</xsl:text>
         <xsl:value-of select="$newline" />
         <xsl:text>    return;</xsl:text>
         <xsl:value-of select="$newline" />
+        <xsl:text>  }</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

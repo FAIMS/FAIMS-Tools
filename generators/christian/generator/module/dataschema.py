@@ -253,4 +253,4 @@ print etree.tostring(
         pretty_print=True,
         xml_declaration=True,
         encoding='utf-8'
-)
+),

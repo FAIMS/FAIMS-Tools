@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# TODO: Don't use module.xml.orginal. Use a temporary folder.
 set -e
 
 proc1="xsltproc"    # Lord, forgive me
@@ -38,7 +39,7 @@ cd "$thisScriptPath"
 python2 -m generator.module.arch16n    "$modulePath/$module" >"$modulePath/module/english.0.properties"
 python2 -m generator.module.dataschema "$modulePath/$module" >"$modulePath/module/data_schema.xml"
 python2 -m generator.module.test       "$modulePath/$module" >"$modulePath/module/ModuleUtil.java"
-$proc1  "$thisScriptPath/generator/module/ui-logic.xsl"   "$modulePath/$module" >"$modulePath/module/ui_logic.bsh"
+python2 -m generator.module.uilogic    "$modulePath/$module" >"$modulePath/module/ui_logic.bsh"
 python2 -m generator.module.uischema   "$modulePath/$module" >"$modulePath/module/ui_schema.xml"
 python2 -m generator.module.uistyling  "$modulePath/$module" >"$modulePath/module/ui_styling.css"
 python2 -m generator.module.validation "$modulePath/$module" >"$modulePath/module/validation.xml"
