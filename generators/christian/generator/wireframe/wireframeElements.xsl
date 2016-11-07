@@ -30,7 +30,7 @@
 <xsl:variable name="arch16n">
   <xsl:choose>
     <xsl:when test="contains($label, '{')">
-      <xsl:value-of select="document('../../wireframe/arch16n.xml')/arch16ns/arch16n[@k=$label]"/>
+      <xsl:value-of select="document('arch16n.xml')/arch16ns/arch16n[@k=$label]"/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="$label"/>

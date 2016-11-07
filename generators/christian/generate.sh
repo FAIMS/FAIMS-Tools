@@ -35,24 +35,30 @@ cd - >/dev/null
 mkdir -p "$modulePath/module"
 mkdir -p "$modulePath/wireframe"
 
+cp "$thisScriptPath/generator/wireframe/makeElement.sh"          "$modulePath/wireframe"
+cp "$thisScriptPath/generator/wireframe/arch16nForWireframe.awk" "$modulePath/wireframe"
+cp "$thisScriptPath/generator/wireframe/wireframeElements.xsl"   "$modulePath/wireframe"
+
 cd "$thisScriptPath"
-python2 -m generator.module.arch16n    "$modulePath/$module" >"$modulePath/module/english.0.properties"
-python2 -m generator.module.dataschema "$modulePath/$module" >"$modulePath/module/data_schema.xml"
-python2 -m generator.module.test       "$modulePath/$module" >"$modulePath/module/ModuleUtil.java"
-python2 -m generator.module.uilogic    "$modulePath/$module" >"$modulePath/module/ui_logic.bsh"
-python2 -m generator.module.uischema   "$modulePath/$module" >"$modulePath/module/ui_schema.xml"
-python2 -m generator.module.uistyling  "$modulePath/$module" >"$modulePath/module/ui_styling.css"
-python2 -m generator.module.validation "$modulePath/$module" >"$modulePath/module/validation.xml"
+python2 -m generator.module.arch16n       "$modulePath/$module" >"$modulePath/module/english.0.properties"
+python2 -m generator.module.dataschema    "$modulePath/$module" >"$modulePath/module/data_schema.xml"
+python2 -m generator.module.test          "$modulePath/$module" >"$modulePath/module/ModuleUtil.java"
+python2 -m generator.module.uilogic       "$modulePath/$module" >"$modulePath/module/ui_logic.bsh"
+python2 -m generator.module.uischema      "$modulePath/$module" >"$modulePath/module/ui_schema.xml"
+python2 -m generator.module.uistyling     "$modulePath/$module" >"$modulePath/module/ui_styling.css"
+python2 -m generator.module.validation    "$modulePath/$module" >"$modulePath/module/validation.xml"
+python2 -m generator.wireframe.datastruct "$modulePath/$module" >"$modulePath/wireframe/datastruct.gv"
 
-gawk     -f "$thisScriptPath/generator/wireframe/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
-$proc2 -xsl:"$thisScriptPath/generator/wireframe/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
-python2 -m generator.wireframe.datastruct "$modulePath/$module"            >"$modulePath/wireframe/datastruct.gv"
 cd -
+cd "$modulePath"
+gawk     -f "$modulePath/wireframe/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
+$proc2 -xsl:"$modulePath/wireframe/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
 
-cp          "$thisScriptPath/generator/wireframe/makeElement.sh"            "$modulePath/wireframe"
+cd -
 cd "$modulePath/wireframe/"
 chmod +x wireframeElements.sh
 ./wireframeElements.sh
+
 cd - >/dev/null
 
 ####################### HANDLE PRE-PROCESSING DIRECTIVE ########################
