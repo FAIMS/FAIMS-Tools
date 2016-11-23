@@ -535,7 +535,7 @@ String getDropdownItemValue() {
   return DROPDOWN_ITEM_VALUE;
 }
 
-{{dropdown-value-getter}}
+{{dropdown-value-getters}}
 
 /******************************************************************************/
 /*                             MENU VALUE GETTER                              */
@@ -693,7 +693,7 @@ addActionBarItem("external_gps", new ToggleActionButtonCallback() {
 {{gps-diag-update}}
 
 void updateGPSDiagnostics() {
-  String diagnosticsRef = "{{gps-diag-ref}}
+  String diagnosticsRef = "{{gps-diag-ref}}";
   if (diagnosticsRef.equals("")) {
     return;
   }
@@ -765,7 +765,48 @@ String email     = "";
 User   user      = new User(userId, nameFirst, nameLast, email);
 setUser(user);
 
-{{users}}
+String userMenuPath = "{{user-menu-path}}";
+
+void populateListForUsers(){
+  String getNonDeletedUsersQuery = "SELECT userid, fname || ' ' || lname "+
+                                   "  FROM user "+
+                                   " WHERE userdeleted is null;";
+
+  fetchAll(getNonDeletedUsersQuery, new FetchCallback() {
+    onFetch(result) {
+      {{users-populate-call}}
+    }
+  });
+}
+
+void selectUser() {
+  {{users-vocabid}}
+  if (isNull(userVocabId)) {
+    username = "";
+    userid = "";
+    return;
+  }
+  String userQ        = "SELECT userid,fname,lname,email FROM user " +
+                        "WHERE  userid='" + userVocabId + "';";
+  FetchCallback callback = new FetchCallback() {
+    onFetch(result) {
+      user = new User(
+            result.get(0),
+            result.get(1),
+            result.get(2),
+            result.get(3)
+      );
+      setUser(user);
+      username = result.get(1) + " " + result.get(2);
+      userid   = result.get(0);
+    }
+  };
+
+  fetchOne(userQ, callback);
+}
+
+addOnEvent(userMenuPath, "show",  "populateListForUsers()");
+addOnEvent(userMenuPath, "click", "selectUser()");
 
 /******************************************************************************/
 /*                              MENU POPULATION                               */

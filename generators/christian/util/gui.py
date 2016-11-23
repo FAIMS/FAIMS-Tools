@@ -21,6 +21,9 @@ def getGuiNodes(node, xmlType):
     matches = filter(cond, matches)
     return matches
 
+def getAll(node, uiType):
+    return xml.getAll(node, lambda n: schema.guessType(n) == uiType)
+
 def isTabGroup  (node): return isGuiNode(node) and schema.isTabGroup(node)
 def isTab       (node): return isGuiNode(node) and schema.isTab(node)
 def isGuiElement(node): return isGuiNode(node) and schema.isGuiDataElement(node)

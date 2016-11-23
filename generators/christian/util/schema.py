@@ -531,6 +531,10 @@ def hasUserDefinedName(node):
 def isUserDefinedName(name):
     return name != None and name.istitle()
 
+def isHierarchical(node):
+    return guessType(node) in MENU_UI_TYPES \
+            and bool(node.xpath('.//opt/opt'))
+
 def getType(node):
     '''
     Returns the type assigned during annotation with `annotateWithXmlTypes`.

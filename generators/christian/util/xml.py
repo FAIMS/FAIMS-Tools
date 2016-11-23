@@ -57,7 +57,7 @@ def setSourceline(t, sourceline):
         setSourceline(e, sourceline)
 
 def getAll(node, keep=None, descendantOrSelf=True):
-    keepIsNone     = type(keep) == None
+    keepIsNone     = keep == None
     keepIsFunction = hasattr(keep, '__call__')
     assert keepIsNone or keepIsFunction
 
