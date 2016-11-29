@@ -1122,7 +1122,7 @@ void populateAuthorAndTimestamp(String tabgroup) {
 /******************************************************************************/
 /*                 BINDINGS FOR 'VIEW ATTACHED FILES' BUTTONS                 */
 /******************************************************************************/
-{{binds-files}
+{{binds-files}}
 
 /******************************************************************************/
 /*                             NAVIGATION DRAWER                              */
@@ -1391,7 +1391,7 @@ void search(){
   String refSearchTerm  = "{{tab-group-search}}/Search/Search_Term";
   String refEntityTypes = "{{tab-group-search}}/Search/Entity_Types";
 
-  {{type}}
+  {{type-search}}
   String term = getFieldValue(refSearchTerm);
   String searchQuery = "SELECT uuid, response "+
                        "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+

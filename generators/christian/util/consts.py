@@ -116,9 +116,9 @@ UI_TYPES = [
         if k.startswith('UI_TYPES_')
 ]
 MENU_UI_TYPES = [
-        UI_TYPE_CHECKBOX  = 'checkbox'
-        UI_TYPE_DROPDOWN  = 'dropdown'
-        UI_TYPE_LIST      = 'list'
-        UI_TYPE_PICTURE   = 'picture'
-        UI_TYPE_RADIO     = 'radio'
+        UI_TYPE_CHECKBOX,
+        UI_TYPE_DROPDOWN,
+        UI_TYPE_LIST,
+        UI_TYPE_PICTURE,
+        UI_TYPE_RADIO,
 ]

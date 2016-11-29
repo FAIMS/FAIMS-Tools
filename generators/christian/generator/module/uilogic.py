@@ -4,6 +4,7 @@ import sys
 import util.schema
 import util.gui
 import util.xml
+import util.data
 from   util.consts import *
 
 def format(tuples, fmt='%s', indent='', newline='\n'):
@@ -91,10 +92,181 @@ def getUsersVocabId(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getMakeVocab(tree, t):
+def getValidationString(archEntType, fieldPairs):
+    fpFmt = 'f.add(fieldPair("%s", "%s"));'
+    fpStr = format(fieldPairs, fpFmt, indent='  ')
 
-    # TODO: Rewrite ui-logic.xml:950 and onwards
-    # Protip: use util.schema.isHierarchical
+    s  = '\nvoid validate%s() {'
+    s += '\n  List f = new ArrayList(); // Fields to be validated'
+    s += '\n  %s'
+    s += '\n'
+    s += '\n  String validationMessage = validateFields(f, "PLAINTEXT");'
+    s += '\n  showWarning("Validation Results", validationMessage);'
+    s += '\n}'
+
+    s %= archEntType, fpStr
+
+    return s
+
+def getValidation(tree, t):
+    placeholder = '{{validation}}'
+    replacement = ''
+
+
+    # Tab groups which can be validated
+    tabGroups = tree.xpath("/module/*[.//*[contains(@f, 'notnull')]]")
+    for n in tabGroups:
+        archEntType = util.data.getArchEntName(n)
+
+        # Validate-able nodes
+        V = util.xml.getAll(n, lambda n: util.schema.isFlagged(n, FLAG_NOTNULL))
+        # Field pairs
+        refs   = [util.schema. getPathString(v)                    for v in V]
+        labels = [util.arch16n.getArch16nKey(v, doAddCurlies=True) for v in V]
+        fieldPairs = zip(refs, labels)
+
+        replacement += getValidationString(archEntType, fieldPairs)
+
+    return t.replace(placeholder, replacement)
+
+def getMakeVocab(tree, t):
+    nodes     = util.gui.getAll(tree, MENU_UI_TYPES)
+    nodes     = filter(lambda n: util.data.isDataElement(n), nodes)
+
+    types     = []
+    attrNames = [util.data.  getAttribName(n) for n in nodes]
+    refs      = [util.schema.getPathString(n) for n in nodes]
+
+    # Compute types of nodes
+    for n in nodes:
+        isHierarchical = util.schema.isHierarchical(n)
+        uiType         = util.schema.guessType(n)
+
+        # Determine hierarchical-ness
+        if isHierarchical: type = 'Hierarchical'
+        else:              type = ''
+
+        # Determine the rest of the type
+        if uiType == UI_TYPE_CHECKBOX: type += 'CheckBoxGroup'
+        if uiType == UI_TYPE_DROPDOWN: type += 'DropDown'
+        if uiType == UI_TYPE_LIST:     type += 'List'
+        if uiType == UI_TYPE_PICTURE:  type += 'PictureGallery'
+        if uiType == UI_TYPE_RADIO:    type += 'RadioGroup'
+
+        types.append(type)
+
+    fmt = 'makeVocab("%s", "%s", "%s")'
+    placeholder = '{{make-vocab}}'
+    replacement = format(zip(types, attrNames, refs), fmt)
+
+    return t.replace(placeholder, replacement)
+
+def getAuthor(tree, t):
+    isAuthor      = lambda e: util.schema.getType(e) == TAG_AUTHOR
+    authors       = util.xml.getAll(tree, isAuthor)
+    tabGroupNames = [util.schema.getParentTabGroup(a).tag for a in authors]
+    refs          = [util.schema.getPathString(a)               for a in authors]
+
+    fmt         = 'tabgroupToAuthor.put("%s", "%s");'
+    placeholder = '{{author}}'
+    replacement = format(zip(tabGroupNames, refs), fmt)
+
+    return t.replace(placeholder, replacement)
+
+def getTimestamp(tree, t):
+    isTimestamp   = lambda e: util.schema.getType(e) == TAG_TIMESTAMP
+    timestamp     = util.xml.getAll(tree, isTimestamp)
+    tabGroupNames = [util.schema.getParentTabGroup(a).tag for a in timestamp]
+    refs          = [util.schema.getPathString(a)               for a in timestamp]
+
+    fmt         = 'tabgroupToTimestamp.put("%s", "%s");'
+    placeholder = '{{timestamp}}'
+    replacement = format(zip(tabGroupNames, refs), fmt)
+
+    return t.replace(placeholder, replacement)
+
+def getOnShowDefs(tree, t):
+    placeholder = '{{defs-on-show}}'
+    return t
+
+def getOnShowBinds(tree, t):
+    placeholder = '{{binds-on-show}}'
+    return t
+
+def getOnClickDefs(tree, t):
+    placeholder = '{{defs-on-click}}'
+    return t
+
+def getOnClickBinds(tree, t):
+    placeholder = '{{binds-on-click}}'
+    return t
+
+def getMediaBinds(tree, t):
+    placeholder = '{{binds-media}}'
+    return t
+
+def getFileBinds(tree, t):
+    placeholder = '{{binds-files}'
+    return t
+
+def getTabGroupsToValidate(tree, t):
+    placeholder = '{{tabgroups-to-validate}}'
+    return t
+
+def getDefsTabGroupBinds(tree, t):
+    placeholder = '{{defs-tabgroup-binds}}'
+    return t
+
+def getNavButtonBinds(tree, t):
+    placeholder = '{{binds-nav-buttons}}'
+    return t
+
+def getSearchTabGroup(tree, t):
+    placeholder = '{{tab-group-search}}'
+    return t
+
+def getSearchEntities(tree, t):
+    placeholder = '{{search-entities}}'
+    return t
+
+def getSearchType(tree, t):
+    placeholder = '{{type-search}}'
+    return t
+
+def getLoadEntityDefs(tree, t):
+    placeholder = '{{defs-load-entity}}'
+    return t
+
+def getTakeFromGpsBinds(tree, t):
+    placeholder = '{{binds-take-from-gps}}'
+    return t
+
+def getTakeFromGpsMappings(tree, t):
+    placeholder = '{{take-from-gps-mappings}}'
+    return t
+
+def getControlStartingIdPaths(tree, t):
+    placeholder = '{{control-starting-id-paths}}'
+    return t
+
+def getAutonumParent(tree, t):
+    placeholder = '{{autonum-parent}}'
+    return t
+
+def getIncAutonumMap(tree, t):
+    placeholder = '{{incautonum-map}}'
+    return t
+
+def getEntityMenus(tree, t):
+    placeholder = '{{entity-menus}}'
+    return t
+
+def getEntityLoading(tree, t):
+    placeholder = '{{entity-loading}}'
+    return t
+
+def getHandWrittenLogic(tree, t):
+    placeholder = '{{hand-written-logic}}'
     return t
 
 def getUiLogic(tree):
@@ -115,6 +287,32 @@ def getUiLogic(tree):
     t = getUsersPopulateCall(tree, t)
     t = getUsersVocabId(tree, t)
     t = getMakeVocab(tree, t)
+    t = getValidation(tree, t)
+    t = getAuthor(tree, t)
+    t = getTimestamp(tree, t)
+
+    # TODO:
+    t = getOnShowDefs(tree, t)
+    t = getOnShowBinds(tree, t)
+    t = getOnClickDefs(tree, t)
+    t = getOnClickBinds(tree, t)
+    t = getMediaBinds(tree, t)
+    t = getFileBinds(tree, t)
+    t = getTabGroupsToValidate(tree, t)
+    t = getDefsTabGroupBinds(tree, t)
+    t = getNavButtonBinds(tree, t)
+    t = getSearchTabGroup(tree, t)
+    t = getSearchEntities(tree, t)
+    t = getSearchType(tree, t)
+    t = getLoadEntityDefs(tree, t)
+    t = getTakeFromGpsBinds(tree, t)
+    t = getTakeFromGpsMappings(tree, t)
+    t = getControlStartingIdPaths(tree, t)
+    t = getAutonumParent(tree, t)
+    t = getIncAutonumMap(tree, t)
+    t = getEntityMenus(tree, t)
+    t = getEntityLoading(tree, t)
+    t = getHandWrittenLogic(tree, t)
 
     return t
 

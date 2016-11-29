@@ -22,7 +22,10 @@ def getGuiNodes(node, xmlType):
     return matches
 
 def getAll(node, uiType):
-    return xml.getAll(node, lambda n: schema.guessType(n) == uiType)
+    if type(uiType) == str:
+        uiType = [uiType]
+
+    return xml.getAll(node, lambda n: schema.guessType(n) in uiType)
 
 def isTabGroup  (node): return isGuiNode(node) and schema.isTabGroup(node)
 def isTab       (node): return isGuiNode(node) and schema.isTab(node)
