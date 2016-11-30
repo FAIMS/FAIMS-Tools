@@ -489,6 +489,28 @@ def replaceElement(element, replacements, tag='__REPLACE__'):
 
     return xml.replaceElement(element, replacements)
 
+def getLink(node):
+    link = util.xml.getAttribVal(node, ATTRIB_L)
+    if link:
+        return link
+
+    link = util.xml.getAttribVal(node, ATTRIB_LC)
+    if link:
+        return link
+
+    return None
+
+def getLinkedNode(node):
+    link = getLink(node)
+    if not link:
+        return None
+
+    nodes = node.xpath('/module/' + link)
+    if len(nodes) != 1:
+        return None
+
+    return nodes[0]
+
 def isValidLink(root, link, linkType):
     if not link:
         return False
@@ -561,6 +583,8 @@ def isGuiDataElement(node):
             TYPE_TIMESTAMP,
     )
 
-def getTabGroups      (node): return xml.getAll(node, isTabGroup)
+def getTabGroups      (node, keep=None):
+    if keep: return xml.getAll(node, lambda e: isTabGroup(e) and keep(e))
+    else:    return xml.getAll(node, isTabGroup)
 def getTabs           (node): return xml.getAll(node, isTab)
 def getGuiDataElements(node): return xml.getAll(node, isGuiDataElement)

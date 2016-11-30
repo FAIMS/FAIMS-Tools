@@ -96,13 +96,14 @@ def getValidationString(archEntType, fieldPairs):
     fpFmt = 'f.add(fieldPair("%s", "%s"));'
     fpStr = format(fieldPairs, fpFmt, indent='  ')
 
-    s  = '\nvoid validate%s() {'
-    s += '\n  List f = new ArrayList(); // Fields to be validated'
-    s += '\n  %s'
-    s += '\n'
-    s += '\n  String validationMessage = validateFields(f, "PLAINTEXT");'
-    s += '\n  showWarning("Validation Results", validationMessage);'
-    s += '\n}'
+    s  = \
+      'void validate%s() {' \
+    '\n  List f = new ArrayList(); // Fields to be validated' \
+    '\n  %s' \
+    '\n' \
+    '\n  String validationMessage = validateFields(f, "PLAINTEXT");' \
+    '\n  showWarning("Validation Results", validationMessage);' \
+    '\n}'
 
     s %= archEntType, fpStr
 
@@ -155,7 +156,7 @@ def getMakeVocab(tree, t):
 
         types.append(type)
 
-    fmt = 'makeVocab("%s", "%s", "%s")'
+    fmt         = 'makeVocab("%s", "%s", "%s")'
     placeholder = '{{make-vocab}}'
     replacement = format(zip(types, attrNames, refs), fmt)
 
@@ -177,7 +178,7 @@ def getTimestamp(tree, t):
     isTimestamp   = lambda e: util.schema.getType(e) == TAG_TIMESTAMP
     timestamp     = util.xml.getAll(tree, isTimestamp)
     tabGroupNames = [util.schema.getParentTabGroup(a).tag for a in timestamp]
-    refs          = [util.schema.getPathString(a)               for a in timestamp]
+    refs          = [util.schema.getPathString(a)         for a in timestamp]
 
     fmt         = 'tabgroupToTimestamp.put("%s", "%s");'
     placeholder = '{{timestamp}}'
@@ -185,17 +186,124 @@ def getTimestamp(tree, t):
 
     return t.replace(placeholder, replacement)
 
+def getOnShowNodes(tree):
+    # Get tab groups which are gui elements and data elements
+    isGui        = lambda e: util.gui. isGuiNode    (e)
+    isData       = lambda e: util.data.isDataElement(e)
+    isGuiAndData = lambda e: isGui(e) and isData(e)
+
+    tabGroups    = util.schema.getTabGroups(tree, isData)
+
+    return tabGroups
+
 def getOnShowDefs(tree, t):
+    tabGroups    = getOnShowNodes(tree)
+    archEntNames = [util.data.getArchEntName(e)  for e in tabGroups]
+    tabGroupRefs = [util.schema.getPathString(e) for e in tabGroups]
+
     placeholder = '{{defs-on-show}}'
-    return t
+    fmt = \
+    'void onShow%s () {\n' \
+    '  saveTabGroup("%s");\n' \
+    '}\n'
+    replacement = format(zip(archEntNames, tabGroupRefs), fmt)
+
+    return t.replace(placeholder, replacement)
 
 def getOnShowBinds(tree, t):
+    tabGroups    = getOnShowNodes(tree)
+    tabGroupRefs = [util.schema.getPathString(e) for e in tabGroups]
+    onShowFuns   = [util.data.getAttribName(e)   for e in tabGroups]
+
     placeholder = '{{binds-on-show}}'
-    return t
+    fmt         = 'addOnEvent("%s", "show", "onShow%s()");'
+    replacement = format(zip(tabGroupRefs, onShowFuns), fmt)
+
+    return t.replace(placeholder, replacement)
+
+def getOnClickNodes(tree):
+    hasL  = lambda e: util.xml.hasAttrib(e, ATTRIB_L)
+    hasLC = lambda e: util.xml.hasAttrib(e, ATTRIB_L)
+    return xml.getAll(tree, lambda e: hasL(e) or hasLC(e))
+
+def getXLinksToY(tree, attribVal, noData):
+    assert attribVal in (ATTRIB_L, ATTRIB_LC)
+    assert type(noData) == bool
+
+    if noData:
+        isXLinkToY = lambda e: util.xml.hasAttrib(e, attribVal) and \
+                not util.data.isDataElement(util.schema.getLinkedNode(e))
+    else:
+        isXLinkToY = lambda e: util.xml.hasAttrib(e, attribVal) and \
+                util.data.isDataElement(util.schema.getLinkedNode(e))
+
+    return util.xml.getAll(tree, isXLinkToY)
 
 def getOnClickDefs(tree, t):
     placeholder = '{{defs-on-click}}'
-    return t
+
+    # @l link to 'nodata' tab or tab group
+    fmtLND = \
+      'void onClick%s () {' \
+    '\n  newTab("%s", true);' \
+    '\n}'
+
+    # @l link to savable tab group
+    fmtLD = \
+      'void onClick%s () {' \
+    '\n  parentTabgroup__ = "%s";' \
+    '\n  new%s();' \
+    '\n}'
+
+    # @lc link
+    fmtLC = \
+      'void onClick%s () {' \
+    '\n  String tabgroup = "%s";' \
+    '\n  if (isNull(getUuid(tabgroup))){' \
+    '\n    showToast("{You_must_save_this_tabgroup_first}");' \
+    '\n    return;' \
+    '\n  }' \
+    '\n  parentTabgroup   = tabgroup;' \
+    '\n  parentTabgroup__ = tabgroup;' \
+    '\n  new%s();' \
+    '\n}'
+
+    LNDNodes = getXLinksToY(tree, ATTRIB_L,  noData=True)
+    LDNodes  = getXLinksToY(tree, ATTRIB_L,  noData=False)
+    LCNodes  = getXLinksToY(tree, ATTRIB_LC, noData=False)
+
+    strLND = format(
+            zip(
+                [util.schema.getPathString(e, sep='') for e in LNDNodes],
+                [util.xml.getAttribVal(e, ATTRIB_L)   for e in LNDNodes]
+            ),
+            fmtLND,
+            newline='\n\n'
+    )
+
+    strLD = format(
+            zip(
+                [util.schema.getPathString(e, sep='') for e in LDNodes],
+                [util.schema.getParentTabGroup(e).tag for e in LDNodes],
+                [util.xml.getAttribVal(e, ATTRIB_L)   for e in LDNodes]
+            ),
+            fmtLD,
+            newline='\n\n'
+    )
+
+    strLC = format(
+            zip(
+                [util.schema.getPathString(e, sep='') for e in LCNodes],
+                [util.schema.getParentTabGroup(e).tag for e in LCNodes],
+                [util.xml.getAttribVal(e, ATTRIB_LC)  for e in LCNodes]
+            ),
+            fmtLC,
+            newline='\n\n'
+    )
+
+    replacement = '\n\n'.join([strLND, strLD, strLC])
+
+    return t.replace(placeholder, replacement)
 
 def getOnClickBinds(tree, t):
     placeholder = '{{binds-on-click}}'
@@ -291,12 +399,13 @@ def getUiLogic(tree):
     t = getAuthor(tree, t)
     t = getTimestamp(tree, t)
 
-    # TODO:
     t = getOnShowDefs(tree, t)
     t = getOnShowBinds(tree, t)
     t = getOnClickDefs(tree, t)
     t = getOnClickBinds(tree, t)
     t = getMediaBinds(tree, t)
+
+    # TODO:
     t = getFileBinds(tree, t)
     t = getTabGroupsToValidate(tree, t)
     t = getDefsTabGroupBinds(tree, t)
