@@ -115,6 +115,7 @@ UI_TYPES = [
         v for k, v in dict(globals()).iteritems()
         if k.startswith('UI_TYPES_')
 ]
+
 MENU_UI_TYPES = [
         UI_TYPE_CHECKBOX,
         UI_TYPE_DROPDOWN,

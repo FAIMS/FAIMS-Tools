@@ -306,16 +306,66 @@ def getOnClickDefs(tree, t):
     return t.replace(placeholder, replacement)
 
 def getOnClickBinds(tree, t):
+    LNDNodes = getXLinksToY(tree, ATTRIB_L,  noData=True)
+    LDNodes  = getXLinksToY(tree, ATTRIB_L,  noData=False)
+    LCNodes  = getXLinksToY(tree, ATTRIB_LC, noData=False)
+
+    nodes = LNDNodes + LDNodes + LCNodes
+    refs  = [util.schema.getPathString(n)         for n in nodes]
+    funs  = [util.schema.getPathString(n, sep='') for n in nodes]
+
     placeholder = '{{binds-on-click}}'
-    return t
+    fmt         = 'addOnEvent("%s", "click", "onClick%s")'
+    replacement = format(zip(refs, funs), fmt)
+
+    return t.replace(placeholder, replacement)
 
 def getMediaBinds(tree, t):
+    nodesAudio  = util.gui.getAll(tree, UI_TYPE_AUDIO)
+    nodesCamera = util.gui.getAll(tree, UI_TYPE_CAMERA)
+    nodesFile   = util.gui.getAll(tree, UI_TYPE_FILE)
+    nodesVideo  = util.gui.getAll(tree, UI_TYPE_VIDEO)
+
+    refsAudio  = [util.schema.getPathString(n) for n in nodesAudio]
+    refsCamera = [util.schema.getPathString(n) for n in nodesCamera]
+    refsFile   = [util.schema.getPathString(n) for n in nodesFile]
+    refsVideo  = [util.schema.getPathString(n) for n in nodesVideo]
+
+    btnRefsAudio  = [util.schema.getPathString(n.getnext()) for n in nodesAudio]
+    btnRefsCamera = [util.schema.getPathString(n.getnext()) for n in nodesCamera]
+    btnRefsFile   = [util.schema.getPathString(n.getnext()) for n in nodesFile]
+    btnRefsVideo  = [util.schema.getPathString(n.getnext()) for n in nodesVideo]
+
+    fmtAudio  = 'addOnEvent("%s", "click", "attachAudioTo(\\"%s\\"));'
+    fmtCamera = 'addOnEvent("%s", "click", "attachPictureTo(\\"%s\\"));'
+    fmtFile   = 'addOnEvent("%s", "click", "attachFileTo(\\"%s\\"));'
+    fmtVideo  = 'addOnEvent("%s", "click", "attachVideoTo(\\"%s\\"));'
+
+    replacementAudio  = format(zip(refsAudio,  btnRefsAudio),  fmtAudio)
+    replacementCamera = format(zip(refsCamera, btnRefsCamera), fmtCamera)
+    replacementFile   = format(zip(refsFile,   btnRefsFile),   fmtFile)
+    replacementVideo  = format(zip(refsVideo,  btnRefsVideo),  fmtVideo)
+
     placeholder = '{{binds-media}}'
-    return t
+    replacement = '\n'.join([
+        replacementAudio,
+        replacementCamera,
+        replacementFile,
+        replacementVideo
+    ])
+
+    return t.replace(placeholder, replacement)
 
 def getFileBinds(tree, t):
-    placeholder = '{{binds-files}'
-    return t
+    nodes  = util.gui.getAll(tree, UI_TYPE_VIEWFILES)
+    refs   = [util.schema.getPathString(n)         for n in nodes]
+    tgRefs = [util.schema.getParentTabGroup(n).tag for n in nodes]
+
+    placeholder = '{{binds-files}}'
+    fmt         = 'addOnEvent("%s", "click", "viewArchEntAttachedFiles(getUuid(\\"%s\\"))");'
+    replacement = format(zip(refs, tgRefs), fmt)
+
+    return t.replace(placeholder, replacement)
 
 def getTabGroupsToValidate(tree, t):
     placeholder = '{{tabgroups-to-validate}}'
