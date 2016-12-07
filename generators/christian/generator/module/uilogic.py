@@ -417,6 +417,16 @@ def getIncAutoNum(tree):
     fmt = 'incAutoNum("%s");'
     return format(refs, fmt, indent='  ')
 
+# TODO:
+# tabgroup-new
+# tabgroup-oncreate
+# tabgroup-onfetch
+# tabgroup-onsave
+# tabgroup-oncopy
+# tabgroup-ondelete
+# tabgroup-duplicate
+# tabgroup-delete
+# tabgroup-really-delete
 def getDefsTabGroupBinds(tree, t):
     isGui        = lambda e: util.gui. isGuiNode    (e)
     isData       = lambda e: util.data.isDataElement(e)
