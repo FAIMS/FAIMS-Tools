@@ -21,11 +21,14 @@ def getGuiNodes(node, xmlType):
     matches = filter(cond, matches)
     return matches
 
-def getAll(node, uiType):
+def getAll(node, uiType, keep=None):
     if type(uiType) == str:
         uiType = [uiType]
 
-    return xml.getAll(node, lambda n: schema.guessType(n) in uiType)
+    if keep: l = lambda n: schema.guessType(n) in uiType and keep(n)
+    else:    l = lambda n: schema.guessType(n) in uiType
+
+    return xml.getAll(node, l)
 
 def isTabGroup  (node): return isGuiNode(node) and schema.isTabGroup(node)
 def isTab       (node): return isGuiNode(node) and schema.isTab(node)

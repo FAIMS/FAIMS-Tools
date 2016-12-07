@@ -103,7 +103,8 @@ def getValidationString(archEntType, fieldPairs):
     '\n' \
     '\n  String validationMessage = validateFields(f, "PLAINTEXT");' \
     '\n  showWarning("Validation Results", validationMessage);' \
-    '\n}'
+    '\n}' \
+    '\n'
 
     s %= archEntType, fpStr
 
@@ -113,11 +114,12 @@ def getValidation(tree, t):
     placeholder = '{{validation}}'
     replacement = ''
 
-
     # Tab groups which can be validated
-    tabGroups = tree.xpath("/module/*[.//*[contains(@f, 'notnull')]]")
+    isNotNull = lambda e: util.schema.hasElementFlaggedWith(e, FLAG_NOTNULL)
+    tabGroups = util.schema.getTabGroups(tree, isNotNull)
     for n in tabGroups:
-        archEntType = util.data.getArchEntName(n)
+        archEntName = util.data.getArchEntName(n)
+        #if not archEntName: continue
 
         # Validate-able nodes
         V = util.xml.getAll(n, lambda n: util.schema.isFlagged(n, FLAG_NOTNULL))
@@ -126,13 +128,12 @@ def getValidation(tree, t):
         labels = [util.arch16n.getArch16nKey(v, doAddCurlies=True) for v in V]
         fieldPairs = zip(refs, labels)
 
-        replacement += getValidationString(archEntType, fieldPairs)
+        replacement += getValidationString(archEntName, fieldPairs)
 
     return t.replace(placeholder, replacement)
 
 def getMakeVocab(tree, t):
-    nodes     = util.gui.getAll(tree, MENU_UI_TYPES)
-    nodes     = filter(lambda n: util.data.isDataElement(n), nodes)
+    nodes     = util.gui.getAll(tree, MENU_UI_TYPES, util.data.isDataElement)
 
     types     = []
     attrNames = [util.data.  getAttribName(n) for n in nodes]
@@ -368,16 +369,97 @@ def getFileBinds(tree, t):
     return t.replace(placeholder, replacement)
 
 def getTabGroupsToValidate(tree, t):
+    nodes = util.xml.getAll(tree, lambda e: util.schema.isFlagged(e, FLAG_NOTNULL))
+    nodes = [util.schema.getParentTabGroup(n) for n in nodes]
+    refs  = [util.schema.getPathString(n)     for n in nodes]
+    refs  = list(set(refs))
+
     placeholder = '{{tabgroups-to-validate}}'
-    return t
+    fmt         = 'tabgroupsToValidate.add("%s");'
+    replacement = format(refs, fmt, indent='  ')
+
+    return t.replace(placeholder, replacement)
+
+def getNoNextIds(tree):
+    # Get the path of the autonum tag's parent
+    wasAutoNum  = lambda e: util.xml.getAttribVal(e, ORIGINAL_TAG) == TAG_AUTONUM
+    nodes       = util.xml.getAll(tree.getroottree(), wasAutoNum)
+    if not len(nodes): return ''
+    node        = nodes[0]
+    autoNumTab  = util.schema.getParentTab(node)
+    autoNumPath = util.schema.getPath(autoNumTab)
+
+    # Get the paths of the autonumed elements in tree
+    isAutoNumed    = lambda e: util.schema.isFlagged(e, FLAG_AUTONUM)
+    nodes          = util.xml.getAll(tree, isAutoNumed)
+    autoNummedPath = [util.schema.getPath(n)[-1] for n in nodes]
+    autoNummedPath = [['Next_' + n] for n in autoNummedPath]
+
+    if not len(autoNummedPath): return ''
+
+    refs = [autoNumPath + numed for numed in autoNummedPath]
+    refs = ['/'.join(r) for r in refs]
+
+    fmt = \
+        'if (isNull("%s")) {' \
+    '\n    showWarning("{Alert}", "{A_next_ID_has_not_been_entered_please_provide_one}");' \
+    '\n    return;' \
+    '\n  }'
+
+    return format(refs, fmt, indent='  ')
+
+def getIncAutoNum(tree):
+    # Get refs for nodes flagged with 'autonum'
+    isAutoNumed = lambda e: util.schema.isFlagged(e, FLAG_AUTONUM)
+    nodes       = util.xml.getAll(tree, isAutoNumed)
+    refs        = [util.schema.getPathString(n) for n in nodes]
+
+    fmt = 'incAutoNum("%s");'
+    return format(refs, fmt, indent='  ')
 
 def getDefsTabGroupBinds(tree, t):
+    isGui        = lambda e: util.gui. isGuiNode    (e)
+    isData       = lambda e: util.data.isDataElement(e)
+    isGuiAndData = lambda e: isGui(e) and isData(e)
+
+    nodes        = util.schema.getTabGroups(tree, isGuiAndData)
+    refs         = [util.schema.getPathString(n) for n in nodes]
+    noNextIds    = [getNoNextIds (n) for n in nodes]
+    incAutoNums  = [getIncAutoNum(n) for n in nodes]
+
+    fmt = \
+      'void new%s (){' \
+    '\n  String tabgroup = "%s";' \
+    '\n  %s' \
+    '\n' \
+    '\n  setUuid(tabgroup, null);' \
+    '\n  newTabGroup(tabgroup);' \
+    '\n  populateAuthorAndTimestamp(tabgroup);' \
+    '\n  populateEntityListsInTabGroup(tabgroup);' \
+    '\n  %s' \
+    '\n' \
+    '\n  onCreate%s__();' \
+    '\n}'
+
     placeholder = '{{defs-tabgroup-binds}}'
-    return t
+    replacement = format(zip(refs, refs, noNextIds, incAutoNums, refs), fmt)
+
+    return t.replace(placeholder, replacement)
 
 def getNavButtonBinds(tree, t):
+    isGui        = lambda e: util.gui. isGuiNode    (e)
+    isData       = lambda e: util.data.isDataElement(e)
+    isGuiAndData = lambda e: isGui(e) and isData(e)
+
+    nodes = util.schema.getTabGroups(tree, isGuiAndData)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+
+    fmt  = 'addOnEvent("%s", "show", "removeNavigationButtons()");\n'
+    fmt += 'addOnEvent("%s", "show", "addNavigationButtons(\\"%s\\")");'
     placeholder = '{{binds-nav-buttons}}'
-    return t
+    replacement = format(zip(refs, refs, refs), fmt)
+
+    return t.replace(placeholder, replacement)
 
 def getSearchTabGroup(tree, t):
     placeholder = '{{tab-group-search}}'
@@ -448,18 +530,17 @@ def getUiLogic(tree):
     t = getValidation(tree, t)
     t = getAuthor(tree, t)
     t = getTimestamp(tree, t)
-
     t = getOnShowDefs(tree, t)
     t = getOnShowBinds(tree, t)
     t = getOnClickDefs(tree, t)
     t = getOnClickBinds(tree, t)
     t = getMediaBinds(tree, t)
-
-    # TODO:
     t = getFileBinds(tree, t)
     t = getTabGroupsToValidate(tree, t)
     t = getDefsTabGroupBinds(tree, t)
     t = getNavButtonBinds(tree, t)
+
+    # TODO:
     t = getSearchTabGroup(tree, t)
     t = getSearchEntities(tree, t)
     t = getSearchType(tree, t)
@@ -488,11 +569,11 @@ util.schema.canonicalise(tree)
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #
 ################################################################################
 
-#print etree.tostring(
-        #tree,
-        #pretty_print=True,
-        #xml_declaration=True,
-        #encoding='utf-8'
-#)
+print etree.tostring(
+        tree,
+        pretty_print=True,
+        xml_declaration=True,
+        encoding='utf-8'
+)
 
 print getUiLogic(tree),

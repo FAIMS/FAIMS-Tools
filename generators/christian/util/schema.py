@@ -372,7 +372,8 @@ def getAutonum(node):
     for n in autonumbered:
         e = Element(
                 'Next_' + n.tag,
-                { RESERVED_XML_TYPE : TYPE_GUI_DATA },
+                { RESERVED_XML_TYPE : TYPE_GUI_DATA,
+                  ORIGINAL_TAG      : node.tag},
                 b=BIND_DECIMAL,
                 f=FLAG_NOTNULL,
                 c='required',
