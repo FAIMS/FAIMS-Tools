@@ -3,6 +3,7 @@ from   lxml import etree
 import sys
 import util.schema
 import util.gui
+import util.arch16n
 import util.xml
 import util.data
 from   util.consts import *
@@ -17,6 +18,10 @@ def getUserMenuUiType(tree):
     if len(nodes) != 1: return None
     node = nodes[0]
     return util.schema.guessType(node)
+
+def isGuiAndData(e):
+    return util.gui. isGuiNode    (e) and \
+           util.data.isDataElement(e)
 
 def getTabGroups(tree, t):
     nodes = util.schema.getTabGroups(tree)
@@ -187,18 +192,8 @@ def getTimestamp(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getOnShowNodes(tree):
-    # Get tab groups which are gui elements and data elements
-    isGui        = lambda e: util.gui. isGuiNode    (e)
-    isData       = lambda e: util.data.isDataElement(e)
-    isGuiAndData = lambda e: isGui(e) and isData(e)
-
-    tabGroups    = util.schema.getTabGroups(tree, isData)
-
-    return tabGroups
-
 def getOnShowDefs(tree, t):
-    tabGroups    = getOnShowNodes(tree)
+    tabGroups    = util.schema.getTabGroups(tree, isGuiAndData)
     archEntNames = [util.data.getArchEntName(e)  for e in tabGroups]
     tabGroupRefs = [util.schema.getPathString(e) for e in tabGroups]
 
@@ -212,7 +207,7 @@ def getOnShowDefs(tree, t):
     return t.replace(placeholder, replacement)
 
 def getOnShowBinds(tree, t):
-    tabGroups    = getOnShowNodes(tree)
+    tabGroups    = util.schema.getTabGroups(tree, isGuiAndData)
     tabGroupRefs = [util.schema.getPathString(e) for e in tabGroups]
     onShowFuns   = [util.data.getAttribName(e)   for e in tabGroups]
 
@@ -417,21 +412,7 @@ def getIncAutoNum(tree):
     fmt = 'incAutoNum("%s");'
     return format(refs, fmt, indent='  ')
 
-# TODO:
-# tabgroup-new
-# tabgroup-oncreate
-# tabgroup-onfetch
-# tabgroup-onsave
-# tabgroup-oncopy
-# tabgroup-ondelete
-# tabgroup-duplicate
-# tabgroup-delete
-# tabgroup-really-delete
-def getDefsTabGroupBinds(tree, t):
-    isGui        = lambda e: util.gui. isGuiNode    (e)
-    isData       = lambda e: util.data.isDataElement(e)
-    isGuiAndData = lambda e: isGui(e) and isData(e)
-
+def getDefsTabGroupBindsNew(tree):
     nodes        = util.schema.getTabGroups(tree, isGuiAndData)
     refs         = [util.schema.getPathString(n) for n in nodes]
     noNextIds    = [getNoNextIds (n) for n in nodes]
@@ -451,16 +432,166 @@ def getDefsTabGroupBinds(tree, t):
     '\n  onCreate%s__();' \
     '\n}'
 
+    return format(zip(refs, refs, noNextIds, incAutoNums, refs), fmt)
+
+def getDefsTabGroupBindsEvents(tree, funName, evtName):
+    nodes = util.schema.getTabGroups(tree, isGuiAndData)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+    funNames = [funName]*len(nodes)
+    evtNames = [evtName]*len(nodes)
+
+    fmt =  \
+      'void %s%s__(){' \
+    '\n  String ref      = "";' \
+    '\n  String event    = "%s";' \
+    '\n  String stmtsStr = getStatementsString(ref, event);' \
+    '\n  execute(stmtsStr);' \
+    '\n}'
+
+    return format(zip(funNames, refs, evtNames), fmt)
+
+# Media list population calls
+def getDefsTabGroupBindsDuplicateMP_(nodes):
+    type2Fun = {
+            UI_TYPE_AUDIO  : 'populateFileList',
+            UI_TYPE_CAMERA : 'populateCameraPictureGallery',
+            UI_TYPE_FILE   : 'populateFileList',
+            UI_TYPE_VIDEO  : 'populateVideoGallery',
+    }
+    isMediaType = lambda e: util.schema.guessType(e) in type2Fun
+    nodes = util.xml.getAll(nodes, isMediaType)
+
+    funs  = [type2Fun[util.schema.guessType(n)] for n in nodes]
+    refs  = [util.schema.getPathString(n)       for n in nodes]
+
+    fmt = '%s("%s", new ArrayList());'
+    return format(zip(funs, refs), fmt, indent='  ')
+
+def getDefsTabGroupBindsDuplicateMP(nodes):
+    return [getDefsTabGroupBindsDuplicateMP_(n) for n in nodes]
+
+def getDefsTabGroupBindsDuplicateME_(nodes):
+    isMediaType = lambda e: util.schema.guessType(e) in MEDIA_UI_TYPES
+    nodes       = util.xml.getAll(nodes, isMediaType)
+    attribNames = [util.data.getAttribName(n) for n in nodes]
+
+    fmt = 'excludeAttributes.add("%s");'
+
+    return format(zip(attribNames), fmt, indent='      ')
+
+def getDefsTabGroupBindsDuplicateME(nodes):
+    return [getDefsTabGroupBindsDuplicateME_(n) for n in nodes]
+
+def getDefsTabGroupBindsDuplicate(tree):
+    nodes = util.schema.getTabGroups(tree, isGuiAndData)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+    incAutoNums  = [getIncAutoNum(n) for n in nodes]
+    mediaPopulate = getDefsTabGroupBindsDuplicateMP(nodes)
+    mediaExcludes = getDefsTabGroupBindsDuplicateME(nodes)
+
+    fmt = \
+      'void duplicate%s(){' \
+    '\n  String tabgroup = "%s";' \
+    '\n  String uuidOld = getUuid(tabgroup);' \
+    '\n  setUuid(tabgroup, "");' \
+    '\n  disableAutoSave(tabgroup);' \
+    '\n  %s' \
+    '\n  clearGpsInTabGroup(tabgroup);' \
+    '\n  populateAuthorAndTimestamp(tabgroup);' \
+    '\n  populateEntityListsInTabGroup(tabgroup);' \
+    '\n  %s' \
+    '\n  onCopy%s__();' \
+    '\n' \
+    '\n  saveCallback = new SaveCallback() {' \
+    '\n    onSave(uuid, newRecord) {' \
+    '\n      setUuid(tabgroup, uuid);' \
+    '\n' \
+    '\n      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){' \
+    '\n        onFetch(result) {' \
+    '\n          Log.e("Module", result.toString());' \
+    '\n' \
+    '\n          if (result != null &amp;&amp; result.size() &gt;= 1) {' \
+    '\n            parentTabgroup__ = result.get(0).get(4);' \
+    '\n            parentTabgroup__ = parentTabgroup__.replaceAll(" ", "_");' \
+    '\n          }' \
+    '\n' \
+    '\n          makeDuplicateRelationships(result, getUuid(tabgroup));' \
+    '\n' \
+    '\n          showToast("{Duplicated_record}");' \
+    '\n          dialog.dismiss();' \
+    '\n        }' \
+    '\n      });' \
+    '\n' \
+    '\n      saveTabGroup(tabgroup);' \
+    '\n    }' \
+    '\n  };' \
+    '\n' \
+    '\n  String extraDupeAttributes = "";' \
+    '\n  fetchAll(getDuplicateAttributeQuery(uuidOld, extraDupeAttributes), new FetchCallback(){' \
+    '\n    onFetch(result) {' \
+    '\n      excludeAttributes = new ArrayList();' \
+    '\n' \
+    '\n      %s' \
+    '\n' \
+    '\n      duplicateTabGroup(tabgroup, null, getExtraAttributes(result), excludeAttributes, saveCallback);' \
+    '\n    }' \
+    '\n  });' \
+    '\n}'
+
+    return format(
+            zip(refs, refs, incAutoNums, mediaPopulate, refs, mediaExcludes),
+            fmt
+    )
+
+def getDefsTabGroupBindsDelete(tree):
+    nodes = util.schema.getTabGroups(tree, isGuiAndData)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+
+    fmt = \
+      'void delete%s(){' \
+    '\n  String tabgroup = "%s";' \
+    '\n  if (isNull(getUuid(tabgroup))) {' \
+    '\n    cancelTabGroup(tabgroup, true);' \
+    '\n  } else {' \
+    '\n    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDelete%s()", "doNotDelete()");' \
+    '\n  }' \
+    '\n}'
+
+    return format(zip(refs, refs, refs), fmt)
+
+def getDefsTabGroupBindsReallyDelete(tree):
+    nodes = util.schema.getTabGroups(tree, isGuiAndData)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+
+    fmt = \
+      'void reallyDelete%s (){' \
+    '\n  String tabgroup = "%s";' \
+    '\n' \
+    '\n  deleteArchEnt(getUuid(tabgroup));' \
+    '\n  cancelTabGroup(tabgroup, false);' \
+    '\n  populateEntityListsOfArchEnt(tabgroup);' \
+    '\n  onDelete%s__();' \
+    '\n}' \
+
+    return format(zip(refs, refs, refs), fmt)
+
+def getDefsTabGroupBinds(tree, t):
     placeholder = '{{defs-tabgroup-binds}}'
-    replacement = format(zip(refs, refs, noNextIds, incAutoNums, refs), fmt)
+    replacement = '\n'.join([
+        getDefsTabGroupBindsNew         (tree),
+        getDefsTabGroupBindsEvents      (tree, 'onCreate', 'create'),
+        getDefsTabGroupBindsEvents      (tree, 'onFetch',  'fetch'),
+        getDefsTabGroupBindsEvents      (tree, 'onSave',   'save'),
+        getDefsTabGroupBindsEvents      (tree, 'onCopy',   'copy'),
+        getDefsTabGroupBindsEvents      (tree, 'onDelete', 'delete'),
+        getDefsTabGroupBindsDuplicate   (tree),
+        getDefsTabGroupBindsDelete      (tree),
+        getDefsTabGroupBindsReallyDelete(tree),
+    ])
 
     return t.replace(placeholder, replacement)
 
 def getNavButtonBinds(tree, t):
-    isGui        = lambda e: util.gui. isGuiNode    (e)
-    isData       = lambda e: util.data.isDataElement(e)
-    isGuiAndData = lambda e: isGui(e) and isData(e)
-
     nodes = util.schema.getTabGroups(tree, isGuiAndData)
     refs  = [util.schema.getPathString(n) for n in nodes]
 
@@ -471,21 +602,86 @@ def getNavButtonBinds(tree, t):
 
     return t.replace(placeholder, replacement)
 
+def getSearchTabGroupString(tree):
+    hasSearchType = lambda e: util.schema.getType(e) == TYPE_SEARCH
+    nodes = util.xml.getAll(tree, hasSearchType)
+    if not len(nodes): return ''
+    search = nodes[0]
+    searchTG = util.schema.getParentTabGroup(search)
+    return util.schema.getPathString(searchTG)
+
+def getSearchBinds(tree, t):
+    placeholder = '{{binds-search}}'
+    tgStr = getSearchTabGroupString(tree)
+    if not tgStr:
+        return t.replace(placeholder, '')
+
+    replacement = \
+      'addOnEvent("{{tab-group-search}}/Search"               , "show"  , "search();");' \
+    '\naddOnEvent("{{tab-group-search}}/Search/Entity_List"   , "click" , "loadEntity();");' \
+    '\naddOnEvent("{{tab-group-search}}/Search/Search_Button" , "click" , "search()");' \
+    '\naddOnEvent("{{tab-group-search}}/Search/Search_Term"   , "click" , "clearSearch()");' \
+
+    return t.replace(placeholder, replacement)
+
 def getSearchTabGroup(tree, t):
     placeholder = '{{tab-group-search}}'
-    return t
+    replacement = getSearchTabGroupString(tree)
+
+    return t.replace(placeholder, replacement)
 
 def getSearchEntities(tree, t):
+    nodes = util.schema.getTabGroups(tree, isGuiAndData)
+    arch16nKeys  = [util.arch16n.getArch16nKey(n) for n in nodes]
+    archEntNames = [util.data.getArchEntName  (n) for n in nodes]
+
     placeholder = '{{search-entities}}'
-    return t
+    fmt         = 'entityTypes.add(new NameValuePair("%s", "%s"));'
+    replacement = \
+      'addOnEvent("{{tab-group-search}}/Search/Entity_Types"  , "click" , "search()");' \
+    '\nentityTypes = new ArrayList();' \
+    '\nentityTypes.add(new NameValuePair("{All}", ""));' + \
+    '\n' + format(zip(arch16nKeys, archEntNames), fmt) + \
+    '\npopulateDropDown("{{tab-group-search}}/Search/Entity_Types", entityTypes);'
+    if len(nodes) <= 1:
+        replacement = ''
+
+    return t.replace(placeholder, replacement)
 
 def getSearchType(tree, t):
+    nodes = util.schema.getTabGroups(tree, isGuiAndData)
+
     placeholder = '{{type-search}}'
-    return t
+    if len(nodes) <= 1:
+        replacement = 'String type = "";'
+    else:
+        replacement = 'String type = getFieldValue(refEntityTypes);'
+
+    return t.replace(placeholder, replacement)
 
 def getLoadEntityDefs(tree, t):
+    nodes = util.schema.getTabGroups(tree, isGuiAndData)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+
     placeholder = '{{defs-load-entity}}'
-    return t
+    fmt = \
+      'void load%sFrom(String uuid) {' \
+    '\n  String tabgroup = "%s";' \
+    '\n  setUuid(tabgroup, uuid);' \
+    '\n  if (isNull(uuid)) return;' \
+    '\n' \
+    '\n  FetchCallback cb = new FetchCallback() {' \
+    '\n    onFetch(result) {' \
+    '\n      populateEntityListsInTabGroup(tabgroup);' \
+    '\n      onFetch%s__();' \
+    '\n    }' \
+    '\n  };' \
+    '\n' \
+    '\n  showTabGroup(tabgroup, uuid, cb);' \
+    '\n}'
+    replacement = format(zip(refs, refs, refs), fmt)
+
+    return t.replace(placeholder, replacement)
 
 def getTakeFromGpsBinds(tree, t):
     placeholder = '{{binds-take-from-gps}}'
@@ -549,12 +745,13 @@ def getUiLogic(tree):
     t = getTabGroupsToValidate(tree, t)
     t = getDefsTabGroupBinds(tree, t)
     t = getNavButtonBinds(tree, t)
-
-    # TODO:
-    t = getSearchTabGroup(tree, t)
+    t = getSearchBinds(tree, t)
     t = getSearchEntities(tree, t)
     t = getSearchType(tree, t)
+    t = getSearchTabGroup(tree, t)
     t = getLoadEntityDefs(tree, t)
+
+    # TODO:
     t = getTakeFromGpsBinds(tree, t)
     t = getTakeFromGpsMappings(tree, t)
     t = getControlStartingIdPaths(tree, t)

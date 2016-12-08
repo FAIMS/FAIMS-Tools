@@ -1375,10 +1375,7 @@ void doNotDelete(){
 /******************************************************************************/
 /*                                   SEARCH                                   */
 /******************************************************************************/
-addOnEvent("{{tab-group-search}}/Search"               , "show"  , "search();");
-addOnEvent("{{tab-group-search}}/Search/Entity_List"   , "click" , "loadEntity();");
-addOnEvent("{{tab-group-search}}/Search/Search_Button" , "click" , "search()");
-addOnEvent("{{tab-group-search}}/Search/Search_Term"   , "click" , "clearSearch()");
+{{binds-search}}
 
 {{search-entities}}
 

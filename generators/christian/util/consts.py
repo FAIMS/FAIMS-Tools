@@ -124,4 +124,11 @@ MENU_UI_TYPES = [
         UI_TYPE_RADIO,
 ]
 
+MEDIA_UI_TYPES = [
+        UI_TYPE_AUDIO,
+        UI_TYPE_CAMERA,
+        UI_TYPE_FILE,
+        UI_TYPE_VIDEO,
+]
+
 ORIGINAL_TAG = '__ORIGINAL_TAG__'
