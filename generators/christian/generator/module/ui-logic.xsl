@@ -2228,6 +2228,7 @@ bindOnEvents();
     <xsl:text>}</xsl:text>
     <xsl:value-of select="$newline"/>
   </xsl:template>
+
   <xsl:template name="incautonum-map">
     <xsl:for-each select="//*[contains(@f, 'autonum')]">
       <xsl:text>  destToSource.put("</xsl:text>
@@ -2242,6 +2243,7 @@ bindOnEvents();
       <xsl:value-of select="$newline"/>
     </xsl:for-each>
   </xsl:template>
+
   <xsl:template name="control-starting-id-paths">
     <xsl:for-each select="//*[contains(@f, 'autonum')]">
       <xsl:text>  l.add("</xsl:text>

@@ -34,7 +34,7 @@ def getArchEntName(node, doRecurse=False):
     if schema.isTabGroup(node) and isDataElement(node):
         return node.tag.replace('_', ' ')
     if doRecurse:
-        return getArchEntName(node.getparent())
+        return getArchEntName(node.getparent(), doRecurse)
     return ''
 
 def getAttribName(node):
@@ -76,8 +76,8 @@ def hasVocabType(node):
     return schema.guessType(node) in vocabTypes
 
 def getRelName(node):
-    if not xml.hasAttrib(node, 'lc'):       return None
-    if schema.getParentTabGroup(node) == None: return None
+    if not xml.hasAttrib(node, 'lc'):          return ''
+    if schema.getParentTabGroup(node) == None: return ''
 
     parentName = schema.getParentTabGroup(node)
     parentName = parentName.tag
@@ -86,8 +86,7 @@ def getRelName(node):
     childName = node.attrib['lc']
     childName = childName.replace('_', ' ')
 
-    relName = '%s - %s' % (parentName, childName)
-    return relName
+    return '%s - %s' % (parentName, childName)
 
     # Replace non-<autonum> tags similarly to in (1).
     for tag, replacements in table.REPLACEMENTS_BY_TAG.iteritems():
@@ -97,3 +96,15 @@ def getRelName(node):
             replaceElement(m, replacements)
 
     schema.annotateWithXmlTypes(tree)
+
+# Gets the relationship name implied by a node having an ec attribute
+def getRelNameEntityList(node):
+    ecVal = xml.getAttribVal(node, ATTRIB_EC)
+    if not ecVal:
+        return ''
+
+    parentName = getArchEntName(node, doRecurse=True)
+    childName  = node.attrib[ATTRIB_EC]
+    childName = childName.replace('_', ' ')
+
+    return '%s - %s' % (parentName, childName)

@@ -684,36 +684,121 @@ def getLoadEntityDefs(tree, t):
     return t.replace(placeholder, replacement)
 
 def getTakeFromGpsBinds(tree, t):
+    isGps  = lambda e: util.schema.getType(e) == TYPE_GPS
+    nodes  = util.xml.getAll(tree, isGps)
+    btns   = [n.getnext().getnext() for n in nodes] # Take from GPS buttons
+    parTgs = [util.schema.getParentTabGroup(n) for n in nodes]
+
+    btnRefs   = [util.schema.getPathString(n) for n in btns]
+    parTgRefs = [util.schema.getPathString(n) for n in parTgs]
+
+    fmt         = 'addOnEvent("%s", "click", "takePoint(\\"%s\\")");'
     placeholder = '{{binds-take-from-gps}}'
-    return t
+    replacement = format(zip(btnRefs, parTgRefs), fmt)
+
+    return t.replace(placeholder, replacement)
 
 def getTakeFromGpsMappings(tree, t):
+    isGps  = lambda e: util.schema.getType(e) == TYPE_GPS
+    nodes  = util.xml.getAll(tree, isGps)
+
+    tabs      = [util.schema.getParentTab     (n) for n in nodes]
+    tabGroups = [util.schema.getParentTabGroup(n) for n in nodes]
+
+    tabRefs      = [util.schema.getPathString(n) for n in tabs]
+    tabGroupRefs = [util.schema.getPathString(n) for n in tabGroups]
+
+    fmt         = 'tabgroupToTabRef.put("%s", "%s");'
     placeholder = '{{take-from-gps-mappings}}'
-    return t
+    replacement = format(zip(tabGroupRefs, tabRefs), fmt)
+
+    return t.replace(placeholder, replacement)
 
 def getControlStartingIdPaths(tree, t):
-    placeholder = '{{control-starting-id-paths}}'
-    return t
+    wasAutoNum = lambda e: util.xml.getAttribVal(e, ORIGINAL_TAG) == TAG_AUTONUM
+    nodes      = util.xml.getAll(tree, wasAutoNum)
+    refs       = [util.schema.getPathString(n) for n in nodes]
 
-def getAutonumParent(tree, t):
-    placeholder = '{{autonum-parent}}'
-    return t
+    fmt         = 'l.add("%s");'
+    placeholder = '{{control-starting-id-paths}}'
+    replacement = format(refs, fmt)
+
+    return t.replace(placeholder, replacement)
+
+def getBindsAutonum(tree, t):
+    wasAutoNum = lambda e: util.xml.getAttribVal(e, ORIGINAL_TAG) == TAG_AUTONUM
+    nodes      = util.xml.getAll(tree, wasAutoNum)
+    parTabs    = [util.schema.getParentTab (n) for n in nodes]
+    refs       = [util.schema.getPathString(n) for n in parTabs]
+
+    fmt         = 'addOnEvent("%s", "show", "loadStartingIds()");'
+    placeholder = '{{binds-autonum}}'
+    replacement = format(refs, fmt)
+
+    return t.replace(placeholder, replacement)
 
 def getIncAutonumMap(tree, t):
+    wasAutoNum = lambda e: util.xml.getAttribVal(e, ORIGINAL_TAG) == TAG_AUTONUM
+    nodes      = util.xml.getAll(tree, wasAutoNum)
+    srcRefs    = [util.schema.getPathString(n)           for n in nodes]
+    dstRefs    = [util.xml.getAttribVal(n, AUTONUM_DEST) for n in nodes]
+
+    fmt         = 'destToSource.put("%s", "%s");'
     placeholder = '{{incautonum-map}}'
-    return t
+    replacement = format(zip(dstRefs, srcRefs), fmt, indent='  ')
+
+    return t.replace(placeholder, replacement)
 
 def getEntityMenus(tree, t):
+    isEntList    = lambda e: util.xml.hasAttrib(e, ATTRIB_E ) or \
+                             util.xml.hasAttrib(e, ATTRIB_EC)
+    type2TypeArg = { UI_TYPE_DROPDOWN : "DropDown", UI_TYPE_LIST : "List" }
+
+    nodes    = util.xml.getAll(tree, isEntList)
+    types    = [util.schema.guessType(n) for n in nodes]
+    parTgs   = [util.schema.getParentTabGroup(n) for n in nodes]
+
+    typeArgs     = [type2TypeArg                  [t_] for t_ in types]
+    refs         = [util.schema.getPathString     (n)  for n  in nodes]
+    parTgRefs    = [util.schema.getPathString     (n)  for n  in parTgs]
+    archEntNames = [util.schema.getEntity         (n)  for n  in nodes]
+    relNames     = [util.data.getRelNameEntityList(n)  for n  in nodes]
+
+    fmt = \
+        'ENTITY_MENUS.add(new String[] {' \
+      '\n    "%s",' \
+      '\n    "%s",' \
+      '\n    "getUuid(\\"%s\\")",' \
+      '\n    "%s",' \
+      '\n    "%s"' \
+      '\n});'
     placeholder = '{{entity-menus}}'
-    return t
+    replacement = format(
+            zip(typeArgs, refs, parTgRefs, archEntNames, relNames),
+            fmt
+    )
+
+    return t.replace(placeholder, replacement)
 
 def getEntityLoading(tree, t):
+    dropdown = lambda e: 'true' if util.schema.getType(e) == UI_TYPE_DROPDOWN \
+                    else ''
+
+    nodes = util.xml.getAll(tree, util.schema.hasLink)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+    dropdowns = [dropdown(n)              for n in nodes]
+
+    fmt         = 'addOnEvent("%s", "click", "loadEntity(%s)");'
     placeholder = '{{entity-loading}}'
-    return t
+    replacement = format(zip(refs, dropdowns), fmt)
+
+    return t.replace(placeholder, replacement)
 
 def getHandWrittenLogic(tree, t):
     placeholder = '{{hand-written-logic}}'
-    return t
+    replacement = util.schema.getLogic(tree)
+
+    return t.replace(placeholder, replacement)
 
 def getUiLogic(tree):
     templateFileName = 'generator/module/uilogic-template.bsh'
@@ -750,12 +835,10 @@ def getUiLogic(tree):
     t = getSearchType(tree, t)
     t = getSearchTabGroup(tree, t)
     t = getLoadEntityDefs(tree, t)
-
-    # TODO:
     t = getTakeFromGpsBinds(tree, t)
     t = getTakeFromGpsMappings(tree, t)
     t = getControlStartingIdPaths(tree, t)
-    t = getAutonumParent(tree, t)
+    t = getBindsAutonum(tree, t)
     t = getIncAutonumMap(tree, t)
     t = getEntityMenus(tree, t)
     t = getEntityLoading(tree, t)
@@ -776,11 +859,12 @@ util.schema.canonicalise(tree)
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #
 ################################################################################
 
-print etree.tostring(
-        tree,
-        pretty_print=True,
-        xml_declaration=True,
-        encoding='utf-8'
-)
+# Useful for debugging
+#print etree.tostring(
+        #tree,
+        #pretty_print=True,
+        #xml_declaration=True,
+        #encoding='utf-8'
+#)
 
 print getUiLogic(tree),

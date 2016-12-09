@@ -373,7 +373,8 @@ def getAutonum(node):
         e = Element(
                 'Next_' + n.tag,
                 { RESERVED_XML_TYPE : TYPE_GUI_DATA,
-                  ORIGINAL_TAG      : node.tag},
+                  ORIGINAL_TAG      : node.tag,
+                  AUTONUM_DEST      : getPathString(n) },
                 b=BIND_DECIMAL,
                 f=FLAG_NOTNULL,
                 c='required',
@@ -386,8 +387,11 @@ def getAutonum(node):
     return tuple(autonum)
 
 def getGps(node):
+    btnName = nextFreeName('Take_From_GPS', node)
+
     colsTop = Element(TAG_COLS, { RESERVED_XML_TYPE : TYPE_COLS })
     colsBot = Element(TAG_COLS, { RESERVED_XML_TYPE : TYPE_COLS })
+    btn     = Element(btnName,  { RESERVED_XML_TYPE : TYPE_GUI_DATA })
 
     colsTop.append(Element('Latitude',  t=UI_TYPE_INPUT, f=FLAG_READONLY))
     colsTop.append(Element('Longitude', t=UI_TYPE_INPUT, f=FLAG_READONLY))
@@ -400,7 +404,7 @@ def getGps(node):
     for n in colsBot: annotateWithXmlTypes(n)
     colsTop.attrib[RESERVED_XML_TYPE] = TYPE_GPS
 
-    return colsTop, colsBot
+    return colsTop, colsBot, btn
 
 def getSearch(node):
     search = Element(
@@ -501,6 +505,20 @@ def getLink(node):
 
     return None
 
+def hasLink(node):
+    return bool(getLink(node))
+
+def getEntity(node):
+    link = util.xml.getAttribVal(node, ATTRIB_E)
+    if link:
+        return link
+
+    link = util.xml.getAttribVal(node, ATTRIB_EC)
+    if link:
+        return link
+
+    return None
+
 def getLinkedNode(node):
     link = getLink(node)
     if not link:
@@ -567,6 +585,13 @@ def getType(node):
     if not RESERVED_XML_TYPE in node.attrib:
         return ''
     return node.attrib[RESERVED_XML_TYPE]
+
+def getLogic(node):
+    nodes = xml.getAll(node, lambda e: getType(e) == TYPE_LOGIC)
+    if len(nodes) < 1:
+        return ''
+    else:
+        return nodes[0].text
 
 def isTabGroup(node):
     return getType(node) == TYPE_TAB_GROUP

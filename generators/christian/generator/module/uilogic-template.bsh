@@ -1415,6 +1415,7 @@ void search(){
 {{binds-take-from-gps}}
 
 void getTakeFromGpsMappings() {
+  Map tabgroupToTabRef = new HashMap();
   {{take-from-gps-mappings}}
   return tabgroupToTabRef;
 }
@@ -1565,7 +1566,7 @@ loadStartingIds() {
   }
 }
 
-addOnEvent("{{autonum-parent}}", "show", "loadStartingIds()");
+{{binds-autonum}}
 
 /*
  * Sets bindings to save autonum'd fields whenever they're blurred.
@@ -1575,6 +1576,7 @@ for (ref : getStartingIdPaths()) {
 }
 
 void incAutoNum(String destPath) {
+  Map destToSource = new HashMap();
   {{incautonum-map}}
 
   String sourcePath = destToSource.get(destPath);
@@ -1705,6 +1707,7 @@ String getEntityMenuPopulationFunction(String[] menuDescriptor) {
   return functionCall;
 }
 
+ENTITY_MENUS = new ArrayList();
 {{entity-menus}}
 for (m : ENTITY_MENUS) {
   String path         = m[1];

@@ -422,7 +422,7 @@ msg  += 'duplicate of a user-specified one'
 exp  = '//*[@lc]'
 matches = tree.xpath(exp)
 # ...Which also have valid relationships (and therefore valid relNames)...
-cond = lambda e: util.data.getRelName(e) != None
+cond = lambda e: bool(util.data.getRelName(e))
 matches = filter(cond, matches)
 matches = util.schema.filterUnannotated(matches)
 # ...And conflict with entries in the <rels> tags
