@@ -38,8 +38,10 @@ def getArchEntName(node, doRecurse=False):
     return ''
 
 def getAttribName(node):
-    if isDataElement(node): return node.tag.replace('_', ' ')
-    else:                   return ''
+    if isDataElement(node) and schema.isGuiDataElement(node):
+        return node.tag.replace('_', ' ')
+    else:
+        return ''
 
 def getAttribType(node):
     if not isDataElement(node): return ''

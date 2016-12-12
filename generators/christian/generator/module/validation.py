@@ -1,83 +1,56 @@
 #!/usr/bin/env python2
 
-from   lxml import etree
+from   lxml       import etree
+from   lxml.etree import Element
 import sys
-import util.consts
+from   util.consts import *
 import util.data
 import util.schema
 
-def addEnts(source, target):
-    exp     = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'tab group')
-    cond1   = lambda e: not util.schema.isFlagged(e, 'nodata')
-    cond2   = lambda e:     util.schema.isFlagged(e, 'notnull')
-    matches = source.xpath(exp)
-    matches = filter(cond1, matches)
-    matches = filter(cond2, matches)
+def getProperty(node):
+    if not util.data.getAttribName(node):             return None
+    if not util.schema.isFlagged(node, FLAG_NOTNULL): return None
 
-    for m in matches:
-        addEnt(m, target)
+    property  = Element('property',  name=util.data.getAttribName(node))
+    validator = Element('validator', type='blankchecker')
+    param     = Element('param',     value=util.data.getAttribType(node),
+                                     type='field'
+    )
 
-def addEnt(entNode, target):
-    a                = etree.Element('ArchaeologicalElement')
-    a.attrib['name'] = entNode.tag.replace('_', ' ')
+    property.append(validator)
+    validator.append(param)
 
-    target.append(a)
+    return property
 
-def addProps(source, target):
-    # Get data elements
-    exp     = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
-    matches = source.xpath(exp)
-    matches = filter(util.data.isDataElement, matches)
+def getProperties(node):
+    guiDataElements = util.schema.getGuiDataElements(node)
 
-    for m in matches:
-        addProp(m, target)
-
-def addProp(dataElement, target):
-    prp                = etree.Element('property')
-    prp.attrib['name'] = dataElement.tag.replace('_', ' ')
-
-    vdr                = etree.Element('validator')
-    vdr.attrib['type'] = 'blankchecker'
-
-    prm                 = etree.Element('param')
-    prm.attrib['value'] = util.data.getAttribType(dataElement)
-    prm.attrib['type']  = 'field'
-
-    vdr   .append(prm)
-    prp   .append(vdr)
-    target.append(prp)
-
-def getValidationSchema(node):
-    validationSchema = etree.Element('ValidationSchema')
-
-    exp     = './*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'tab group')
-    cond1   = lambda e: not util.schema.isFlagged(e, 'nodata')
-    cond2   = lambda e:     util.schema.isFlagged(e, 'notnull')
-    matches = node.xpath(exp)
-    matches = filter(cond1, matches)
-    matches = filter(cond2, matches)
-
-    archaeologicalElements = [getArchaeologicalElement(m) for m in matches]
-    validationSchema.extend(archaeologicalElements)
-
-    return validationSchema
+    properties = [getProperty(n) for n in guiDataElements]
+    properties = filter(lambda x: x != None, properties)
+    return properties
 
 def getArchaeologicalElement(node):
-    archaeologicalElement = etree.Element('ArchaeologicalElement')
+    if not util.schema.hasElementFlaggedWith(node, FLAG_NOTNULL): return None
 
-    exp     = './/*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
-    cond    = lambda e: util.schema.isFlagged(e, 'notnull')
-    matches = node.xpath(exp)
-    matches = filter(cond, matches)
-    matches = filter(util.data.isDataElement, matches)
+    archaeologicalElement = Element('ArchaeologicalElement')
 
-    properties = [getProperty(m) for m in matches]
-    archaeologicalElement.extend(properties)
+    name = util.data.getArchEntName(node)
+    if name: archaeologicalElement.attrib['name'] = name
 
+    archaeologicalElement.extend(getProperties(node))
     return archaeologicalElement
 
-def getProperty(node):
-    return etree.Element('property')
+def getArchaeologicalElements(node):
+    tabGroups = util.schema.getTabGroups(node)
+
+    archaeologicalElements = [getArchaeologicalElement(n) for n in tabGroups]
+    archaeologicalElements = filter(lambda x: x != None, archaeologicalElements)
+    return archaeologicalElements
+
+def getValidationSchema(node):
+    validationSchema = Element('ValidationSchema')
+    validationSchema.extend(getArchaeologicalElements(node))
+    return validationSchema
 
 ################################################################################
 #                                  PARSE XML                                   #
@@ -86,18 +59,15 @@ filenameModule = sys.argv[1]
 tree = util.xml.parseXml(filenameModule)
 util.schema.normalise(tree)
 util.schema.annotateWithXmlTypes(tree)
-util.schema.expandCompositeElements(tree)
-util.schema.annotateWithXmlTypes(tree)
+util.schema.canonicalise(tree)
 
 ################################################################################
 #                        GENERATE AND OUTPUT DATA SCHEMA                       #
 ################################################################################
-dataSchema = etree.Element('ValidationSchema')
-addEnts (tree, dataSchema)
-addProps(tree, dataSchema)
+validationSchema = getValidationSchema(tree)
 
 print etree.tostring(
-        dataSchema,
+        validationSchema,
         pretty_print=True,
         xml_declaration=True,
         encoding='utf-8'

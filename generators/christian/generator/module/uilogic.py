@@ -209,7 +209,7 @@ def getOnShowDefs(tree, t):
 def getOnShowBinds(tree, t):
     tabGroups    = util.schema.getTabGroups(tree, isGuiAndData)
     tabGroupRefs = [util.schema.getPathString(e) for e in tabGroups]
-    onShowFuns   = [util.data.getAttribName(e)   for e in tabGroups]
+    onShowFuns   = [util.data.getArchEntName(e)  for e in tabGroups]
 
     placeholder = '{{binds-on-show}}'
     fmt         = 'addOnEvent("%s", "show", "onShow%s()");'
@@ -311,7 +311,7 @@ def getOnClickBinds(tree, t):
     funs  = [util.schema.getPathString(n, sep='') for n in nodes]
 
     placeholder = '{{binds-on-click}}'
-    fmt         = 'addOnEvent("%s", "click", "onClick%s")'
+    fmt         = 'addOnEvent("%s", "click", "onClick%s()");'
     replacement = format(zip(refs, funs), fmt)
 
     return t.replace(placeholder, replacement)
@@ -510,7 +510,7 @@ def getDefsTabGroupBindsDuplicate(tree):
     '\n        onFetch(result) {' \
     '\n          Log.e("Module", result.toString());' \
     '\n' \
-    '\n          if (result != null &amp;&amp; result.size() &gt;= 1) {' \
+    '\n          if (result != null && result.size() >= 1) {' \
     '\n            parentTabgroup__ = result.get(0).get(4);' \
     '\n            parentTabgroup__ = parentTabgroup__.replaceAll(" ", "_");' \
     '\n          }' \
@@ -617,7 +617,7 @@ def getSearchBinds(tree, t):
         return t.replace(placeholder, '')
 
     replacement = \
-      'addOnEvent("{{tab-group-search}}/Search"               , "show"  , "search();");' \
+      'addOnEvent("{{tab-group-search}}/Search"               , "show"  , "search()");' \
     '\naddOnEvent("{{tab-group-search}}/Search/Entity_List"   , "click" , "loadEntity();");' \
     '\naddOnEvent("{{tab-group-search}}/Search/Search_Button" , "click" , "search()");' \
     '\naddOnEvent("{{tab-group-search}}/Search/Search_Term"   , "click" , "clearSearch()");' \
@@ -784,7 +784,7 @@ def getEntityLoading(tree, t):
     dropdown = lambda e: 'true' if util.schema.getType(e) == UI_TYPE_DROPDOWN \
                     else ''
 
-    nodes = util.xml.getAll(tree, util.schema.hasLink)
+    nodes = util.xml.getAll(tree, util.schema.hasEntity)
     refs  = [util.schema.getPathString(n) for n in nodes]
     dropdowns = [dropdown(n)              for n in nodes]
 

@@ -519,6 +519,9 @@ def getEntity(node):
 
     return None
 
+def hasEntity(node):
+    return bool(getEntity(node))
+
 def getLinkedNode(node):
     link = getLink(node)
     if not link:
