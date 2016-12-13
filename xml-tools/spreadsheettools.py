@@ -33,7 +33,8 @@ def getRowValue_(row, columnName):
 
 # Download spreadsheet and interpret as JSON object
 def id2Html(sheetId):
-    sheet_id = sys.argv[1]
+    if len(sys.argv) >= 2:
+        sheet_id = sys.argv[1]
     url      = 'https://spreadsheets.google.com/feeds/list/' + sheetId + '/1/public/values?prettyprint=true&alt=json';
     response = urllib2.urlopen(url)
     html     = response.read()
