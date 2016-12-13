@@ -23,6 +23,13 @@ def isGuiAndData(e):
     return util.gui. isGuiNode    (e) and \
            util.data.isDataElement(e)
 
+def getFunName(node, prefix='', pathLen=3):
+    pathSep = ''
+    path = util.schema.getPath(node)
+    path = path[:pathLen]
+
+    return prefix + pathSep.join(path).replace('_', '')
+
 def getTabGroups(tree, t):
     nodes = util.schema.getTabGroups(tree)
     refs  = [util.schema.getPathString(tg) for tg in nodes]
@@ -97,11 +104,12 @@ def getUsersVocabId(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getValidationString(archEntType, fieldPairs):
+def getValidationString(node, fieldPairs):
     fpFmt = 'f.add(fieldPair("%s", "%s"));'
     fpStr = format(fieldPairs, fpFmt, indent='  ')
 
-    s  = \
+    funName = getFunName(node)
+    funFmt  = \
       'void validate%s() {' \
     '\n  List f = new ArrayList(); // Fields to be validated' \
     '\n  %s' \
@@ -111,9 +119,7 @@ def getValidationString(archEntType, fieldPairs):
     '\n}' \
     '\n'
 
-    s %= archEntType, fpStr
-
-    return s
+    return funFmt % (funName, fpStr)
 
 def getValidation(tree, t):
     placeholder = '{{validation}}'
@@ -133,7 +139,7 @@ def getValidation(tree, t):
         labels = [util.arch16n.getArch16nKey(v, doAddCurlies=True) for v in V]
         fieldPairs = zip(refs, labels)
 
-        replacement += getValidationString(archEntName, fieldPairs)
+        replacement += getValidationString(n, fieldPairs)
 
     return t.replace(placeholder, replacement)
 
@@ -162,7 +168,7 @@ def getMakeVocab(tree, t):
 
         types.append(type)
 
-    fmt         = 'makeVocab("%s", "%s", "%s")'
+    fmt         = 'makeVocab("%s", "%s", "%s");'
     placeholder = '{{make-vocab}}'
     replacement = format(zip(types, attrNames, refs), fmt)
 
@@ -194,26 +200,26 @@ def getTimestamp(tree, t):
 
 def getOnShowDefs(tree, t):
     tabGroups    = util.schema.getTabGroups(tree, isGuiAndData)
-    archEntNames = [util.data.getArchEntName(e)  for e in tabGroups]
-    tabGroupRefs = [util.schema.getPathString(e) for e in tabGroups]
+    funNames     = [getFunName(n)                for n in tabGroups]
+    tabGroupRefs = [util.schema.getPathString(n) for n in tabGroups]
 
     placeholder = '{{defs-on-show}}'
     fmt = \
     'void onShow%s () {\n' \
     '  saveTabGroup("%s");\n' \
     '}\n'
-    replacement = format(zip(archEntNames, tabGroupRefs), fmt)
+    replacement = format(zip(funNames, tabGroupRefs), fmt)
 
     return t.replace(placeholder, replacement)
 
 def getOnShowBinds(tree, t):
     tabGroups    = util.schema.getTabGroups(tree, isGuiAndData)
-    tabGroupRefs = [util.schema.getPathString(e) for e in tabGroups]
-    onShowFuns   = [util.data.getArchEntName(e)  for e in tabGroups]
+    tabGroupRefs = [util.schema.getPathString(n) for n in tabGroups]
+    funNames     = [getFunName(n)                for n in tabGroups]
 
     placeholder = '{{binds-on-show}}'
     fmt         = 'addOnEvent("%s", "show", "onShow%s()");'
-    replacement = format(zip(tabGroupRefs, onShowFuns), fmt)
+    replacement = format(zip(tabGroupRefs, funNames), fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -270,8 +276,8 @@ def getOnClickDefs(tree, t):
 
     strLND = format(
             zip(
-                [util.schema.getPathString(e, sep='') for e in LNDNodes],
-                [util.xml.getAttribVal(e, ATTRIB_L)   for e in LNDNodes]
+                [getFunName(e)                      for e in LNDNodes],
+                [util.xml.getAttribVal(e, ATTRIB_L) for e in LNDNodes]
             ),
             fmtLND,
             newline='\n\n'
@@ -279,7 +285,7 @@ def getOnClickDefs(tree, t):
 
     strLD = format(
             zip(
-                [util.schema.getPathString(e, sep='') for e in LDNodes],
+                [getFunName(e)                        for e in LDNodes],
                 [util.schema.getParentTabGroup(e).tag for e in LDNodes],
                 [util.xml.getAttribVal(e, ATTRIB_L)   for e in LDNodes]
             ),
@@ -289,7 +295,7 @@ def getOnClickDefs(tree, t):
 
     strLC = format(
             zip(
-                [util.schema.getPathString(e, sep='') for e in LCNodes],
+                [getFunName(e)                        for e in LCNodes],
                 [util.schema.getParentTabGroup(e).tag for e in LCNodes],
                 [util.xml.getAttribVal(e, ATTRIB_LC)  for e in LCNodes]
             ),
@@ -307,12 +313,12 @@ def getOnClickBinds(tree, t):
     LCNodes  = getXLinksToY(tree, ATTRIB_LC, noData=False)
 
     nodes = LNDNodes + LDNodes + LCNodes
-    refs  = [util.schema.getPathString(n)         for n in nodes]
-    funs  = [util.schema.getPathString(n, sep='') for n in nodes]
+    refs     = [util.schema.getPathString(n) for n in nodes]
+    funNames = [getFunName(n)                for n in nodes]
 
     placeholder = '{{binds-on-click}}'
     fmt         = 'addOnEvent("%s", "click", "onClick%s()");'
-    replacement = format(zip(refs, funs), fmt)
+    replacement = format(zip(refs, funNames), fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -332,10 +338,10 @@ def getMediaBinds(tree, t):
     btnRefsFile   = [util.schema.getPathString(n.getnext()) for n in nodesFile]
     btnRefsVideo  = [util.schema.getPathString(n.getnext()) for n in nodesVideo]
 
-    fmtAudio  = 'addOnEvent("%s", "click", "attachAudioTo(\\"%s\\"));'
-    fmtCamera = 'addOnEvent("%s", "click", "attachPictureTo(\\"%s\\"));'
-    fmtFile   = 'addOnEvent("%s", "click", "attachFileTo(\\"%s\\"));'
-    fmtVideo  = 'addOnEvent("%s", "click", "attachVideoTo(\\"%s\\"));'
+    fmtAudio  = 'addOnEvent("%s", "click", "attachAudioTo(\\"%s\\")");'
+    fmtCamera = 'addOnEvent("%s", "click", "attachPictureTo(\\"%s\\")");'
+    fmtFile   = 'addOnEvent("%s", "click", "attachFileTo(\\"%s\\")");'
+    fmtVideo  = 'addOnEvent("%s", "click", "attachVideoTo(\\"%s\\")");'
 
     replacementAudio  = format(zip(refsAudio,  btnRefsAudio),  fmtAudio)
     replacementCamera = format(zip(refsCamera, btnRefsCamera), fmtCamera)
@@ -413,10 +419,12 @@ def getIncAutoNum(tree):
     return format(refs, fmt, indent='  ')
 
 def getDefsTabGroupBindsNew(tree):
-    nodes        = util.schema.getTabGroups(tree, isGuiAndData)
-    refs         = [util.schema.getPathString(n) for n in nodes]
-    noNextIds    = [getNoNextIds (n) for n in nodes]
-    incAutoNums  = [getIncAutoNum(n) for n in nodes]
+    nodes          = util.schema.getTabGroups(tree, isGuiAndData)
+    newFunNames    = [getFunName(n) for n in nodes]
+    refs           = [util.schema.getPathString(n) for n in nodes]
+    noNextIds      = [getNoNextIds (n) for n in nodes]
+    incAutoNums    = [getIncAutoNum(n) for n in nodes]
+    createFunNames = [getFunName(n) for n in nodes]
 
     fmt = \
       'void new%s (){' \
@@ -432,17 +440,20 @@ def getDefsTabGroupBindsNew(tree):
     '\n  onCreate%s__();' \
     '\n}'
 
-    return format(zip(refs, refs, noNextIds, incAutoNums, refs), fmt)
+    return format(
+            zip(newFunNames, refs, noNextIds, incAutoNums, createFunNames),
+            fmt
+    )
 
-def getDefsTabGroupBindsEvents(tree, funName, evtName):
+def getDefsTabGroupBindsEvents(tree, funPrefix, evtName):
     nodes = util.schema.getTabGroups(tree, isGuiAndData)
-    refs  = [util.schema.getPathString(n) for n in nodes]
-    funNames = [funName]*len(nodes)
+    funNames = [getFunName(n, funPrefix)     for n in nodes]
+    refs     = [util.schema.getPathString(n) for n in nodes]
     evtNames = [evtName]*len(nodes)
 
     fmt =  \
-      'void %s%s__(){' \
-    '\n  String ref      = "";' \
+      'void %s__(){' \
+    '\n  String ref      = "%s";' \
     '\n  String event    = "%s";' \
     '\n  String stmtsStr = getStatementsString(ref, event);' \
     '\n  execute(stmtsStr);' \
@@ -483,10 +494,12 @@ def getDefsTabGroupBindsDuplicateME(nodes):
     return [getDefsTabGroupBindsDuplicateME_(n) for n in nodes]
 
 def getDefsTabGroupBindsDuplicate(tree):
-    nodes = util.schema.getTabGroups(tree, isGuiAndData)
-    refs  = [util.schema.getPathString(n) for n in nodes]
-    incAutoNums  = [getIncAutoNum(n) for n in nodes]
+    nodes         = util.schema.getTabGroups(tree, isGuiAndData)
+    dupFunNames   = [getFunName(n) for n in nodes]
+    refs          = [util.schema.getPathString(n) for n in nodes]
+    incAutoNums   = [getIncAutoNum(n) for n in nodes]
     mediaPopulate = getDefsTabGroupBindsDuplicateMP(nodes)
+    cpyFunNames   = [getFunName(n) for n in nodes]
     mediaExcludes = getDefsTabGroupBindsDuplicateME(nodes)
 
     fmt = \
@@ -539,13 +552,21 @@ def getDefsTabGroupBindsDuplicate(tree):
     '\n}'
 
     return format(
-            zip(refs, refs, incAutoNums, mediaPopulate, refs, mediaExcludes),
+            zip(
+                dupFunNames,
+                refs,
+                incAutoNums,
+                mediaPopulate,
+                cpyFunNames,
+                mediaExcludes
+            ),
             fmt
     )
 
 def getDefsTabGroupBindsDelete(tree):
-    nodes = util.schema.getTabGroups(tree, isGuiAndData)
-    refs  = [util.schema.getPathString(n) for n in nodes]
+    nodes   = util.schema.getTabGroups(tree, isGuiAndData)
+    refs    = [util.schema.getPathString(n) for n in nodes]
+    funName = [getFunName(n)                   for n in nodes]
 
     fmt = \
       'void delete%s(){' \
@@ -557,11 +578,12 @@ def getDefsTabGroupBindsDelete(tree):
     '\n  }' \
     '\n}'
 
-    return format(zip(refs, refs, refs), fmt)
+    return format(zip(funName, refs, funName), fmt)
 
 def getDefsTabGroupBindsReallyDelete(tree):
-    nodes = util.schema.getTabGroups(tree, isGuiAndData)
-    refs  = [util.schema.getPathString(n) for n in nodes]
+    nodes   = util.schema.getTabGroups(tree, isGuiAndData)
+    refs    = [util.schema.getPathString(n) for n in nodes]
+    funName = [getFunName(n)                   for n in nodes]
 
     fmt = \
       'void reallyDelete%s (){' \
@@ -573,7 +595,7 @@ def getDefsTabGroupBindsReallyDelete(tree):
     '\n  onDelete%s__();' \
     '\n}' \
 
-    return format(zip(refs, refs, refs), fmt)
+    return format(zip(funName, refs, funName), fmt)
 
 def getDefsTabGroupBinds(tree, t):
     placeholder = '{{defs-tabgroup-binds}}'
@@ -632,7 +654,7 @@ def getSearchTabGroup(tree, t):
 
 def getSearchEntities(tree, t):
     nodes = util.schema.getTabGroups(tree, isGuiAndData)
-    arch16nKeys  = [util.arch16n.getArch16nKey(n) for n in nodes]
+    arch16nKeys  = [util.arch16n.getArch16nKey(n, doAddCurlies=True) for n in nodes]
     archEntNames = [util.data.getArchEntName  (n) for n in nodes]
 
     placeholder = '{{search-entities}}'
@@ -660,8 +682,9 @@ def getSearchType(tree, t):
     return t.replace(placeholder, replacement)
 
 def getLoadEntityDefs(tree, t):
-    nodes = util.schema.getTabGroups(tree, isGuiAndData)
-    refs  = [util.schema.getPathString(n) for n in nodes]
+    nodes    = util.schema.getTabGroups(tree, isGuiAndData)
+    refs     = [util.schema.getPathString(n) for n in nodes]
+    funNames = [getFunName(n) for n in nodes]
 
     placeholder = '{{defs-load-entity}}'
     fmt = \
@@ -679,7 +702,7 @@ def getLoadEntityDefs(tree, t):
     '\n' \
     '\n  showTabGroup(tabgroup, uuid, cb);' \
     '\n}'
-    replacement = format(zip(refs, refs, refs), fmt)
+    replacement = format(zip(funNames, refs, funNames), fmt)
 
     return t.replace(placeholder, replacement)
 

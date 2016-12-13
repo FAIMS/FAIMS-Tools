@@ -419,7 +419,7 @@ def getSearch(node):
     term = SubElement(lCol,   'Search_Term',   t=UI_TYPE_INPUT)
     btn  = SubElement(rCol,   'Search_Button', t=UI_TYPE_BUTTON)
 
-    SubElement(search, 'Entity_Types', t=UI_TYPE_INPUT)
+    SubElement(search, 'Entity_Types', t=UI_TYPE_DROPDOWN)
     SubElement(search, 'Entity_List',  t=UI_TYPE_LIST)
 
     for n in search:

@@ -162,14 +162,13 @@ def getBodyList(node):
     return getBodySelect1(node, appearance='compact')
 
 def getBodyMap(node):
-    map = getBodyInput(node, faims_map='true')
-    return map
+    return getBodyInput(node, faims_map='true')
 
 def getBodyPicture(node):
     return getBodySelect(node, type='image')
 
 def getBodyRadio(node):
-    return getBodySelect(node, appearance='full')
+    return getBodySelect1(node, appearance='full')
 
 def getBodyVideo(node):
     return getBodySelect(node, type='video', faims_sync='true')
@@ -178,8 +177,7 @@ def getBodyViewfiles(node):
     return getBodyButton(node)
 
 def getBodyWebview(node):
-    webview = getBodyInput(node, faims_web='true')
-    return webview
+    return getBodyInput(node, faims_web='true')
 
 def getBodySelect(node, **kwargs):
     select = getBodyLabelled(node, 'select', **kwargs)

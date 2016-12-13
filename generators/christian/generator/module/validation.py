@@ -30,12 +30,15 @@ def getProperties(node):
     return properties
 
 def getArchaeologicalElement(node):
-    if not util.schema.hasElementFlaggedWith(node, FLAG_NOTNULL): return None
+    if not util.schema.hasElementFlaggedWith(node, FLAG_NOTNULL):
+        return None
+    if not util.data.getArchEntName(node):
+        return None
 
-    archaeologicalElement = Element('ArchaeologicalElement')
-
-    name = util.data.getArchEntName(node)
-    if name: archaeologicalElement.attrib['name'] = name
+    archaeologicalElement = Element(
+            'ArchaeologicalElement',
+            name=util.data.getArchEntName(node)
+    )
 
     archaeologicalElement.extend(getProperties(node))
     return archaeologicalElement
