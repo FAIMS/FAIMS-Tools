@@ -31,23 +31,23 @@ def getLabelFromText(node):
     return label
 
 def hasArch16Entry(node):
-    if node.xpath('./ancestor-or-self::rels'): return False
-    if schema.isFlagged(node, FLAG_NOLABEL):   return False
+    if node.xpath('./ancestor-or-self::rels'):  return False
+    if schema.isFlagged(node, FLAG_NOLABEL):    return False
 
-    if schema.getType(node) ==    TYPE_COLS:   return False
-    if schema.getType(node) ==    TYPE_COL:    return False
-    if schema.getType(node) == UI_TYPE_GROUP:  return False
+    if schema.getType(node)   == TYPE_COLS:     return False
+    if schema.getType(node)   == TYPE_COL:      return False
+    if schema.guessType(node) == UI_TYPE_GROUP: return False
 
-    if node.tag == TAG_COL:                    return False
-    if node.tag == TAG_COLS:                   return False
-    if node.tag == TAG_DESC:                   return False
-    if node.tag == TAG_FMT:                    return False
-    if node.tag == TAG_GROUP:                  return False
-    if node.tag == TAG_LOGIC:                  return False
-    if node.tag == TAG_MODULE:                 return False
-    if node.tag == TAG_OPTS:                   return False
-    if node.tag == TAG_POS:                    return False
-    if node.tag == TAG_STR:                    return False
+    if node.tag == TAG_COL:                     return False
+    if node.tag == TAG_COLS:                    return False
+    if node.tag == TAG_DESC:                    return False
+    if node.tag == TAG_FMT:                     return False
+    if node.tag == TAG_GROUP:                   return False
+    if node.tag == TAG_LOGIC:                   return False
+    if node.tag == TAG_MODULE:                  return False
+    if node.tag == TAG_OPTS:                    return False
+    if node.tag == TAG_POS:                     return False
+    if node.tag == TAG_STR:                     return False
 
     return True
 
@@ -57,11 +57,14 @@ def getArch16nVal(node):
     return getLabelFromText(node) or getLabelFromTag(node)
 
 def getArch16nKey(node, keyLen=10, doAddCurlies=False):
+    if not hasArch16Entry(node): return ''
+
     if node.tag == TAG_OPT: lastSegment = [node.text]
     else:                   lastSegment = []
 
-    path = schema.getPath(node) + lastSegment
+    path = xml.getPath(node) + lastSegment
     path = '/'.join(path)
+    path = path.encode('utf-8')
 
     hash = hashlib.sha256(path)
     hash = hash.hexdigest()

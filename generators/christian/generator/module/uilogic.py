@@ -24,8 +24,17 @@ def isGuiAndData(e):
            util.data.isDataElement(e)
 
 def getFunName(node, prefix='', pathLen=3):
+    if type(node) == etree._Element:
+        path = util.schema.getPath(node)
+    elif type(node) == str:
+        path = [node]
+    else:
+        raise TypeError(
+                'Argument `node` has type %s. ' \
+                'Expected `lxml.etree._Element` or `str`.' % type(node)
+        )
+
     pathSep = ''
-    path = util.schema.getPath(node)
     path = path[:pathLen]
 
     return prefix + pathSep.join(path).replace('_', '')
@@ -147,8 +156,8 @@ def getMakeVocab(tree, t):
     nodes     = util.gui.getAll(tree, MENU_UI_TYPES, util.data.isDataElement)
 
     types     = []
-    attrNames = [util.data.  getAttribName(n) for n in nodes]
     refs      = [util.schema.getPathString(n) for n in nodes]
+    attrNames = [util.data.  getAttribName(n) for n in nodes]
 
     # Compute types of nodes
     for n in nodes:
@@ -170,7 +179,7 @@ def getMakeVocab(tree, t):
 
     fmt         = 'makeVocab("%s", "%s", "%s");'
     placeholder = '{{make-vocab}}'
-    replacement = format(zip(types, attrNames, refs), fmt)
+    replacement = format(zip(types, refs, attrNames), fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -178,11 +187,11 @@ def getAuthor(tree, t):
     isAuthor      = lambda e: util.schema.getType(e) == TAG_AUTHOR
     authors       = util.xml.getAll(tree, isAuthor)
     tabGroupNames = [util.schema.getParentTabGroup(a).tag for a in authors]
-    refs          = [util.schema.getPathString(a)               for a in authors]
+    refs          = [util.schema.getPathString(a)         for a in authors]
 
     fmt         = 'tabgroupToAuthor.put("%s", "%s");'
     placeholder = '{{author}}'
-    replacement = format(zip(tabGroupNames, refs), fmt)
+    replacement = format(zip(tabGroupNames, refs), fmt, indent='  ')
 
     return t.replace(placeholder, replacement)
 
@@ -194,7 +203,7 @@ def getTimestamp(tree, t):
 
     fmt         = 'tabgroupToTimestamp.put("%s", "%s");'
     placeholder = '{{timestamp}}'
-    replacement = format(zip(tabGroupNames, refs), fmt)
+    replacement = format(zip(tabGroupNames, refs), fmt, indent='  ')
 
     return t.replace(placeholder, replacement)
 
@@ -285,9 +294,9 @@ def getOnClickDefs(tree, t):
 
     strLD = format(
             zip(
-                [getFunName(e)                        for e in LDNodes],
-                [util.schema.getParentTabGroup(e).tag for e in LDNodes],
-                [util.xml.getAttribVal(e, ATTRIB_L)   for e in LDNodes]
+                [getFunName(e)                                  for e in LDNodes],
+                [util.schema.getParentTabGroup(e).tag           for e in LDNodes],
+                [getFunName(util.xml.getAttribVal(e, ATTRIB_L)) for e in LDNodes]
             ),
             fmtLD,
             newline='\n\n'
@@ -295,9 +304,9 @@ def getOnClickDefs(tree, t):
 
     strLC = format(
             zip(
-                [getFunName(e)                        for e in LCNodes],
-                [util.schema.getParentTabGroup(e).tag for e in LCNodes],
-                [util.xml.getAttribVal(e, ATTRIB_LC)  for e in LCNodes]
+                [getFunName(e)                                   for e in LCNodes],
+                [util.schema.getParentTabGroup(e).tag            for e in LCNodes],
+                [getFunName(util.xml.getAttribVal(e, ATTRIB_LC)) for e in LCNodes]
             ),
             fmtLC,
             newline='\n\n'
@@ -343,10 +352,10 @@ def getMediaBinds(tree, t):
     fmtFile   = 'addOnEvent("%s", "click", "attachFileTo(\\"%s\\")");'
     fmtVideo  = 'addOnEvent("%s", "click", "attachVideoTo(\\"%s\\")");'
 
-    replacementAudio  = format(zip(refsAudio,  btnRefsAudio),  fmtAudio)
-    replacementCamera = format(zip(refsCamera, btnRefsCamera), fmtCamera)
-    replacementFile   = format(zip(refsFile,   btnRefsFile),   fmtFile)
-    replacementVideo  = format(zip(refsVideo,  btnRefsVideo),  fmtVideo)
+    replacementAudio  = format(zip(btnRefsAudio , refsAudio ),  fmtAudio)
+    replacementCamera = format(zip(btnRefsCamera, refsCamera), fmtCamera)
+    replacementFile   = format(zip(btnRefsFile  , refsFile  ),   fmtFile)
+    replacementVideo  = format(zip(btnRefsVideo , refsVideo ),  fmtVideo)
 
     placeholder = '{{binds-media}}'
     replacement = '\n'.join([
@@ -446,6 +455,9 @@ def getDefsTabGroupBindsNew(tree):
     )
 
 def getDefsTabGroupBindsEvents(tree, funPrefix, evtName):
+    ''' Get function definitions ("defs") for triggering events bound to tab
+        groups.
+    '''
     nodes = util.schema.getTabGroups(tree, isGuiAndData)
     funNames = [getFunName(n, funPrefix)     for n in nodes]
     refs     = [util.schema.getPathString(n) for n in nodes]
@@ -460,6 +472,17 @@ def getDefsTabGroupBindsEvents(tree, funPrefix, evtName):
     '\n}'
 
     return format(zip(funNames, refs, evtNames), fmt)
+
+# TODO: Check that I'm right
+def getOnSaveBinds(tree, t):
+    tabGroups    = util.schema.getTabGroups(tree, isGuiAndData)
+    tabGroupRefs = [util.schema.getPathString(n) for n in tabGroups]
+
+    placeholder = '{{binds-onsave}}'
+    fmt         = 'addOnEvent("%s", "save", "populateEntityListsOfArchEnt(\\"%s\\")");'
+    replacement = format(zip(tabGroupRefs, tabGroupRefs), fmt)
+
+    return t.replace(placeholder, replacement)
 
 # Media list population calls
 def getDefsTabGroupBindsDuplicateMP_(nodes):
@@ -804,7 +827,7 @@ def getEntityMenus(tree, t):
     return t.replace(placeholder, replacement)
 
 def getEntityLoading(tree, t):
-    dropdown = lambda e: 'true' if util.schema.getType(e) == UI_TYPE_DROPDOWN \
+    dropdown = lambda e: 'true' if util.schema.guessType(e) == UI_TYPE_DROPDOWN \
                     else ''
 
     nodes = util.xml.getAll(tree, util.schema.hasEntity)
@@ -846,6 +869,7 @@ def getUiLogic(tree):
     t = getTimestamp(tree, t)
     t = getOnShowDefs(tree, t)
     t = getOnShowBinds(tree, t)
+    t = getOnSaveBinds(tree, t)
     t = getOnClickDefs(tree, t)
     t = getOnClickBinds(tree, t)
     t = getMediaBinds(tree, t)

@@ -127,7 +127,7 @@ def getBodyButton(node):
     return getBodyLabelled(node, 'trigger')
 
 def getBodyCamera(node):
-    return getBodySelect(node, faims_sync='true')
+    return getBodySelect(node, type='camera', faims_sync='true')
 
 def getBodyCheckbox(node):
     return getBodySelect(node)
@@ -194,19 +194,25 @@ def getBodySelect1(node, **kwargs):
     return select1
 
 def getBodyLabelled(node, name, **kwargs):
-    isBlank = util.schema.isFlagged(node, FLAG_NOLABEL)
-
-    labelled = Element(name, **kwargs)
-    labelled.append(getBodyLabel(node, isBlank))
-
+    isBlank    = util.schema.isFlagged(node, FLAG_NOLABEL)
     attribName = util.data.getAttribName(node)
     attribType = util.data.getAttribType(node)
     ref        = node.tag
     styleClass = util.xml.getAttribVal(node, ATTRIB_C)
+    readOnly   = util.schema.isFlagged(node, FLAG_READONLY)
+    hidden     = util.schema.isFlagged(node, FLAG_HIDDEN)
+    noScroll   = util.schema.isFlagged(node, FLAG_NOSCROLL)
+
+    labelled = Element(name, **kwargs)
+    labelled.append(getBodyLabel(node, isBlank))
+
     if attribName: labelled.attrib['faims_attribute_name'] = attribName
     if attribType: labelled.attrib['faims_attribute_type'] = attribType
     if ref:        labelled.attrib['ref']                  = ref
     if styleClass: labelled.attrib['faims_style_class']    = styleClass
+    if readOnly:   labelled.attrib['faims_read_only']      = 'true'
+    if hidden:     labelled.attrib['faims_hidden']         = 'true'
+    if noScroll:   labelled.attrib['faims_scrollable']     = 'false'
 
     return labelled
 

@@ -391,7 +391,9 @@ def getGps(node):
 
     colsTop = Element(TAG_COLS, { RESERVED_XML_TYPE : TYPE_COLS })
     colsBot = Element(TAG_COLS, { RESERVED_XML_TYPE : TYPE_COLS })
-    btn     = Element(btnName,  { RESERVED_XML_TYPE : TYPE_GUI_DATA })
+    btn     = Element(btnName,  { RESERVED_XML_TYPE : TYPE_GUI_DATA },
+                t=UI_TYPE_BUTTON
+    )
 
     colsTop.append(Element('Latitude',  t=UI_TYPE_INPUT, f=FLAG_READONLY))
     colsTop.append(Element('Longitude', t=UI_TYPE_INPUT, f=FLAG_READONLY))
@@ -404,13 +406,15 @@ def getGps(node):
     for n in colsBot: annotateWithXmlTypes(n)
     colsTop.attrib[RESERVED_XML_TYPE] = TYPE_GPS
 
+    btn.text = 'Take From GPS'
+
     return colsTop, colsBot, btn
 
 def getSearch(node):
     search = Element(
             'Search',
             { RESERVED_XML_TYPE : TYPE_TAB },
-            f='readonly nodata noscroll'
+            f='nodata noscroll'
     )
     cols = SubElement(search, 'Colgroup_0', { RESERVED_XML_TYPE : TYPE_COLS }, t=UI_TYPE_GROUP, s='orientation')
     lCol = SubElement(cols,   'Col_0',      { RESERVED_XML_TYPE : TYPE_COL  }, t=UI_TYPE_GROUP, s='even')
@@ -511,11 +515,11 @@ def hasLink(node):
 def getEntity(node):
     link = util.xml.getAttribVal(node, ATTRIB_E)
     if link:
-        return link
+        return link.replace('_', ' ')
 
     link = util.xml.getAttribVal(node, ATTRIB_EC)
     if link:
-        return link
+        return link.replace('_', ' ')
 
     return None
 

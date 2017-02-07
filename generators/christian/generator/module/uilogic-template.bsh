@@ -87,6 +87,11 @@ void setFieldValueFromLocalSettings(String key, String ref, boolean doOverwrite)
   });
 }
 
+void setFieldValueFromLocalSettings(String key, String ref) {
+  boolean doOverwrite = false;
+  setFieldValueFromLocalSettings(key, ref);
+}
+
 void setFieldValueFromLocalSettings(String ref, boolean doOverwrite) {
   setFieldValueFromLocalSettings(ref, ref, doOverwrite);
 }
@@ -1365,6 +1370,7 @@ void loadEntityFrom(String entityID) {
 }
 
 {{defs-tabgroup-binds}}
+{{binds-onsave}}
 
 void doNotDelete(){
   showToast("{Delete_Cancelled}");
@@ -1414,7 +1420,7 @@ void search(){
 /******************************************************************************/
 {{binds-take-from-gps}}
 
-void getTakeFromGpsMappings() {
+Map getTakeFromGpsMappings() {
   Map tabgroupToTabRef = new HashMap();
   {{take-from-gps-mappings}}
   return tabgroupToTabRef;
@@ -1450,7 +1456,7 @@ void takePoint(String tabgroup) {
   geolist.add(samplePoint);
 
   String accuracy = "" + getGPSEstimatedAccuracy();
-  setFieldValue(tabgroupToTabRef.get(tabgroup) + "Accuracy", accuracy);
+  setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Accuracy", accuracy);
 
   saveArchEnt(currentUuid, archEntType, geolist, null, new SaveCallback() {
     onSave(uuid, newRecord) {
@@ -1478,10 +1484,10 @@ void fillInGPS(String tabgroup) {
   fetchOne(query, new FetchCallback() {
     onFetch(result) {
       print("[fillInGPS()] Fetched DB transformed geometry: " + result);
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Longitude" , result.get(0));
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Latitude"  , result.get(1));
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Easting"   , result.get(2));
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "Northing"  , result.get(3));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Longitude" , result.get(0));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Latitude"  , result.get(1));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Easting"   , result.get(2));
+      setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Northing"  , result.get(3));
     }
   });
 }
@@ -1496,11 +1502,11 @@ void clearGpsInTabGroup(String tabgroup) {
 }
 
 void clearGpsInTab(String tabRef) {
-  setFieldValue(tabRef + "Accuracy"  , "");
-  setFieldValue(tabRef + "Latitude"  , "");
-  setFieldValue(tabRef + "Longitude" , "");
-  setFieldValue(tabRef + "Easting"   , "");
-  setFieldValue(tabRef + "Northing"  , "");
+  setFieldValue(tabRef + "/Accuracy"  , "");
+  setFieldValue(tabRef + "/Latitude"  , "");
+  setFieldValue(tabRef + "/Longitude" , "");
+  setFieldValue(tabRef + "/Easting"   , "");
+  setFieldValue(tabRef + "/Northing"  , "");
 }
 
 /******************************************************************************/
