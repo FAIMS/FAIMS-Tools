@@ -8,6 +8,7 @@ import util.data
 import util.schema
 
 def getProperty(node):
+    if     util.data.hasFileType(node):               return None
     if not util.data.getAttribName(node):             return None
     if not util.schema.isFlagged(node, FLAG_NOTNULL): return None
 

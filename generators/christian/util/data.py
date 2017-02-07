@@ -43,12 +43,18 @@ def getAttribName(node):
     else:
         return ''
 
-def getAttribType(node):
+def getAttribType(node, isSpecific=False):
     if not isDataElement(node): return ''
 
-    if hasMeasureType(node): return 'measure'
-    if hasFileType   (node): return 'measure'
-    if hasVocabType  (node): return 'vocab'
+    typesSpecific    = ('measure', 'file',    'vocab')
+    typesNonSpecific = ('measure', 'measure', 'vocab')
+
+    if isSpecific: types = typesSpecific
+    else:          types = typesNonSpecific
+
+    if hasMeasureType(node): return types[0]
+    if hasFileType   (node): return types[1]
+    if hasVocabType  (node): return types[2]
 
     return ''
 

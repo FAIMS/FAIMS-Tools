@@ -78,7 +78,7 @@ def addProp(dataElement, target):
     # make prop
     prp                = etree.Element('property')
     prp.attrib['name'] = util.data.getAttribName(dataElement)
-    prp.attrib['type'] = util.data.getAttribType(dataElement)
+    prp.attrib['type'] = util.data.getAttribType(dataElement, True)
     if util.schema.isFlagged(dataElement, FLAG_ID):
         prp.attrib['isIdentifier'] = 'true'
     if util.data.hasFileType(dataElement):
