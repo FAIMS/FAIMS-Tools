@@ -179,8 +179,7 @@ def addTerm(source, target):
     dsc      = etree.Element('description')
     dsc.text = getDescText(source)
 
-    term.text = util.arch16n.getArch16nKey(source)
-    term.text = '{%s}\n' % term.text
+    term.text = util.arch16n.getArch16nKey(source) + '\n'
 
     term  .append(dsc)
     target.append(term)

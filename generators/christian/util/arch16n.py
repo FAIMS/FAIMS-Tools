@@ -7,6 +7,7 @@ import hashlib
 import schema
 import util
 import xml
+import re
 from  consts import *
 
 def getLabelFromTag(node):
@@ -56,21 +57,13 @@ def getArch16nVal(node):
 
     return getLabelFromText(node) or getLabelFromTag(node)
 
-def getArch16nKey(node, keyLen=10, doAddCurlies=False):
+def getArch16nKey(node, doAddCurlies=True):
     if not hasArch16Entry(node): return ''
 
-    if node.tag == TAG_OPT: lastSegment = [node.text]
-    else:                   lastSegment = []
-
-    path = xml.getPath(node) + lastSegment
-    path = '/'.join(path)
-    path = path.encode('utf-8')
-
-    hash = hashlib.sha256(path)
-    hash = hash.hexdigest()
-    hash = hash[:keyLen]
+    val = getArch16nVal(node)
+    key = re.sub('[^0-9a-zA-Z]+', '_', val)
 
     if doAddCurlies:
-        hash = '{' + hash + '}'
+        key = '{' + key + '}'
 
-    return hash
+    return key

@@ -158,8 +158,8 @@ def getValidation(tree, t):
         # Validate-able nodes
         V = util.xml.getAll(n, lambda n: util.schema.isFlagged(n, FLAG_NOTNULL))
         # Field pairs
-        refs   = [util.schema. getPathString(v)                    for v in V]
-        labels = [util.arch16n.getArch16nKey(v, doAddCurlies=True) for v in V]
+        refs   = [util.schema. getPathString(v) for v in V]
+        labels = [util.arch16n.getArch16nKey(v) for v in V]
         fieldPairs = zip(refs, labels)
 
         replacement += getValidationString(n, fieldPairs)
@@ -691,7 +691,7 @@ def getSearchTabGroup(tree, t):
 
 def getSearchEntities(tree, t):
     nodes = util.schema.getTabGroups(tree, isGuiAndData)
-    arch16nKeys  = [util.arch16n.getArch16nKey(n, doAddCurlies=True) for n in nodes]
+    arch16nKeys  = [util.arch16n.getArch16nKey(n) for n in nodes]
     archEntNames = [util.data.getArchEntName  (n) for n in nodes]
 
     placeholder = '{{search-entities}}'

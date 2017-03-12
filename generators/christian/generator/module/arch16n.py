@@ -19,14 +19,12 @@ util.schema.canonicalise(tree)
 ################################################################################
 #                         GENERATE AND OUTPUT ARCH16N                          #
 ################################################################################
-exp     = '//*'
-matches = tree.xpath(exp)
 
 # Generate
 arch16n = util.table.ARCH16N
-for m in matches:
-    k = util.arch16n.getArch16nKey(m)
-    v = util.arch16n.getArch16nVal(m)
+for n in util.xml.getAll(tree):
+    k = util.arch16n.getArch16nKey(n, doAddCurlies=False)
+    v = util.arch16n.getArch16nVal(n)
     if k and v:
         line = '%s=%s' % (k, v)
         arch16n.append(line)
@@ -35,4 +33,4 @@ arch16n = sorted(arch16n)
 
 # Print
 for line in arch16n:
-    print line
+    print line.encode('utf8')

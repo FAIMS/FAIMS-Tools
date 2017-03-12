@@ -221,7 +221,7 @@ def getBodyLabel(node, isBlank=False):
     if isBlank:
         return label
 
-    label.text = util.arch16n.getArch16nKey(node, doAddCurlies=True)
+    label.text = util.arch16n.getArch16nKey(node)
 
     return label
 
