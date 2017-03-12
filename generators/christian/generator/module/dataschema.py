@@ -7,6 +7,14 @@ import util.data
 import util.schema
 import util.xml
 
+def getDefaultDollarFmtStr(node):
+    if util.data.hasVocabType  (node): return '$1'
+    if util.data.hasMeasureType(node): return '$2'
+    return '$0'
+
+def convertDefaultDollar(dataElement, fmtStr):
+    return fmtStr.replace('$0', getDefaultDollarFmtStr(dataElement))
+
 def addRels(source, target):
     copyRels(source, target)
     genRels (source, target)
@@ -105,6 +113,7 @@ def addProp(dataElement, target):
     fmtText = ''
     if matches:
         fmtText = matches[0].text
+        fmtText = convertDefaultDollar(dataElement, fmtText)
     if not fmtText:
         fmtText = fmtDefault
 
