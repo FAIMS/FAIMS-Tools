@@ -15,6 +15,7 @@ import xml
 import util
 import schema
 import gui
+import data
 import arch16n
 
 def getPath(node):
@@ -423,7 +424,13 @@ def getSearch(node):
     term = SubElement(lCol,   'Search_Term',   t=UI_TYPE_INPUT)
     btn  = SubElement(rCol,   'Search_Button', t=UI_TYPE_BUTTON)
 
-    SubElement(search, 'Entity_Types', t=UI_TYPE_DROPDOWN)
+    # Add 'Entity Types' dropdown if there's more than one entity to choose from
+    isGuiAndData = lambda e: util.gui. isGuiNode    (e) and \
+                             util.data.isDataElement(e)
+    nodes = getTabGroups(node, isGuiAndData, descendantOrSelf=False)
+    if len(nodes) > 1:
+        SubElement(search, 'Entity_Types', t=UI_TYPE_DROPDOWN)
+
     SubElement(search, 'Entity_List',  t=UI_TYPE_LIST)
 
     for n in search:
@@ -616,8 +623,14 @@ def isGuiDataElement(node):
             TYPE_TIMESTAMP,
     )
 
-def getTabGroups      (node, keep=None):
-    if keep: return xml.getAll(node, lambda e: isTabGroup(e) and keep(e))
-    else:    return xml.getAll(node, isTabGroup)
+def getTabGroups      (node, keep=None, descendantOrSelf=True):
+    if keep:
+        return xml.getAll(
+                node,
+                lambda e: isTabGroup(e) and keep(e),
+                descendantOrSelf
+        )
+    else:
+        return xml.getAll(node, isTabGroup, descendantOrSelf)
 def getTabs           (node): return xml.getAll(node, isTab)
 def getGuiDataElements(node): return xml.getAll(node, isGuiDataElement)

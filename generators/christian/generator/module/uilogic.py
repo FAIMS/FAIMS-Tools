@@ -49,6 +49,20 @@ def getTabGroups(tree, t):
 
     return t.replace(placeholder, replacement)
 
+def getRedirectBinds(tree, t):
+    hasL = lambda e: util.xml.hasAttrib(e, ATTRIB_L)
+    lNodes = util.xml.getAll(tree, hasL)
+    linkedNodes     = [util.schema.getLinkedNode(n) for n in lNodes]
+    linkedTabs      = filter(util.gui.isTab, linkedNodes)
+    linkedTabGroups = [util.schema.getParentTabGroup(n) for n in linkedTabs]
+    refs            = [util.schema.getPathString(n) for n in linkedTabGroups]
+
+    fmt = 'addOnEvent("%s", "show", "tryRedirect()");'
+    placeholder = '{{binds-redirect}}'
+    replacement = format(refs, fmt)
+
+    return t.replace(placeholder, replacement)
+
 def getDropdownValueGetters(tree, t):
     nodes = util.gui.getAll(tree, UI_TYPE_DROPDOWN)
     refs  = [util.schema.getPathString(n) for n in nodes]
@@ -234,7 +248,7 @@ def getOnShowBinds(tree, t):
 
 def getOnClickNodes(tree):
     hasL  = lambda e: util.xml.hasAttrib(e, ATTRIB_L)
-    hasLC = lambda e: util.xml.hasAttrib(e, ATTRIB_L)
+    hasLC = lambda e: util.xml.hasAttrib(e, ATTRIB_LC)
     return xml.getAll(tree, lambda e: hasL(e) or hasLC(e))
 
 def getXLinksToY(tree, attribVal, noData):
@@ -776,6 +790,7 @@ def getBindsAutonum(tree, t):
     nodes      = util.xml.getAll(tree, wasAutoNum)
     parTabs    = [util.schema.getParentTab (n) for n in nodes]
     refs       = [util.schema.getPathString(n) for n in parTabs]
+    refs       = list(set(refs))
 
     fmt         = 'addOnEvent("%s", "show", "loadStartingIds()");'
     placeholder = '{{binds-autonum}}'
@@ -857,6 +872,7 @@ def getUiLogic(tree):
         raise Exception('"%s" could not be loaded' % templateFileName)
 
     t = getTabGroups(tree, t)
+    t = getRedirectBinds(tree, t)
     t = getDropdownValueGetters(tree, t)
     t = getGpsDiagUpdate(tree, t)
     t = getGpsDiagRef(tree, t)

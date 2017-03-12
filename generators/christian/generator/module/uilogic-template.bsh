@@ -214,36 +214,6 @@ void inheritFieldValue(String src, String dst) {
   inheritFieldValue(src, dst, true);
 }
 
-newTab(String tab, Boolean resolveTabGroups) {
-  if (!resolveTabGroups) {
-    return newTab(tab);
-  }
-
-  tab = tab.replaceAll("/$", "");
-  tab = tab.replaceAll("^/", "");
-
-  path = tab.split("/");
-  switch (path.length) {
-    case 0:
-      break;
-    case 1:
-      newTabGroup(path[0]);
-      break;
-    case 2:
-      String tabgroupString = path[0];
-      String tabString      = path[0] + "/" + path[1];
-
-      redirectTab = tabString;
-      String onShowTabgroup = "if (!isNull(redirectTab)) { newTab(redirectTab); redirectTab = \"\"; }";
-      addOnEvent(tabgroupString, "show", onShowTabgroup);
-
-      newTabGroup(tabgroupString);
-      newTab(tabString);
-      break;
-    default:
-  }
-}
-
 /******************************************************************************/
 /*                           DOCUMENT OBJECT MODEL                            */
 /******************************************************************************/
@@ -462,6 +432,10 @@ String getStatementsString(String ref, String event) {
   return stmtsStr;
 }
 
+boolean hasOnEvent(String ref, String event, String statement) {
+  return getStatements(ref, event).contains(statement);
+}
+
 void delOnEvent(String ref, String event, String statement) {
   while(getStatements(ref, event).remove(statement));
 }
@@ -529,6 +503,46 @@ for (tg : getTabGroups()) {
   addOnEvent(tg, event, callback);
 }
 
+/**************************** NEW TAB REDIRECTION *****************************/
+/* Causes a call to `newTab("tab/path")` to take the user to the specified    */
+/* tab.                                                                       */
+/******************************************************************************/
+
+void tryRedirect() {
+  if (isNull(redirectTab)) return;
+
+  newTab(redirectTab);
+  redirectTab = "";
+}
+
+void newTab(String tab, Boolean resolveTabGroups) {
+  if (!resolveTabGroups) {
+    return newTab(tab);
+  }
+
+  tab = tab.replaceAll("/$", "");
+  tab = tab.replaceAll("^/", "");
+
+  path = tab.split("/");
+  switch (path.length) {
+    case 0:
+      break;
+    case 1:
+      newTabGroup(path[0]);
+      break;
+    case 2:
+      String tabgroupString = path[0];
+      String tabString      = path[0] + "/" + path[1];
+
+      redirectTab = tabString;
+      newTabGroup(tabgroupString);
+      break;
+    default:
+  }
+}
+
+{{binds-redirect}}
+
 /******************************************************************************/
 /*                           DROPDOWN VALUE GETTER                            */
 /*                                                                            */
@@ -562,7 +576,7 @@ void fetchMenuValues() {
   q += " SELECT vocabid, vocabname";
   q += " FROM   vocabulary";
 
-  populateHashMap = new FetchCallback() {
+  FetchCallback populateHashMap = new FetchCallback() {
     onFetch(result) {
       for (row : result) {
         vocabId   = row.get(0);
