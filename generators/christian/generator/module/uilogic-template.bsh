@@ -13,7 +13,7 @@ setSyncEnabled(true);
 setSyncMaxInterval(600.0f);
 setSyncMinInterval(5.0f);
 
-/*********************** REGEX-FREE STRING REPLACEMENT ************************/
+/******************************** STRING UTILS ********************************/
 String replaceFirst(String haystack, String needle, String replacement) {
   i = haystack.indexOf(needle);
   if (i == -1)           return haystack;
@@ -25,6 +25,62 @@ String replaceFirst(String haystack, String needle, String replacement) {
 
 String replaceFirst(String haystack, String replacement) {
   return replaceFirst(haystack, "%s", replacement);
+}
+
+String translate(String s, Map m) {
+  String out = "";
+
+  for (char c : s) {
+    String translation = m.get(c);
+
+    if (isNull(translation)) out += c;
+    else                     out += translation;
+  }
+
+  return out;
+}
+
+String escape(String s) {
+  Map dict = new HashMap();
+  dict.put('\"', "\\\"");
+  dict.put('\\', "\\\\");
+  dict.put('\b', "\\b" );
+  dict.put('\f', "\\f" );
+  dict.put('\n', "\\n" );
+  dict.put('\r', "\\r" );
+
+  return translate(s, dict);
+}
+
+String args2str(Object[] args) {
+  String str = "";
+  String sep = ", ";
+
+  for (Object o : args) {
+    if (o instanceof String) str += "\"" + escape(o) + "\"" + sep;
+    else                     str +=               o         + sep;
+  }
+
+  // The loop adds a superfluous trailing separator. This removes it.
+  str = str.substring(0, str.length() - sep.length());
+
+  return str;
+}
+
+// "Function to string". Makes it very slightly less painful to write callback
+// functions as strings.
+String fun2str(String funName, Object[] args) {
+  String argsStr = args2str(args);
+
+  String str = "{funName}({argsStr})";
+  str = replaceFirst(str, "{funName}", funName);
+  str = replaceFirst(str, "{argsStr}", argsStr);
+
+  return str;
+}
+
+String fun2str(String funName, Object args) {
+  return fun2str(funName, new Object[]{args});
 }
 
 /******************************* LOCALSETTINGS ********************************/
@@ -63,9 +119,7 @@ void insertIntoLocalSettings(String key, Integer val) {
 void insertIntoLocalSettingsOnChange(String ref) {
   String val = getFieldValue(ref);
 
-  String insertCallback  = "";
-  insertCallback += "insertIntoLocalSettings(\"{key}\")";
-  insertCallback  = replaceFirst(insertCallback, "{key}", ref);
+  String insertCallback = fun2str("insertIntoLocalSettings", ref);
 
   addOnEvent(ref, "blur",  insertCallback);
   addOnEvent(ref, "click", insertCallback);
@@ -101,9 +155,10 @@ void setFieldValueFromLocalSettings(String ref) {
 }
 
 void setFieldValueFromLocalSettingsOnShow(String ref, boolean doOverwrite) {
-  String cb = "setFieldValueFromLocalSettings(\"%s\", %s)";
-  cb = replaceFirst(cb, ref);
-  cb = replaceFirst(cb, doOverwrite + "");
+  String cb = fun2str(
+      "setFieldValueFromLocalSettings",
+      new Object[]{ref, doOverwrite}
+  );
 
   addOnEvent(ref, "show", cb);
 }
@@ -494,13 +549,12 @@ for (tg : getTabGroups()) {
   String callback;
 
   // Update (previously) displayed tab group
-  callback = "updateDisplayedTabGroup(\"%s\")";
-  callback = replaceFirst(callback, tg);
-  addOnEvent(tg, event, callback);
+  callback = fun2str("updateDisplayedTabGroup", ref);
+  addOnEvent(ref, event, callback);
 
   // Trigger on leave tab group event
   callback = "onLeaveTabGroup()";
-  addOnEvent(tg, event, callback);
+  addOnEvent(ref, event, callback);
 }
 
 /**************************** NEW TAB REDIRECTION *****************************/
@@ -1163,7 +1217,12 @@ void addNavigationButtons(String tabgroup) {
     }
     actionOn() {
       if(isNull(getUuid(tabgroup))) {
-        showAlert("{Warning}", "{The_current_record_has_not_been_saved_yet}", "newRecord(\""+tabgroup+"\", true)", "");
+        showAlert(
+            "{Warning}",
+            "{The_current_record_has_not_been_saved_yet}",
+            fun2str("newRecord", new Object[]{tabgroup, true}),
+            ""
+        );
       } else {
         newRecord(tabgroup, true);
         showToast("{New_record_created}");
@@ -1522,6 +1581,65 @@ void clearGpsInTab(String tabRef) {
   setFieldValue(tabRef + "/Easting"   , "");
   setFieldValue(tabRef + "/Northing"  , "");
 }
+
+/*************** LOADING AND CREATION OF RECORDS FROM QR CODES ****************/
+void bindQrScanning(String refButton, String refField) {
+  String event = "click";
+
+  String stmt = fun2str("scanRecordFromQrCode", refField);
+
+  addOnEvent(refButton, event, stmt);
+}
+
+void scanRecordFromQrCode(String ref) {
+  String callback = fun2str("loadOrCreateEntityFromScannedAttrib", ref);
+  scanCode(callback);
+}
+
+void loadOrCreateEntityFromScannedAttrib(String ref) {
+  String attribName = getAttributeName(ref);
+  String attribVal  = getLastScanContents();
+
+  String q = "";
+  q += "SELECT uuid ";
+  q += "  FROM latestnondeletedaentvalue ";
+  q += "  JOIN latestnondeletedarchent USING (uuid) ";
+  q += "  JOIN attributekey            USING (attributeid) ";
+  q += " WHERE attributename = '{attribName}' ";
+  q += "   AND measure       = '{attribVal}' ";
+  q  = replaceFirst(q, "{attribName}", attribName);
+  q  = replaceFirst(q, "{attribVal}",  attribVal );
+
+  FetchCallback loadOrCreateEntity = new FetchCallback() {
+    onFetch(result) {
+      if (isNull(result) || result.size() == 0) {
+        createRecordFromScannedAttrib(ref);
+      } else {
+        String uuid = result.get(0).get(0);
+        loadEntityFrom(uuid);
+      }
+    }
+  };
+
+  fetchAll(q, loadOrCreateEntity);
+}
+
+void initScannedAttrib(String ref) {
+  String oldCode = getFieldValue(ref);
+  String newCode = getLastScanContents();
+
+  if (isNull(oldCode))
+    setFieldValue(ref, newCode);
+}
+
+void createRecordFromScannedAttrib(String ref) {
+  String tabGroup = getTabGroupRef(ref);
+  newRecord(tabGroup);
+
+  initScannedAttrib(ref);
+}
+
+{{binds-qr}}
 
 /******************************************************************************/
 /*                       AUTONUMBERING HELPER FUNCTIONS                       */

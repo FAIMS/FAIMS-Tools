@@ -246,13 +246,8 @@ def getOnShowBinds(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getOnClickNodes(tree):
-    hasL  = lambda e: util.xml.hasAttrib(e, ATTRIB_L)
-    hasLC = lambda e: util.xml.hasAttrib(e, ATTRIB_LC)
-    return xml.getAll(tree, lambda e: hasL(e) or hasLC(e))
-
 def getXLinksToY(tree, attribVal, noData):
-    assert attribVal in (ATTRIB_L, ATTRIB_LC)
+    assert attribVal in (ATTRIB_L, ATTRIB_LC, ATTRIB_LQ)
     assert type(noData) == bool
 
     if noData:
@@ -299,8 +294,8 @@ def getOnClickDefs(tree, t):
 
     strLND = format(
             zip(
-                [getFunName(e)                      for e in LNDNodes],
-                [util.xml.getAttribVal(e, ATTRIB_L) for e in LNDNodes]
+                [getFunName(e)          for e in LNDNodes],
+                [util.schema.getLink(e) for e in LNDNodes]
             ),
             fmtLND,
             newline='\n\n'
@@ -308,9 +303,9 @@ def getOnClickDefs(tree, t):
 
     strLD = format(
             zip(
-                [getFunName(e)                                  for e in LDNodes],
-                [util.schema.getParentTabGroup(e).tag           for e in LDNodes],
-                [getFunName(util.xml.getAttribVal(e, ATTRIB_L)) for e in LDNodes]
+                [getFunName(e)                        for e in LDNodes],
+                [util.schema.getParentTabGroup(e).tag for e in LDNodes],
+                [getFunName(util.schema.getLink(e))   for e in LDNodes]
             ),
             fmtLD,
             newline='\n\n'
@@ -318,9 +313,9 @@ def getOnClickDefs(tree, t):
 
     strLC = format(
             zip(
-                [getFunName(e)                                   for e in LCNodes],
-                [util.schema.getParentTabGroup(e).tag            for e in LCNodes],
-                [getFunName(util.xml.getAttribVal(e, ATTRIB_LC)) for e in LCNodes]
+                [getFunName(e)                        for e in LCNodes],
+                [util.schema.getParentTabGroup(e).tag for e in LCNodes],
+                [getFunName(util.schema.getLink(e))   for e in LCNodes]
             ),
             fmtLC,
             newline='\n\n'
@@ -785,7 +780,18 @@ def getControlStartingIdPaths(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getBindsAutonum(tree, t):
+def getQrBinds(tree, t):
+    nodes      = getXLinksToY(tree, ATTRIB_LQ, noData=False)
+    buttonRefs = [util.schema.getPathString(n) for n in nodes]
+    fieldRefs  = [util.schema.getLink(n)       for n in nodes]
+
+    fmt         = 'bindQrScanning("%s", "%s");'
+    placeholder = '{{binds-qr}}'
+    replacement = format(zip(buttonRefs, fieldRefs), fmt);
+
+    return t.replace(placeholder, replacement)
+
+def getAutonumBinds(tree, t):
     wasAutoNum = lambda e: util.xml.getAttribVal(e, ORIGINAL_TAG) == TAG_AUTONUM
     nodes      = util.xml.getAll(tree, wasAutoNum)
     parTabs    = [util.schema.getParentTab (n) for n in nodes]
@@ -901,7 +907,8 @@ def getUiLogic(tree):
     t = getTakeFromGpsBinds(tree, t)
     t = getTakeFromGpsMappings(tree, t)
     t = getControlStartingIdPaths(tree, t)
-    t = getBindsAutonum(tree, t)
+    t = getQrBinds(tree, t)
+    t = getAutonumBinds(tree, t)
     t = getIncAutonumMap(tree, t)
     t = getEntityMenus(tree, t)
     t = getEntityLoading(tree, t)

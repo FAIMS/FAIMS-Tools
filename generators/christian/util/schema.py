@@ -514,6 +514,10 @@ def getLink(node):
     if link:
         return link
 
+    link = util.xml.getAttribVal(node, ATTRIB_LQ)
+    if link:
+        return link
+
     return None
 
 def hasLink(node):
