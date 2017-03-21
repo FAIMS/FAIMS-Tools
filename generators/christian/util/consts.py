@@ -6,12 +6,14 @@ ATTRIB_C  = 'c'
 ATTRIB_E  = 'e'
 ATTRIB_EC = 'ec'
 ATTRIB_F  = 'f'
+ATTRIB_I  = 'i'
 ATTRIB_L  = 'l'
 ATTRIB_LC = 'lc'
 ATTRIB_LQ = 'lq'
 ATTRIB_P  = 'p'
 ATTRIB_S  = 's'
 ATTRIB_T  = 't'
+ATTRIB_VP = 'vp'
 ATTRIBS = [
         v for k, v in dict(globals()).iteritems()
         if k.startswith('ATTRIB_')
@@ -39,6 +41,7 @@ FLAG_NOTHUMB      = 'nothumb'
 FLAG_NOTHUMBNAIL  = 'nothumbnail'
 FLAG_NOTNULL      = 'notnull'
 FLAG_NOUI         = 'noui'
+FLAG_PERSIST      = 'persist'
 FLAG_READONLY     = 'readonly'
 FLAG_USER         = 'user'
 FLAGS = [

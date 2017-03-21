@@ -39,6 +39,23 @@ def getFunName(node, prefix='', pathLen=3):
 
     return prefix + pathSep.join(path).replace('_', '')
 
+def getMakeVocabType(node):
+    isHierarchical = util.schema.isHierarchical(node)
+    uiType         = util.schema.guessType(node)
+
+    # Determine hierarchical-ness
+    if isHierarchical: type = 'Hierarchical'
+    else:              type = ''
+
+    # Determine the rest of the type
+    if uiType == UI_TYPE_CHECKBOX: type += 'CheckBoxGroup'
+    if uiType == UI_TYPE_DROPDOWN: type += 'DropDown'
+    if uiType == UI_TYPE_LIST:     type += 'List'
+    if uiType == UI_TYPE_PICTURE:  type += 'PictureGallery'
+    if uiType == UI_TYPE_RADIO:    type += 'RadioGroup'
+
+    return type
+
 def getTabGroups(tree, t):
     nodes = util.schema.getTabGroups(tree)
     refs  = [util.schema.getPathString(tg) for tg in nodes]
@@ -46,6 +63,32 @@ def getTabGroups(tree, t):
     fmt          = 'tabGroups.add("%s");'
     placeholder  = '{{get-tab-groups}}'
     replacement  = format(refs, fmt, indent='  ')
+
+    return t.replace(placeholder, replacement)
+
+def getPersistBinds(tree, t):
+    isPersist = lambda e: util.schema.isFlagged(FLAG_PERSIST)
+
+    nodes = util.gui.getGuiElements(tree)
+    nodes = filter(isPersist, nodes)
+    refs  = [util.schema.getPathString(tg) for tg in nodes]
+
+    fmt          = 'persistOverSessions("%s");'
+    placeholder  = '{{binds-persist}}'
+    replacement  = format(refs, fmt)
+
+    return t.replace(placeholder, replacement)
+
+def getInheritanceBinds(tree, t):
+    hasI  = lambda e: util.xml.hasAttrib(e, ATTRIB_I)
+    nodes = util.xml.getAll(node, hasI)
+
+    refsSrc  = [util.xml.getAttribVal(ATTRIB_I) for n in nodes]
+    refsDst  = [util.schema.getPathString(n)    for n in nodes]
+
+    fmt          = 'inheritFieldValue("%s", "%s");'
+    placeholder  = '{{binds-inheritance}}'
+    replacement  = format(zip(refsSrc, refsDst), fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -169,30 +212,28 @@ def getValidation(tree, t):
 def getMakeVocab(tree, t):
     nodes     = util.gui.getAll(tree, MENU_UI_TYPES, util.data.isDataElement)
 
-    types     = []
+    types     = [getMakeVocabType(n)          for n in nodes]
     refs      = [util.schema.getPathString(n) for n in nodes]
     attrNames = [util.data.  getAttribName(n) for n in nodes]
 
-    # Compute types of nodes
-    for n in nodes:
-        isHierarchical = util.schema.isHierarchical(n)
-        uiType         = util.schema.guessType(n)
-
-        # Determine hierarchical-ness
-        if isHierarchical: type = 'Hierarchical'
-        else:              type = ''
-
-        # Determine the rest of the type
-        if uiType == UI_TYPE_CHECKBOX: type += 'CheckBoxGroup'
-        if uiType == UI_TYPE_DROPDOWN: type += 'DropDown'
-        if uiType == UI_TYPE_LIST:     type += 'List'
-        if uiType == UI_TYPE_PICTURE:  type += 'PictureGallery'
-        if uiType == UI_TYPE_RADIO:    type += 'RadioGroup'
-
-        types.append(type)
-
     fmt         = 'makeVocab("%s", "%s", "%s");'
     placeholder = '{{make-vocab}}'
+    replacement = format(zip(types, refs, attrNames), fmt)
+
+    return t.replace(placeholder, replacement)
+
+def getMakeVocabVp(tree, t):
+    hasVp       = lambda e: util.xml.hasAttrib(e, ATTRIB_VP)
+    nodes       = util.xml.getAll(tree, hasVp)
+    linkedRefs  = [util.xml.getAttribVal(n, ATTRIB_VP) for n   in nodes]
+    linkedNodes = [util.schema.getNodeAtPath(ref)      for ref in linkedRefs]
+
+    types     = [getMakeVocabType(n)          for n in nodes]
+    refs      = [util.schema.getPathString(n) for n in nodes]
+    attrNames = [util.data.  getAttribName(n) for n in linkedNodes]
+
+    fmt         = 'makeVocab("%s", "%s", "%s");'
+    placeholder = '{{make-vocab-vp}}'
     replacement = format(zip(types, refs, attrNames), fmt)
 
     return t.replace(placeholder, replacement)
@@ -878,6 +919,8 @@ def getUiLogic(tree):
         raise Exception('"%s" could not be loaded' % templateFileName)
 
     t = getTabGroups(tree, t)
+    t = getPersistBinds(tree, t)
+    t = getInheritanceBinds(tree, t)
     t = getRedirectBinds(tree, t)
     t = getDropdownValueGetters(tree, t)
     t = getGpsDiagUpdate(tree, t)
@@ -886,6 +929,7 @@ def getUiLogic(tree):
     t = getUsersPopulateCall(tree, t)
     t = getUsersVocabId(tree, t)
     t = getMakeVocab(tree, t)
+    t = getMakeVocabVp(tree, t)
     t = getValidation(tree, t)
     t = getAuthor(tree, t)
     t = getTimestamp(tree, t)

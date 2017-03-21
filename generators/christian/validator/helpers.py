@@ -105,7 +105,7 @@ def disallowedAttribVals(tree, m, ATTRIB_VALS):
             if '$link' in oneOf:
                 link = m.attrib[attrib]
                 linkType = oneOf[6:] # 'all', 'tab', or 'tabgroup'
-                if not util.schema.isValidLink(tree, link, linkType):
+                if not util.schema.isValidPath(tree, link, linkType):
                     disallowed.append((attrib, m.attrib[attrib], m))
             else:
                 if m.attrib[attrib] not in oneOf:

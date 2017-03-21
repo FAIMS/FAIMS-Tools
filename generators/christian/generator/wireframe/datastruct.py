@@ -63,9 +63,9 @@ class GraphModule(object):
 
             # Determine `nodeFrom` and `nodeTo`
             nodeFrom = n; parFrom = n.getparent()
-            if util.schema.isValidLink(n, n.attrib[attrib], TYPE_TAB_GROUP):
+            if util.schema.isValidPath(n, n.attrib[attrib], TYPE_TAB_GROUP):
                 exp     = '/module/%s/*[@%s="%s"][1]'
-            if util.schema.isValidLink(n, n.attrib[attrib], TYPE_TAB):
+            if util.schema.isValidPath(n, n.attrib[attrib], TYPE_TAB):
                 exp     = '/module/%s[@%s="%s"]'
             exp    %= n.attrib[attrib], RESERVED_XML_TYPE, TYPE_TAB
             matches = n.xpath(exp)

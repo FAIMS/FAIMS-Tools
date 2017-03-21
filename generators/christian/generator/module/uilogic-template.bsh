@@ -181,6 +181,8 @@ void persistOverSessions(String ref) {
   insertIntoLocalSettingsOnChange     (ref);
 }
 
+{{binds-persist}}
+
 /*************************** FIELD COPYING HELPERS ****************************/
 /* Provides an easy way to copy field values, even between vocabs.            */
 /******************************************************************************/
@@ -262,12 +264,14 @@ void inheritFieldValue(
  * if `getTabGroupRef(src)` was the previously displayed tab group.
  */
 void inheritFieldValue(String src, String dst, boolean doCheckParent) {
-  inheritFieldValue(src, dst, doCheckParent, false);
+  inheritFieldValue(src, dst, doCheckParent, true);
 }
 
 void inheritFieldValue(String src, String dst) {
   inheritFieldValue(src, dst, true);
 }
+
+{{binds-inheritance}}
 
 /******************************************************************************/
 /*                           DOCUMENT OBJECT MODEL                            */
@@ -997,6 +1001,7 @@ void makeVocab(String type, String path, String attrib, List vocabExclusions, St
 }
 
 {{make-vocab}}
+{{make-vocab-vp}}
 
 /******************************************************************************/
 /*                                 VALIDATION                                 */

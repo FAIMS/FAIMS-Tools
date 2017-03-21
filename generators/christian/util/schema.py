@@ -537,43 +537,45 @@ def getEntity(node):
 def hasEntity(node):
     return bool(getEntity(node))
 
-def getLinkedNode(node):
-    link = getLink(node)
-    if not link:
+def getNodeAtPath(path):
+    if not path:
         return None
 
-    nodes = node.xpath('/module/' + link)
+    nodes = node.xpath('/module/' + path)
     if len(nodes) != 1:
         return None
 
     return nodes[0]
 
-def isValidLink(root, link, linkType):
-    if not link:
+def getLinkedNode(node):
+    return getNodeAtPath(getLink(node))
+
+def isValidPath(root, path, pathType):
+    if not path:
         return False
 
-    if   linkType in ('tab', TYPE_TAB):
+    if   pathType in ('tab', TYPE_TAB):
         result  = True
         try:
-            result &= bool(root.xpath('/module/' + link))
+            result &= bool(getNodeAtPath(path))
         except:
             result &= False
-        result &= '/'     in link
-        result &= '/' != link[ 0]
-        result &= '/' != link[-1]
+        result &= '/'     in path
+        result &= '/' != path[ 0]
+        result &= '/' != path[-1]
         return result
-    elif linkType in ('tabgroup', TYPE_TAB_GROUP):
+    elif pathType in ('tabgroup', TYPE_TAB_GROUP):
         result  = True
         try:
-            result &= bool(root.xpath('/module/' + link))
+            result &= bool(getNodeAtPath(path))
         except:
             result &= False
-        result &= '/' not in link
+        result &= '/' not in path
         return result
-    elif linkType == 'all':
+    elif pathType == 'all':
         result  = False
-        result |= isValidLink(root, link, TYPE_TAB)
-        result |= isValidLink(root, link, TYPE_TAB_GROUP)
+        result |= isValidPath(root, path, TYPE_TAB)
+        result |= isValidPath(root, path, TYPE_TAB_GROUP)
         return result
     else:
         return False
