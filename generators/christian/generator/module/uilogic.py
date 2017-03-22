@@ -86,6 +86,17 @@ def getInheritanceBinds(tree, t):
     refsSrc  = [util.xml.getAttribVal(ATTRIB_I) for n in nodes]
     refsDst  = [util.schema.getPathString(n)    for n in nodes]
 
+    # Deal with the case where i="the/1st/path the/2nd/path"
+    refsSrc_ = []
+    refsDst_ = []
+    for refSrc, refDst in zip(refsSrc, refsDst):
+        splitRefs = refsSrc.split()
+
+        refsSrc_ +=  refSrc
+        refsDst_ += [refDst] * len(splitRefs)
+    refsSrc = refsSrc_
+    refsDst = refsDst_
+
     fmt          = 'inheritFieldValue("%s", "%s");'
     placeholder  = '{{binds-inheritance}}'
     replacement  = format(zip(refsSrc, refsDst), fmt)
@@ -674,11 +685,12 @@ def getDefsTabGroupBinds(tree, t):
     placeholder = '{{defs-tabgroup-binds}}'
     replacement = '\n'.join([
         getDefsTabGroupBindsNew         (tree),
-        getDefsTabGroupBindsEvents      (tree, 'onCreate', 'create'),
-        getDefsTabGroupBindsEvents      (tree, 'onFetch',  'fetch'),
-        getDefsTabGroupBindsEvents      (tree, 'onSave',   'save'),
-        getDefsTabGroupBindsEvents      (tree, 'onCopy',   'copy'),
-        getDefsTabGroupBindsEvents      (tree, 'onDelete', 'delete'),
+        getDefsTabGroupBindsEvents      (tree, 'onCreate',   'create'),
+        getDefsTabGroupBindsEvents      (tree, 'onPrefetch', 'prefetch'),
+        getDefsTabGroupBindsEvents      (tree, 'onFetch',    'fetch'),
+        getDefsTabGroupBindsEvents      (tree, 'onSave',     'save'),
+        getDefsTabGroupBindsEvents      (tree, 'onCopy',     'copy'),
+        getDefsTabGroupBindsEvents      (tree, 'onDelete',   'delete'),
         getDefsTabGroupBindsDuplicate   (tree),
         getDefsTabGroupBindsDelete      (tree),
         getDefsTabGroupBindsReallyDelete(tree),
@@ -773,9 +785,10 @@ def getLoadEntityDefs(tree, t):
     '\n    }' \
     '\n  };' \
     '\n' \
+    '\n  onPrefetch%s__();' \
     '\n  showTabGroup(tabgroup, uuid, cb);' \
     '\n}'
-    replacement = format(zip(funNames, refs, funNames), fmt)
+    replacement = format(zip(funNames, refs, funNames, funNames), fmt)
 
     return t.replace(placeholder, replacement)
 

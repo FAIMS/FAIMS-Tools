@@ -450,6 +450,7 @@ CUSTOM_EVENTS.add("delete");
 CUSTOM_EVENTS.add("fetch");
 CUSTOM_EVENTS.add("focus");
 CUSTOM_EVENTS.add("leave");
+CUSTOM_EVENTS.add("prefetch");
 CUSTOM_EVENTS.add("save");
 
 String getKey(String ref, String event) {
