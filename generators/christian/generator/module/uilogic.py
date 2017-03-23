@@ -67,7 +67,7 @@ def getTabGroups(tree, t):
     return t.replace(placeholder, replacement)
 
 def getPersistBinds(tree, t):
-    isPersist = lambda e: util.schema.isFlagged(FLAG_PERSIST)
+    isPersist = lambda e: util.schema.isFlagged(e, FLAG_PERSIST)
 
     nodes = util.gui.getGuiElements(tree)
     nodes = filter(isPersist, nodes)
@@ -81,25 +81,30 @@ def getPersistBinds(tree, t):
 
 def getInheritanceBinds(tree, t):
     hasI  = lambda e: util.xml.hasAttrib(e, ATTRIB_I)
-    nodes = util.xml.getAll(node, hasI)
+    nodes = util.xml.getAll(tree, hasI)
 
-    refsSrc  = [util.xml.getAttribVal(ATTRIB_I) for n in nodes]
-    refsDst  = [util.schema.getPathString(n)    for n in nodes]
+    refsSrc  = [util.xml.getAttribVal(n, ATTRIB_I) for n in nodes]
+    refsDst  = [util.schema.getPathString(n)       for n in nodes]
+    checkPar = []
 
     # Deal with the case where i="the/1st/path the/2nd/path"
     refsSrc_ = []
     refsDst_ = []
     for refSrc, refDst in zip(refsSrc, refsDst):
-        splitRefs = refsSrc.split()
+        splitSrcRefs = refSrc.split()
 
-        refsSrc_ +=  refSrc
-        refsDst_ += [refDst] * len(splitRefs)
+        refsSrc_ += splitSrcRefs
+        refsDst_ += [refDst] * len(splitSrcRefs)
     refsSrc = refsSrc_
     refsDst = refsDst_
 
-    fmt          = 'inheritFieldValue("%s", "%s");'
+    # Figure out whether to check parents (and normalise refs)
+    checkPar = [str('!' not in refSrc).lower() for refSrc in refsSrc]
+    refsSrc  = [refSrc.replace('!', '')        for refSrc in refsSrc]
+
+    fmt          = 'inheritFieldValue("%s", "%s", %s);'
     placeholder  = '{{binds-inheritance}}'
-    replacement  = format(zip(refsSrc, refsDst), fmt)
+    replacement  = format(zip(refsSrc, refsDst, checkPar), fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -236,8 +241,8 @@ def getMakeVocab(tree, t):
 def getMakeVocabVp(tree, t):
     hasVp       = lambda e: util.xml.hasAttrib(e, ATTRIB_VP)
     nodes       = util.xml.getAll(tree, hasVp)
-    linkedRefs  = [util.xml.getAttribVal(n, ATTRIB_VP) for n   in nodes]
-    linkedNodes = [util.schema.getNodeAtPath(ref)      for ref in linkedRefs]
+    linkedRefs  = [util.xml.getAttribVal(n, ATTRIB_VP)  for n   in nodes]
+    linkedNodes = [util.schema.getNodeAtPath(tree, ref) for ref in linkedRefs]
 
     types     = [getMakeVocabType(n)          for n in nodes]
     refs      = [util.schema.getPathString(n) for n in nodes]

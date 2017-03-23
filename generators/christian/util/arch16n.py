@@ -7,7 +7,6 @@ import hashlib
 import schema
 import util
 import xml
-import re
 from  consts import *
 
 def getLabelFromTag(node):
@@ -60,8 +59,7 @@ def getArch16nVal(node):
 def getArch16nKey(node, doAddCurlies=True):
     if not hasArch16Entry(node): return ''
 
-    val = getArch16nVal(node)
-    key = re.sub('[^0-9a-zA-Z]+', '_', val)
+    key = schema.getPath(node)[-1]
 
     if doAddCurlies:
         key = '{' + key + '}'

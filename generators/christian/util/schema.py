@@ -537,18 +537,18 @@ def getEntity(node):
 def hasEntity(node):
     return bool(getEntity(node))
 
-def getNodeAtPath(path):
+def getNodeAtPath(tree, path):
     if not path:
         return None
 
-    nodes = node.xpath('/module/' + path)
+    nodes = tree.xpath('/module/' + path)
     if len(nodes) != 1:
         return None
 
     return nodes[0]
 
 def getLinkedNode(node):
-    return getNodeAtPath(getLink(node))
+    return getNodeAtPath(node, getLink(node))
 
 def isValidPath(root, path, pathType):
     if not path:
@@ -557,7 +557,7 @@ def isValidPath(root, path, pathType):
     if   pathType in ('tab', TYPE_TAB):
         result  = True
         try:
-            result &= bool(getNodeAtPath(path))
+            result &= len(getNodeAtPath(root, path)) > 0
         except:
             result &= False
         result &= '/'     in path
@@ -567,7 +567,7 @@ def isValidPath(root, path, pathType):
     elif pathType in ('tabgroup', TYPE_TAB_GROUP):
         result  = True
         try:
-            result &= bool(getNodeAtPath(path))
+            result &= len(getNodeAtPath(root, path)) > 0
         except:
             result &= False
         result &= '/' not in path
