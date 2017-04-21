@@ -79,9 +79,6 @@ def addProps(source, target):
     for m in matches:
         addProp(m, target)
 
-    sortPropsByPos(target)
-    delPosNodes   (target)
-
 def addProp(dataElement, target):
     # make prop
     prp                = etree.Element('property')
@@ -239,6 +236,9 @@ def getDataSchema(node):
 
     addRels (node, dataSchema)
     addEnts (node, dataSchema)
+
+    sortPropsByPos(dataSchema)
+    delPosNodes   (dataSchema)
 
     return dataSchema
 

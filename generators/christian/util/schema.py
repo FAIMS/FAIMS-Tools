@@ -60,26 +60,29 @@ def isAnnotated(node):
         pass
     return False
 
-def getFlags(node, attribName='f'):
+def getFlags(node, attribName=ATTRIB_F):
     try:
         flags = node.attrib[attribName].split()
         return flags
     except:
         return []
 
-def isFlagged(node, flags, checkAncestors=None, attribName='f'):
+def getFlagsString(node, attribName=ATTRIB_F):
+    return ' '.join(getFlags(node, attribName))
+
+def isFlagged(node, flags, checkAncestors=None, attribName=ATTRIB_F):
     if type(flags) is list:
         return isFlaggedList(node, flags, checkAncestors, attribName)
     else:
         return isFlaggedStr (node, flags, checkAncestors, attribName)
 
-def isFlaggedList(node, flags, checkAncestors=True, attribName='f'):
+def isFlaggedList(node, flags, checkAncestors=True, attribName=ATTRIB_F):
     for flag in flags:
         if isFlaggedStr(node, flag, checkAncestors, attribName):
             return True
     return False
 
-def isFlaggedStr(node, flag, checkAncestors=None, attribName='f'):
+def isFlaggedStr(node, flag, checkAncestors=None, attribName=ATTRIB_F):
     # Set the default value of `checkAncestors` if it hasn't been passed
     requiresAncestorCheck = (FLAG_NODATA, FLAG_NOUI)
     if checkAncestors == None:
@@ -94,6 +97,8 @@ def isFlaggedStr(node, flag, checkAncestors=None, attribName='f'):
     # Recursive case
     if checkAncestors:
         return isFlagged(node.getparent(), flag, checkAncestors, attribName)
+
+    return False
 
 def nextFreeName(baseName, node):
     parent = node.getparent()
@@ -149,16 +154,18 @@ def guessType(node):
     if not gui.isGuiElement(node):
         return ''
 
-    isUser = 'f' in node.attrib and 'user' in node.attrib['f'].split()
+    isUser = ATTRIB_F in node.attrib and isFlagged(node, FLAG_USER)
     if isUser:
-        return 'list'
-    if node.xpath('opts') and     node.xpath('.//opt[@p]'):
-        return 'picture'
-    if node.xpath('opts') and not node.xpath('.//opt[@p]'):
-        return 'dropdown'
-    if 'ec' in node.attrib:
-        return 'list'
-    return 'input'
+        return UI_TYPE_BUTTON
+    if hasLink(node):
+        return UI_TYPE_BUTTON
+    if node.xpath(TAG_OPTS) and     node.xpath('.//opt[@p]'):
+        return UI_TYPE_PICTURE
+    if node.xpath(TAG_OPTS) and not node.xpath('.//opt[@p]'):
+        return UI_TYPE_DROPDOWN
+    if ATTRIB_EC in node.attrib:
+        return UI_TYPE_LIST
+    return UI_TYPE_INPUT
 
 def hasElementFlaggedWith(tabGroup, flag):
     exp  = './/*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
@@ -212,7 +219,7 @@ def annotateWithXmlTypes(node):
         elif node.tag == TAG_RELS:        type = TYPE_RELS
     elif parentType == TYPE_TAB_GROUP:
         if   util.isNonLower(node.tag):   type = TYPE_TAB
-        elif node.tag == TAG_LOGIC:       type = TYPE_DESC
+        elif node.tag == TAG_DESC:        type = TYPE_DESC
         elif node.tag == TAG_SEARCH:      type = TYPE_SEARCH
     elif parentType == TYPE_TAB:
         if   guessedType == TAG_GROUP:    type = TYPE_GROUP
@@ -232,14 +239,14 @@ def annotateWithXmlTypes(node):
         elif node.tag == TAG_TIMESTAMP:   type = TYPE_TIMESTAMP
     elif parentType == TYPE_COL:
         if   util.isNonLower(node.tag):   type = TYPE_GUI_DATA
-    elif parentType == TYPE_GUI_DATA:
+    elif parentType in (TYPE_GUI_DATA, TAG_TIMESTAMP, TAG_AUTHOR):
         if   node.tag == TAG_DESC:        type = TYPE_DESC
         elif node.tag == TAG_OPTS:        type = TYPE_OPTS
         elif node.tag == TAG_STR:         type = TYPE_STR
     elif parentType == TYPE_STR:
         if   node.tag == TAG_APP:         type = TYPE_APP
         elif node.tag == TAG_FMT:         type = TYPE_FMT
-        elif node.tag == TAG_STR:         type = TYPE_STR
+        elif node.tag == TAG_POS:         type = TYPE_POS
     elif parentType == TYPE_OPTS:
         if   node.tag == TAG_OPT:         type = TYPE_OPT
     elif parentType == TYPE_OPT:
@@ -343,15 +350,19 @@ def canonicaliseImplied(node):
         xml.appendToAttrib(n, ATTRIB_C, 'required')
 
 def getAuthor(node):
+    flags = getFlagsString(node)
+
     e = Element(
             schema.getParentTabGroup(node).tag + '_author',
             { RESERVED_XML_TYPE : getType(node) },
             t=UI_TYPE_INPUT,
-            f='readonly',
+            f=FLAG_READONLY + SEP_FLAGS + flags,
     )
 
+    e.extend(node.getchildren())
+
     if node.text: e.text = node.text
-    else:          e.text = 'Author'
+    else:         e.text = 'Author'
 
     return e,
 
@@ -440,12 +451,16 @@ def getSearch(node):
     return search,
 
 def getTimestamp(node):
+    flags = getFlagsString(node)
+
     e = Element(
             schema.getParentTabGroup(node).tag + '_timestamp',
             { RESERVED_XML_TYPE : getType(node) },
             t=UI_TYPE_INPUT,
-            f='readonly'
+            f=FLAG_READONLY + SEP_FLAGS + flags,
     )
+
+    e.extend(node.getchildren())
 
     if node.text: e.text = node.text
     else:         e.text = 'Timestamp'

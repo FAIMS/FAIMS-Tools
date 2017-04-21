@@ -93,10 +93,12 @@ def getBodyTab(node):
 def getBodyTabChildren(node):
     type    = util.schema.guessType(node)
     hasType = bool(type)
+    isGui   = util.gui.isGuiNode(node)
 
     if node == None: return None
     if node == []:   return None
     if not hasType:  return None
+    if not isGui:    return None
 
     bodyTabGrandChildren = [getBodyTabChildren(n) for n in node]
     bodyTabGrandChildren = filter(lambda x: x != None, bodyTabGrandChildren)
@@ -165,7 +167,7 @@ def getBodyMap(node):
     return getBodyInput(node, faims_map='true')
 
 def getBodyPicture(node):
-    return getBodySelect(node, type='image')
+    return getBodySelect1(node, type='image')
 
 def getBodyRadio(node):
     return getBodySelect1(node, appearance='full')
@@ -184,7 +186,7 @@ def getBodySelect(node, **kwargs):
 
     item  = SubElement(select, 'item')
     label = SubElement(item,   'label'); label.text = 'Options not loaded'
-    value = SubElement(item,   'value'); value.text = '0'
+    value = SubElement(item,   'value'); value.text = 'Options not loaded'
 
     return select
 

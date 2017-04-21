@@ -95,6 +95,8 @@ def getAttributes(table, xmlType, rowIndex=1):
         if rowXmlType == xmlType:
             return rowAttribs
 
+    return []
+
 def disallowedAttribVals(tree, m, ATTRIB_VALS):
     disallowed = []
     for attrib, oneOf, manyOf in ATTRIB_VALS:

@@ -1,6 +1,8 @@
 RESERVED_XML_TYPE = '__RESERVED_XML_TYPE__'
 RESERVED_IGNORE   = '__RESERVED_IGNORE__'
 
+SEP_FLAGS = ' '
+
 ATTRIB_B  = 'b'
 ATTRIB_C  = 'c'
 ATTRIB_E  = 'e'
@@ -42,6 +44,7 @@ FLAG_NOTHUMBNAIL  = 'nothumbnail'
 FLAG_NOTNULL      = 'notnull'
 FLAG_NOUI         = 'noui'
 FLAG_PERSIST      = 'persist'
+FLAG_PERSIST_OW   = 'persist!'
 FLAG_READONLY     = 'readonly'
 FLAG_USER         = 'user'
 FLAGS = [

@@ -66,16 +66,31 @@ def getTabGroups(tree, t):
 
     return t.replace(placeholder, replacement)
 
+def getNodataTabGroups(tree, t):
+    isNodata = lambda e : util.schema.isFlagged(e, FLAG_NODATA)
+
+    nodes = util.schema.getTabGroups(tree, keep=isNodata)
+    refs  = [util.schema.getPathString(tg) for tg in nodes]
+
+    fmt          = 'flaggedTabGroups.add("%s");'
+    placeholder  = '{{is-flagged-nodata}}'
+    replacement  = format(refs, fmt, indent='  ')
+
+    return t.replace(placeholder, replacement)
+
 def getPersistBinds(tree, t):
-    isPersist = lambda e: util.schema.isFlagged(e, FLAG_PERSIST)
+    isPersist = lambda e: util.schema.isFlagged(e, FLAG_PERSIST) or \
+                          util.schema.isFlagged(e, FLAG_PERSIST_OW)
 
     nodes = util.gui.getGuiElements(tree)
     nodes = filter(isPersist, nodes)
-    refs  = [util.schema.getPathString(tg) for tg in nodes]
+    refs  = [util.schema.getPathString(tg                 ) for tg in nodes]
+    ow    = [util.schema.isFlagged    (tg, FLAG_PERSIST_OW) for tg in nodes]
+    ow    = [str(x).lower()                                 for x  in ow]
 
-    fmt          = 'persistOverSessions("%s");'
+    fmt          = 'persistOverSessions("%s", %s);'
     placeholder  = '{{binds-persist}}'
-    replacement  = format(refs, fmt)
+    replacement  = format(zip(refs, ow), fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -105,20 +120,6 @@ def getInheritanceBinds(tree, t):
     fmt          = 'inheritFieldValue("%s", "%s", %s);'
     placeholder  = '{{binds-inheritance}}'
     replacement  = format(zip(refsSrc, refsDst, checkPar), fmt)
-
-    return t.replace(placeholder, replacement)
-
-def getRedirectBinds(tree, t):
-    hasL = lambda e: util.xml.hasAttrib(e, ATTRIB_L)
-    lNodes = util.xml.getAll(tree, hasL)
-    linkedNodes     = [util.schema.getLinkedNode(n) for n in lNodes]
-    linkedTabs      = filter(util.gui.isTab, linkedNodes)
-    linkedTabGroups = [util.schema.getParentTabGroup(n) for n in linkedTabs]
-    refs            = [util.schema.getPathString(n) for n in linkedTabGroups]
-
-    fmt = 'addOnEvent("%s", "show", "tryRedirect()");'
-    placeholder = '{{binds-redirect}}'
-    replacement = format(refs, fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -226,7 +227,7 @@ def getValidation(tree, t):
     return t.replace(placeholder, replacement)
 
 def getMakeVocab(tree, t):
-    nodes     = util.gui.getAll(tree, MENU_UI_TYPES, util.data.isDataElement)
+    nodes     = util.gui.getAll(tree, MENU_UI_TYPES, isGuiAndData)
 
     types     = [getMakeVocabType(n)          for n in nodes]
     refs      = [util.schema.getPathString(n) for n in nodes]
@@ -835,7 +836,7 @@ def getControlStartingIdPaths(tree, t):
 
     fmt         = 'l.add("%s");'
     placeholder = '{{control-starting-id-paths}}'
-    replacement = format(refs, fmt)
+    replacement = format(refs, fmt, indent='  ')
 
     return t.replace(placeholder, replacement)
 
@@ -853,8 +854,8 @@ def getQrBinds(tree, t):
 def getAutonumBinds(tree, t):
     wasAutoNum = lambda e: util.xml.getAttribVal(e, ORIGINAL_TAG) == TAG_AUTONUM
     nodes      = util.xml.getAll(tree, wasAutoNum)
-    parTabs    = [util.schema.getParentTab (n) for n in nodes]
-    refs       = [util.schema.getPathString(n) for n in parTabs]
+    parTabs    = [util.schema.getParentTabGroup(n) for n in nodes]
+    refs       = [util.schema.getPathString    (n) for n in parTabs]
     refs       = list(set(refs))
 
     fmt         = 'addOnEvent("%s", "show", "loadStartingIds()");'
@@ -937,9 +938,9 @@ def getUiLogic(tree):
         raise Exception('"%s" could not be loaded' % templateFileName)
 
     t = getTabGroups(tree, t)
+    t = getNodataTabGroups(tree, t)
     t = getPersistBinds(tree, t)
     t = getInheritanceBinds(tree, t)
-    t = getRedirectBinds(tree, t)
     t = getDropdownValueGetters(tree, t)
     t = getGpsDiagUpdate(tree, t)
     t = getGpsDiagRef(tree, t)

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # TODO: Don't use module.xml.orginal. Use a temporary folder.
-set -e
 
 proc1="xsltproc"    # Lord, forgive me
 proc2="saxonb-xslt"

@@ -45,3 +45,18 @@ def parseTable(table):
 
             table[i][j] = lim
     return table
+
+def parseArch16n(arch16n):
+    arch16nLines = arch16n.splitlines()
+    arch16nDict = {}
+
+    for line in arch16nLines:
+        splittedLine = line.split('=')
+
+        if len(splittedLine) != 2:
+            continue
+
+        key, val = splittedLine
+        arch16nDict[key] = val
+
+    return arch16nDict

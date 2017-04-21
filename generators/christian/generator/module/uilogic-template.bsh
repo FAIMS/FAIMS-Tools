@@ -1,8 +1,11 @@
 import android.util.Log;
 
+// Beanshell won't let me write "\0".
+final String SEP = Character.toString ((char) 0);
+
 Object dialog;          // Used to help coordinate the display of a "busy..." dialog
 String parentTabgroup;  // Used to allow entities to be saved as children
-String parentTabgroup__;// Used to allow entities to be saved as children
+String parentTabgroup__;// The tab group which was previously displayed
 String redirectTab;     // makes newTab work as expected
 String username = "";
 String userid   = "";
@@ -83,196 +86,6 @@ String fun2str(String funName, Object args) {
   return fun2str(funName, new Object[]{args});
 }
 
-/******************************* LOCALSETTINGS ********************************/
-void makeLocalID(){
-  fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);", null);
-  fetchOne("DROP VIEW IF EXISTS parentchild;", null);
-  fetchOne("CREATE VIEW parentchild AS "+
-           "SELECT parent.uuid as parentuuid, child.uuid as childuuid, parent.participatesverb as parentparticipatesverb, parent.relationshipid, parent.aenttypename as parentaenttypename, child.participatesverb as childparticipatesverb, child.aenttypename as childaenttypename "+
-           "  FROM (SELECT uuid, participatesverb, aenttypename, relationshipid"+
-           "          FROM latestnondeletedaentreln "+
-           "          JOIN relationship USING (relationshipid) "+
-           "          JOIN latestnondeletedarchent USING (uuid) "+
-           "          JOIN aenttype USING (aenttypeid)) parent "+
-           "  JOIN (SELECT uuid, relationshipid, participatesverb, aenttypename "+
-           "          FROM latestnondeletedaentreln "+
-           "          JOIN relationship USING (relationshipid) "+
-           "          JOIN latestnondeletedarchent USING (uuid) "+
-           "          JOIN aenttype USING (aenttypeid)) child "+
-           "    ON (parent.relationshipid = child.relationshipid AND parent.uuid != child.uuid);", null);
-}
-makeLocalID();
-
-void insertIntoLocalSettings(String ref) {
-  String val = getFieldValue(ref);
-  insertIntoLocalSettings(ref, val);
-}
-
-void insertIntoLocalSettings(String key, String val) {
-  fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
-}
-
-void insertIntoLocalSettings(String key, Integer val) {
-  insertIntoLocalSettings(key, Integer.toString(val));
-}
-
-void insertIntoLocalSettingsOnChange(String ref) {
-  String val = getFieldValue(ref);
-
-  String insertCallback = fun2str("insertIntoLocalSettings", ref);
-
-  addOnEvent(ref, "blur",  insertCallback);
-  addOnEvent(ref, "click", insertCallback);
-}
-
-void setFieldValueFromLocalSettings(String key, String ref, boolean doOverwrite) {
-  String val = getFieldValue(ref);
-  if (!isNull(val) && !doOverwrite) {
-    return;
-  }
-
-  String q = "SELECT value FROM localSettings WHERE key = '" + key + "';";
-  fetchOne(q, new FetchCallback() {
-    onFetch(result) {
-      if (!isNull(result)) {
-        setFieldValue(ref, result.get(0));
-      }
-    }
-  });
-}
-
-void setFieldValueFromLocalSettings(String key, String ref) {
-  boolean doOverwrite = false;
-  setFieldValueFromLocalSettings(key, ref);
-}
-
-void setFieldValueFromLocalSettings(String ref, boolean doOverwrite) {
-  setFieldValueFromLocalSettings(ref, ref, doOverwrite);
-}
-
-void setFieldValueFromLocalSettings(String ref) {
-  setFieldValueFromLocalSettings(ref, false);
-}
-
-void setFieldValueFromLocalSettingsOnShow(String ref, boolean doOverwrite) {
-  String cb = fun2str(
-      "setFieldValueFromLocalSettings",
-      new Object[]{ref, doOverwrite}
-  );
-
-  addOnEvent(ref, "show", cb);
-}
-
-void setFieldValueFromLocalSettingsOnShow(String ref) {
-  boolean doOverwrite = false;
-  setFieldValueFromLocalSettingsOnShow(ref, doOverwrite);
-}
-
-/* Causes the value of the field given by `ref` to be saved each time it is
- * modified (on blur). The value of the field is restored when the tab group
- * containing the field is displayed.
- *
- * This function depends on `addOnEvent`. Therefore this function must be called
- * after `addOnEvent` is defined, but before `bindOnEvents` is called. This will
- * be so if the call is made in the autogenerator's `logic` tags.
- */
-void persistOverSessions(String ref) {
-  setFieldValueFromLocalSettingsOnShow(ref);
-  insertIntoLocalSettingsOnChange     (ref);
-}
-
-{{binds-persist}}
-
-/*************************** FIELD COPYING HELPERS ****************************/
-/* Provides an easy way to copy field values, even between vocabs.            */
-/******************************************************************************/
-void copyFieldValue(String src, String dst) {
-  Boolean doFindVocabId = true;
-  copyFieldValue(src, dst, doFindVocabId);
-}
-
-/* `src`           The ref of the source field.
- * `dst`           The ref of the destination field.
- * `doFindVocabId` If this is true, and the properties/attributes of `src` and
- *                 `dst` are different, `copyFieldValue` treats `src` and `dst`
- *                 as if they were menus. Therefore, to copy the value seen by
- *                 the user (i.e. the vocabName of `src`), a database query is
- *                 performed. The query determines the which vocabId of `dst`
- *                 will make it display the same vocabName as `src`.
- *
- *                 If `doFindVocabId` is false, the value returned by
- *                 `getFieldValue` is copied, without any database accesses.
- */
-void copyFieldValue(String src, String dst, Boolean doFindVocabId) {
-  String vocabIdSrc   = getFieldValue(src);
-  String vocabNameSrc = getFieldValue(src, true);
-
-  String attrNameSrc = getAttributeName(src);
-  String attrNameDst = getAttributeName(dst);
-
-  if (attrNameSrc.equals(attrNameDst) || !doFindVocabId) {
-    setFieldValue(dst, vocabIdSrc);
-    return;
-  }
-
-  String q = "";
-  q += "    SELECT vocabid";
-  q += "      FROM vocabulary";
-  q += " LEFT JOIN attributekey";
-  q += "     USING (attributeid)";
-  q += "     WHERE attributename = '{attrNameDst}'";
-  q += "       AND vocabname     = '{vocabNameSrc}'";
-  q  = replaceFirst(q, "{attrNameDst}",  attrNameDst);
-  q  = replaceFirst(q, "{vocabNameSrc}", vocabNameSrc);
-
-
-  FetchCallback populate = new FetchCallback() {
-    onFetch(result) {
-      if (result == null) {
-        // Fall back to dumb field copying
-        copyFieldValue(src, dst, false);
-      }
-
-      String vocabIdDst = result.get(0);
-      setFieldValue(dst, vocabIdDst);
-    }
-  };
-
-  fetchOne(q, populate);
-}
-
-void inheritFieldValue(
-    String src,
-    String dst,
-    boolean doCheckParent,
-    boolean doFindVocabId
-) {
-  String fun = "";
-  fun += "if (!{check} || getDisplayedTabGroup().equals(\"{parent}\"))";
-  fun += "  copyFieldValue(\"{src}\", \"{dst}\", {find})";
-
-  fun = replaceFirst(fun, "{check}",  doCheckParent + "");
-  fun = replaceFirst(fun, "{parent}", getTabGroupRef(src));
-  fun = replaceFirst(fun, "{src}",    src);
-  fun = replaceFirst(fun, "{dst}",    dst);
-  fun = replaceFirst(fun, "{find}",   doFindVocabId + "");
-
-  addOnEvent(getTabGroupRef(dst), "create", fun);
-}
-
-/* If `doCheckParent`, then the value at `src` will only be inherited to `dst`
- * if `getTabGroupRef(src)` was the previously displayed tab group.
- */
-void inheritFieldValue(String src, String dst, boolean doCheckParent) {
-  inheritFieldValue(src, dst, doCheckParent, true);
-}
-
-void inheritFieldValue(String src, String dst) {
-  inheritFieldValue(src, dst, true);
-}
-
-{{binds-inheritance}}
-
 /******************************************************************************/
 /*                           DOCUMENT OBJECT MODEL                            */
 /******************************************************************************/
@@ -283,6 +96,12 @@ List getTabGroups() {
   List tabGroups = new ArrayList();
   {{get-tab-groups}}
   return tabGroups;
+}
+
+boolean isFlaggedNodata(String tabGroup) {
+  List flaggedTabGroups = new ArrayList();
+  {{is-flagged-nodata}}
+  return flaggedTabGroups.contains(tabGroup);
 }
 
 void updateDisplayedTabGroup(String tabGroup) {
@@ -425,6 +244,9 @@ String getArchEntTypePascalCased(String ref) {
 /*         is first saved.                                                    */
 /*   - "create" --- Triggered after a record is first created.                */
 /*   - "delete" --- Triggered after a record is deleted.                      */
+/*   - "prefetch" --- Triggered before the "fetch" event. More specifically,  */
+/*         this event is triggered before a tab group is fetched and          */
+/*         displayed.                                                         */
 /*   - "fetch" --- Triggered after a record is fetched and displayed in a     */
 /*         given tab group.                                                   */
 /*   - "focus" --- This is merely an interface to make code for adding        */
@@ -440,7 +262,6 @@ String getArchEntTypePascalCased(String ref) {
 /* `delOnEvents` calls. Calling `bindOnEvents` is what actually establishes   */
 /* the bindings once they have been added to the accumulator.                 */
 /******************************************************************************/
-String SEP = Character.toString ((char) 0); // Beanshell won't let me write "\0"
 Map    EVENTS        = new HashMap(); // (ref, event type) -> callback statement
 Set    CUSTOM_EVENTS = new HashSet(); // Events not handled by `onEvent`
 CUSTOM_EVENTS.add("blur");
@@ -562,45 +383,221 @@ for (tg : getTabGroups()) {
   addOnEvent(ref, event, callback);
 }
 
+/******************************* LOCALSETTINGS ********************************/
+void makeLocalID(){
+  fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);", null);
+  fetchOne("DROP VIEW IF EXISTS parentchild;", null);
+  fetchOne("CREATE VIEW parentchild AS "+
+           "SELECT parent.uuid as parentuuid, child.uuid as childuuid, parent.participatesverb as parentparticipatesverb, parent.relationshipid, parent.aenttypename as parentaenttypename, child.participatesverb as childparticipatesverb, child.aenttypename as childaenttypename "+
+           "  FROM (SELECT uuid, participatesverb, aenttypename, relationshipid"+
+           "          FROM latestnondeletedaentreln "+
+           "          JOIN relationship USING (relationshipid) "+
+           "          JOIN latestnondeletedarchent USING (uuid) "+
+           "          JOIN aenttype USING (aenttypeid)) parent "+
+           "  JOIN (SELECT uuid, relationshipid, participatesverb, aenttypename "+
+           "          FROM latestnondeletedaentreln "+
+           "          JOIN relationship USING (relationshipid) "+
+           "          JOIN latestnondeletedarchent USING (uuid) "+
+           "          JOIN aenttype USING (aenttypeid)) child "+
+           "    ON (parent.relationshipid = child.relationshipid AND parent.uuid != child.uuid);", null);
+}
+makeLocalID();
+
+void insertIntoLocalSettings(String ref) {
+  String val = getFieldValue(ref);
+  insertIntoLocalSettings(ref, val);
+}
+
+void insertIntoLocalSettings(String key, String val) {
+  fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
+}
+
+void insertIntoLocalSettings(String key, Integer val) {
+  insertIntoLocalSettings(key, Integer.toString(val));
+}
+
+void insertIntoLocalSettingsOnChange(String ref) {
+  String val = getFieldValue(ref);
+
+  String insertCallback = fun2str("insertIntoLocalSettings", ref);
+
+  addOnEvent(ref, "blur",  insertCallback);
+  addOnEvent(ref, "click", insertCallback);
+}
+
+void setFieldValueFromLocalSettings(String key, String ref, boolean doOverwrite) {
+  String val = getFieldValue(ref);
+  if (!isNull(val) && !doOverwrite) {
+    return;
+  }
+
+  String q = "SELECT value FROM localSettings WHERE key = '" + key + "';";
+  fetchOne(q, new FetchCallback() {
+    onFetch(result) {
+      if (!isNull(result)) {
+        setFieldValue(ref, result.get(0));
+      }
+    }
+  });
+}
+
+void setFieldValueFromLocalSettings(String key, String ref) {
+  boolean doOverwrite = false;
+  setFieldValueFromLocalSettings(key, ref);
+}
+
+void setFieldValueFromLocalSettings(String ref, boolean doOverwrite) {
+  setFieldValueFromLocalSettings(ref, ref, doOverwrite);
+}
+
+void setFieldValueFromLocalSettings(String ref) {
+  setFieldValueFromLocalSettings(ref, false);
+}
+
+void setFieldValueFromLocalSettingsOnShow(String ref, boolean doOverwrite) {
+  String cb = fun2str(
+      "setFieldValueFromLocalSettings",
+      new Object[]{ref, doOverwrite}
+  );
+
+  addOnEvent(getTabGroupRef(ref), "show", cb);
+}
+
+void setFieldValueFromLocalSettingsOnShow(String ref) {
+  boolean doOverwrite = false;
+  setFieldValueFromLocalSettingsOnShow(ref, doOverwrite);
+}
+
+/* Causes the value of the field given by `ref` to be saved each time it is
+ * modified (on blur). The value of the field is restored when the tab group
+ * containing the field is displayed.
+ *
+ * This function depends on `addOnEvent`. Therefore this function must be called
+ * after `addOnEvent` is defined, but before `bindOnEvents` is called. This will
+ * be so if the call is made in the autogenerator's `logic` tags.
+ */
+void persistOverSessions(String ref) {
+  setFieldValueFromLocalSettingsOnShow(ref);
+  insertIntoLocalSettingsOnChange     (ref);
+}
+
+void persistOverSessions(String ref, boolean doOverwrite) {
+  setFieldValueFromLocalSettingsOnShow(ref, doOverwrite);
+  insertIntoLocalSettingsOnChange     (ref);
+}
+
+{{binds-persist}}
+
+/*************************** FIELD COPYING HELPERS ****************************/
+/* Provides an easy way to copy field values, even between vocabs.            */
+/******************************************************************************/
+boolean setMenuValue(String ref, String vocabName) {
+  String attrName = getAttributeName(ref);
+  String vocabId = getVocabId(attrName, vocabName);
+
+  if (isNull(vocabId))
+    return false;
+  else {
+    setFieldValue(ref, vocabId);
+    return true;
+  }
+}
+
+void copyFieldValue(String src, String dst) {
+  Boolean doFindVocabId = true;
+  copyFieldValue(src, dst, doFindVocabId);
+}
+
+/* `src`           The ref of the source field.
+ * `dst`           The ref of the destination field.
+ * `doFindVocabId` If this is true, and the properties/attributes of `src` and
+ *                 `dst` are different, `copyFieldValue` treats `src` and `dst`
+ *                 as if they were menus. Therefore, to copy the value seen by
+ *                 the user (i.e. the vocabName of `src`), a database query is
+ *                 performed. The query determines the which vocabId of `dst`
+ *                 will make it display the same vocabName as `src`.
+ *
+ *                 If `doFindVocabId` is false, the value returned by
+ *                 `getFieldValue` is copied, without any database accesses.
+ */
+void copyFieldValue(String src, String dst, Boolean doFindVocabId) {
+  String vocabIdSrc   = getFieldValue(src);
+  String vocabNameSrc = getFieldValue(src, true);
+
+  String attrNameSrc = getAttributeName(src);
+  String attrNameDst = getAttributeName(dst);
+
+  if (attrNameSrc.equals(attrNameDst) || !doFindVocabId) {
+    setFieldValue(dst, vocabIdSrc);
+    return;
+  }
+
+  if (!setMenuValue(dst, vocabNameSrc)) {
+    // Fall back to dumb field copying
+    copyFieldValue(src, dst, false);
+  }
+}
+
+boolean isSelected(String ref, String vocabName) {
+  String vocabNameActual = getMenuValue(ref);
+
+  if (vocabNameActual == null)
+    return vocabNameActual == vocabName;
+  else
+    return vocabNameActual.equals(vocabName);
+}
+
+void inheritFieldValue(
+    String src,
+    String dst,
+    boolean doCheckParent,
+    boolean doFindVocabId
+) {
+  String fun = "";
+  fun += "if (!{check} || getDisplayedTabGroup().equals(\"{parent}\"))";
+  fun += "  copyFieldValue(\"{src}\", \"{dst}\", {find})";
+
+  fun = replaceFirst(fun, "{check}",  doCheckParent + "");
+  fun = replaceFirst(fun, "{parent}", getTabGroupRef(src));
+  fun = replaceFirst(fun, "{src}",    src);
+  fun = replaceFirst(fun, "{dst}",    dst);
+  fun = replaceFirst(fun, "{find}",   doFindVocabId + "");
+
+
+  String dstParent = getTabGroupRef(dst);
+  if (isFlaggedNodata(dstParent)) addOnEvent(dstParent, "show",   fun);
+  else                            addOnEvent(dstParent, "create", fun);
+}
+
+/* If `doCheckParent`, then the value at `src` will only be inherited to `dst`
+ * if `getTabGroupRef(src)` was the previously displayed tab group.
+ */
+void inheritFieldValue(String src, String dst, boolean doCheckParent) {
+  inheritFieldValue(src, dst, doCheckParent, false);
+}
+
+void inheritFieldValue(String src, String dst) {
+  inheritFieldValue(src, dst, true);
+}
+
+{{binds-inheritance}}
+
 /**************************** NEW TAB REDIRECTION *****************************/
 /* Causes a call to `newTab("tab/path")` to take the user to the specified    */
 /* tab.                                                                       */
 /******************************************************************************/
-
-void tryRedirect() {
-  if (isNull(redirectTab)) return;
-
-  newTab(redirectTab);
-  redirectTab = "";
-}
 
 void newTab(String tab, Boolean resolveTabGroups) {
   if (!resolveTabGroups) {
     return newTab(tab);
   }
 
-  tab = tab.replaceAll("/$", "");
-  tab = tab.replaceAll("^/", "");
+  String tabGroupRef = getTabGroupRef(tab);
+  String tabRef      = getTabRef     (tab);
 
-  path = tab.split("/");
-  switch (path.length) {
-    case 0:
-      break;
-    case 1:
-      newTabGroup(path[0]);
-      break;
-    case 2:
-      String tabgroupString = path[0];
-      String tabString      = path[0] + "/" + path[1];
-
-      redirectTab = tabString;
-      newTabGroup(tabgroupString);
-      break;
-    default:
-  }
+  if (!isDisplayed(tabGroupRef)) newTabGroup(tabGroupRef);
+  if (!isNull     (tabRef     )) newTab     (tabRef);
 }
-
-{{binds-redirect}}
 
 /******************************************************************************/
 /*                           DROPDOWN VALUE GETTER                            */
@@ -622,25 +619,52 @@ String getDropdownItemValue() {
 /* default, which is the vocabid.                                             */
 /******************************************************************************/
 // Map from vocabid to vocabname. Populated by `fetchMenuValues()`.
-Map MENU_VALUES = null;
+Map VOCABID_TO_VOCABNAME = null;
+Map VOCABNAME_TO_VOCABID = null;
+
+
+void setVocabId(String attrName, String vocabName, String vocabId) {
+  String key = attrName + SEP + vocabName;
+  String val = vocabId;
+
+  VOCABNAME_TO_VOCABID.put(key, val);
+}
+
+String getVocabId(String attrName, String vocabName) {
+  return VOCABNAME_TO_VOCABID.get(attrName + SEP + vocabName);
+}
 
 /*
- * Initialises `MENU_VALUES` with the (vocabid -> vocabname) mapping of every
- * menu.
+ * Initialises `VOCABID_TO_VOCABNAME` with the (vocabid -> vocabname) mapping of
+ * every menu.
  */
 void fetchMenuValues() {
-  MENU_VALUES = new HashMap();
+  VOCABID_TO_VOCABNAME = new HashMap();
+  VOCABNAME_TO_VOCABID = new HashMap();
 
   String q = "";
-  q += " SELECT vocabid, vocabname";
-  q += " FROM   vocabulary";
+  q += "    SELECT vocabid, vocabname, attributename";
+  q += "      FROM vocabulary";
+  q += " LEFT JOIN attributekey";
+  q += "     USING (attributeid)";
 
   FetchCallback populateHashMap = new FetchCallback() {
     onFetch(result) {
+      // Populate VOCABID_TO_VOCABNAME
       for (row : result) {
-        vocabId   = row.get(0);
-        vocabName = row.get(1);
-        MENU_VALUES.put(vocabId, vocabName);
+        String vocabId   = row.get(0);
+        String vocabName = row.get(1);
+        VOCABID_TO_VOCABNAME.put(vocabId, vocabName);
+      }
+
+      // Populate VOCABNAME_TO_VOCABID
+      for (row : result) {
+        String vocabId   = row.get(0);
+        String vocabName = row.get(1);
+        String attrName  = row.get(2);
+
+
+        setVocabId(attrName, vocabName, vocabId);
       }
     }
   };
@@ -658,7 +682,7 @@ String getFieldValue(String ref, Boolean doConvertVocabIds) {
   }
 
   String val       = getFieldValue(ref);
-  String vocabName = MENU_VALUES.get(val);
+  String vocabName = VOCABID_TO_VOCABNAME.get(val);
 
   if (val       == null) return "";
   if (vocabName == null) return "";
@@ -1430,7 +1454,6 @@ void loadEntity(Boolean isDropdown) {
 
 void loadEntityFrom(String entityID) {
   if (isNull(entityID)) {
-    Log.e("Module", "Cannot load an entity with a null ID.");
     return;
   }
 
@@ -1441,8 +1464,24 @@ void loadEntityFrom(String entityID) {
                            " WHERE uuid = '" + entityID + "'";
   fetchAll(getEntTypeNameQ, new FetchCallback() {
     onFetch(result) {
-      String archEntName = result.get(0).get(0);
-      String loadFunction = "load" + archEntName.replaceAll(" ", "") + "From(entityID)"; // Typical value: loadContextFrom(entityID)
+      if (
+          result               == null ||
+          result       .size() == 0    ||
+          result.get(0).size() == 0
+      ) {
+        String head;
+        String body;
+
+        head  = "Record Could Not Be Loaded";
+        body  = "The record could not be loaded. It may have been deleted by";
+        body += " another user.";
+
+        showWarning(head, body);
+        return;
+      }
+
+      String archEntName = result.get(0).get(0).replaceAll(" ", "");
+      String loadFunction = "load" + archEntName + "From(entityID)"; // Typical value: loadContextFrom(entityID)
       eval(loadFunction);
     }
   });
@@ -1603,7 +1642,7 @@ void scanRecordFromQrCode(String ref) {
 }
 
 void loadOrCreateEntityFromScannedAttrib(String ref) {
-  String attribName = getAttributeName(ref);
+  String attrName = getAttributeName(ref);
   String attribVal  = getLastScanContents();
 
   String q = "";
@@ -1611,10 +1650,10 @@ void loadOrCreateEntityFromScannedAttrib(String ref) {
   q += "  FROM latestnondeletedaentvalue ";
   q += "  JOIN latestnondeletedarchent USING (uuid) ";
   q += "  JOIN attributekey            USING (attributeid) ";
-  q += " WHERE attributename = '{attribName}' ";
+  q += " WHERE attributename = '{attrName}' ";
   q += "   AND measure       = '{attribVal}' ";
-  q  = replaceFirst(q, "{attribName}", attribName);
-  q  = replaceFirst(q, "{attribVal}",  attribVal );
+  q  = replaceFirst(q, "{attrName}",  attrName);
+  q  = replaceFirst(q, "{attribVal}", attribVal );
 
   FetchCallback loadOrCreateEntity = new FetchCallback() {
     onFetch(result) {

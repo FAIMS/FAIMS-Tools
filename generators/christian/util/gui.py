@@ -25,8 +25,10 @@ def getAll(node, uiType, keep=None):
     if type(uiType) == str:
         uiType = [uiType]
 
-    if keep: l = lambda n: schema.guessType(n) in uiType and keep(n)
-    else:    l = lambda n: schema.guessType(n) in uiType
+    if keep:
+        l = lambda n: isGuiNode(n) and schema.guessType(n) in uiType and keep(n)
+    else:
+        l = lambda n: isGuiNode(n) and schema.guessType(n) in uiType
 
     return xml.getAll(node, l)
 

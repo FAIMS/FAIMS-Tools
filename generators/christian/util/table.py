@@ -5,23 +5,23 @@ XML TYPE           | ATTRIBUTES ALLOWED
 module             | suppressWarnings
 tab group          | f
 tab                | f
-GUI/data element   | b, c, e, ec, f, l, lc, t, s
-<cols>             | f
-<opts>             |
-<str>              |
-<col>              | f
-<opt>              | p
-<app>              |
-<author>           |
-<autonum>          |
-<desc>             |
-<fmt>              |
-<gps>              |
-<logic>            |
-<pos>              |
-<rels>             |
-<search>           |
-<timestamp>        |
+GUI/data element   | b, c, e, ec, f, l, lc, t, s, vp, i
+cols               | f
+opts               |
+str                |
+col                | f
+opt                | p
+app                |
+author             | f
+autonum            |
+desc               |
+fmt                |
+gps                |
+logic              |
+pos                |
+rels               |
+search             |
+timestamp          | f
 '''
 
 ATTRIB_VALS = '''
@@ -41,36 +41,36 @@ PARENT XML TYPE | DIRECT CHILD COUNT    | DESCENDANT COUNT
 document        | 1 <= module <= 1      |
 
 module          | 1 <= tab group        |
-module          | 0 <= <logic> <= 1     |
-module          | 0 <= <rels>  <= 1     |
+module          | 0 <= logic   <= 1     |
+module          | 0 <= rels    <= 1     |
 
 tab group       | 1 <= tab              |
-tab group       | 0 <= <desc>   <= 1    |
-tab group       | 0 <= <search> <= 1    |
+tab group       | 0 <= desc     <= 1    |
+tab group       | 0 <= search   <= 1    |
 
 tab             |                       | 1 <= GUI/data element
-tab             | 0 <= <autonum>   <= 1 |
-tab             | 0 <= <cols>           |
-tab             | 0 <= <gps>       <= 1 |
-tab             | 0 <= <author>    <= 1 |
-tab             | 0 <= <timestamp> <= 1 |
+tab             | 0 <= autonum     <= 1 |
+tab             | 0 <= cols             |
+tab             | 0 <= gps         <= 1 |
+tab             | 0 <= author      <= 1 |
+tab             | 0 <= timestamp   <= 1 |
 
-GUI/data element     | 0 <= <desc> <= 1      |
-GUI/data element     | 0 <= <opts> <= 1      |
-GUI/data element     | 0 <= <str>  <= 1      |
+GUI/data element     | 0 <= desc   <= 1      |
+GUI/data element     | 0 <= opts   <= 1      |
+GUI/data element     | 0 <= str    <= 1      |
 
-<cols>          |                       | 1 <= GUI/data element
+cols          |                       | 1 <= GUI/data element
 
-<opts>          | 1 <= <opt>            |
+opts          | 1 <= opt              |
 
-<str>           | 0 <= app <= 1         |
-<str>           | 0 <= fmt <= 1         |
-<str>           | 0 <= pos <= 1         |
+str            | 0 <= app <= 1         |
+str            | 0 <= fmt <= 1         |
+str            | 0 <= pos <= 1         |
 
-<col>           | 1 <= GUI/data element      |
+col           | 1 <= GUI/data element      |
 
-<opt>           | 0 <= <desc> <= 1      |
-<opt>           | 0 <= <opt>            |
+opt            | 0 <=  desc  <= 1      |
+opt            | 0 <=  opt             |
 '''
 
 TYPES = '''
@@ -231,4 +231,4 @@ ATTRIBS       = tablehelper.parseTable(ATTRIBS)
 ATTRIB_VALS   = tablehelper.parseTable(ATTRIB_VALS)
 CARDINALITIES = tablehelper.parseTable(CARDINALITIES)
 TYPES         = tablehelper.parseTable(TYPES)
-ARCH16N       = ARCH16N.splitlines()
+ARCH16N       = tablehelper.parseArch16n(ARCH16N)
