@@ -56,6 +56,17 @@ def getMakeVocabType(node):
 
     return type
 
+def getRefsToTypes(tree, t):
+    nodes = util.schema.getGuiDataElements(tree)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+    types = [util.schema.guessType(n)     for n in nodes]
+
+    fmt         = 'refToType.put("%s", "%s");'
+    placeholder = '{{refs-to-types}}'
+    replacement = format(zip(refs, types), fmt, indent='  ')
+
+    return t.replace(placeholder, replacement)
+
 def getTabGroups(tree, t):
     nodes = util.schema.getTabGroups(tree)
     refs  = [util.schema.getPathString(tg) for tg in nodes]
@@ -938,6 +949,7 @@ def getUiLogic(tree):
         raise Exception('"%s" could not be loaded' % templateFileName)
 
     t = getTabGroups(tree, t)
+    t = getRefsToTypes(tree, t)
     t = getNodataTabGroups(tree, t)
     t = getPersistBinds(tree, t)
     t = getInheritanceBinds(tree, t)

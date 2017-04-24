@@ -92,6 +92,15 @@ String fun2str(String funName, Object args) {
 String PREVIOUSLY_DISPLAYED_TAB_GROUP = "";
 String CURRENTLY_DISPLAYED_TAB_GROUP  = "";
 
+String getType(String ref) {
+  Map refToType = new HashMap();
+  {{refs-to-types}}
+
+  String type = refToType.get(ref);
+  if (type == null) return "";
+  else              return type;
+}
+
 List getTabGroups() {
   List tabGroups = new ArrayList();
   {{get-tab-groups}}
@@ -547,6 +556,14 @@ boolean isSelected(String ref, String vocabName) {
     return vocabNameActual.equals(vocabName);
 }
 
+void clearField(String ref) {
+  switch(getType(ref)) {
+    case "dropdown": setFieldValue(ref, null); break;
+    case "list":     return;
+    default:         setFieldValue(ref, "");
+  }
+}
+
 void inheritFieldValue(
     String src,
     String dst,
@@ -860,12 +877,15 @@ void updateGPSDiagnostics() {
 /******************************************************************************/
 /*                                 USER LOGIN                                 */
 /******************************************************************************/
-String userId    = "1";
-String nameFirst = "";
-String nameLast  = "";
-String email     = "";
-User   user      = new User(userId, nameFirst, nameLast, email);
-setUser(user);
+{
+  userId           = "1";
+  String nameFirst = "";
+  String nameLast  = "";
+  String email     = "";
+
+  User user = new User(userId, nameFirst, nameLast, email);
+  setUser(user);
+}
 
 String userMenuPath = "{{user-menu-path}}";
 
@@ -885,26 +905,31 @@ void selectUser() {
   {{users-vocabid}}
   if (isNull(userVocabId)) {
     username = "";
-    userid = "";
+    userid   = "";
     return;
   }
-  String userQ        = "SELECT userid,fname,lname,email FROM user " +
-                        "WHERE  userid='" + userVocabId + "';";
+
+  String q = "";
+  q += "SELECT userid, fname, lname, email, password";
+  q += "  FROM user ";
+  q += " WHERE userid = '{userId}'";
+  q  = replaceFirst(q, "{userId}", userId);
+
   FetchCallback callback = new FetchCallback() {
     onFetch(result) {
-      user = new User(
-            result.get(0),
-            result.get(1),
-            result.get(2),
-            result.get(3)
-      );
+      userId           = result.get(0);
+      String nameFirst = result.get(1);
+      String nameLast  = result.get(2);
+      String email     = result.get(3);
+      String password  = result.get(4);
+      username         = nameFirst + " " + nameLast;
+
+      User user = new User(userId, nameFirst, nameLast, email, password);
       setUser(user);
-      username = result.get(1) + " " + result.get(2);
-      userid   = result.get(0);
     }
   };
 
-  fetchOne(userQ, callback);
+  fetchOne(q, callback);
 }
 
 addOnEvent(userMenuPath, "show",  "populateListForUsers()");
@@ -1551,7 +1576,7 @@ void takePoint(String tabgroup) {
   String archEntType = tabgroup.replaceAll("_", " ");
   String currentUuid = getUuid(tabgroup);
   if (isNull(currentUuid)){
-    showToast("Please enter data first and let a save occur.");
+    showToast("{Please_enter_data_first}");
     return;
   }
 
@@ -1893,10 +1918,18 @@ String getEntityMenuPopulationFunction(String[] menuDescriptor) {
 ENTITY_MENUS = new ArrayList();
 {{entity-menus}}
 for (m : ENTITY_MENUS) {
-  String path         = m[1];
   String functionCall = getEntityMenuPopulationFunction(m);
-
   execute(functionCall);
+}
+for (m : ENTITY_MENUS) {
+  String menuRef = m[1];
+
+  String ref = getTabRef(menuRef);
+  String evt = "show";
+  String cmd = "clearField(\"{menuRef}\")";
+  cmd = replaceFirst(cmd, "{menuRef}", menuRef);
+
+  addOnEvent(ref, evt, cmd);
 }
 
 {{entity-loading}}

@@ -3,10 +3,12 @@
 import helpers
 import sys
 import util.arch16n
-import util.consts
+from   util.consts import *
 import util.data
 import util.schema
 import util.xml
+
+from   lxml import etree # TODO: Delete
 
 ################################################################################
 #                                  PARSE XML                                   #
@@ -32,7 +34,7 @@ util.schema.annotateWithXmlTypes(tree)
 
 # Nodes which didn't end up getting flagged...
 exp  = '//*[@%s]/*[not(@%s)]'
-exp %= (util.consts.RESERVED_XML_TYPE, util.consts.RESERVED_XML_TYPE)
+exp %= (RESERVED_XML_TYPE, RESERVED_XML_TYPE)
 disallowed = tree.xpath(exp)
 # ...and aren't in <rels> are disallowed
 exp  = './ancestor-or-self::rels'
@@ -46,19 +48,27 @@ for d in disallowed:
     expectedItems = helpers.getExpectedTypes(util.table.TYPES, d, None)
     helpers.eMsg(msg, affectedNodes, expectedItems)
 
+# TODO: Delete
+print etree.tostring(
+        tree,
+        pretty_print=True,
+        xml_declaration=True,
+        encoding='utf-8'
+),
+
 ############# COARSE-GRAINED VALIDATION OF ATTRIBUTES OF ELEMENTS ##############
-# Only consider nodes flagged with `util.consts.RESERVED_XML_TYPE`
+# Only consider nodes flagged with `RESERVED_XML_TYPE`
 exp  = '//*[@%s]'
-exp %= (util.consts.RESERVED_XML_TYPE)
+exp %= (RESERVED_XML_TYPE)
 matches = tree.xpath(exp)
 
 # Determine if nodes contain an attribute disallowed according to util.table.ATTRIBS
 disallowed = []
 for m in matches:
     mAttribs     = dict(m.attrib)
-    mXmlType     = mAttribs[util.consts.RESERVED_XML_TYPE]
+    mXmlType     = mAttribs[RESERVED_XML_TYPE]
     mAttribNames = mAttribs
-    mAttribNames.pop(util.consts.RESERVED_XML_TYPE, None)
+    mAttribNames.pop(RESERVED_XML_TYPE, None)
 
     for mAttribName in mAttribNames:
         if not mAttribName in helpers.getAttributes(util.table.ATTRIBS, mXmlType):
@@ -68,7 +78,7 @@ for m in matches:
 for d in disallowed:
     disallowedAttrib   = d[0]
     disallowedNode     = d[1]
-    disallowedNodeType = d[1].attrib[util.consts.RESERVED_XML_TYPE]
+    disallowedNodeType = d[1].attrib[RESERVED_XML_TYPE]
 
     msg           = 'Attribute `%s` disallowed here' % disallowedAttrib
     affectedNodes = [disallowedNode]
@@ -76,8 +86,8 @@ for d in disallowed:
     helpers.eMsg(msg, affectedNodes, expectedItems)
 
 ############## COARSE-GRAINED VALIDATION OF VALUES OF ATTRIBUTES ###############
-# Only consider nodes flagged with `util.consts.RESERVED_XML_TYPE`
-exp = '//*[@%s]' % (util.consts.RESERVED_XML_TYPE)
+# Only consider nodes flagged with `RESERVED_XML_TYPE`
+exp = '//*[@%s]' % (RESERVED_XML_TYPE)
 matches = tree.xpath(exp)
 
 # Determine if attributes contain allowed values according to util.table.ATTRIB_VALS
@@ -111,14 +121,14 @@ for d in disallowed:
     helpers.eMsg(msg, affectedNodes, expectedItems)
 
 ######################## VALIDATE CARDINALITIES BY TYPE ########################
-# Only consider nodes flagged with `util.consts.RESERVED_XML_TYPE`
+# Only consider nodes flagged with `RESERVED_XML_TYPE`
 disallowed = []
 for c in util.table.CARDINALITIES:
     parentTypeName        = c[0]
     directChildContraints = c[1]
     descendantContraints  = c[2]
 
-    exp = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, parentTypeName)
+    exp = '//*[@%s="%s"]' % (RESERVED_XML_TYPE, parentTypeName)
     matches = tree.xpath(exp)
 
     for m in matches:
@@ -153,14 +163,12 @@ for d in disallowed:
     helpers.eMsg(msg, [node])
 
 exp  = '//*[@%s="%s" and not(@t)]'
-exp %= (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
+exp %= (RESERVED_XML_TYPE, TYPE_GUI_DATA)
 matches = tree.xpath(exp)
 for m in matches:
-    m.attrib['t'] = util.schema.guessType(m)
-
     msg  = 'No value for the attribute t of the element `%s` is present.  '
     msg += 'Assuming a value of `%s`'
-    msg %= (m.tag, m.attrib['t'])
+    msg %= (m.tag, util.schema.guessType(m))
 
     helpers.wMsg(msg, [m])
 
@@ -170,10 +178,10 @@ util.schema.expandCompositeElements(tree)
 util.schema.annotateWithXmlTypes(tree)
 
 # Check cardinality contraints
-el   = 'GUI/data element'
-mod  = 'module'
-t    = 'tab'
-tg   = 'tab group'
+el   = TYPE_GUI_DATA
+mod  = TYPE_MODULE
+t    = TYPE_TAB
+tg   = TYPE_TAB_GROUP
 
 data = 'data'
 ui   = 'UI'
@@ -194,7 +202,7 @@ msg += 'binding'
 
 # Select all autonum-flagged elements which also have their b attributes set
 exp  = '//*[@b]'
-cond = lambda e: util.schema.isFlagged(e, 'autonum')
+cond = lambda e: util.schema.isFlagged(e, FLAG_AUTONUM);
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 matches = util.schema.filterUnannotated(matches)
@@ -210,7 +218,7 @@ msg += '"autonum" flag'
 
 # Select all autonum-flagged elements which also have their b attributes set
 exp  = '//*[@c]'
-cond = lambda e: util.schema.isFlagged(e, 'autonum')
+cond = lambda e: util.schema.isFlagged(e, FLAG_AUTONUM)
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 matches = util.schema.filterUnannotated(matches)
@@ -226,7 +234,7 @@ msg += '"notnull" flag'
 
 # Select all notnull-flagged elements which also have their b attributes set
 exp  = '//*[@c]'
-cond = lambda e: util.schema.isFlagged(e, 'notnull')
+cond = lambda e: util.schema.isFlagged(e, FLAG_NOTNULL)
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 matches = util.schema.filterUnannotated(matches)
@@ -241,11 +249,11 @@ msg  = 'Only elements whose t attribute is equivalent to "dropdown" or "list" '
 msg += 'may have the "user" flag'
 
 # Select all GUI/data elements'
-exp  = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
+exp  = '//*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
 # Select all user-flagged elements from those
-cond1 = lambda e: util.schema.isFlagged(e, 'user')
+cond1 = lambda e: util.schema.isFlagged(e, FLAG_USER)
 # Select all elements whose type is not dropdown nor list
-cond2 = lambda e: util.schema.guessType(e) not in ('dropdown', 'list')
+cond2 = lambda e: util.schema.guessType(e) not in (UI_TYPE_DROPDOWN, UI_TYPE_LIST)
 matches = tree.xpath(exp)
 matches = filter(cond1, matches)
 matches = filter(cond2, matches)
@@ -260,9 +268,9 @@ helpers.eMsg(msg, affectedNodes)
 msg  = 'Module contains more than one user login menu'
 
 # Select all GUI/data elements'
-exp  = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
+exp  = '//*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
 # Select all user-flagged elements from those
-cond = lambda e: util.schema.isFlagged(e, 'user')
+cond = lambda e: util.schema.isFlagged(e, FLAG_USER)
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 matches = util.schema.filterUnannotated(matches)
@@ -305,8 +313,8 @@ helpers.eMsg(msg, affectedNodes)
 msg  = 'Elements are flagged with "autonum" but <autonum> tag is not present'
 
 # Select all elements flagged with autonum
-exp  = '//*'
-cond = lambda e: util.schema.isFlagged(e, 'autonum')
+exp  = '//*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_AUTONUM)
+cond = lambda e: util.schema.isFlagged(e, FLAG_AUTONUM)
 matchesFlag = tree.xpath(exp)
 matchesFlag = filter(cond, matchesFlag)
 matchesFlag = util.schema.filterUnannotated(matchesFlag)
@@ -341,7 +349,7 @@ msg  = 'Elements flagged with "noui" or "nodata" cannot possess the "lc" '
 msg += 'attribute'
 
 exp  = '//*[@lc]'
-cond = lambda e: util.schema.isFlagged(e, ['nodata', 'noui'])
+cond = lambda e: util.schema.isFlagged(e, [FLAG_NODATA, FLAG_NOUI])
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 matches = util.schema.filterUnannotated(matches)
@@ -353,8 +361,8 @@ helpers.eMsg(msg, affectedNodes)
 
 msg  = 'Tab groups not flagged with "nodata" require at least one identifier'
 
-exp  = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'tab group')
-cond = lambda e: not util.schema.isFlagged(e, 'nodata') and \
+exp  = '//*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_TAB_GROUP)
+cond = lambda e: not util.schema.isFlagged(e, FLAG_NODATA) and \
                  not util.schema.hasElementFlaggedWithId(e)
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
@@ -369,7 +377,7 @@ msg  = 'Only elements whose t attribute is equivalent to one of the following '
 msg += 'may contain <opts> tags: %s' % ', '.join(util.table.MENU_TS)
 
 # Get <opts> tags which are the children of GUI/data elements
-exp  = '//*[@%s="%s"]/opts' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
+exp  = '//*[@%s="%s"]/opts' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
 # Filter out <opts> tags whose element's t attrib *is* in DESC_TS
 cond = lambda e: not util.schema.guessType(e.getparent()) in util.table.MENU_TS
 matches = tree.xpath(exp)
@@ -387,7 +395,7 @@ msg  = 'Only elements not flagged with "nodata" may contain <desc> tags'
 # Get <desc> tags
 exp  = '//desc'
 # Filter out <desc> tags not flagged with "nodata"
-cond = lambda e: util.schema.isFlagged(e, 'nodata')
+cond = lambda e: util.schema.isFlagged(e, FLAG_NODATA)
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 # Effectively, filter out <desc> tags which were already complained about
@@ -402,7 +410,7 @@ msg  = 'Only elements whose t attribute is equivalent to one of the following '
 msg += 'may contain <desc> tags: %s' % ', '.join(util.table.DESC_TS)
 
 # Get <desc> tags which are the children of GUI/data elements
-exp  = '//*[@%s="%s"]/desc' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
+exp  = '//*[@%s="%s"]/desc' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
 # Filter out <desc> tags whose element's t attrib *is* in DESC_TS
 cond = lambda e: not util.schema.guessType(e.getparent()) in util.table.DESC_TS
 matches = tree.xpath(exp)
@@ -447,12 +455,8 @@ for m in matches:
 
 msg  = 'Module is missing a login menu'
 
-# Select all GUI/data elements'
-exp  = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, 'GUI/data element')
-# Select all user-flagged elements from those
-cond = lambda e: util.schema.isFlagged(e, 'user')
-matches = tree.xpath(exp)
-matches = filter(cond, matches)
+cond = lambda e: util.schema.isFlagged(e, FLAG_USER)
+matches = util.schema.getGuiDataElements(tree, cond)
 matches = util.schema.filterUnannotated(matches)
 
 # Tell the user about the error(s)
@@ -463,17 +467,9 @@ if len(matches) == 0:
 
 msg  = 'Text is superfluous here as it can be inferred from its element\'s tag'
 
-# List of types which interpret their text as labels
-types = [
-        'tab',
-        'tab group',
-        'GUI/data element',
-]
-# Make list of nodes whose type is in `types`
-matches = []
-for t in types:
-    exp  = '//*[@%s="%s"]' % (util.consts.RESERVED_XML_TYPE, t)
-    matches += tree.xpath(exp)
+matches = util.schema.getTabGroups      (tree) + \
+          util.schema.getTabs           (tree) + \
+          util.schema.getGuiDataElements(tree)
 # Retain only elements with superfluous text
 cond = lambda e: util.arch16n.getLabelFromText(e) == util.arch16n.getLabelFromTag(e)
 matches = filter(cond, matches)

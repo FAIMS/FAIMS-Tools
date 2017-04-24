@@ -141,7 +141,7 @@ def guessType(node):
     '''
     # Don't guess the type if it's already there
     try:
-        return node.attrib['t']
+        return node.attrib[ATTRIB_T]
     except:
         pass
 
@@ -312,27 +312,21 @@ def canonicaliseCols(node):
     # 2. Re-write the cols as t="group" elements.
     for cols in colsList:
         cols.tag = nextFreeName('Colgroup', cols)
-        cols.attrib['t'] = 'group'
-        cols.attrib['s'] = 'orientation'
+        cols.attrib[ATTRIB_T] = 'group'
+        cols.attrib[ATTRIB_S] = 'orientation'
         for col in cols:
             col.tag = nextFreeName('Col', col)
-            col.attrib['t'] = 'group'
-            col.attrib['s'] = 'even'
+            col.attrib[ATTRIB_T] = 'group'
+            col.attrib[ATTRIB_S] = 'even'
 
 def canonicaliseMedia(node):
-    mediaTypes = (
-            UI_TYPE_AUDIO,
-            UI_TYPE_VIDEO,
-            UI_TYPE_CAMERA,
-            UI_TYPE_FILE,
-    )
-    mediaList = xml.getAll(node, keep=lambda e: guessType(e) in mediaTypes)
+    mediaList = xml.getAll(node, keep=lambda e: guessType(e) in MEDIA_UI_TYPES)
 
     for media in mediaList:
         button = Element(
                 nextFreeName(media.tag + '_Button', media),
                 { RESERVED_XML_TYPE : TYPE_GUI_DATA },
-                t='button'
+                t=UI_TYPE_BUTTON
         )
         button.text = arch16n.getArch16nVal(media)
         xml.insertAfter(media, button)
@@ -347,7 +341,7 @@ def canonicaliseImplied(node):
     notNull = xml.getAll(node, keep=isNotNull);
 
     for n in notNull:
-        xml.appendToAttrib(n, ATTRIB_C, 'required')
+        xml.appendToAttrib(n, ATTRIB_C, CSS_REQUIRED)
 
 def getAuthor(node):
     flags = getFlagsString(node)
@@ -389,7 +383,7 @@ def getAutonum(node):
                   AUTONUM_DEST      : getPathString(n) },
                 b=BIND_DECIMAL,
                 f=FLAG_NOTNULL,
-                c='required',
+                c=CSS_REQUIRED,
                 t=UI_TYPE_INPUT,
         )
         e.text = n.text
@@ -635,23 +629,19 @@ def isTab(node):
     return getType(node) in (TYPE_TAB, TYPE_SEARCH)
 
 def isGuiDataElement(node):
-    return getType(node) in (
-            TYPE_AUTHOR,
-            TYPE_COLS,
-            TYPE_GPS,
-            TYPE_GROUP,
-            TYPE_GUI_DATA,
-            TYPE_TIMESTAMP,
-    )
+    return getType(node) in GUI_DATA_UI_TYPES
 
-def getTabGroups      (node, keep=None, descendantOrSelf=True):
-    if keep:
-        return xml.getAll(
-                node,
-                lambda e: isTabGroup(e) and keep(e),
-                descendantOrSelf
-        )
-    else:
-        return xml.getAll(node, isTabGroup, descendantOrSelf)
-def getTabs           (node): return xml.getAll(node, isTab)
-def getGuiDataElements(node): return xml.getAll(node, isGuiDataElement)
+def getByType(node, typeFun, keep, descendantOrSelf):
+    if keep: everythingToKeep = lambda e : typeFun(e) and keep(e)
+    else:    everythingToKeep = lambda e : typeFun(e)
+
+    return xml.getAll(node, everythingToKeep, descendantOrSelf)
+
+def getTabGroups(node, keep=None, descendantOrSelf=True):
+    return getByType(node, isTabGroup, keep, descendantOrSelf)
+
+def getTabs(node, keep=None, descendantOrSelf=True):
+    return getByType(node, isTab, keep, descendantOrSelf)
+
+def getGuiDataElements(node, keep=None, descendantOrSelf=True):
+    return getByType(node, isGuiDataElement, keep, descendantOrSelf)

@@ -30,6 +30,13 @@ BINDS = [
         if k.startswith('BIND_')
 ]
 
+CSS_REQUIRED = 'required'
+CSS = [
+        v for k, v in dict(globals()).iteritems()
+        if k.startswith('CSS_')
+]
+
+
 FLAG_AUTONUM      = 'autonum'
 FLAG_HIDDEN       = 'hidden'
 FLAG_ID           = 'id'
@@ -136,6 +143,15 @@ MEDIA_UI_TYPES = [
         UI_TYPE_CAMERA,
         UI_TYPE_FILE,
         UI_TYPE_VIDEO,
+]
+
+GUI_DATA_UI_TYPES = [
+        TYPE_AUTHOR,
+        TYPE_COLS,
+        TYPE_GPS,
+        TYPE_GROUP,
+        TYPE_GUI_DATA,
+        TYPE_TIMESTAMP,
 ]
 
 ORIGINAL_TAG = '__ORIGINAL_TAG__'

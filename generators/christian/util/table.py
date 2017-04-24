@@ -5,6 +5,7 @@ XML TYPE           | ATTRIBUTES ALLOWED
 module             | suppressWarnings
 tab group          | f
 tab                | f
+group              | t
 GUI/data element   | b, c, e, ec, f, l, lc, t, s, vp, i
 cols               | f
 opts               |
@@ -28,7 +29,7 @@ ATTRIB_VALS = '''
 ATTRIBUTE    | ALLOWED VALUES (ONE-OF)     | ALLOWED VALUES (MANY-OF)
 b            | date, decimal, string, time |
 c            |                             |
-f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, readonly, user
+f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, readonly, user, persist, persist!
 l            | $link-all                   |
 ec           | $link-tabgroup              |
 lc           | $link-tabgroup              |
@@ -48,18 +49,15 @@ tab group       | 1 <= tab              |
 tab group       | 0 <= desc     <= 1    |
 tab group       | 0 <= search   <= 1    |
 
-tab             |                       | 1 <= GUI/data element
 tab             | 0 <= autonum     <= 1 |
 tab             | 0 <= cols             |
 tab             | 0 <= gps         <= 1 |
 tab             | 0 <= author      <= 1 |
 tab             | 0 <= timestamp   <= 1 |
 
-GUI/data element     | 0 <= desc   <= 1      |
-GUI/data element     | 0 <= opts   <= 1      |
-GUI/data element     | 0 <= str    <= 1      |
-
-cols          |                       | 1 <= GUI/data element
+GUI/data element | 0 <= desc   <= 1      |
+GUI/data element | 0 <= opts   <= 1      |
+GUI/data element | 0 <= str    <= 1      |
 
 opts          | 1 <= opt              |
 
@@ -208,6 +206,7 @@ New_record_created=New record created
 Northing=Northing
 Northing=Northing
 Please_Enable_Bluetooth=Please enable bluetooth
+Please_enter_data_first=Please enter data first and let a save occur.
 Position=Position
 Press_OK_to_Delete_this_Record=Press OK to delete this record
 Previous_status=Previous status
