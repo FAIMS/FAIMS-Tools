@@ -715,14 +715,23 @@ def getDefsTabGroupBinds(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getNavButtonBinds(tree, t):
+def getNavButtonBindsDel(tree, t):
+    nodes = util.schema.getTabGroups(tree, util.gui.isGuiNode)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+
+    fmt = 'addOnEvent("%s", "show", "removeNavigationButtons()");'
+    placeholder = '{{binds-nav-buttons-del}}'
+    replacement = format(refs, fmt)
+
+    return t.replace(placeholder, replacement)
+
+def getNavButtonBindsAdd(tree, t):
     nodes = util.schema.getTabGroups(tree, isGuiAndData)
     refs  = [util.schema.getPathString(n) for n in nodes]
 
-    fmt  = 'addOnEvent("%s", "show", "removeNavigationButtons()");\n'
-    fmt += 'addOnEvent("%s", "show", "addNavigationButtons(\\"%s\\")");'
-    placeholder = '{{binds-nav-buttons}}'
-    replacement = format(zip(refs, refs, refs), fmt)
+    fmt = 'addOnEvent("%s", "show", "addNavigationButtons(\\"%s\\")");'
+    placeholder = '{{binds-nav-buttons-add}}'
+    replacement = format(zip(refs, refs), fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -973,7 +982,8 @@ def getUiLogic(tree):
     t = getFileBinds(tree, t)
     t = getTabGroupsToValidate(tree, t)
     t = getDefsTabGroupBinds(tree, t)
-    t = getNavButtonBinds(tree, t)
+    t = getNavButtonBindsDel(tree, t)
+    t = getNavButtonBindsAdd(tree, t)
     t = getSearchBinds(tree, t)
     t = getSearchEntities(tree, t)
     t = getSearchType(tree, t)

@@ -224,6 +224,7 @@ off=off
 on=on
 on_and_bluetooth_connected=on and bluetooth connected
 on_and_bluetooth_disconnected=on and bluetooth disconnected
+The_current_record_has_not_been_saved_yet=The current record has not been saved yet. Press 'OK' to create a new record without waiting for any new data to be saved.
 '''
 
 ATTRIBS       = tablehelper.parseTable(ATTRIBS)

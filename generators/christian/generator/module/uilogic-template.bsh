@@ -1519,7 +1519,8 @@ void doNotDelete(){
   showToast("{Delete_Cancelled}");
 }
 
-{{binds-nav-buttons}}
+{{binds-nav-buttons-del}}
+{{binds-nav-buttons-add}}
 
 /******************************************************************************/
 /*                                   SEARCH                                   */
@@ -1544,7 +1545,7 @@ void search(){
                        " WHERE uuid in (SELECT uuid "+
                        "                  FROM latestNonDeletedArchEntIdentifiers "+
                        "                 WHERE measure LIKE '"+term+"'||'%'  "+
-                       "                   AND ( aenttypename LIKE '"+type+"' OR '' = '"+type+"' ) "+
+                       "                   AND ( aenttypename = '"+type+"' OR '' = '"+type+"' ) "+
                        "                )  "+
                        " ORDER BY response "+
                        " LIMIT ? "+
