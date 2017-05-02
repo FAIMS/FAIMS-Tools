@@ -61,9 +61,20 @@ def getRefsToTypes(tree, t):
     refs  = [util.schema.getPathString(n) for n in nodes]
     types = [util.schema.guessType(n)     for n in nodes]
 
-    fmt         = 'refToType.put("%s", "%s");'
+    fmt         = 'REF_TO_TYPE.put("%s", "%s");'
     placeholder = '{{refs-to-types}}'
-    replacement = format(zip(refs, types), fmt, indent='  ')
+    replacement = format(zip(refs, types), fmt)
+
+    return t.replace(placeholder, replacement)
+
+def getDataRefs(tree, t):
+    nodes = util.schema.getGuiDataElements(tree, util.data.isDataElement)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+    types = [util.schema.guessType(n)     for n in nodes]
+
+    fmt         = 'DATA_REFS.add("%s");'
+    placeholder = '{{data-refs}}'
+    replacement = format(refs, fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -74,6 +85,20 @@ def getTabGroups(tree, t):
     fmt          = 'tabGroups.add("%s");'
     placeholder  = '{{get-tab-groups}}'
     replacement  = format(refs, fmt, indent='  ')
+
+    return t.replace(placeholder, replacement)
+
+def getMenuTypes(tree, t):
+    fmt          = 'menuTypes.add("%s");'
+    placeholder  = '{{menu-ui-types}}'
+    replacement  = format(MENU_UI_TYPES, fmt, indent='  ')
+
+    return t.replace(placeholder, replacement)
+
+def getMediaTypes(tree, t):
+    fmt          = 'mediaTypes.add("%s");'
+    placeholder  = '{{media-ui-types}}'
+    replacement  = format(MEDIA_UI_TYPES, fmt, indent='  ')
 
     return t.replace(placeholder, replacement)
 
@@ -348,10 +373,7 @@ def getOnClickDefs(tree, t):
     fmtLC = \
       'void onClick%s () {' \
     '\n  String tabgroup = "%s";' \
-    '\n  if (isNull(getUuid(tabgroup))){' \
-    '\n    showToast("{You_must_save_this_tabgroup_first}");' \
-    '\n    return;' \
-    '\n  }' \
+    '\n  triggerAutoSave();' \
     '\n  parentTabgroup   = tabgroup;' \
     '\n  parentTabgroup__ = tabgroup;' \
     '\n  new%s();' \
@@ -764,6 +786,9 @@ def getSearchTabGroup(tree, t):
     return t.replace(placeholder, replacement)
 
 def getSearchEntities(tree, t):
+    hasSearchType = lambda e: util.schema.getType(e) == TYPE_SEARCH
+    searchNodes = util.xml.getAll(tree, hasSearchType)
+
     nodes = util.schema.getTabGroups(tree, isGuiAndData)
     arch16nKeys  = [util.arch16n.getArch16nKey(n) for n in nodes]
     archEntNames = [util.data.getArchEntName  (n) for n in nodes]
@@ -776,7 +801,7 @@ def getSearchEntities(tree, t):
     '\nentityTypes.add(new NameValuePair("{All}", ""));' + \
     '\n' + format(zip(arch16nKeys, archEntNames), fmt) + \
     '\npopulateDropDown("{{tab-group-search}}/Search/Entity_Types", entityTypes);'
-    if len(nodes) <= 1:
+    if len(nodes) <= 1 or len(searchNodes) < 1:
         replacement = ''
 
     return t.replace(placeholder, replacement)
@@ -958,7 +983,10 @@ def getUiLogic(tree):
         raise Exception('"%s" could not be loaded' % templateFileName)
 
     t = getTabGroups(tree, t)
+    t = getMenuTypes(tree, t)
+    t = getMediaTypes(tree, t)
     t = getRefsToTypes(tree, t)
+    t = getDataRefs(tree, t)
     t = getNodataTabGroups(tree, t)
     t = getPersistBinds(tree, t)
     t = getInheritanceBinds(tree, t)

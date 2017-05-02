@@ -89,22 +89,59 @@ String fun2str(String funName, Object args) {
 /******************************************************************************/
 /*                           DOCUMENT OBJECT MODEL                            */
 /******************************************************************************/
-String PREVIOUSLY_DISPLAYED_TAB_GROUP = "";
-String CURRENTLY_DISPLAYED_TAB_GROUP  = "";
+String  PREVIOUSLY_DISPLAYED_TAB_GROUP = "";
+String  CURRENTLY_DISPLAYED_TAB_GROUP  = "";
+Map     REF_TO_TYPE                    = new HashMap();
+HashSet DATA_REFS                      = new HashSet();
+
+{{refs-to-types}}
+
+{{data-refs}}
 
 String getType(String ref) {
-  Map refToType = new HashMap();
-  {{refs-to-types}}
-
-  String type = refToType.get(ref);
+  String type = REF_TO_TYPE.get(ref);
   if (type == null) return "";
   else              return type;
+}
+
+boolean hasData(String ref) {
+  return DATA_REFS.contains(ref);
 }
 
 List getTabGroups() {
   List tabGroups = new ArrayList();
   {{get-tab-groups}}
   return tabGroups;
+}
+
+List getMenuTypes() {
+  List menuTypes = new ArrayList();
+  {{menu-ui-types}}
+  return menuTypes;
+}
+
+List getMediaTypes() {
+  List mediaTypes = new ArrayList();
+  {{media-ui-types}}
+  return mediaTypes;
+}
+
+boolean isMenuType(String type) {
+  return getMenuTypes().contains(type);
+}
+
+boolean isMediaType(String type) {
+  return getMediaTypes().contains(type);
+}
+
+boolean hasMenuType(String ref) {
+  String refType = getType(ref);
+  return isMenuType(refType);
+}
+
+boolean hasMediaType(String ref) {
+  String type = getType(ref);
+  return isMediaType(type);
 }
 
 boolean isFlaggedNodata(String tabGroup) {
@@ -397,18 +434,18 @@ void makeLocalID(){
   fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);", null);
   fetchOne("DROP VIEW IF EXISTS parentchild;", null);
   fetchOne("CREATE VIEW parentchild AS "+
-           "SELECT parent.uuid as parentuuid, child.uuid as childuuid, parent.participatesverb as parentparticipatesverb, parent.relationshipid, parent.aenttypename as parentaenttypename, child.participatesverb as childparticipatesverb, child.aenttypename as childaenttypename "+
-           "  FROM (SELECT uuid, participatesverb, aenttypename, relationshipid"+
-           "          FROM latestnondeletedaentreln "+
-           "          JOIN relationship USING (relationshipid) "+
-           "          JOIN latestnondeletedarchent USING (uuid) "+
-           "          JOIN aenttype USING (aenttypeid)) parent "+
-           "  JOIN (SELECT uuid, relationshipid, participatesverb, aenttypename "+
-           "          FROM latestnondeletedaentreln "+
-           "          JOIN relationship USING (relationshipid) "+
-           "          JOIN latestnondeletedarchent USING (uuid) "+
-           "          JOIN aenttype USING (aenttypeid)) child "+
-           "    ON (parent.relationshipid = child.relationshipid AND parent.uuid != child.uuid);", null);
+           "           SELECT parent.uuid as parentuuid, child.uuid as childuuid, parent.participatesverb as parentparticipatesverb, parent.relationshipid, parent.aenttypename as parentaenttypename, child.participatesverb as childparticipatesverb, child.aenttypename as childaenttypename, createdat"+
+           "             FROM (SELECT uuid, participatesverb, aenttypename, relationshipid, relntimestamp as createdat"+
+           "                     FROM latestnondeletedaentreln "+
+           "                     JOIN relationship USING (relationshipid) "+
+           "                     JOIN latestnondeletedarchent USING (uuid) "+
+           "                     JOIN aenttype USING (aenttypeid)) parent "+
+           "             JOIN (SELECT uuid, relationshipid, participatesverb, aenttypename "+
+           "                     FROM latestnondeletedaentreln "+
+           "                     JOIN relationship USING (relationshipid) "+
+           "                     JOIN latestnondeletedarchent USING (uuid) "+
+           "                     JOIN aenttype USING (aenttypeid)) child "+
+           "               ON (parent.relationshipid = child.relationshipid AND parent.uuid != child.uuid)");
 }
 makeLocalID();
 
@@ -636,9 +673,9 @@ String getDropdownItemValue() {
 /* default, which is the vocabid.                                             */
 /******************************************************************************/
 // Map from vocabid to vocabname. Populated by `fetchMenuValues()`.
-Map VOCABID_TO_VOCABNAME = null;
-Map VOCABNAME_TO_VOCABID = null;
-
+Map VOCABID_TO_VOCABNAME    = null;
+Map VOCABNAME_TO_VOCABID    = null;
+Map ATTRIB_NAME_TO_VOCABIDS = null;
 
 void setVocabId(String attrName, String vocabName, String vocabId) {
   String key = attrName + SEP + vocabName;
@@ -649,6 +686,30 @@ void setVocabId(String attrName, String vocabName, String vocabId) {
 
 String getVocabId(String attrName, String vocabName) {
   return VOCABNAME_TO_VOCABID.get(attrName + SEP + vocabName);
+}
+
+void addVocabId(String attrName, String vocabId) {
+  if (ATTRIB_NAME_TO_VOCABIDS == null)
+    ATTRIB_NAME_TO_VOCABIDS = new HashMap();
+
+  List vocabIds = ATTRIB_NAME_TO_VOCABIDS.get(attrName);
+  if (vocabIds == null) {
+    vocabIds = new ArrayList();
+    ATTRIB_NAME_TO_VOCABIDS.put(attrName, vocabIds);
+  }
+
+  vocabIds.add(vocabId);
+}
+
+List getVocabIdsFromAttribName(String attribName) {
+  List vocabIds = ATTRIB_NAME_TO_VOCABIDS.get(attribName);
+  if (vocabIds == null) return new ArrayList();
+  else                  return vocabIds;
+}
+
+List getVocabIdsFromRef(String ref) {
+  String attribName = getAttributeName(ref);
+  return getVocabIdsFromAttribName(attribName);
 }
 
 /*
@@ -667,21 +728,19 @@ void fetchMenuValues() {
 
   FetchCallback populateHashMap = new FetchCallback() {
     onFetch(result) {
-      // Populate VOCABID_TO_VOCABNAME
-      for (row : result) {
-        String vocabId   = row.get(0);
-        String vocabName = row.get(1);
-        VOCABID_TO_VOCABNAME.put(vocabId, vocabName);
-      }
-
-      // Populate VOCABNAME_TO_VOCABID
       for (row : result) {
         String vocabId   = row.get(0);
         String vocabName = row.get(1);
         String attrName  = row.get(2);
 
+        // Populate VOCABID_TO_VOCABNAME
+        VOCABID_TO_VOCABNAME.put(vocabId, vocabName);
 
+        // Populate VOCABNAME_TO_VOCABID
         setVocabId(attrName, vocabName, vocabId);
+
+        // Populate ATTRIB_NAME_TO_VOCABIDS
+        addVocabId(attrName, vocabId);
       }
     }
   };
@@ -1494,13 +1553,8 @@ void loadEntityFrom(String entityID) {
           result       .size() == 0    ||
           result.get(0).size() == 0
       ) {
-        String head;
-        String body;
-
-        head  = "Record Could Not Be Loaded";
-        body  = "The record could not be loaded. It may have been deleted by";
-        body += " another user.";
-
+        String head  = "{err_load_entity_head}";
+        String body  = "{err_load_entity_body}";
         showWarning(head, body);
         return;
       }
@@ -1813,16 +1867,34 @@ void populateMenuWithEntities (
   String entType,
   String relType
 ) {
+  if (!"DropDown".equals(viewType) && !"List".equals(viewType)) {
+    Log.e("populateMenuWithEntities ", "Unexpected type '" + viewType + "'");
+    return;
+  }
+
+  String limit;
+  switch (viewType) {
+    case "DropDown": limit = "";                   break;
+    case "List":     limit = " LIMIT ? OFFSET ? "; break;
+  }
+
   String getChildEntitiesQ = "" +
-    "SELECT childuuid, response "+
-    "  FROM parentchild JOIN latestNonDeletedArchEntFormattedIdentifiers ON (childuuid = uuid) " +
-    "  JOIN createdmodifiedatby USING (uuid) " +
-    " WHERE relationshipid IN (SELECT relationshipid  " +
-    "                            FROM latestnondeletedrelationship JOIN relntype USING (relntypeid) " +
-    "                           WHERE relntypename = '"+relType+"') " +
-    "   AND parentuuid = '" + parentUuid + "' " +
-    "   AND (childaenttypename = '"+entType+"' OR '"+entType+"' = '') " +
-    " ORDER BY createdat DESC ";
+    "SELECT childuuid, response " +
+    "  FROM (select childuuid, createdat" +
+    "          from (select childuuid, createdat, relationshipid" +
+    "                    from parentchild" +
+    "                   where parentuuid = '" + parentUuid + "' " +
+    "                   and (childaenttypename = '"+entType+"')" +
+    "                   order by createdat           " +
+    "                   )" +
+    "          JOIN (SELECT relationshipid   " +
+    "                  FROM latestnondeletedrelationship JOIN relntype USING (relntypeid)  " +
+    "                 WHERE relntypename = '"+relType+"') USING (relationshipid)" +
+    "          order by createdat desc" +
+    limit +
+    "        )  " +
+    "  JOIN latestNonDeletedArchEntFormattedIdentifiers ON (childuuid = uuid)   " +
+    "  order by createdat desc";
 
   String getEntitiesQ = "" +
     "SELECT uuid, response "+
@@ -1831,14 +1903,8 @@ void populateMenuWithEntities (
     "                  FROM latestNonDeletedArchEntIdentifiers "+
     "                 WHERE aenttypename = '"+entType+"' OR '"+entType+"' = '' " +
     "               )  "+
-    " ORDER BY response ";
-
-  String q = null;
-  if (relType.equals("")) {
-    q = getEntitiesQ;
-  } else {
-    q = getChildEntitiesQ;
-  }
+    " ORDER BY response " +
+    limit;
 
   FetchCallback cbPopulateDropDown = new FetchCallback() {
     onFetch(result) {
@@ -1846,16 +1912,13 @@ void populateMenuWithEntities (
     }
   };
 
+  String q;
+  if (relType.equals("")) q = getEntitiesQ;
+  else                    q = getChildEntitiesQ;
+
   switch (viewType) {
-    case "DropDown":
-      fetchAll(q, cbPopulateDropDown);
-      break;
-    case "List":
-      q += " LIMIT ? OFFSET ? ";
-      populateCursorList(path, q, 25);
-      break;
-    default:
-      Log.e("populateMenuWithEntities ", "Unexpected type '" + viewType + "'");
+    case "DropDown": fetchAll(q, cbPopulateDropDown); break;
+    case "List":     populateCursorList(path, q, 25); break;
   }
 }
 
