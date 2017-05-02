@@ -234,7 +234,7 @@ def getValidationString(node, fieldPairs):
     '\n  %s' \
     '\n' \
     '\n  String validationMessage = validateFields(f, "PLAINTEXT");' \
-    '\n  showWarning("Validation Results", validationMessage);' \
+    '\n  showWarning("{validation_results}", validationMessage);' \
     '\n}' \
     '\n'
 

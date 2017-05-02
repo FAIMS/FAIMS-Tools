@@ -1147,7 +1147,7 @@ String validateFields(List fields, String format) {
   Integer numInvalid = 0;
 
   /* Build validation message string (and count how many invalid fields exist) */
-  String out = "Please fill out the following fields:\n";
+  String out = "{please_fill_out_the_following_fields}";
   for(f : fields) {
     String ref  = f.get(0); // Reference to field
     String name = f.get(1); // Human-readable name
@@ -1166,7 +1166,7 @@ String validateFields(List fields, String format) {
   }
   // All the fields are valid; just overwrite `out` with a cheery message
   if (numInvalid == 0)
-    out = "All fields contain valid data!";
+    out = "{all_fields_contain_valid_data}";
 
   /* Format the output as dictated by `format` */
   if (format == "HTML") {

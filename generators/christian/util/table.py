@@ -225,6 +225,11 @@ on=on
 on_and_bluetooth_connected=on and bluetooth connected
 on_and_bluetooth_disconnected=on and bluetooth disconnected
 The_current_record_has_not_been_saved_yet=The current record has not been saved yet. Press 'OK' to create a new record without waiting for any new data to be saved.
+err_load_entity_head=Record Could Not Be Loaded
+err_load_entity_body=The record could not be loaded. It may have been deleted by another user.
+please_fill_out_the_following_fields=Please fill out the following fields:\\n
+all_fields_contain_valid_data=All fields contain valid data!
+validation_results=Validation Results
 '''
 
 ATTRIBS       = tablehelper.parseTable(ATTRIBS)
