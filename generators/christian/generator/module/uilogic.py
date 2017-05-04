@@ -1050,4 +1050,4 @@ util.schema.canonicalise(tree)
         #encoding='utf-8'
 #)
 
-print getUiLogic(tree),
+print getUiLogic(tree).encode('utf-8'),
