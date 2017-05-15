@@ -936,16 +936,6 @@ void updateGPSDiagnostics() {
 /******************************************************************************/
 /*                                 USER LOGIN                                 */
 /******************************************************************************/
-{
-  userId           = "1";
-  String nameFirst = "";
-  String nameLast  = "";
-  String email     = "";
-
-  User user = new User(userId, nameFirst, nameLast, email);
-  setUser(user);
-}
-
 String userMenuPath = "{{user-menu-path}}";
 
 void populateListForUsers(){
@@ -964,15 +954,15 @@ void selectUser() {
   {{users-vocabid}}
   if (isNull(userVocabId)) {
     username = "";
-    userid   = "";
+    userId   = "";
     return;
   }
 
   String q = "";
   q += "SELECT userid, fname, lname, email, password";
   q += "  FROM user ";
-  q += " WHERE userid = '{userId}'";
-  q  = replaceFirst(q, "{userId}", userId);
+  q += " WHERE userid = '{userVocabId}'";
+  q  = replaceFirst(q, "{userVocabId}", userVocabId);
 
   FetchCallback callback = new FetchCallback() {
     onFetch(result) {
