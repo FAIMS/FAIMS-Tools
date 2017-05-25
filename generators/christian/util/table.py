@@ -2,7 +2,7 @@ import tablehelper
 
 ATTRIBS = '''
 XML TYPE           | ATTRIBUTES ALLOWED
-module             | suppressWarnings
+module             | suppressWarnings test_mode
 tab group          | f
 tab                | f
 group              | t
@@ -230,6 +230,56 @@ err_load_entity_body=The record could not be loaded. It may have been deleted by
 please_fill_out_the_following_fields=Please fill out the following fields:\\n
 all_fields_contain_valid_data=All fields contain valid data!
 validation_results=Validation Results
+
+
+
+perf_mode_head=Performance Testing Mode Enabled
+perf_mode_body=Performance testing mode has been enabled for this session. Performance testing mode adds some features which help to benchmark queries, however it may reduce the responsiveness of the module.\\n\\nTo disable performance testing mode, set your device's date to any year after 2015.
+
+perf_create_on_head=Record Creation Enabled!
+perf_create_on_body=Record creation is now enabled during this session. Records can be created via the action bar.
+
+
+perf_dummy_head=Create Dummy Records?
+perf_dummy_body_1=Do you wish to create dummy records? Tapping 'OK' will create
+perf_dummy_body_2=new entities. Entity creation takes a few minutes.\\n\\nIf you would not like to create any dummy records, tap 'Cancel' to dismiss this message.
+
+
+perf_dummy_busy_head=Creating Entities...
+perf_dummy_busy_body=entities are currently being created. This can take a few minutes. During this time the module may appear to freeze. Please wait.
+
+
+perf_digest_1_head=Entities Created!
+perf_digest_1_body_1=entities have been successfully created.
+perf_digest_1_body_2=The total number of entities on this device, by type, is as follows:\\n\\n
+
+perf_digest_2_head=Display a Record Digest?
+perf_digest_2_body=Would you like to display the number of records present on this device? Tap 'OK' to display them, or 'Cancel' to dismiss this message.
+
+
+valid_control_head=Invalid Field(s) Found
+valid_control_body_1=The following fields are invalid:\\n
+valid_control_body_2=You must enter data into these fields to proceed.
+
+this_module=this module
+each=each
+
+
+perf_rec_num_body_1=How many
+perf_rec_num_body_2=records should
+perf_rec_num_body_3=contain?\\n\\nTap 'OK' to set a new value, or 'Cancel' to retain the previous one. Tap anywhere outside this dialogue box to dismiss it and skip this wizard's record creation step.
+
+perf_wiz_head=Welcome to The Record Creation Wizard
+perf_wiz_body=The record creation wizard will guide you through the process of creating dummy records.\\n\\nThe first step is to set the number of records you want to create. Tap 'OK' to do so, or 'Cancel' exit the wizard.
+
+create_dummy_records=Create Dummy Records
+display_record_digest=Create Record Digest
+enable_record_creation=Enable Record Creation
+
+perf_update_head=Update Successful
+perf_update_body_1=The updated record quantities are as follows:\\n
+perf_update_body_2=\\n\\nThese quantities will result in a total of
+perf_update_body_3=records being created. Do you wish to create them? Tap 'OK' to do so, or 'Cancel' otherwise.
 '''
 
 ATTRIBS       = tablehelper.parseTable(ATTRIBS)

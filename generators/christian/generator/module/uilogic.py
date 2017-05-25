@@ -7,6 +7,7 @@ import util.arch16n
 import util.xml
 import util.data
 from   util.consts import *
+import subprocess
 
 def format(tuples, fmt='%s', indent='', newline='\n'):
     sep = newline + indent
@@ -39,22 +40,13 @@ def getFunName(node, prefix='', pathLen=3):
 
     return prefix + pathSep.join(path).replace('_', '')
 
-def getMakeVocabType(node):
-    isHierarchical = util.schema.isHierarchical(node)
-    uiType         = util.schema.guessType(node)
+def getHeader(tree, t):
+    header  = '/*\n'
+    header += ' * GENERATED WITH FAIMS-TOOLS, SHA1: '
+    header += subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+    header += ' */\n'
 
-    # Determine hierarchical-ness
-    if isHierarchical: type = 'Hierarchical'
-    else:              type = ''
-
-    # Determine the rest of the type
-    if uiType == UI_TYPE_CHECKBOX: type += 'CheckBoxGroup'
-    if uiType == UI_TYPE_DROPDOWN: type += 'DropDown'
-    if uiType == UI_TYPE_LIST:     type += 'List'
-    if uiType == UI_TYPE_PICTURE:  type += 'PictureGallery'
-    if uiType == UI_TYPE_RADIO:    type += 'RadioGroup'
-
-    return type
+    return header + t
 
 def getRefsToTypes(tree, t):
     nodes = util.schema.getGuiDataElements(tree)
@@ -74,6 +66,42 @@ def getDataRefs(tree, t):
 
     fmt         = 'DATA_REFS.add("%s");'
     placeholder = '{{data-refs}}'
+    replacement = format(refs, fmt)
+
+    return t.replace(placeholder, replacement)
+
+def getNoUiRefs(tree, t):
+    isNoUi = lambda e: util.schema.isFlagged(e, FLAG_NOUI)
+
+    nodes = util.schema.getGuiDataElements(tree, isNoUi)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+    types = [util.schema.guessType(n)     for n in nodes]
+
+    fmt         = 'NO_UI_REFS.add("%s");'
+    placeholder = '{{no-ui-refs}}'
+    replacement = format(refs, fmt)
+
+    return t.replace(placeholder, replacement)
+
+def getVpRefs(tree, t):
+    hasVp       = lambda e: util.xml.hasAttrib(e, ATTRIB_VP)
+    nodes       = util.xml.getAll(tree, hasVp)
+    refs        = [util.schema.getPathString(n) for n in nodes]
+    linkedRefs  = [util.xml.getAttribVal(n, ATTRIB_VP)  for n   in nodes]
+    linkedNodes = [util.schema.getNodeAtPath(tree, ref) for ref in linkedRefs]
+
+    fmt         = 'VP_REF_TO_REF.put("%s", "%s");'
+    placeholder = '{{vp-ref-to-ref}}'
+    replacement = format(zip(refs, linkedRefs), fmt)
+
+    return t.replace(placeholder, replacement)
+
+def getHierRefs(tree, t):
+    nodes = util.schema.getGuiDataElements(tree, util.schema.isHierarchical)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+
+    fmt         = 'HIER_REFS.add("%s");'
+    placeholder = '{{hier-refs}}'
     replacement = format(refs, fmt)
 
     return t.replace(placeholder, replacement)
@@ -111,6 +139,58 @@ def getNodataTabGroups(tree, t):
     fmt          = 'flaggedTabGroups.add("%s");'
     placeholder  = '{{is-flagged-nodata}}'
     replacement  = format(refs, fmt, indent='  ')
+
+    return t.replace(placeholder, replacement)
+
+def perfHierToComment(hier):
+    return str(hier).replace('\n', '\n  //') \
+            [3:] # Removes first two spaces and newline character
+
+def perfHierToCode(hier):
+    code  = getPerfCodeAssigns(hier)
+    code += '\n'
+    code += getPerfCodeCalls(hier)
+    return code
+
+def getPerfCodeAssigns(hier):
+    assigns = ''
+    for f in hier.flattened():
+        assigns += '  n%s = Tree("%s", 1);\n' % (f.i, f.data)
+    return assigns
+
+def getPerfCodeCalls(hier):
+    calls = ''
+
+    for child in hier.children:
+        calls += '  n%s.addChild(n%s);\n' % (hier.i, child.i)
+
+    if len(hier.children):
+        calls += '\n'
+
+    for child in hier.children:
+        calls += getPerfCodeCalls(child)
+
+    return calls
+
+def getPerfHierarchy(tree, t):
+    hier = util.data.getHierarchy(tree)
+    hier.applyNumbering()
+
+    humanReadable   = perfHierToComment(hier)
+    machineReadable = perfHierToCode   (hier)
+
+    placeholder = '{{perf-type-hierarchy}}'
+    replacement = humanReadable + '\n\n' + machineReadable
+
+    return t.replace(placeholder, replacement)
+
+def getIsInTestTime(tree, t):
+    isInTestTime = str(util.xml.getAttribVal(tree, ATTRIB_TEST_MODE)).lower()
+    isInTestTime = isInTestTime == 'true'
+    isInTestTime = str(isInTestTime)
+
+    placeholder = '{{is-in-test-time}}'
+    replacement = isInTestTime.lower()
 
     return t.replace(placeholder, replacement)
 
@@ -159,17 +239,6 @@ def getInheritanceBinds(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getDropdownValueGetters(tree, t):
-    nodes = util.gui.getAll(tree, UI_TYPE_DROPDOWN)
-    refs  = [util.schema.getPathString(n) for n in nodes]
-    refs  = zip(refs, refs)
-
-    fmt          = 'addOnEvent("%s", "click", "DROPDOWN_ITEM_VALUE = getFieldValue(\\"%s\\")");'
-    placeholder  = '{{dropdown-value-getters}}'
-    replacement  = format(refs, fmt)
-
-    return t.replace(placeholder, replacement)
-
 def getGpsDiagUpdate(tree, t):
     nodes = util.gui.getAll(tree, UI_TYPE_GPSDIAG)
     refs  = [util.schema.getPathString(n) for n in nodes]
@@ -211,13 +280,13 @@ def getUsersPopulateCall(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getUsersVocabId(tree, t):
-    placeholder = '{{users-vocabid}}'
+def getUsersSelectedUser(tree, t):
+    placeholder = '{{users-selecteduser}}'
 
     if   getUserMenuUiType(tree) == UI_TYPE_LIST:
-        replacement = 'String userVocabId = getListItemValue();'
+        replacement = 'String selectedUser = getListItemValue();'
     elif getUserMenuUiType(tree) == UI_TYPE_DROPDOWN:
-        replacement = 'String userVocabId = getFieldValue(userMenuPath);'
+        replacement = 'String selectedUser = getFieldValue(userMenuPath);'
     else:
         replacement = 'return;'
 
@@ -259,35 +328,6 @@ def getValidation(tree, t):
         fieldPairs = zip(refs, labels)
 
         replacement += getValidationString(n, fieldPairs)
-
-    return t.replace(placeholder, replacement)
-
-def getMakeVocab(tree, t):
-    nodes     = util.gui.getAll(tree, MENU_UI_TYPES, isGuiAndData)
-
-    types     = [getMakeVocabType(n)          for n in nodes]
-    refs      = [util.schema.getPathString(n) for n in nodes]
-    attrNames = [util.data.  getAttribName(n) for n in nodes]
-
-    fmt         = 'makeVocab("%s", "%s", "%s");'
-    placeholder = '{{make-vocab}}'
-    replacement = format(zip(types, refs, attrNames), fmt)
-
-    return t.replace(placeholder, replacement)
-
-def getMakeVocabVp(tree, t):
-    hasVp       = lambda e: util.xml.hasAttrib(e, ATTRIB_VP)
-    nodes       = util.xml.getAll(tree, hasVp)
-    linkedRefs  = [util.xml.getAttribVal(n, ATTRIB_VP)  for n   in nodes]
-    linkedNodes = [util.schema.getNodeAtPath(tree, ref) for ref in linkedRefs]
-
-    types     = [getMakeVocabType(n)          for n in nodes]
-    refs      = [util.schema.getPathString(n) for n in nodes]
-    attrNames = [util.data.  getAttribName(n) for n in linkedNodes]
-
-    fmt         = 'makeVocab("%s", "%s", "%s");'
-    placeholder = '{{make-vocab-vp}}'
-    replacement = format(zip(types, refs, attrNames), fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -573,7 +613,6 @@ def getDefsTabGroupBindsEvents(tree, funPrefix, evtName):
 
     return format(zip(funNames, refs, evtNames), fmt)
 
-# TODO: Check that I'm right
 def getOnSaveBinds(tree, t):
     tabGroups    = util.schema.getTabGroups(tree, isGuiAndData)
     tabGroupRefs = [util.schema.getPathString(n) for n in tabGroups]
@@ -642,7 +681,7 @@ def getDefsTabGroupBindsDuplicate(tree):
     '\n    onSave(uuid, newRecord) {' \
     '\n      setUuid(tabgroup, uuid);' \
     '\n' \
-    '\n      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){' \
+    '\n      timedFetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){' \
     '\n        onFetch(result) {' \
     '\n          Log.e("Module", result.toString());' \
     '\n' \
@@ -663,7 +702,7 @@ def getDefsTabGroupBindsDuplicate(tree):
     '\n  };' \
     '\n' \
     '\n  String extraDupeAttributes = "";' \
-    '\n  fetchAll(getDuplicateAttributeQuery(uuidOld, extraDupeAttributes), new FetchCallback(){' \
+    '\n  timedFetchAll(getDuplicateAttributeQuery(uuidOld, extraDupeAttributes), new FetchCallback(){' \
     '\n    onFetch(result) {' \
     '\n      excludeAttributes = new ArrayList();' \
     '\n' \
@@ -896,19 +935,6 @@ def getQrBinds(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getAutonumBinds(tree, t):
-    wasAutoNum = lambda e: util.xml.getAttribVal(e, ORIGINAL_TAG) == TAG_AUTONUM
-    nodes      = util.xml.getAll(tree, wasAutoNum)
-    parTabs    = [util.schema.getParentTabGroup(n) for n in nodes]
-    refs       = [util.schema.getPathString    (n) for n in parTabs]
-    refs       = list(set(refs))
-
-    fmt         = 'addOnEvent("%s", "show", "loadStartingIds()");'
-    placeholder = '{{binds-autonum}}'
-    replacement = format(refs, fmt)
-
-    return t.replace(placeholder, replacement)
-
 def getIncAutonumMap(tree, t):
     wasAutoNum = lambda e: util.xml.getAttribVal(e, ORIGINAL_TAG) == TAG_AUTONUM
     nodes      = util.xml.getAll(tree, wasAutoNum)
@@ -924,13 +950,10 @@ def getIncAutonumMap(tree, t):
 def getEntityMenus(tree, t):
     isEntList    = lambda e: util.xml.hasAttrib(e, ATTRIB_E ) or \
                              util.xml.hasAttrib(e, ATTRIB_EC)
-    type2TypeArg = { UI_TYPE_DROPDOWN : "DropDown", UI_TYPE_LIST : "List" }
 
     nodes    = util.xml.getAll(tree, isEntList)
-    types    = [util.schema.guessType(n) for n in nodes]
     parTgs   = [util.schema.getParentTabGroup(n) for n in nodes]
 
-    typeArgs     = [type2TypeArg                  [t_] for t_ in types]
     refs         = [util.schema.getPathString     (n)  for n  in nodes]
     parTgRefs    = [util.schema.getPathString     (n)  for n  in parTgs]
     archEntNames = [util.schema.getEntity         (n)  for n  in nodes]
@@ -939,14 +962,13 @@ def getEntityMenus(tree, t):
     fmt = \
         'ENTITY_MENUS.add(new String[] {' \
       '\n    "%s",' \
-      '\n    "%s",' \
       '\n    "getUuid(\\"%s\\")",' \
       '\n    "%s",' \
       '\n    "%s"' \
       '\n});'
     placeholder = '{{entity-menus}}'
     replacement = format(
-            zip(typeArgs, refs, parTgRefs, archEntNames, relNames),
+            zip(refs, parTgRefs, archEntNames, relNames),
             fmt
     )
 
@@ -982,22 +1004,26 @@ def getUiLogic(tree):
     if not t:
         raise Exception('"%s" could not be loaded' % templateFileName)
 
+    t = t.decode('utf-8')
+    t = getHeader(tree, t)
     t = getTabGroups(tree, t)
     t = getMenuTypes(tree, t)
     t = getMediaTypes(tree, t)
     t = getRefsToTypes(tree, t)
     t = getDataRefs(tree, t)
+    t = getNoUiRefs(tree, t)
+    t = getVpRefs(tree, t)
+    t = getHierRefs(tree, t)
     t = getNodataTabGroups(tree, t)
+    t = getPerfHierarchy(tree, t)
+    t = getIsInTestTime(tree, t)
     t = getPersistBinds(tree, t)
     t = getInheritanceBinds(tree, t)
-    t = getDropdownValueGetters(tree, t)
     t = getGpsDiagUpdate(tree, t)
     t = getGpsDiagRef(tree, t)
     t = getUsers(tree, t)
     t = getUsersPopulateCall(tree, t)
-    t = getUsersVocabId(tree, t)
-    t = getMakeVocab(tree, t)
-    t = getMakeVocabVp(tree, t)
+    t = getUsersSelectedUser(tree, t)
     t = getValidation(tree, t)
     t = getAuthor(tree, t)
     t = getTimestamp(tree, t)
@@ -1021,7 +1047,6 @@ def getUiLogic(tree):
     t = getTakeFromGpsMappings(tree, t)
     t = getControlStartingIdPaths(tree, t)
     t = getQrBinds(tree, t)
-    t = getAutonumBinds(tree, t)
     t = getIncAutonumMap(tree, t)
     t = getEntityMenus(tree, t)
     t = getEntityLoading(tree, t)

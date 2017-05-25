@@ -3,6 +3,7 @@
 # This file contains utility functions related to data schema generation.      #
 #                                                                              #
 ################################################################################
+import util
 import schema
 import xml
 from   consts import *
@@ -59,29 +60,13 @@ def getAttribType(node, isSpecific=False):
     return ''
 
 def hasMeasureType(node):
-    measureTypes = (
-            'input',
-    )
-    return schema.guessType(node) in measureTypes
+    return schema.guessType(node) in MEASURE_UI_TYPES
 
 def hasFileType(node):
-    fileTypes    = (
-            'audio',
-            'camera',
-            'file',
-            'video',
-    )
-    return schema.guessType(node) in fileTypes
+    return schema.guessType(node) in FILE_UI_TYPES
 
 def hasVocabType(node):
-    vocabTypes   = (
-            'checkbox',
-            'dropdown',
-            'list',
-            'picture',
-            'radio',
-    )
-    return schema.guessType(node) in vocabTypes
+    return schema.guessType(node) in MENU_UI_TYPES
 
 def getRelName(node):
     if not xml.hasAttrib(node, 'lc'):          return ''
@@ -116,3 +101,48 @@ def getRelNameEntityList(node):
     childName = childName.replace('_', ' ')
 
     return '%s - %s' % (parentName, childName)
+
+def getHierarchy(node):
+    topLevelNodes = getTopLevelArchEntNodes(node)
+    hier = util.Tree(
+            None,
+            [getHierarchyForTopLevelNode(n) for n in topLevelNodes]
+    )
+
+    def nodesToNames(n): n.data = getArchEntName(n.data)
+    hier.apply(nodesToNames)
+    return hier
+
+def getHierarchyForTopLevelNode(node, seenLinks=None):
+    seenLinks = seenLinks or []
+
+    link         = lambda n : (node.tag, n.tag)
+    linkedNodes  = schema.getLinkedNodes(node)
+    linkedNodes  = filter(isDataElement, linkedNodes)
+    linkedNodes  = filter(schema.isTabGroup, linkedNodes)
+    unseenNodes  = [n for n in linkedNodes if link(n) not in seenLinks]
+    seenLinks   += [link(n) for n in unseenNodes]
+
+    return util.Tree(
+            node,
+            [getHierarchyForTopLevelNode(n, seenLinks) for n in unseenNodes]
+    )
+
+def getTopLevelArchEntNodes(node, parentNode=None):
+    if schema.getType(node) == TYPE_MODULE:
+        return list(set(getTopLevelArchEntNodes(schema.getEntryPoint(node))))
+    if node == None:
+        return []
+
+    linkedNodes = schema.getLinkedNodes(node)
+    top = sum([getTopLevelArchEntNodes(n, node) for n in linkedNodes], [])
+    if isTopLevelArchEntNode(node, parentNode):
+        return [node] + top
+    else:
+        return top
+
+def isTopLevelArchEntNode(node, parentNode):
+    return node != None and parentNode != None and \
+            schema.isTabGroup(node) and \
+            isDataElement(node) and \
+            not isDataElement(parentNode)

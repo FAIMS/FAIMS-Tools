@@ -3,19 +3,20 @@ RESERVED_IGNORE   = '__RESERVED_IGNORE__'
 
 SEP_FLAGS = ' '
 
-ATTRIB_B  = 'b'
-ATTRIB_C  = 'c'
-ATTRIB_E  = 'e'
-ATTRIB_EC = 'ec'
-ATTRIB_F  = 'f'
-ATTRIB_I  = 'i'
-ATTRIB_L  = 'l'
-ATTRIB_LC = 'lc'
-ATTRIB_LQ = 'lq'
-ATTRIB_P  = 'p'
-ATTRIB_S  = 's'
-ATTRIB_T  = 't'
-ATTRIB_VP = 'vp'
+ATTRIB_TEST_MODE = 'test_mode'
+ATTRIB_B         = 'b'
+ATTRIB_C         = 'c'
+ATTRIB_E         = 'e'
+ATTRIB_EC        = 'ec'
+ATTRIB_F         = 'f'
+ATTRIB_I         = 'i'
+ATTRIB_L         = 'l'
+ATTRIB_LC        = 'lc'
+ATTRIB_LQ        = 'lq'
+ATTRIB_P         = 'p'
+ATTRIB_S         = 's'
+ATTRIB_T         = 't'
+ATTRIB_VP        = 'vp'
 ATTRIBS = [
         v for k, v in dict(globals()).iteritems()
         if k.startswith('ATTRIB_')
@@ -143,6 +144,17 @@ MEDIA_UI_TYPES = [
         UI_TYPE_CAMERA,
         UI_TYPE_FILE,
         UI_TYPE_VIDEO,
+]
+
+FILE_UI_TYPES = [
+        UI_TYPE_AUDIO,
+        UI_TYPE_CAMERA,
+        UI_TYPE_FILE,
+        UI_TYPE_VIDEO,
+]
+
+MEASURE_UI_TYPES = [
+        UI_TYPE_INPUT
 ]
 
 GUI_DATA_UI_TYPES = [

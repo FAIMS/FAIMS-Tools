@@ -154,9 +154,8 @@ def guessType(node):
     if not gui.isGuiElement(node):
         return ''
 
-    isUser = ATTRIB_F in node.attrib and isFlagged(node, FLAG_USER)
-    if isUser:
-        return UI_TYPE_BUTTON
+    if isFlagged(node, FLAG_USER):
+        return UI_TYPE_LIST
     if hasLink(node):
         return UI_TYPE_BUTTON
     if node.xpath(TAG_OPTS) and     node.xpath('.//opt[@p]'):
@@ -529,6 +528,14 @@ def getLink(node):
 
     return None
 
+def getLinks(node):
+    if node == None:
+        return []
+    if hasLink(node):
+        return [getLink(node)]
+
+    return sum([getLinks(n) for n in node], [])
+
 def hasLink(node):
     return bool(getLink(node))
 
@@ -559,6 +566,10 @@ def getNodeAtPath(tree, path):
 def getLinkedNode(node):
     return getNodeAtPath(node, getLink(node))
 
+def getLinkedNodes(node):
+    root = node.getroottree().getroot()
+    return [getNodeAtPath(root, path) for path in getLinks(node)]
+
 def isValidPath(root, path, pathType):
     if not path:
         return False
@@ -588,6 +599,13 @@ def isValidPath(root, path, pathType):
         return result
     else:
         return False
+
+def getEntryPoint(node):
+    tabGroups = getTabGroups(node)
+
+    if len(tabGroups) >= 1:
+        return tabGroups[0]
+    return None
 
 def hasReservedName(node):
     return node != None and isReservedName(node.tag)

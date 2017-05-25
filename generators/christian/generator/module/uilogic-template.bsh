@@ -3,6 +3,11 @@ import android.util.Log;
 // Beanshell won't let me write "\0".
 final String SEP = Character.toString ((char) 0);
 
+final String USER_MENU_PATH = "{{user-menu-path}}";
+userMenuPath = USER_MENU_PATH; // Depricated. Use `USER_MENU_PATH` instead
+
+final long SESS_START_TIME = System.currentTimeMillis();
+
 Object dialog;          // Used to help coordinate the display of a "busy..." dialog
 String parentTabgroup;  // Used to allow entities to be saved as children
 String parentTabgroup__;// The tab group which was previously displayed
@@ -16,7 +21,9 @@ setSyncEnabled(true);
 setSyncMaxInterval(600.0f);
 setSyncMinInterval(5.0f);
 
-/******************************** STRING UTILS ********************************/
+/******************************************************************************/
+/*                                STRING UTILS                                */
+/******************************************************************************/
 String replaceFirst(String haystack, String needle, String replacement) {
   i = haystack.indexOf(needle);
   if (i == -1)           return haystack;
@@ -28,6 +35,15 @@ String replaceFirst(String haystack, String needle, String replacement) {
 
 String replaceFirst(String haystack, String replacement) {
   return replaceFirst(haystack, "%s", replacement);
+}
+
+String dbReplaceFirst(String haystack, String needle, String replacement) {
+  String escapedReplacement = DatabaseUtils.sqlEscapeString(replacement);
+  return replaceFirst(haystack, needle, escapedReplacement);
+}
+
+String dbReplaceFirst(String haystack, String replacement) {
+  return dbReplaceFirst(haystack, "%s", replacement);
 }
 
 String translate(String s, Map m) {
@@ -93,10 +109,19 @@ String  PREVIOUSLY_DISPLAYED_TAB_GROUP = "";
 String  CURRENTLY_DISPLAYED_TAB_GROUP  = "";
 Map     REF_TO_TYPE                    = new HashMap();
 HashSet DATA_REFS                      = new HashSet();
+HashSet NO_UI_REFS                     = new HashSet();
+HashSet HIER_REFS                      = new HashSet();
+Map     VP_REF_TO_REF                  = new HashMap();
 
 {{refs-to-types}}
 
 {{data-refs}}
+
+{{no-ui-refs}}
+
+{{vp-ref-to-ref}}
+
+{{hier-refs}}
 
 String getType(String ref) {
   String type = REF_TO_TYPE.get(ref);
@@ -108,10 +133,32 @@ boolean hasData(String ref) {
   return DATA_REFS.contains(ref);
 }
 
+boolean hasNoUi(String ref) {
+  return NO_UI_REFS.contains(ref);
+}
+
+String getVpRef(String ref) {
+  return VP_REF_TO_REF.get(ref);
+}
+
+boolean hasVpRef(String ref) {
+  return getVpRef(ref) != null;
+}
+
+boolean isHier(String ref) {
+  return HIER_REFS.contains(ref);
+}
+
 List getTabGroups() {
   List tabGroups = new ArrayList();
   {{get-tab-groups}}
   return tabGroups;
+}
+
+List getStartingIdRefs() {
+  List l = new ArrayList();
+  {{control-starting-id-paths}}
+  return l;
 }
 
 List getMenuTypes() {
@@ -308,8 +355,8 @@ String getArchEntTypePascalCased(String ref) {
 /* `delOnEvents` calls. Calling `bindOnEvents` is what actually establishes   */
 /* the bindings once they have been added to the accumulator.                 */
 /******************************************************************************/
-Map    EVENTS        = new HashMap(); // (ref, event type) -> callback statement
-Set    CUSTOM_EVENTS = new HashSet(); // Events not handled by `onEvent`
+Map EVENTS        = new HashMap(); // (ref, event type) -> callback statement
+Set CUSTOM_EVENTS = new HashSet(); // Events not handled by `onEvent`
 CUSTOM_EVENTS.add("blur");
 CUSTOM_EVENTS.add("copy");
 CUSTOM_EVENTS.add("create");
@@ -429,33 +476,798 @@ for (tg : getTabGroups()) {
   addOnEvent(ref, event, callback);
 }
 
-/******************************* LOCALSETTINGS ********************************/
-void makeLocalID(){
-  fetchOne("CREATE TABLE IF NOT EXISTS localSettings (key text primary key, value text);", null);
-  fetchOne("DROP VIEW IF EXISTS parentchild;", null);
-  fetchOne("CREATE VIEW parentchild AS "+
-           "           SELECT parent.uuid as parentuuid, child.uuid as childuuid, parent.participatesverb as parentparticipatesverb, parent.relationshipid, parent.aenttypename as parentaenttypename, child.participatesverb as childparticipatesverb, child.aenttypename as childaenttypename, createdat"+
-           "             FROM (SELECT uuid, participatesverb, aenttypename, relationshipid, relntimestamp as createdat"+
-           "                     FROM latestnondeletedaentreln "+
-           "                     JOIN relationship USING (relationshipid) "+
-           "                     JOIN latestnondeletedarchent USING (uuid) "+
-           "                     JOIN aenttype USING (aenttypeid)) parent "+
-           "             JOIN (SELECT uuid, relationshipid, participatesverb, aenttypename "+
-           "                     FROM latestnondeletedaentreln "+
-           "                     JOIN relationship USING (relationshipid) "+
-           "                     JOIN latestnondeletedarchent USING (uuid) "+
-           "                     JOIN aenttype USING (aenttypeid)) child "+
-           "               ON (parent.relationshipid = child.relationshipid AND parent.uuid != child.uuid)");
-}
-makeLocalID();
+/******************************************************************************/
+/*                     LOCALSETTINGS VIEW/TABLE CREATION                      */
+/******************************************************************************/
+void makeLocalId(){
+  fetchOne(
+      "CREATE TABLE IF NOT EXISTS perflog (" +
+      "    id              INTEGER PRIMARY KEY," +
+      "    deviceModel     TEXT," +
+      "    sessStartMs     INTEGER," +
+      "    srcLine         TEXT," +
+      "    query           TEXT," +
+      "    queryStartMs    INTEGER," +
+      "    queryStopMs     INTEGER," +
+      "    numAentvalue    INTEGER," +
+      "    numArchentity   INTEGER," +
+      "    numRelationship INTEGER," +
+      "    numAentreln     INTEGER " +
+      ")"
+  );
 
+  fetchOne(
+      "CREATE TABLE IF NOT EXISTS localSettings (" +
+      "    key   TEXT PRIMARY KEY," +
+      "    value TEXT" +
+      ")"
+  );
+
+  fetchOne(
+      "DROP VIEW IF EXISTS parentchild"
+  );
+
+  fetchOne(
+      "CREATE VIEW parentchild AS "+
+      "           SELECT parent.uuid as parentuuid, child.uuid as childuuid, parent.participatesverb as parentparticipatesverb, parent.relationshipid, parent.aenttypename as parentaenttypename, child.participatesverb as childparticipatesverb, child.aenttypename as childaenttypename, createdat"+
+      "             FROM (SELECT uuid, participatesverb, aenttypename, relationshipid, relntimestamp as createdat"+
+      "                     FROM latestnondeletedaentreln "+
+      "                     JOIN relationship USING (relationshipid) "+
+      "                     JOIN latestnondeletedarchent USING (uuid) "+
+      "                     JOIN aenttype USING (aenttypeid)) parent "+
+      "             JOIN (SELECT uuid, relationshipid, participatesverb, aenttypename "+
+      "                     FROM latestnondeletedaentreln "+
+      "                     JOIN relationship USING (relationshipid) "+
+      "                     JOIN latestnondeletedarchent USING (uuid) "+
+      "                     JOIN aenttype USING (aenttypeid)) child "+
+      "               ON (parent.relationshipid = child.relationshipid AND parent.uuid != child.uuid)"
+  );
+}
+makeLocalId();
+
+/******************************************************************************/
+/*                            PERFORMANCE TESTING                             */
+/*                                                                            */
+/* Code to a) time queries; and b) create dummy records. (The vast majority   */
+/* the code is for the latter.)                                               */
+/******************************************************************************/
+import android.database.DatabaseUtils;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.text.DecimalFormat;
+import java.util.concurrent.atomic.AtomicInteger;
+import android.os.Build.MODEL;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+ConcurrentLinkedQueue PERF_FILES             = null;
+AtomicInteger         PERF_NUM_CBS_DONE_FILE = null;
+AtomicInteger         PERF_NUM_CBS_DONE_SAVE = null;
+AtomicInteger         PERF_NUM_CBS_DONE_SET  = null;
+AtomicInteger         PERF_NUM_CBS_TODO_FILE = null;
+AtomicInteger         PERF_NUM_CBS_TODO_SAVE = null;
+AtomicInteger         PERF_NUM_CBS_TODO_SET  = null;
+boolean               PERF_DO_LOG_QUERIES    = false;
+boolean               PERF_ALLOW_CREATION    = false;
+String                PERF_TEST_IMG          = "";
+                      PERF_TYPE_TREE         = null;
+
+int getNumDummyRecords() {
+  getNumDummyRecords(PERF_TYPE_TREE);
+}
+
+int getNumDummyRecords(tree) {
+  if (tree == null) return 0;
+
+  int childSum = 0;
+  for (child : tree.getChildren())
+    childSum += getNumDummyRecords(child);
+
+  boolean isRoot   = isNull(tree.label);
+  int     thisNode =        tree.data;
+
+  if (isRoot) return 0        + 1        * childSum;
+  else        return thisNode + thisNode * childSum;
+}
+
+Tree(String label, Object data) {
+  String label    = label;
+  Object data     = data;
+         parent   = null;
+  List   children;
+
+  void addChild(tree) {
+    if (super.children == null)
+      super.children = new ArrayList();
+
+    tree.setParent(super);
+    super.children.add(tree);
+  }
+
+  getChild(int i) {
+    return super.children.get(i);
+  }
+
+  int getIndex() {
+    if (super.getParent() == null)
+      return -1;
+    return super.getParent().getChildren().indexOf(super);
+  }
+
+  getDescendant(String ref) {
+    String[] refStrArr  = ref.split("/");
+    List     refIntList = new ArrayList();
+
+    for (String refStr : refStrArr) {
+      int refInt = Integer.parseInt(refStr);
+      refIntList.add(refInt);
+    }
+
+    return super.getDescendant(refIntList);
+  }
+
+  getDescendant(List ref) {
+    if (ref.size() == 0)
+      return super;
+
+    int  head = ref.get(0);
+    List tail = ref.subList(1, ref.size());
+
+    if (ref.size() == 1) return getChild(head);
+    if (ref.size() >= 2) return getChild(head).getDescendant(tail);
+  }
+
+  String getAncestorRefString(String sep, String key) {
+    String s = "";
+    for (Object n = super; n.getParent() != null; n = n.getParent()) {
+      String val = "";
+      if (key.equals("index")) val = n.getIndex() + "";
+      if (key.equals("label")) val = n.label;
+
+      s = sep + val + s;
+    }
+
+    if (!s.equals(""))
+      s = s.substring(sep.length(), s.length()); // Remove initial `sep`
+
+    return s;
+  }
+
+  String getAncestorRefString() {
+    return getAncestorRefString("/", "index");
+  }
+
+  List getChildren() {
+    if (super.children == null)
+      return new ArrayList();
+    return super.children;
+  }
+
+  int getNumNodes() {
+    int sum = 1;
+    for (child : super.getChildren())
+      sum += child.getNumNodes();
+    return sum;
+  }
+
+  void setParent(tree) {
+    super.parent = tree;
+  }
+
+  getParent() {
+    return super.parent;
+  }
+
+  String toString() {
+    String s = "\n- " + super.label + " (" + data + ")";
+    if (super.children != null)
+      for (c : super.children)
+        s += c.toString().replace("\n", "\n\t\t");
+    return s;
+  }
+
+  return this;
+}
+
+TimedFetchCallback(String query, FetchCallback cb) {
+  String        query      = query;
+  FetchCallback cb         = cb;
+  bsh.CallStack callstack_ = this.callstack.copy();
+
+  long startTime = System.currentTimeMillis(); // Timer starts here
+  long stopTime  = -1;
+
+  void onFetch(Object result) {
+    super.stopTimer();
+    super.updatePerfLog();
+
+    if (super.cb != null)
+      super.cb.onFetch(result);
+  }
+
+  void onError(String message) {
+    if (super.cb != null)
+      super.cb.onError(message);
+  }
+
+  void stopTimer() {
+    super.stopTime = System.currentTimeMillis();
+  }
+
+  double getElapsedMillis() {
+    if (stopTime < 0)
+      return -Double.MAX_VALUE;
+    return super.stopTime - super.startTime;
+  }
+
+  void updatePerfLog() {
+    String deviceModel  = android.os.Build.MODEL;
+    String sessStartMs  = SESS_START_TIME + "";
+    String srcLine      = super.callstack_.get(1).getInvocationLine() + "";
+    String query        = super.query;
+    String queryStartMs = super.startTime + "";
+    String queryStopMs  = super.stopTime + "";
+
+    String updateQuery = "";
+    updateQuery += " INSERT INTO perflog (";
+    updateQuery += "             deviceModel,";
+    updateQuery += "             sessStartMs,";
+    updateQuery += "             srcLine,";
+    updateQuery += "             query,";
+    updateQuery += "             queryStartMs,";
+    updateQuery += "             queryStopMs,";
+    updateQuery += "             numAentvalue,";
+    updateQuery += "             numArchentity,";
+    updateQuery += "             numRelationship,";
+    updateQuery += "             numAentreln";
+    updateQuery += " )    SELECT %s, %s, %s, %s, %s, %s, a, av, r, ar";
+    updateQuery += "        FROM";
+    updateQuery += "             (SELECT COUNT(*) AS a  FROM archentity  ) a,";
+    updateQuery += "             (SELECT COUNT(*) AS av FROM aentvalue   ) av,";
+    updateQuery += "             (SELECT COUNT(*) AS r  FROM relationship) r,";
+    updateQuery += "             (SELECT COUNT(*) AS ar FROM aentreln    ) ar";
+
+    updateQuery = dbReplaceFirst(updateQuery, deviceModel);
+    updateQuery = dbReplaceFirst(updateQuery, sessStartMs);
+    updateQuery = dbReplaceFirst(updateQuery, srcLine);
+    updateQuery = dbReplaceFirst(updateQuery, query);
+    updateQuery = dbReplaceFirst(updateQuery, queryStartMs);
+    updateQuery = dbReplaceFirst(updateQuery, queryStopMs);
+
+    fetchOne(updateQuery);
+  }
+
+  return this;
+}
+
+void timedFetchOne(String q, FetchCallback cb) {
+  if (!PERF_DO_LOG_QUERIES) {
+    fetchOne(q, cb);
+    return;
+  }
+
+  tcb = TimedFetchCallback(q, cb);
+  fetchOne(q, tcb);
+}
+
+void timedFetchOne(String q) {
+  fetchOne(q, null);
+}
+
+void timedFetchAll(String q, FetchCallback cb) {
+  if (!PERF_DO_LOG_QUERIES) {
+    fetchAll(q, cb);
+    return;
+  }
+
+  tcb = TimedFetchCallback(q, cb);
+  fetchAll(q, tcb);
+}
+
+void timedFetchAll(String q) {
+  timedFetchAll(q, null);
+}
+
+void timedPopulateCursorList(String ref, String q, int limit) {
+  if (PERF_DO_LOG_QUERIES) {
+    String boundQ = q;
+    boundQ = dbReplaceFirst(boundQ, "?", limit + "");
+    boundQ = dbReplaceFirst(boundQ, "?", "0");
+    timedFetchAll(boundQ);
+  }
+
+  populateCursorList(ref, q, limit);
+}
+
+void setUpTypeHierarchy() {
+  {{perf-type-hierarchy}}
+  PERF_TYPE_TREE = n0;
+}
+
+setUpTypeHierarchy();
+
+void saveEntitiesToPCRel(
+    String parentType,
+    String childType,
+    String parentUuid,
+    String childUuid
+) {
+    String relName = parentType + " - " + childType;
+    String pOf     = "Parent Of";
+    String cOf     = "Child Of";
+    saveEntitiesToHierRel(relName, parentUuid, childUuid, pOf, cOf, "");
+}
+
+String randomMenuValue(String ref) {
+  List vocabIds = getVocabIdsFromRef(ref);
+  int  len      = vocabIds.size();
+  if (len <= 0)
+    return "";
+
+  Random r   = new Random();
+  int    i   = r.nextInt(len);
+
+  return vocabIds.get(i);
+}
+
+String getRandomString(int len) {
+  char[] chars  = (
+      "abcdefghijklmnopqrstuvwxyz" +
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+      "1234567890"
+  ).toCharArray();
+  Random random = new Random();
+
+  StringBuilder sb = new StringBuilder();
+  for (int i = 0; i < len; i++) {
+      char c = chars[random.nextInt(chars.length)];
+      sb.append(c);
+  }
+
+  return sb.toString();
+}
+
+String randomInputValue(String ref) {
+  int len = 5;
+  randomInputValue(ref, len);
+}
+
+String randomInputValue(String ref, int len) {
+  if (getType(ref).equals("camera"))
+    if (PERF_FILES.isEmpty()) {
+      Log.e("randomInputValue()", "PERF_FILES empty, using empty string");
+      return "";
+    } else {
+      return PERF_FILES.poll();
+    }
+  else
+    return getRandomString(len);
+}
+
+List getAttribs(String archEntType) {
+  List attribs = new ArrayList();
+  for (String ref : REF_TO_TYPE.keySet()) {
+    String archEntTypeActual = getArchEntType(ref);
+    if (!archEntType.equals(archEntTypeActual))
+      continue;
+    if (!hasData(ref))
+      continue;
+    if (hasMediaType(ref) && !getType(ref).equals("camera"))
+      continue;
+
+    String attribName = getAttributeName(ref);
+    String annotation = "";
+    String vocab      = "";
+    String measure    = "";
+    String certainty  = "1.0";
+
+    if (hasMenuType(ref)) vocab   = randomMenuValue (ref);
+    else                  measure = randomInputValue(ref);
+
+    EntityAttribute ea = createEntityAttribute(
+        attribName,
+        annotation,
+        vocab,
+        measure,
+        certainty
+    );
+    attribs.add(ea);
+  }
+
+  return attribs;
+}
+
+void displayRecordDigest(int numCreated) {
+  String q = "";
+  q += "   SELECT '{All}', count(*)";
+  q += "     FROM latestnondeletedarchent";
+  q += "    UNION";
+  q += "   SELECT aenttypename, count(*)";
+  q += "     FROM latestnondeletedarchent";
+  q += "     JOIN aenttype USING (aenttypeid)";
+  q += " GROUP BY aenttypename";
+
+  FetchCallback cb = new FetchCallback() {
+    onFetch(result) {
+      String head = "{perf_digest_1_head}";
+      String body = "";
+      if (numCreated >= 0)
+        body += numCreated + " {perf_digest_1_body_1}";
+      body += " {perf_digest_1_body_2}";
+
+      for (List row : result) {
+        String type = row.get(0);
+        String num  = row.get(1);
+
+        body += "\t- " + type + ": " + num + "\n";
+      }
+
+      if (dialog != null)
+        dialog.dismiss();
+      showWarning(head, body);
+    }
+  };
+
+  fetchAll(q, cb);
+}
+
+void displayRecordDigest() {
+  displayRecordDigest(-1);
+}
+
+PerfSaveCallback(tree, String parentUuid) {
+  tree              = tree;
+  String parentUuid = parentUuid;
+
+  saveRel(uuid) {
+    parent            = super.tree.getParent();
+    String parentUuid = super.parentUuid;
+
+    if (parent == null || parentUuid == null)
+      return;
+
+    String parentType = parent    .label;
+    String childType  = super.tree.label;
+
+    saveEntitiesToPCRel(parentType, childType, parentUuid, uuid);
+  }
+
+  void onSave(String uuid, boolean newRecord) {
+    int cbsDone = PERF_NUM_CBS_DONE_SAVE.incrementAndGet();
+    int cbsTodo = PERF_NUM_CBS_TODO_SAVE.get();
+    if (cbsTodo == cbsDone)
+      displayRecordDigest(cbsDone);
+
+    if (newRecord)
+      saveRel(uuid);
+
+    for (subtree : super.tree.getChildren())
+      saveArchEnts(subtree, uuid);
+  }
+
+  void onError(String message) {
+    if (dialog != null)
+      dialog.dismiss();
+    showWarning("Error", message);
+  }
+
+  return this;
+}
+
+void saveArchEnts(tree, String parentUuid) {
+  String archEntName = tree.label;
+  int    numEnts     = tree.data;
+  cb                 = PerfSaveCallback(tree, parentUuid);
+
+  for (int i = 0; i < numEnts; i++) {
+    List attribs = getAttribs(archEntName);
+    saveArchEnt(null, archEntName, (List) null, attribs, cb);
+  }
+}
+
+void createDummyRecords() {
+  // Unless syncing is disabled, 'database locked' errors will happen
+  setFileSyncEnabled(false);
+  setSyncEnabled    (false);
+
+  enqueueTestFiles("createDummyRecordsRecursively()");
+}
+
+void createDummyRecordsRecursively() {
+  int n = getNumDummyRecords();
+  PERF_NUM_CBS_TODO_SAVE = new AtomicInteger(n);
+  PERF_NUM_CBS_DONE_SAVE = new AtomicInteger(0);
+
+  dialog = showBusy("{perf_dummy_busy_head}", n + " {perf_dummy_busy_body}");
+
+  for (child : PERF_TYPE_TREE.getChildren())
+    saveArchEnts(child, null);
+}
+
+void enqueueTestFiles(String cb) {
+  enqueueTestFiles(getNumDummyRecords(), cb);
+}
+
+void enqueueTestFiles(int numFiles, String cb) {
+  if (PERF_TEST_IMG == null || PERF_TEST_IMG.equals("")) {
+    Log.e("enqueueTestFiles()", "Could not enqueue test files");
+    return;
+  }
+
+  // Set `PERF_FILES`
+  if (PERF_FILES == null)
+    PERF_FILES = new ConcurrentLinkedQueue();
+
+  // Set `PERF_NUM_CBS_TODO_FILE` and `PERF_NUM_CBS_DONE_FILE`
+  int maxNumPhotosPerRecord = 2;
+  int n = getNumDummyRecords() * maxNumPhotosPerRecord
+      - PERF_FILES.size(); // No need to make files if there's enough in queue
+
+  PERF_NUM_CBS_TODO_FILE = new AtomicInteger(n);
+  PERF_NUM_CBS_DONE_FILE = new AtomicInteger(0);
+
+  // Make records
+  for (int i = 0; i < n; i++) {
+    String fileName = attachFile(
+        PERF_TEST_IMG,
+        false,
+        null,
+        "checkEnqueueTestFilesIsDone(\"" + escape(cb) + "\")"
+    );
+
+    PERF_FILES.add(fileName);
+  }
+}
+
+void checkEnqueueTestFilesIsDone(String onDone) {
+  int cbsDone = PERF_NUM_CBS_DONE_FILE.incrementAndGet();
+  int cbsTodo = PERF_NUM_CBS_TODO_FILE.get();
+  if (cbsTodo == cbsDone)
+    execute(onDone);
+}
+
+PerfImageDownloader() {
+  void run() {
+    String filStr = "/sdcard/faims/modules/" + getModuleId() +
+        "/files/app/test.jpg";
+    String urlStr = "http://placeholdit.imgix.net/" +
+        "~text?txtsize=100&txt=TEST&w=200&h=200&fm=jpg";
+
+    // Download test image
+    new File(filStr).getParentFile().mkdirs();
+
+    long tenMb = 10 * 1024 * 1024;
+    URL urlObj = new URL(urlStr);
+    ReadableByteChannel in  = Channels.newChannel(urlObj.openStream());
+    FileChannel out = new FileOutputStream(filStr).getChannel();
+    out.transferFrom(in, 0, tenMb);
+
+    // Set `PERF_TEST_IMG` if the file was created successfully
+    File newImg = new File(filStr);
+    if (newImg.length() > 0)
+      PERF_TEST_IMG = filStr;
+  }
+
+  void start() {
+    Runnable r = PerfImageDownloader();
+    new Thread(r).start();
+  }
+
+  return this;
+}
+
+void verifyEnableRecordCreation() {
+  String q = "";
+  q += " SELECT userid, fname, lname, email, password";
+  q += "   FROM user";
+  q += "  WHERE fname = 'Faims'";
+  q += "    AND lname = 'Admin'";
+
+  FetchCallback callback = new FetchCallback() {
+    onFetch(result) {
+      String userId    = result.get(0);
+      String nameFirst = result.get(1);
+      String nameLast  = result.get(2);
+      String email     = result.get(3);
+      String password  = result.get(4);
+
+      User user = new User(userId, nameFirst, nameLast, email, password);
+      setUser(user);
+
+      showVerifyUserDialog("enableRecordCreation()");
+    }
+  };
+
+  fetchOne(q, callback);
+}
+
+void enableRecordCreation() {
+  PERF_ALLOW_CREATION = true;
+  setUpPerfActionBarItems();
+
+  showWarning("{perf_create_on_head}", "{perf_create_on_body}");
+}
+
+boolean isInTestTime() {
+  return {{is-in-test-time}};
+}
+
+// Produce entity number specification
+void setUpDummyRecordCreation() {
+  int n = PERF_TYPE_TREE.getNumNodes()
+      - 1; // Ignore root node
+
+  PERF_NUM_CBS_TODO_SET = new AtomicInteger(n);
+  PERF_NUM_CBS_DONE_SET = new AtomicInteger(0);
+
+  setUpDummyRecordCreation(PERF_TYPE_TREE, "");
+}
+
+String getBreadCrumbs(node) {
+  return node.getAncestorRefString(" › ", "label");
+}
+
+String typeToReadableType(String type) {
+  if (type.equals("")) return "{this_module}";
+  else                 return "{each} " + type;
+}
+
+void setUpDummyRecordCreation(tree, String parentType) {
+  String type = tree.label;
+
+  for (child : tree.getChildren())
+    setUpDummyRecordCreation(child, type);
+
+  if (!type.equals("")) {
+    // Make head and body for `showTextAlert`
+    String treeRef = tree.getAncestorRefString();
+    String head    = getBreadCrumbs(tree);
+    String body    = "{perf_rec_num_body_1} %s {perf_rec_num_body_2} %s " +
+                     "{perf_rec_num_body_3}";
+    body = replaceFirst(body, type);
+    body = replaceFirst(body, typeToReadableType(parentType));
+
+    promptSetDummyRecordQuantity(treeRef, head, body);
+  }
+}
+
+void promptSetDummyRecordQuantity(String treeRef, String head, String body) {
+  String cb = "setDummyRecordQuantity(\"%s\", \"%s\", \"%s\")";
+  cb = replaceFirst(cb, treeRef);
+  cb = replaceFirst(cb, head);
+  cb = replaceFirst(cb, escape(body));
+
+  showTextAlert(head, body, cb, "checkSetDummyRecordQuantityIsDone()");
+}
+
+void setDummyRecordQuantity(
+    String treeRef,
+    String failHead,
+    String failBody
+) {
+  // Parse data as int
+  int intData;
+  try {
+    intData = Integer.parseInt(getLastTextAlertInput());
+  } catch (Exception e) {
+    promptSetDummyRecordQuantity(treeRef, failHead, failBody);
+    return;
+  }
+
+  PERF_TYPE_TREE.getDescendant(treeRef).data = intData;
+  checkSetDummyRecordQuantityIsDone();
+}
+
+void checkSetDummyRecordQuantityIsDone() {
+  int cbsDone = PERF_NUM_CBS_DONE_SET.incrementAndGet();
+  int cbsTodo = PERF_NUM_CBS_TODO_SET.get();
+  if (cbsTodo == cbsDone) {
+    String totalRecs = getNumDummyRecords() + "";
+    String treeString = PERF_TYPE_TREE.toString();
+    String treeStringNoRoot = treeString.substring(
+        "\n-  (1)".length(),
+        treeString.length()
+    );
+
+    String head = "{perf_update_head}";
+    String body =
+        "{perf_update_body_1}" + treeStringNoRoot +
+        "{perf_update_body_2}" + totalRecs +
+        "{perf_update_body_3}";
+
+    showAlert(head, body, "createDummyRecords()", "");
+  }
+}
+
+void verifyCreateDummyRecords() {
+  showAlert(
+      "{perf_wiz_head}",
+      "{perf_wiz_body}",
+      "setUpDummyRecordCreation()",
+      ""
+  );
+}
+
+void setUpPerfActionBarItems() {
+  removeActionBarItem("create_dummy_records");
+  removeActionBarItem("display_record_digest");
+  removeActionBarItem("enable_record_creation");
+
+  String userMenuTabGroup = getTabGroupRef(USER_MENU_PATH);
+  if (!isDisplayed(userMenuTabGroup))
+    return;
+  if (!isInTestTime())
+    return;
+
+  ActionButtonCallback createDummyRecords = new ActionButtonCallback() {
+      actionOnLabel() {
+        "{create_dummy_records}";
+      }
+      actionOn() {
+        verifyCreateDummyRecords();
+      }
+  };
+
+  ActionButtonCallback displayRecordDigest = new ActionButtonCallback() {
+      actionOnLabel() {
+        "{display_record_digest}";
+      }
+      actionOn() {
+        displayRecordDigest();
+      }
+  };
+
+  ActionButtonCallback enableRecordCreation = new ActionButtonCallback() {
+      actionOnLabel() {
+        "{enable_record_creation}";
+      }
+      actionOn() {
+        verifyEnableRecordCreation();
+      }
+  };
+
+  // Careful! The `if` statements are weirdly formatted
+  addActionBarItem("display_record_digest",  displayRecordDigest);
+  if (PERF_ALLOW_CREATION)
+  addActionBarItem("create_dummy_records",   createDummyRecords);
+  if (!PERF_ALLOW_CREATION)
+  addActionBarItem("enable_record_creation", enableRecordCreation);
+}
+
+void setUpPerfTestMode() {
+  if (!isInTestTime())
+    return;
+
+  // Enable performance logging
+  PERF_DO_LOG_QUERIES = true;
+
+  // Download test image
+  PerfImageDownloader().start();
+
+  // Display performance testing notification
+  showWarning("{perf_mode_head}", "{perf_mode_body}");
+}
+
+setUpPerfTestMode();
+addOnEvent(getTabGroupRef(USER_MENU_PATH), "show",  "setUpPerfActionBarItems()");
+addOnEvent(getTabGroupRef(USER_MENU_PATH), "leave", "setUpPerfActionBarItems()");
+
+/******************************************************************************/
+/*                           LOCALSETTINGS UPDATES                            */
+/******************************************************************************/
 void insertIntoLocalSettings(String ref) {
   String val = getFieldValue(ref);
   insertIntoLocalSettings(ref, val);
 }
 
 void insertIntoLocalSettings(String key, String val) {
-  fetchOne("REPLACE INTO localSettings(key, value) VALUES('" + key + "', '" + val + "');");
+  String q = "REPLACE INTO localSettings(key, value) VALUES(%s, %s)";
+  q = dbReplaceFirst(q, key);
+  q = dbReplaceFirst(q, val);
+  timedFetchOne(q);
 }
 
 void insertIntoLocalSettings(String key, Integer val) {
@@ -471,25 +1283,47 @@ void insertIntoLocalSettingsOnChange(String ref) {
   addOnEvent(ref, "click", insertCallback);
 }
 
-void setFieldValueFromLocalSettings(String key, String ref, boolean doOverwrite) {
+void setFieldValueFromLocalSettings(
+    String  key,
+    String  ref,
+    boolean doOverwrite,
+    String defaultVal
+) {
   String val = getFieldValue(ref);
   if (!isNull(val) && !doOverwrite) {
     return;
   }
 
-  String q = "SELECT value FROM localSettings WHERE key = '" + key + "';";
-  fetchOne(q, new FetchCallback() {
+  String q = "SELECT value FROM localSettings WHERE key = %s";
+  q = dbReplaceFirst(q, key);
+
+  FetchCallback set = new FetchCallback() {
     onFetch(result) {
-      if (!isNull(result)) {
+      if (result != null && result.size() >= 1) {
         setFieldValue(ref, result.get(0));
+      } else if (defaultVal != null) {
+        setFieldValue(ref, defaultVal);
       }
     }
-  });
+  };
+
+  timedFetchOne(q, set);
 }
 
-void setFieldValueFromLocalSettings(String key, String ref) {
-  boolean doOverwrite = false;
-  setFieldValueFromLocalSettings(key, ref);
+void setFieldValueFromLocalSettings(
+    String  key,
+    String  val,
+    boolean doOverwrite
+) {
+  setFieldValueFromLocalSettings(key, val, doOverwrite, null);
+}
+
+void setFieldValueFromLocalSettings(
+    String  ref,
+    boolean doOverwrite,
+    String  defaultVal
+) {
+  setFieldValueFromLocalSettings(ref, ref, doOverwrite, defaultVal);
 }
 
 void setFieldValueFromLocalSettings(String ref, boolean doOverwrite) {
@@ -500,18 +1334,21 @@ void setFieldValueFromLocalSettings(String ref) {
   setFieldValueFromLocalSettings(ref, false);
 }
 
-void setFieldValueFromLocalSettingsOnShow(String ref, boolean doOverwrite) {
+void setFieldValueFromLocalSettingsOnShow(
+    String ref,
+    boolean doOverwrite,
+    String defaultVal
+) {
   String cb = fun2str(
       "setFieldValueFromLocalSettings",
-      new Object[]{ref, doOverwrite}
+      new Object[]{ref, doOverwrite, defaultVal}
   );
 
   addOnEvent(getTabGroupRef(ref), "show", cb);
 }
 
-void setFieldValueFromLocalSettingsOnShow(String ref) {
-  boolean doOverwrite = false;
-  setFieldValueFromLocalSettingsOnShow(ref, doOverwrite);
+void setFieldValueFromLocalSettingsOnShow(String ref, boolean doOverwrite) {
+  setFieldValueFromLocalSettingsOnShow(ref, doOverwrite, (String) null);
 }
 
 /* Causes the value of the field given by `ref` to be saved each time it is
@@ -522,8 +1359,8 @@ void setFieldValueFromLocalSettingsOnShow(String ref) {
  * after `addOnEvent` is defined, but before `bindOnEvents` is called. This will
  * be so if the call is made in the autogenerator's `logic` tags.
  */
-void persistOverSessions(String ref) {
-  setFieldValueFromLocalSettingsOnShow(ref);
+void persistOverSessions(String ref, boolean doOverwrite, String defaultVal) {
+  setFieldValueFromLocalSettingsOnShow(ref, doOverwrite, defaultVal);
   insertIntoLocalSettingsOnChange     (ref);
 }
 
@@ -532,9 +1369,19 @@ void persistOverSessions(String ref, boolean doOverwrite) {
   insertIntoLocalSettingsOnChange     (ref);
 }
 
+void persistOverSessions(String ref, String defaultVal) {
+  persistOverSessions(ref, false, defaultVal);
+}
+
+void persistOverSessions(String ref) {
+  persistOverSessions(ref, false, (String) null);
+}
+
 {{binds-persist}}
 
-/*************************** FIELD COPYING HELPERS ****************************/
+/******************************************************************************/
+/*                           FIELD COPYING HELPERS                            */
+/*                                                                            */
 /* Provides an easy way to copy field values, even between vocabs.            */
 /******************************************************************************/
 boolean setMenuValue(String ref, String vocabName) {
@@ -636,7 +1483,9 @@ void inheritFieldValue(String src, String dst) {
 
 {{binds-inheritance}}
 
-/**************************** NEW TAB REDIRECTION *****************************/
+/******************************************************************************/
+/*                            NEW TAB REDIRECTION                             */
+/*                                                                            */
 /* Causes a call to `newTab("tab/path")` to take the user to the specified    */
 /* tab.                                                                       */
 /******************************************************************************/
@@ -664,7 +1513,119 @@ String getDropdownItemValue() {
   return DROPDOWN_ITEM_VALUE;
 }
 
-{{dropdown-value-getters}}
+for (entry : REF_TO_TYPE.entrySet()) {
+  String type = entry.getValue();
+  String ref  = entry.getKey();
+  String evt  = "click";
+  String stmt = "DROPDOWN_ITEM_VALUE = getFieldValue(\"%s\")";
+  stmt = replaceFirst(stmt, ref);
+
+  if (!type.equals("dropdown"))
+    continue;
+  if (hasNoUi(ref))
+    continue;
+
+  addOnEvent(ref, evt, stmt);
+}
+
+/******************************************************************************/
+/*                              MENU POPULATION                               */
+/******************************************************************************/
+/** Wrapper for to make a vocab without an exlusion list **/
+String getMakeVocabType(String ref) {
+  if (isHier(ref)) return "hierarchical" + getType(ref);
+  else             return ""             + getType(ref);
+}
+
+void makeVocabs() {
+  for (String ref : DATA_REFS)
+    if (!hasNoUi(ref))
+      makeVocab(ref);
+  for (String ref : VP_REF_TO_REF.keySet())
+    if (!hasNoUi(ref))
+      makeVocab(ref);
+}
+
+void makeVocab(String ref) {
+  if (hasVpRef(ref))
+    makeVocab(getMakeVocabType(ref), ref, getAttributeName(getVpRef(ref)));
+  else
+    makeVocab(getMakeVocabType(ref), ref, getAttributeName(ref));
+}
+
+void makeVocab(String type, String ref, String attrName) {
+  makeVocab(type, ref, attrName, null);
+}
+void makeVocab(String type, String ref, String attrName, List vocabExclusions) {
+    makeVocab(type, ref, attrName, vocabExclusions, null);
+}
+
+/* Populates the ref specified vocabulary from the database based on the given
+ * attribute name, where type is the type of the vocab to populate (checkbox,
+ * dropdown, hierarchicaldropdown, hierarchicalpicture, list, picture, radio).
+ * */
+void makeVocab(
+    String type,
+    String ref,
+    String attrName,
+    List   vocabExclusions,
+    String callbackFunction
+){
+  if (!hasMenuType(ref))
+    return;
+
+  if (
+      isNull(type) ||
+      isNull(ref) ||
+      isNull(attrName)
+  ) {
+    Log.e(
+        "makeVocab()",
+        "Can't make populate vocab whose type, ref or attribute is null"
+    );
+    return;
+  }
+
+  // Make a filtered vocab
+  List menuEntries = getMenuEntries(attrName);
+  if (vocabExclusions == null) vocabExclusions = new ArrayList();
+
+  List filteredVocab = new ArrayList();
+  for(item : menuEntries) {
+    if (vocabExclusions.contains(item.get(1))) {
+      Log.d("makeVocab()", "removing vocab exclusion: " + item.get(1));
+    } else {
+      filteredVocab.add(item);
+    }
+  }
+
+  // Determine whether to include a null option in the menu
+  Boolean hasNull =
+         !vocabExclusions.contains("")
+      && !vocabExclusions.contains(null);
+
+  // Populate menu
+  switch(type) {
+    case "checkbox":
+      populateCheckBoxGroup             (ref, filteredVocab);          break;
+    case "dropdown":
+      populateDropDown                  (ref, filteredVocab, hasNull); break;
+    case "hierarchicaldropdown":
+      populateHierarchicalDropDown      (ref, attrName, hasNull);      break;
+    case "hierarchicalpicture":
+      populateHierarchicalPictureGallery(ref, attrName);               break;
+    case "list":
+      populateList                      (ref, filteredVocab);          break;
+    case "picture":
+      populatePictureGallery            (ref, filteredVocab);          break;
+    case "radio":
+      populateRadioGroup                (ref, filteredVocab);          break;
+  }
+
+  // Execute callback
+  if (!isNull(callbackFunction))
+    execute(callbackFunction);
+}
 
 /******************************************************************************/
 /*                             MENU VALUE GETTER                              */
@@ -673,11 +1634,15 @@ String getDropdownItemValue() {
 /* default, which is the vocabid.                                             */
 /******************************************************************************/
 // Map from vocabid to vocabname. Populated by `fetchMenuValues()`.
-Map VOCABID_TO_VOCABNAME    = null;
-Map VOCABNAME_TO_VOCABID    = null;
-Map ATTRIB_NAME_TO_VOCABIDS = null;
+Map VOCABID_TO_VOCABNAME        = null;
+Map VOCABNAME_TO_VOCABID        = null;
+Map ATTRIB_NAME_TO_VOCABIDS     = null;
+Map ATTRIB_NAME_TO_MENU_ENTRIES = null;
 
 void setVocabId(String attrName, String vocabName, String vocabId) {
+  if (VOCABNAME_TO_VOCABID == null)
+    VOCABNAME_TO_VOCABID = new HashMap();
+
   String key = attrName + SEP + vocabName;
   String val = vocabId;
 
@@ -701,6 +1666,35 @@ void addVocabId(String attrName, String vocabId) {
   vocabIds.add(vocabId);
 }
 
+void addMenuEntry(
+    String attrName,
+    String vocabId,
+    String vocabName,
+    String picUrl
+) {
+  if (ATTRIB_NAME_TO_MENU_ENTRIES == null)
+    ATTRIB_NAME_TO_MENU_ENTRIES = new HashMap();
+
+  List menuEntries = ATTRIB_NAME_TO_MENU_ENTRIES.get(attrName);
+  if (menuEntries == null) {
+    menuEntries = new ArrayList();
+    ATTRIB_NAME_TO_MENU_ENTRIES.put(attrName, menuEntries);
+  }
+
+  List menuEntry = new ArrayList();
+  menuEntry.add(vocabId);
+  menuEntry.add(vocabName);
+  menuEntry.add(picUrl);
+
+  menuEntries.add(menuEntry);
+}
+
+List getMenuEntries(String attrName) {
+  List menuEntries = ATTRIB_NAME_TO_MENU_ENTRIES.get(attrName);
+  if (menuEntries == null) return new ArrayList();
+  else                     return menuEntries;
+}
+
 List getVocabIdsFromAttribName(String attribName) {
   List vocabIds = ATTRIB_NAME_TO_VOCABIDS.get(attribName);
   if (vocabIds == null) return new ArrayList();
@@ -716,22 +1710,22 @@ List getVocabIdsFromRef(String ref) {
  * Initialises `VOCABID_TO_VOCABNAME` with the (vocabid -> vocabname) mapping of
  * every menu.
  */
-void fetchMenuValues() {
+void fetchMenuValues(String cb) {
   VOCABID_TO_VOCABNAME = new HashMap();
-  VOCABNAME_TO_VOCABID = new HashMap();
 
   String q = "";
-  q += "    SELECT vocabid, vocabname, attributename";
-  q += "      FROM vocabulary";
-  q += " LEFT JOIN attributekey";
-  q += "     USING (attributeid)";
+  q += "   SELECT vocabid, vocabname, attributename, pictureurl";
+  q += "     FROM vocabulary";
+  q += "     JOIN attributekey USING (attributeid)";
+  q += " ORDER BY vocabcountorder";
 
   FetchCallback populateHashMap = new FetchCallback() {
-    onFetch(result) {
-      for (row : result) {
+    onFetch(List result) {
+      for (List row : result) {
         String vocabId   = row.get(0);
         String vocabName = row.get(1);
         String attrName  = row.get(2);
+        String picUrl    = row.get(3);
 
         // Populate VOCABID_TO_VOCABNAME
         VOCABID_TO_VOCABNAME.put(vocabId, vocabName);
@@ -741,14 +1735,19 @@ void fetchMenuValues() {
 
         // Populate ATTRIB_NAME_TO_VOCABIDS
         addVocabId(attrName, vocabId);
+
+        // Populate ATTRIB_NAME_TO_MENU_ENTRIES
+        addMenuEntry(attrName, vocabId, vocabName, picUrl);
       }
+
+      execute(cb);
     }
   };
 
-  fetchAll(q, populateHashMap);
+  timedFetchAll(q, populateHashMap);
 }
 
-fetchMenuValues();
+fetchMenuValues("makeVocabs()");
 
 /* Returns a menu's vocabname, instead of the (counter-intuitive) vocabid.
  */
@@ -936,176 +1935,59 @@ void updateGPSDiagnostics() {
 /******************************************************************************/
 /*                                 USER LOGIN                                 */
 /******************************************************************************/
-String userMenuPath = "{{user-menu-path}}";
-
 void populateListForUsers(){
-  String getNonDeletedUsersQuery = "SELECT userid, fname || ' ' || lname "+
-                                   "  FROM user "+
-                                   " WHERE userdeleted is null;";
+  String q = "";
+  q  = " SELECT          userid ";
+  q += "        ||'\\0'||fname ";
+  q += "        ||'\\0'||lname ";
+  q += "        ||'\\0'||email ";
+  q += "        ||'\\0'||password ";
+  q += "        ,        fname ";
+  q += "        || ' ' ||lname ";
+  q += "   FROM user ";
+  q += "  WHERE userdeleted is null";
 
-  fetchAll(getNonDeletedUsersQuery, new FetchCallback() {
+  timedFetchAll(q, new FetchCallback() {
     onFetch(result) {
       {{users-populate-call}}
     }
   });
 }
 
+String getUserMenuValue(int i) {
+  String selectedUser = getFieldValue(USER_MENU_PATH);
+  if (selectedUser == null)
+    return "";
+
+  String[] splitted = selectedUser.split("\\\\0");
+  if (i < splitted.length) return splitted[i];
+  else                     return "";
+
+}
+
 void selectUser() {
-  {{users-vocabid}}
-  if (isNull(userVocabId)) {
-    username = "";
-    userId   = "";
-    return;
+  {{users-selecteduser}}
+
+  userId           = getUserMenuValue(0);
+  String nameFirst = getUserMenuValue(1);
+  String nameLast  = getUserMenuValue(2);
+  String email     = getUserMenuValue(3);
+  String password  = getUserMenuValue(4);
+  username         = nameFirst + " " + nameLast;
+
+  if (!isNull(userId)) {
+    User user = new User(userId, nameFirst, nameLast, email, password);
+    setUser(user);
   }
-
-  String q = "";
-  q += "SELECT userid, fname, lname, email, password";
-  q += "  FROM user ";
-  q += " WHERE userid = '{userVocabId}'";
-  q  = replaceFirst(q, "{userVocabId}", userVocabId);
-
-  FetchCallback callback = new FetchCallback() {
-    onFetch(result) {
-      userId           = result.get(0);
-      String nameFirst = result.get(1);
-      String nameLast  = result.get(2);
-      String email     = result.get(3);
-      String password  = result.get(4);
-      username         = nameFirst + " " + nameLast;
-
-      User user = new User(userId, nameFirst, nameLast, email, password);
-      setUser(user);
-    }
-  };
-
-  fetchOne(q, callback);
 }
 
-addOnEvent(userMenuPath, "show",  "populateListForUsers()");
-addOnEvent(userMenuPath, "click", "selectUser()");
-
-/******************************************************************************/
-/*                              MENU POPULATION                               */
-/******************************************************************************/
-/** Fetches the contents of a specifed vocabulary and stores it in the given list. **/
-void fetchVocab(String vocabName, List storageList) {
-  fetchVocab(vocabName, storageList, null);
-}
-void fetchVocab(String vocabName, List storageList, String callbackFunction) {
-  fetchAll("select vocabid, vocabname from vocabulary left join attributekey using (attributeid) where attributename = '" + vocabName + "';", new FetchCallback() {
-    onFetch(result) {
-      storageList.addAll(result);
-      Log.d("fetchVocab()", "Fetched vocabulary \"" + vocabname + "\" contents: " + result.toString());
-      if (callbackFunction != null && !isNull(callbackFunction)) {
-        execute(callbackFunction);
-      }
-    }
-  });
-}
-
-/** Wrapper for to make a vocab without an exlusion list **/
-void makeVocab(String type, String path, String attrib) {
-  makeVocab(type, path, attrib, null);
-}
-
-/** Vocab Population **/
-/* Populates the path specified vocabulary from the database based on the given attribute name, where type 
-is the type of the vocab to populate (PictureGallery, HierarchicalPictureGallery, CheckBoxGroup, DropDown, HierarchicalDropDown, RadioGroup or List). */
-void makeVocab(String type, String path, String attrib, List vocabExclusions) {
-    makeVocab(type, path, attrib, vocabExclusions, null);
-}
-
-/* Populates the path specified vocabulary from the database based on the given attribute name, where type 
-is the type of the vocab to populate (PictureGallery, HierarchicalPictureGallery, CheckBoxGroup, DropDown, HierarchicalDropDown, RadioGroup or List). */
-void makeVocab(String type, String path, String attrib, List vocabExclusions, String callbackFunction){
-  if (isNull(type) || isNull(path) || isNull(attrib)) {
-    Log.e("makeVocab()", "Can't make populate a vocab when the given type, path or attribute is Null");
-    return;
-  }
-
-  if (type.equals("PictureGallery")) {
-    String pictureGalleryQuery = "SELECT vocabid, vocabname, pictureurl "+
-                                 "  FROM vocabulary "+
-                                 "  LEFT OUTER JOIN attributekey USING (attributeid) "+
-                                 " WHERE attributename = '" + attrib + "' "+
-                                 " ORDER BY  vocabcountorder;";
-    fetchAll(pictureGalleryQuery, new FetchCallback() {
-      onFetch(pictures) {
-        populatePictureGallery(path, pictures);
-        if (callbackFunction != null && !isNull(callbackFunction)) {
-          execute(callbackFunction);
-        }
-      }
-    });
-    return;
-  }
-
-  if (type.equals("HierarchicalPictureGallery")) {
-    populateHierarchicalPictureGallery(path, attrib);
-    if (callbackFunction != null && !isNull(callbackFunction)) {
-      execute(callbackFunction);
-    }
-    return;
-  }
-
-  if (type.equals("HierarchicalDropDown")) {
-    // populateHierarchicalDropDown(path, attrib);
-    populateHierarchicalDropDown(path, attrib, true);
-    if (callbackFunction != null && !isNull(callbackFunction)) {
-      execute(callbackFunction);
-    }
-    return;
-  }
-
-  String getAttributeVocabQuery = "SELECT vocabid, vocabname "+
-                                  "  FROM vocabulary "+
-                                  "  JOIN attributekey USING (attributeid) "+
-                                  " WHERE attributename = '" + attrib + "' "+
-                                  " ORDER BY vocabcountorder;";
-  fetchAll(getAttributeVocabQuery,
-    new FetchCallback() {
-      onFetch(result) {
-        // print("makeVocab() result: " + result);
-        if (result!=null && result.size()>0 && vocabExclusions!=null && vocabExclusions.size()>0) {
-          List filteredVocab = new ArrayList();
-          for(item : result) {
-            if (vocabExclusions.contains(item.get(1))) {
-              Log.d("makeVocab()", "removing vocab exclusion: " + item.get(1));
-            } else {
-              filteredVocab.add(item);
-            }
-          }
-          result=filteredVocab;
-        }
-        Boolean hasNull =
-                vocabExclusions == null
-            || !vocabExclusions.contains("")
-            && !vocabExclusions.contains(null);
-        // print("makeVocab() filtered result: " + result);
-        if(type.equals("CheckBoxGroup")) {
-          populateCheckBoxGroup(path, result);
-        } else if(type.equals("DropDown")) {
-          // populateDropDown(path, result);
-          populateDropDown(path, result, hasNull);
-        } else if(type.equals("RadioGroup")) {
-          populateRadioGroup(path, result);
-        } else if(type.equals("List")) {
-          populateList(path, result);
-        }
-        if (callbackFunction != null && !isNull(callbackFunction)) {
-          execute(callbackFunction);
-        }
-      }
-    });
-}
-
-{{make-vocab}}
-{{make-vocab-vp}}
+addOnEvent(USER_MENU_PATH, "show",  "populateListForUsers()");
+addOnEvent(USER_MENU_PATH, "click", "selectUser()");
 
 /******************************************************************************/
 /*                                 VALIDATION                                 */
 /******************************************************************************/
-/* `ref`  is a reference/path to a field
+/* `ref`  is a reference/ref to a field
  * `name` is a human-readable name for that field
  * `cond` is a String containing a boolean expression that evaluates to true if
  *        and only if the the field pair returned by this function should be
@@ -1278,11 +2160,8 @@ void populateAuthorAndTimestamp(String tabgroup) {
   String authorPath    = tabgroupToAuthor.get(tabgroup);
   String timestampPath = tabgroupToTimestamp.get(tabgroup);
 
-  String authorVal    = username;
-  String timestampVal = getTimestampNow();
-
-  if (!isNull(authorPath))    setFieldValue(authorPath,    authorVal);
-  if (!isNull(timestampPath)) setFieldValue(timestampPath, timestampVal);
+  if (!isNull(authorPath))    setFieldValue(authorPath,    username);
+  if (!isNull(timestampPath)) setFieldValue(timestampPath, getTimestampNow());
 }
 
 {{defs-on-show}}
@@ -1426,7 +2305,7 @@ void newRecord(String tabgroup, boolean doUpdateRelVars) {
         newRecord(tabgroup, false);
       }
     };
-    fetchAll(q, updateRelVars);
+    timedFetchAll(q, updateRelVars);
     return;
   }
 
@@ -1536,7 +2415,7 @@ void loadEntityFrom(String entityID) {
                            "  JOIN aenttype " +
                            " USING (aenttypeid) " +
                            " WHERE uuid = '" + entityID + "'";
-  fetchAll(getEntTypeNameQ, new FetchCallback() {
+  timedFetchAll(getEntTypeNameQ, new FetchCallback() {
     onFetch(result) {
       if (
           result               == null ||
@@ -1588,14 +2467,17 @@ void search(){
                        "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
                        " WHERE uuid in (SELECT uuid "+
                        "                  FROM latestNonDeletedArchEntIdentifiers "+
-                       "                 WHERE measure LIKE '"+term+"'||'%'  "+
-                       "                   AND ( aenttypename = '"+type+"' OR '' = '"+type+"' ) "+
+                       "                 WHERE measure LIKE {term}||'%'  "+
+                       "                   AND ( aenttypename = {type} OR '' = {type} ) "+
                        "                )  "+
                        " ORDER BY response "+
                        " LIMIT ? "+
                        "OFFSET ? ";
+  searchQuery = dbReplaceFirst(searchQuery, "{term}", term);
+  searchQuery = dbReplaceFirst(searchQuery, "{type}", type);
+  searchQuery = dbReplaceFirst(searchQuery, "{type}", type);
 
-  populateCursorList(refEntityList, searchQuery, 25);
+  timedPopulateCursorList(refEntityList, searchQuery, 25);
   refreshTabgroupCSS("{{tab-group-search}}");
 
   Log.d("Module", "Search query: " + searchQuery);
@@ -1654,7 +2536,7 @@ void takePoint(String tabgroup) {
   });
 }
 
-/* Sets the value of GPS views for the given tab path. */
+/* Sets the value of GPS views for the given tab ref. */
 void fillInGPS(String tabgroup) {
   Map tabgroupToTabRef = getTakeFromGpsMappings();
   String currentUuid = getUuid(tabgroup);
@@ -1669,7 +2551,7 @@ void fillInGPS(String tabgroup) {
                  "  FROM latestnondeletedarchent, vocabulary " +
                  " WHERE uuid = '" + currentUuid + "';";
 
-  fetchOne(query, new FetchCallback() {
+  timedFetchOne(query, new FetchCallback() {
     onFetch(result) {
       print("[fillInGPS()] Fetched DB transformed geometry: " + result);
       setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Longitude" , result.get(0));
@@ -1697,7 +2579,9 @@ void clearGpsInTab(String tabRef) {
   setFieldValue(tabRef + "/Northing"  , "");
 }
 
-/*************** LOADING AND CREATION OF RECORDS FROM QR CODES ****************/
+/******************************************************************************/
+/*               LOADING AND CREATION OF RECORDS FROM QR CODES                */
+/******************************************************************************/
 void bindQrScanning(String refButton, String refField) {
   String event = "click";
 
@@ -1720,10 +2604,10 @@ void loadOrCreateEntityFromScannedAttrib(String ref) {
   q += "  FROM latestnondeletedaentvalue ";
   q += "  JOIN latestnondeletedarchent USING (uuid) ";
   q += "  JOIN attributekey            USING (attributeid) ";
-  q += " WHERE attributename = '{attrName}' ";
-  q += "   AND measure       = '{attribVal}' ";
-  q  = replaceFirst(q, "{attrName}",  attrName);
-  q  = replaceFirst(q, "{attribVal}", attribVal );
+  q += " WHERE attributename = {attrName} ";
+  q += "   AND measure       = {attribVal} ";
+  q  = dbReplaceFirst(q, "{attrName}",  attrName );
+  q  = dbReplaceFirst(q, "{attribVal}", attribVal);
 
   FetchCallback loadOrCreateEntity = new FetchCallback() {
     onFetch(result) {
@@ -1736,7 +2620,7 @@ void loadOrCreateEntityFromScannedAttrib(String ref) {
     }
   };
 
-  fetchAll(q, loadOrCreateEntity);
+  timedFetchAll(q, loadOrCreateEntity);
 }
 
 void initScannedAttrib(String ref) {
@@ -1787,46 +2671,8 @@ Integer incField(String ref) {
   return incField(ref, 1);
 }
 
-List getStartingIdPaths() {
-  List l = new ArrayList();
-  {{control-starting-id-paths}}
-  return l;
-}
-
-void loadStartingId(String ref) {
-  // If there's already a value in the field, we don't need to load one.
-  String val = getFieldValue(ref);
-  if (!isNull(val)) {
-    return;
-  }
-
-  // Load a value into the field. Set it to 1 if no value has been previously
-  // saved.
-  String idQ = "SELECT value FROM localSettings WHERE key = '" + ref + "';";
-  fetchOne(idQ, new FetchCallback() {
-    onFetch(result) {
-      if (isNull(result)) setFieldValue(ref, "1"          );
-      else                setFieldValue(ref, result.get(0));
-    }
-  });
-}
-
-loadStartingIds() {
-  List l = getStartingIdPaths();
-
-  for (ref : l) {
-    loadStartingId(ref);
-  }
-}
-
-{{binds-autonum}}
-
-/*
- * Sets bindings to save autonum'd fields whenever they're blurred.
- */
-for (ref : getStartingIdPaths()) {
-  onFocus(ref, null, "insertIntoLocalSettings(\"" + ref + "\", getFieldValue(\"" + ref + "\"));");
-}
+for (String ref : getStartingIdRefs())
+  persistOverSessions(ref, "1");
 
 void incAutoNum(String destPath) {
   Map destToSource = new HashMap();
@@ -1842,30 +2688,24 @@ void incAutoNum(String destPath) {
 /*                POPULATION OF ENTITY AND CHILD ENTITY LISTS                 */
 /******************************************************************************/
 /*
- * `viewType`   the type of GUI element to be populated. It can either equal
- *              "DropDown" or "List".
- * `path`       the reference of the GUI element to be populated.
+ * `ref`       the reference of the GUI element to be populated.
  * `parentUuid` the parent in the relationship denoted by `relType`.
  * `entType`    the type of the entities the menu will be populated with.
  * `relType`    the name of the relationship the children are to be in with the
  *              entity denoted by `parentUuid`.
  */
 void populateMenuWithEntities (
-  String viewType,
-  String path,
+  String ref,
   String parentUuid,
   String entType,
   String relType
 ) {
-  if (!"DropDown".equals(viewType) && !"List".equals(viewType)) {
-    Log.e("populateMenuWithEntities ", "Unexpected type '" + viewType + "'");
-    return;
-  }
+  String viewType = getType(ref);
 
   String limit;
   switch (viewType) {
-    case "DropDown": limit = "";                   break;
-    case "List":     limit = " LIMIT ? OFFSET ? "; break;
+    case "dropdown": limit = "";                   break;
+    case "list":     limit = " LIMIT ? OFFSET ? "; break;
   }
 
   String getChildEntitiesQ = "" +
@@ -1898,7 +2738,7 @@ void populateMenuWithEntities (
 
   FetchCallback cbPopulateDropDown = new FetchCallback() {
     onFetch(result) {
-      populateDropDown(path, result, true);
+      populateDropDown(ref, result, true);
     }
   };
 
@@ -1907,8 +2747,8 @@ void populateMenuWithEntities (
   else                    q = getChildEntitiesQ;
 
   switch (viewType) {
-    case "DropDown": fetchAll(q, cbPopulateDropDown); break;
-    case "List":     populateCursorList(path, q, 25); break;
+    case "dropdown": timedFetchAll(q, cbPopulateDropDown); break;
+    case "list":     timedPopulateCursorList(ref, q, 25);  break;
   }
 }
 
@@ -1918,8 +2758,8 @@ void populateEntityListsInTabGroup(String tabGroup) {
   }
 
   for (m : ENTITY_MENUS) {
-    String path         = m[1];
-    String menuTabGroup = getTabGroupRef(path);
+    String ref          = m[0];
+    String menuTabGroup = getTabGroupRef(ref);
     String functionCall = getEntityMenuPopulationFunction(m);
 
     if (menuTabGroup.equals(tabGroup))
@@ -1938,7 +2778,7 @@ void populateEntityListsOfArchEnt(String tabGroup) {
   String archEntTypeToPopulate = getArchEntType(tabGroup);
 
   for (m : ENTITY_MENUS) {
-    String archEntType  = m[3];
+    String archEntType  = m[2];
     String functionCall = getEntityMenuPopulationFunction(m);
 
     if (archEntType.equals(archEntTypeToPopulate))
@@ -1947,17 +2787,14 @@ void populateEntityListsOfArchEnt(String tabGroup) {
 }
 
 String getEntityMenuPopulationFunction(String[] menuDescriptor) {
-  String viewType       = menuDescriptor[0];
-  String path           = menuDescriptor[1];
-  String parentUuidCall = menuDescriptor[2];
-  String entType        = menuDescriptor[3];
-  String relType        = menuDescriptor[4];
+  String ref            = menuDescriptor[0];
+  String parentUuidCall = menuDescriptor[1];
+  String entType        = menuDescriptor[2];
+  String relType        = menuDescriptor[3];
 
   String functionCall = "";
   functionCall += "populateMenuWithEntities(";
-  functionCall += "\"" + viewType       + "\"";
-  functionCall += ", ";
-  functionCall += "\"" + path           + "\"";
+  functionCall += "\"" + ref            + "\"";
   functionCall += ", ";
   functionCall +=        parentUuidCall       ;
   functionCall += ", ";
@@ -1976,7 +2813,7 @@ for (m : ENTITY_MENUS) {
   execute(functionCall);
 }
 for (m : ENTITY_MENUS) {
-  String menuRef = m[1];
+  String menuRef = m[0];
 
   String ref = getTabRef(menuRef);
   String evt = "show";
