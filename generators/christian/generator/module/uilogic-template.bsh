@@ -1174,9 +1174,9 @@ void checkSetDummyRecordQuantityIsDone() {
 
     String head = "{perf_update_head}";
     String body =
-        "{perf_update_body_1}" + treeStringNoRoot +
-        "{perf_update_body_2}" + totalRecs +
-        "{perf_update_body_3}";
+         "{perf_update_body_1} " + treeStringNoRoot +
+        " {perf_update_body_2} " + totalRecs +
+        " {perf_update_body_3}";
 
     showAlert(head, body, "createDummyRecords()", "");
   }
