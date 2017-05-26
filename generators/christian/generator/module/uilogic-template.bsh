@@ -676,10 +676,11 @@ Tree(String label, Object data) {
   return this;
 }
 
-TimedFetchCallback(String query, FetchCallback cb) {
-  String        query      = query;
-  FetchCallback cb         = cb;
-  bsh.CallStack callstack_ = this.callstack.copy();
+TimedFetchCallback(String query, FetchCallback cb, int callerIdx) {
+  int           callerIdx = callerIdx;
+  String        query     = query;
+  FetchCallback cb        = cb;
+  bsh.CallStack cs_       = this.callstack.copy();
 
   long startTime = System.currentTimeMillis(); // Timer starts here
   long stopTime  = -1;
@@ -710,7 +711,7 @@ TimedFetchCallback(String query, FetchCallback cb) {
   void updatePerfLog() {
     String deviceModel  = android.os.Build.MODEL;
     String sessStartMs  = SESS_START_TIME + "";
-    String srcLine      = super.callstack_.get(1).getInvocationLine() + "";
+    String srcLine      = super.cs_.get(super.callerIdx).getInvocationLine()+"";
     String query        = super.query;
     String queryStartMs = super.startTime + "";
     String queryStopMs  = super.stopTime + "";
@@ -747,32 +748,40 @@ TimedFetchCallback(String query, FetchCallback cb) {
   return this;
 }
 
-void timedFetchOne(String q, FetchCallback cb) {
+void timedFetchOne(String q, FetchCallback cb, int callerIdx) {
   if (!PERF_DO_LOG_QUERIES) {
     fetchOne(q, cb);
     return;
   }
 
-  tcb = TimedFetchCallback(q, cb);
+  tcb = TimedFetchCallback(q, cb, callerIdx);
   fetchOne(q, tcb);
 }
 
-void timedFetchOne(String q) {
-  timedFetchOne(q, null);
-}
-
-void timedFetchAll(String q, FetchCallback cb) {
+void timedFetchAll(String q, FetchCallback cb, int callerIdx) {
   if (!PERF_DO_LOG_QUERIES) {
     fetchAll(q, cb);
     return;
   }
 
-  tcb = TimedFetchCallback(q, cb);
+  tcb = TimedFetchCallback(q, cb, callerIdx);
   fetchAll(q, tcb);
 }
 
+void timedFetchOne(String q, FetchCallback cb) {
+  timedFetchOne(q, cb, 2);
+}
+
+void timedFetchAll(String q, FetchCallback cb) {
+  timedFetchAll(q, cb, 2);
+}
+
+void timedFetchOne(String q) {
+  timedFetchOne(q, null, 2);
+}
+
 void timedFetchAll(String q) {
-  timedFetchAll(q, null);
+  timedFetchAll(q, null, 2);
 }
 
 void timedPopulateCursorList(String ref, String q, int limit) {
@@ -780,7 +789,7 @@ void timedPopulateCursorList(String ref, String q, int limit) {
     String boundQ = q;
     boundQ = dbReplaceFirst(boundQ, "?", limit + "");
     boundQ = dbReplaceFirst(boundQ, "?", "0");
-    timedFetchAll(boundQ);
+    timedFetchAll(boundQ, null, 2);
   }
 
   populateCursorList(ref, q, limit);
