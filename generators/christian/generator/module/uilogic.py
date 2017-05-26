@@ -272,9 +272,9 @@ def getUsersPopulateCall(tree, t):
     placeholder = '{{users-populate-call}}'
 
     if   getUserMenuUiType(tree) == UI_TYPE_LIST:
-        replacement = 'populateList(userMenuPath, result);'
+        replacement = 'populateList(USER_MENU_PATH, result);'
     elif getUserMenuUiType(tree) == UI_TYPE_DROPDOWN:
-        replacement = 'populateDropDown(userMenuPath, result, true);'
+        replacement = 'populateDropDown(USER_MENU_PATH, result, true);'
     else:
         replacement = 'return;'
 
@@ -286,7 +286,7 @@ def getUsersSelectedUser(tree, t):
     if   getUserMenuUiType(tree) == UI_TYPE_LIST:
         replacement = 'String selectedUser = getListItemValue();'
     elif getUserMenuUiType(tree) == UI_TYPE_DROPDOWN:
-        replacement = 'String selectedUser = getFieldValue(userMenuPath);'
+        replacement = 'String selectedUser = getFieldValue(USER_MENU_PATH);'
     else:
         replacement = 'return;'
 

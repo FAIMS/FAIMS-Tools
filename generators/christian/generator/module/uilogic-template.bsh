@@ -21,6 +21,10 @@ setSyncEnabled(true);
 setSyncMaxInterval(600.0f);
 setSyncMinInterval(5.0f);
 
+if (isNull(USER_MENU_PATH)) {
+  Log.w("", "`USER_MENU_PATH` is empty or null");
+}
+
 /******************************************************************************/
 /*                                STRING UTILS                                */
 /******************************************************************************/
@@ -1251,9 +1255,13 @@ void setUpPerfTestMode() {
   showWarning("{perf_mode_head}", "{perf_mode_body}");
 }
 
-setUpPerfTestMode();
-addOnEvent(getTabGroupRef(USER_MENU_PATH), "show",  "setUpPerfActionBarItems()");
-addOnEvent(getTabGroupRef(USER_MENU_PATH), "leave", "setUpPerfActionBarItems()");
+if (!isNull(USER_MENU_PATH)) {
+  String userMenuTabGroup = getTabGroupRef(USER_MENU_PATH);
+
+  setUpPerfTestMode();
+  addOnEvent(userMenuTabGroup, "show",  "setUpPerfActionBarItems()");
+  addOnEvent(userMenuTabGroup, "leave", "setUpPerfActionBarItems()");
+}
 
 /******************************************************************************/
 /*                           LOCALSETTINGS UPDATES                            */
@@ -1955,7 +1963,7 @@ void populateListForUsers(){
 }
 
 String getUserMenuValue(int i) {
-  String selectedUser = getFieldValue(USER_MENU_PATH);
+  {{users-selecteduser}}
   if (selectedUser == null)
     return "";
 
@@ -1966,8 +1974,6 @@ String getUserMenuValue(int i) {
 }
 
 void selectUser() {
-  {{users-selecteduser}}
-
   userId           = getUserMenuValue(0);
   String nameFirst = getUserMenuValue(1);
   String nameLast  = getUserMenuValue(2);
@@ -1981,8 +1987,10 @@ void selectUser() {
   }
 }
 
-addOnEvent(USER_MENU_PATH, "show",  "populateListForUsers()");
-addOnEvent(USER_MENU_PATH, "click", "selectUser()");
+if (!isNull(USER_MENU_PATH)) {
+  addOnEvent(USER_MENU_PATH, "show",  "populateListForUsers()");
+  addOnEvent(USER_MENU_PATH, "click", "selectUser()");
+}
 
 /******************************************************************************/
 /*                                 VALIDATION                                 */
