@@ -273,7 +273,7 @@ perf_wiz_head=Welcome to The Record Creation Wizard
 perf_wiz_body=The record creation wizard will guide you through the process of creating dummy records.\\n\\nThe first step is to set the number of records you want to create. Tap 'OK' to do so, or 'Cancel' exit the wizard.
 
 create_dummy_records=Create Dummy Records
-display_record_digest=Create Record Digest
+display_record_digest=Display Record Digest
 enable_record_creation=Enable Record Creation
 
 perf_update_head=Update Successful
