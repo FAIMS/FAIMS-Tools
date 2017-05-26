@@ -758,7 +758,7 @@ void timedFetchOne(String q, FetchCallback cb) {
 }
 
 void timedFetchOne(String q) {
-  fetchOne(q, null);
+  timedFetchOne(q, null);
 }
 
 void timedFetchAll(String q, FetchCallback cb) {
