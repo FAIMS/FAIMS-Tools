@@ -1651,15 +1651,12 @@ void makeVocab(
 /* default, which is the vocabid.                                             */
 /******************************************************************************/
 // Map from vocabid to vocabname. Populated by `fetchMenuValues()`.
-Map VOCABID_TO_VOCABNAME        = null;
-Map VOCABNAME_TO_VOCABID        = null;
-Map ATTRIB_NAME_TO_VOCABIDS     = null;
-Map ATTRIB_NAME_TO_MENU_ENTRIES = null;
+Map VOCABID_TO_VOCABNAME        = new HashMap();
+Map VOCABNAME_TO_VOCABID        = new HashMap();
+Map ATTRIB_NAME_TO_VOCABIDS     = new HashMap();
+Map ATTRIB_NAME_TO_MENU_ENTRIES = new HashMap();
 
 void setVocabId(String attrName, String vocabName, String vocabId) {
-  if (VOCABNAME_TO_VOCABID == null)
-    VOCABNAME_TO_VOCABID = new HashMap();
-
   String key = attrName + SEP + vocabName;
   String val = vocabId;
 
@@ -1671,9 +1668,6 @@ String getVocabId(String attrName, String vocabName) {
 }
 
 void addVocabId(String attrName, String vocabId) {
-  if (ATTRIB_NAME_TO_VOCABIDS == null)
-    ATTRIB_NAME_TO_VOCABIDS = new HashMap();
-
   List vocabIds = ATTRIB_NAME_TO_VOCABIDS.get(attrName);
   if (vocabIds == null) {
     vocabIds = new ArrayList();
@@ -1689,9 +1683,6 @@ void addMenuEntry(
     String vocabName,
     String picUrl
 ) {
-  if (ATTRIB_NAME_TO_MENU_ENTRIES == null)
-    ATTRIB_NAME_TO_MENU_ENTRIES = new HashMap();
-
   List menuEntries = ATTRIB_NAME_TO_MENU_ENTRIES.get(attrName);
   if (menuEntries == null) {
     menuEntries = new ArrayList();
@@ -1728,8 +1719,6 @@ List getVocabIdsFromRef(String ref) {
  * every menu.
  */
 void fetchMenuValues(String cb) {
-  VOCABID_TO_VOCABNAME = new HashMap();
-
   String q = "";
   q += "   SELECT vocabid, vocabname, attributename, pictureurl";
   q += "     FROM vocabulary";
@@ -1982,6 +1971,13 @@ String getUserMenuValue(int i) {
 
 }
 
+void resetUser() {
+  userId   = "0";
+  username = "";
+  User user = new User(userId, "", "", "", "");
+  setUser(user);
+}
+
 void selectUser() {
   userId           = getUserMenuValue(0);
   String nameFirst = getUserMenuValue(1);
@@ -1990,16 +1986,28 @@ void selectUser() {
   String password  = getUserMenuValue(4);
   username         = nameFirst + " " + nameLast;
 
-  if (!isNull(userId)) {
-    User user = new User(userId, nameFirst, nameLast, email, password);
-    setUser(user);
-  }
+  User user = new User(userId, nameFirst, nameLast, email, password);
+  setUser(user);
+}
+
+void onClickSignup__ () {
+  setSyncEnabled(true);
+  showCreateUserDialog("onSignupSuccessful()");
+}
+
+void onSignupSuccessful() {
+  showWarning("{signup_head}", "{signup_body}");
+  populateListForUsers();
 }
 
 if (!isNull(USER_MENU_PATH)) {
+  addOnEvent(getTabGroupRef(USER_MENU_PATH), "show", "resetUser()");
+
   addOnEvent(USER_MENU_PATH, "show",  "populateListForUsers()");
   addOnEvent(USER_MENU_PATH, "click", "selectUser()");
 }
+
+{{binds-on-click-signup}}
 
 /******************************************************************************/
 /*                                 VALIDATION                                 */

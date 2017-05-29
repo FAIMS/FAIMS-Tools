@@ -292,6 +292,17 @@ def getUsersSelectedUser(tree, t):
 
     return t.replace(placeholder, replacement)
 
+def getBindsOnClickSignup(tree, t):
+    isSignupLink = lambda e: util.xml.getAttribVal(e, ATTRIB_L) == LINK_SIGNUP
+    nodes = util.schema.getGuiDataElements(tree, isSignupLink)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+
+    fmt         = 'addOnEvent("%s", "click", "onClickSignup__()");'
+    placeholder = '{{binds-on-click-signup}}'
+    replacement = format(refs, fmt)
+
+    return t.replace(placeholder, replacement)
+
 def getValidationString(node, fieldPairs):
     fpFmt = 'f.add(fieldPair("%s", "%s"));'
     fpStr = format(fieldPairs, fpFmt, indent='  ')
@@ -380,33 +391,39 @@ def getOnShowBinds(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getXLinksToY(tree, attribVal, noData):
-    assert attribVal in (ATTRIB_L, ATTRIB_LC, ATTRIB_LQ)
-    assert type(noData) == bool
+def getXLinksToY(tree, attribVal, isData):
+    assert attribVal in (ATTRIB_L, ATTRIB_LC, ATTRIB_LL, ATTRIB_LQ)
 
-    if noData:
-        isXLinkToY = lambda e: util.xml.hasAttrib(e, attribVal) and \
-                not util.data.isDataElement(util.schema.getLinkedNode(e))
-    else:
-        isXLinkToY = lambda e: util.xml.hasAttrib(e, attribVal) and \
-                util.data.isDataElement(util.schema.getLinkedNode(e))
+    hasAttrib = lambda e: util.xml.hasAttrib(e, attribVal)
+    notSignup = lambda e: util.xml.getAttribVal(e, attribVal) != LINK_SIGNUP
+    isLink    = lambda e: hasAttrib(e) and notSignup(e)
+    isDataEl  = lambda e: util.data.isDataElement(util.schema.getLinkedNode(e))
+
+    if   isData == None: isXLinkToY = lambda e: isLink(e)
+    elif isData == True: isXLinkToY = lambda e: isLink(e) and not isDataEl(e)
+    else:                isXLinkToY = lambda e: isLink(e) and     isDataEl(e)
 
     return util.xml.getAll(tree, isXLinkToY)
 
 def getOnClickDefs(tree, t):
     placeholder = '{{defs-on-click}}'
 
-    # @l link to 'nodata' tab or tab group
+    # @l or @ll link to 'nodata' tab or tab group
     fmtLND = \
-      'void onClick%s () {' \
+      'void %s%s () {' \
     '\n  newTab("%s", true);' \
     '\n}'
 
-    # @l link to savable tab group
+    # @l or @ll link to savable tab group
     fmtLD = \
-      'void onClick%s () {' \
+      'void %s%s () {' \
     '\n  parentTabgroup__ = "%s";' \
     '\n  new%s();' \
+    '\n}'
+
+    fmtLL = \
+      'void onClick%s () {' \
+    '\n  showVerifyUserDialog("onValidClick%s()");' \
     '\n}'
 
     # @lc link
@@ -419,12 +436,16 @@ def getOnClickDefs(tree, t):
     '\n  new%s();' \
     '\n}'
 
-    LNDNodes = getXLinksToY(tree, ATTRIB_L,  noData=True)
-    LDNodes  = getXLinksToY(tree, ATTRIB_L,  noData=False)
-    LCNodes  = getXLinksToY(tree, ATTRIB_LC, noData=False)
+    LNDNodes  = getXLinksToY(tree, ATTRIB_L,  isData=True)
+    LDNodes   = getXLinksToY(tree, ATTRIB_L,  isData=False)
+    LLNDNodes = getXLinksToY(tree, ATTRIB_LL, isData=True)
+    LLDNodes  = getXLinksToY(tree, ATTRIB_LL, isData=False)
+    LLNodes   = LLNDNodes + LLDNodes
+    LCNodes   = getXLinksToY(tree, ATTRIB_LC, isData=False)
 
     strLND = format(
             zip(
+                ['onClick'              for e in LNDNodes],
                 [getFunName(e)          for e in LNDNodes],
                 [util.schema.getLink(e) for e in LNDNodes]
             ),
@@ -434,11 +455,42 @@ def getOnClickDefs(tree, t):
 
     strLD = format(
             zip(
+                ['onClick'                            for e in LDNodes],
                 [getFunName(e)                        for e in LDNodes],
                 [util.schema.getParentTabGroup(e).tag for e in LDNodes],
                 [getFunName(util.schema.getLink(e))   for e in LDNodes]
             ),
             fmtLD,
+            newline='\n\n'
+    )
+
+    strLLND = format(
+            zip(
+                ['onValidClick'         for e in LLNDNodes],
+                [getFunName(e)          for e in LLNDNodes],
+                [util.schema.getLink(e) for e in LLNDNodes]
+            ),
+            fmtLND,
+            newline='\n\n'
+    )
+
+    strLLD = format(
+            zip(
+                ['onValidClick'                       for e in LLDNodes],
+                [getFunName(e)                        for e in LLDNodes],
+                [util.schema.getParentTabGroup(e).tag for e in LLDNodes],
+                [getFunName(util.schema.getLink(e))   for e in LLDNodes]
+            ),
+            fmtLD,
+            newline='\n\n'
+    )
+
+    strLL = format(
+            zip(
+                [getFunName(e) for e in LLNodes],
+                [getFunName(e) for e in LLNodes]
+            ),
+            fmtLL,
             newline='\n\n'
     )
 
@@ -452,16 +504,16 @@ def getOnClickDefs(tree, t):
             newline='\n\n'
     )
 
-    replacement = '\n\n'.join([strLND, strLD, strLC])
+    replacement = '\n\n'.join([strLND, strLD, strLLND, strLLD, strLL, strLC])
 
     return t.replace(placeholder, replacement)
 
 def getOnClickBinds(tree, t):
-    LNDNodes = getXLinksToY(tree, ATTRIB_L,  noData=True)
-    LDNodes  = getXLinksToY(tree, ATTRIB_L,  noData=False)
-    LCNodes  = getXLinksToY(tree, ATTRIB_LC, noData=False)
+    LNodes  = getXLinksToY(tree, ATTRIB_L,  isData=None)
+    LLNodes = getXLinksToY(tree, ATTRIB_LL, isData=None)
+    LCNodes = getXLinksToY(tree, ATTRIB_LC, isData=False)
 
-    nodes = LNDNodes + LDNodes + LCNodes
+    nodes = LNodes + LLNodes + LCNodes
     refs     = [util.schema.getPathString(n) for n in nodes]
     funNames = [getFunName(n)                for n in nodes]
 
@@ -472,38 +524,25 @@ def getOnClickBinds(tree, t):
     return t.replace(placeholder, replacement)
 
 def getMediaBinds(tree, t):
-    nodesAudio  = util.gui.getAll(tree, UI_TYPE_AUDIO)
-    nodesCamera = util.gui.getAll(tree, UI_TYPE_CAMERA)
-    nodesFile   = util.gui.getAll(tree, UI_TYPE_FILE)
-    nodesVideo  = util.gui.getAll(tree, UI_TYPE_VIDEO)
+    type2fun = {
+        UI_TYPE_AUDIO  : 'attachAudioTo',
+        UI_TYPE_CAMERA : 'attachPictureTo',
+        UI_TYPE_FILE   : 'attachFileTo',
+        UI_TYPE_VIDEO  : 'attachVideoTo'
+    }
 
-    refsAudio  = [util.schema.getPathString(n) for n in nodesAudio]
-    refsCamera = [util.schema.getPathString(n) for n in nodesCamera]
-    refsFile   = [util.schema.getPathString(n) for n in nodesFile]
-    refsVideo  = [util.schema.getPathString(n) for n in nodesVideo]
+    nodes = []
+    for type in MEDIA_UI_TYPES:
+        nodes += util.gui.getAll(tree, type)
 
-    btnRefsAudio  = [util.schema.getPathString(n.getnext()) for n in nodesAudio]
-    btnRefsCamera = [util.schema.getPathString(n.getnext()) for n in nodesCamera]
-    btnRefsFile   = [util.schema.getPathString(n.getnext()) for n in nodesFile]
-    btnRefsVideo  = [util.schema.getPathString(n.getnext()) for n in nodesVideo]
-
-    fmtAudio  = 'addOnEvent("%s", "click", "attachAudioTo(\\"%s\\")");'
-    fmtCamera = 'addOnEvent("%s", "click", "attachPictureTo(\\"%s\\")");'
-    fmtFile   = 'addOnEvent("%s", "click", "attachFileTo(\\"%s\\")");'
-    fmtVideo  = 'addOnEvent("%s", "click", "attachVideoTo(\\"%s\\")");'
-
-    replacementAudio  = format(zip(btnRefsAudio , refsAudio ),  fmtAudio)
-    replacementCamera = format(zip(btnRefsCamera, refsCamera), fmtCamera)
-    replacementFile   = format(zip(btnRefsFile  , refsFile  ),   fmtFile)
-    replacementVideo  = format(zip(btnRefsVideo , refsVideo ),  fmtVideo)
+    refs    = [util.schema.getPathString(n) for n in nodes]
+    btnRefs = [util.schema.getPathString(n.getnext()) for n in nodes]
+    types   = [util.schema.guessType(n) for n in nodes]
+    funs    = [type2fun[type] for type in types]
+    fmt     = 'addOnEvent("%s", "click", "%s(\\"%s\\")");'
 
     placeholder = '{{binds-media}}'
-    replacement = '\n'.join([
-        replacementAudio,
-        replacementCamera,
-        replacementFile,
-        replacementVideo
-    ])
+    replacement = format(zip(btnRefs, funs, refs), fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -925,7 +964,7 @@ def getControlStartingIdPaths(tree, t):
     return t.replace(placeholder, replacement)
 
 def getQrBinds(tree, t):
-    nodes      = getXLinksToY(tree, ATTRIB_LQ, noData=False)
+    nodes      = getXLinksToY(tree, ATTRIB_LQ, isData=False)
     buttonRefs = [util.schema.getPathString(n) for n in nodes]
     fieldRefs  = [util.schema.getLink(n)       for n in nodes]
 
@@ -1024,6 +1063,7 @@ def getUiLogic(tree):
     t = getUsers(tree, t)
     t = getUsersPopulateCall(tree, t)
     t = getUsersSelectedUser(tree, t)
+    t = getBindsOnClickSignup(tree, t)
     t = getValidation(tree, t)
     t = getAuthor(tree, t)
     t = getTimestamp(tree, t)

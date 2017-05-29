@@ -176,23 +176,23 @@ def hasElementFlaggedWith(tabGroup, flag):
 def hasElementFlaggedWithId(tabGroup):
     return hasElementFlaggedWith(tabGroup, 'id')
 
-def getParentTabGroup(node):
-    exp = './ancestor::*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_TAB_GROUP)
+def getParent(node, xmlType):
+    if node == None:
+        return None
+
+    exp = './ancestor::*[@%s="%s"]' % (RESERVED_XML_TYPE, xmlType)
     matches = node.xpath(exp)
     if matches: return matches[0]
     else:       return None
+
+def getParentTabGroup(node):
+    return getParent(node, TYPE_TAB_GROUP)
 
 def getParentTab(node):
-    exp = './ancestor::*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_TAB)
-    matches = node.xpath(exp)
-    if matches: return matches[0]
-    else:       return None
+    return getParent(node, TYPE_TAB)
 
 def getParentGuiDataElement(node):
-    exp = './ancestor::*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
-    matches = node.xpath(exp)
-    if matches: return matches[0]
-    else:       return None
+    return getParent(node, TYPE_GUI_DATA)
 
 def annotateWithXmlTypes(node):
     if node == []:   return
@@ -518,6 +518,10 @@ def getLink(node):
     if link:
         return link
 
+    link = util.xml.getAttribVal(node, ATTRIB_LL)
+    if link:
+        return link
+
     link = util.xml.getAttribVal(node, ATTRIB_LC)
     if link:
         return link
@@ -538,6 +542,9 @@ def getLinks(node):
 
 def hasLink(node):
     return bool(getLink(node))
+
+def hasValidLink(node):
+    return getLinkedNode(node) != None
 
 def getEntity(node):
     link = util.xml.getAttribVal(node, ATTRIB_E)
@@ -597,6 +604,8 @@ def isValidPath(root, path, pathType):
         result |= isValidPath(root, path, TYPE_TAB)
         result |= isValidPath(root, path, TYPE_TAB_GROUP)
         return result
+    elif pathType == LINK_SIGNUP:
+        return path == LINK_SIGNUP
     else:
         return False
 

@@ -11,6 +11,7 @@ ATTRIB_EC        = 'ec'
 ATTRIB_F         = 'f'
 ATTRIB_I         = 'i'
 ATTRIB_L         = 'l'
+ATTRIB_LL        = 'll'
 ATTRIB_LC        = 'lc'
 ATTRIB_LQ        = 'lq'
 ATTRIB_P         = 'p'
@@ -168,3 +169,4 @@ GUI_DATA_UI_TYPES = [
 
 ORIGINAL_TAG = '__ORIGINAL_TAG__'
 AUTONUM_DEST = '__AUTONUM_DEST__'
+LINK_SIGNUP  = 'signup'

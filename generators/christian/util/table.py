@@ -6,7 +6,7 @@ module             | suppressWarnings test_mode
 tab group          | f
 tab                | f
 group              | t
-GUI/data element   | b, c, e, ec, f, l, lc, t, s, vp, i
+GUI/data element   | b, c, e, ec, f, l, lc, ll, lq, t, s, vp, i
 cols               | f
 opts               |
 str                |
@@ -31,8 +31,9 @@ b            | date, decimal, string, time |
 c            |                             |
 f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, readonly, user, persist, persist!
 l            | $link-all                   |
-ec           | $link-tabgroup              |
+ll           | $link-all                   |
 lc           | $link-tabgroup              |
+ec           | $link-tabgroup              |
 t            | audio, button, camera, checkbox, dropdown, file, gpsdiag, group, input, list, map, picture, radio, table, video, viewfiles, web, webview |
 p            |                             |
 '''
@@ -280,6 +281,10 @@ perf_update_head=Update Successful
 perf_update_body_1=The updated record quantities are as follows:\\n
 perf_update_body_2=\\n\\nThese quantities will result in a total of
 perf_update_body_3=records being created. Do you wish to create them? Tap 'OK' to do so, or 'Cancel' otherwise.
+
+
+signup_head=Signup Successful
+signup_body=You have successfuly signed up. You may now log in as the newly created user.
 '''
 
 ATTRIBS       = tablehelper.parseTable(ATTRIBS)

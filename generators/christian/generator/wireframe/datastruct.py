@@ -56,20 +56,15 @@ class GraphModule(object):
     def getUserSpecifiedLinks(self, node):
         links = ['/* User-specified links */']
 
-        for n in node.xpath('//*[@l or @lc]'):
-            # Does `n` have an 'l' attribute, or an 'lc' attribute?
-            if util.xml.hasAttrib(n, 'l' ): attrib = 'l'
-            if util.xml.hasAttrib(n, 'lc'): attrib = 'lc'
+        for n in node.xpath('//*[@l or @lc or @ll]'):
+            # Determine `nodeFrom` and `nodeTo`. `nodeTo` is always a tab.
+            nodeFrom = n
+            nodeTo   = util.schema.getLinkedNode(n)
+            if util.schema.isTabGroup(nodeTo):
+                nodeTo = util.schema.getTabs(nodeTo)[0]
 
-            # Determine `nodeFrom` and `nodeTo`
-            nodeFrom = n; parFrom = n.getparent()
-            if util.schema.isValidPath(n, n.attrib[attrib], TYPE_TAB_GROUP):
-                exp     = '/module/%s/*[@%s="%s"][1]'
-            if util.schema.isValidPath(n, n.attrib[attrib], TYPE_TAB):
-                exp     = '/module/%s[@%s="%s"]'
-            exp    %= n.attrib[attrib], RESERVED_XML_TYPE, TYPE_TAB
-            matches = n.xpath(exp)
-            nodeTo  = matches[0]
+            if nodeTo == None:
+                continue
 
             # Determine `idFrom` and `idTo`
             idFrom = GuiBlock.nodeId(nodeFrom)
@@ -84,19 +79,15 @@ class GraphModule(object):
     def getGraphConstrainingLinks(self, node):
         links = ['/* Graph-constraining links */']
 
-        for n in node.xpath('//*[@l or @lc]'):
-            # Does `n` have an 'l' attribute, or an 'lc' attribute?
-            if util.xml.hasAttrib(n, 'l' ): attrib = 'l'
-            if util.xml.hasAttrib(n, 'lc'): attrib = 'lc'
-
-            # Determine link in l or lc attribute
-            link = n.attrib[attrib]
-            link = link.split('/') # Ensure that this is a link to a tab group
-            link = link[0]         #
-
+        for n in node.xpath('//*[@l or @lc or @ll]'):
             # Determine `nodeFrom` and `nodeTo`
             nodeFrom = util.schema.getParentTabGroup(n)
-            nodeTo   = n.xpath('/module/%s' % link)[0]
+            nodeTo   = util.schema.getLinkedNode(n)
+            if not util.schema.isTabGroup(nodeTo):
+                nodeTo = util.schema.getParentTabGroup(nodeTo)
+
+            if nodeTo == None:
+                continue
 
             # Determine `idFrom` and `idTo`
             idFrom = GraphTabGroup.nodeIdAnchor(nodeFrom)
