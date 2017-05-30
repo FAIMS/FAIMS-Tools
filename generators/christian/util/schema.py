@@ -581,26 +581,15 @@ def isValidPath(root, path, pathType):
     if not path:
         return False
 
-    if   pathType in ('tab', TYPE_TAB):
-        result  = True
-        try:
-            result &= len(getNodeAtPath(root, path)) > 0
-        except:
-            result &= False
-        result &= '/'     in path
-        result &= '/' != path[ 0]
-        result &= '/' != path[-1]
-        return result
+    if   pathType == TYPE_GUI_DATA:
+        return getType(getNodeAtPath(root, path)) == TYPE_GUI_DATA
+    elif pathType in ('tab', TYPE_TAB):
+        return getType(getNodeAtPath(root, path)) == TYPE_TAB
     elif pathType in ('tabgroup', TYPE_TAB_GROUP):
-        result  = True
-        try:
-            result &= len(getNodeAtPath(root, path)) > 0
-        except:
-            result &= False
-        result &= '/' not in path
-        return result
+        return getType(getNodeAtPath(root, path)) == TYPE_TAB_GROUP
     elif pathType == 'all':
         result  = False
+        result |= isValidPath(root, path, TYPE_GUI_DATA)
         result |= isValidPath(root, path, TYPE_TAB)
         result |= isValidPath(root, path, TYPE_TAB_GROUP)
         return result

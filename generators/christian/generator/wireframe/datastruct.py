@@ -60,6 +60,8 @@ class GraphModule(object):
             # Determine `nodeFrom` and `nodeTo`. `nodeTo` is always a tab.
             nodeFrom = n
             nodeTo   = util.schema.getLinkedNode(n)
+            if util.schema.isGuiDataElement(nodeTo):
+                nodeTo = util.schema.getParentTabGroup(nodeTo)
             if util.schema.isTabGroup(nodeTo):
                 nodeTo = util.schema.getTabs(nodeTo)[0]
 

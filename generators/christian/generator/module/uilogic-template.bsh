@@ -2310,6 +2310,12 @@ void newRecord(String tabgroup) {
   newRecord(tabgroup, doUpdateRelVars);
 }
 
+void newRecord(String tabgroup, String parentTabGroup) {
+  parentTabgroup   = parentTabGroup;
+  parentTabgroup__ = parentTabGroup;
+  newRecord(tabgroup, false);
+}
+
 void newRecord(String tabgroup, boolean doUpdateRelVars) {
   if (doUpdateRelVars) {
     String uuidOld = getUuid(getDisplayedTabGroup());
@@ -2607,21 +2613,32 @@ void clearGpsInTab(String tabRef) {
 /******************************************************************************/
 /*               LOADING AND CREATION OF RECORDS FROM QR CODES                */
 /******************************************************************************/
-void bindQrScanning(String refButton, String refField) {
+void bindQrScanning(String refButton, String refField, boolean isChild) {
   String event = "click";
 
-  String stmt = fun2str("scanRecordFromQrCode", refField);
+  String parentTabGroup;
+  if (isChild) parentTabGroup = getTabGroupRef(refButton);
+  else         parentTabGroup = null;
+
+  String stmt = fun2str("scanRecordFromQrCode", parentTabGroup, refField);
 
   addOnEvent(refButton, event, stmt);
 }
 
-void scanRecordFromQrCode(String ref) {
-  String callback = fun2str("loadOrCreateEntityFromScannedAttrib", ref);
+void scanRecordFromQrCode(String parentTabGroup, String refField) {
+  String callback = fun2str(
+      "loadOrCreateEntityFromScannedAttrib",
+      parentTabGroup,
+      refField
+  );
   scanCode(callback);
 }
 
-void loadOrCreateEntityFromScannedAttrib(String ref) {
-  String attrName = getAttributeName(ref);
+void loadOrCreateEntityFromScannedAttrib(
+    String parentTabGroup,
+    String refField
+) {
+  String attrName = getAttributeName(refField);
   String attribVal  = getLastScanContents();
 
   String q = "";
@@ -2637,7 +2654,7 @@ void loadOrCreateEntityFromScannedAttrib(String ref) {
   FetchCallback loadOrCreateEntity = new FetchCallback() {
     onFetch(result) {
       if (isNull(result) || result.size() == 0) {
-        createRecordFromScannedAttrib(ref);
+        createRecordFromScannedAttrib(parentTabGroup, refField);
       } else {
         String uuid = result.get(0).get(0);
         loadEntityFrom(uuid);
@@ -2656,11 +2673,15 @@ void initScannedAttrib(String ref) {
     setFieldValue(ref, newCode);
 }
 
-void createRecordFromScannedAttrib(String ref) {
-  String tabGroup = getTabGroupRef(ref);
-  newRecord(tabGroup);
+void createRecordFromScannedAttrib(String parentTabGroup, String refField) {
+  String tabGroup = getTabGroupRef(refField);
 
-  initScannedAttrib(ref);
+  if (isNull(parentTabGroup))
+    newRecord(tabGroup);
+  else
+    newRecord(tabGroup, parentTabGroup);
+
+  initScannedAttrib(refField);
 }
 
 {{binds-qr}}

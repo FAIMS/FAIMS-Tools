@@ -15,8 +15,7 @@ def parseXml(filename):
 
 def hasAttrib(e, a):
     try:
-        if a in e.attrib:
-            return True
+        return a in e.attrib
     except:
         return False
 

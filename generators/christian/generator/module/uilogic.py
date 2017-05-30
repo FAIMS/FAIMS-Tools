@@ -391,19 +391,25 @@ def getOnShowBinds(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getXLinksToY(tree, attribVal, isData):
+def getXLinksToY(tree, attribVal, isData, hasQrLink=False):
     assert attribVal in (ATTRIB_L, ATTRIB_LC, ATTRIB_LL, ATTRIB_LQ)
 
     hasAttrib = lambda e: util.xml.hasAttrib(e, attribVal)
     notSignup = lambda e: util.xml.getAttribVal(e, attribVal) != LINK_SIGNUP
     isLink    = lambda e: hasAttrib(e) and notSignup(e)
     isDataEl  = lambda e: util.data.isDataElement(util.schema.getLinkedNode(e))
+    hasQrLink_ = lambda e: util.schema.getType(
+            util.schema.getLinkedNode(e)
+    ) == TYPE_GUI_DATA
 
-    if   isData == None: isXLinkToY = lambda e: isLink(e)
-    elif isData == True: isXLinkToY = lambda e: isLink(e) and not isDataEl(e)
-    else:                isXLinkToY = lambda e: isLink(e) and     isDataEl(e)
+    nodes = util.xml.getAll(tree)
+    nodes = filter(isLink, nodes)
+    if isData == True:     nodes = filter(lambda e :     isDataEl(e), nodes)
+    if isData == False:    nodes = filter(lambda e : not isDataEl(e), nodes)
+    if hasQrLink == True:  nodes = filter(lambda e :     hasQrLink_(e), nodes)
+    if hasQrLink == False: nodes = filter(lambda e : not hasQrLink_(e), nodes)
 
-    return util.xml.getAll(tree, isXLinkToY)
+    return nodes
 
 def getOnClickDefs(tree, t):
     placeholder = '{{defs-on-click}}'
@@ -429,11 +435,7 @@ def getOnClickDefs(tree, t):
     # @lc link
     fmtLC = \
       'void onClick%s () {' \
-    '\n  String tabgroup = "%s";' \
-    '\n  triggerAutoSave();' \
-    '\n  parentTabgroup   = tabgroup;' \
-    '\n  parentTabgroup__ = tabgroup;' \
-    '\n  new%s();' \
+    '\n  new%s("%s");' \
     '\n}'
 
     LNDNodes  = getXLinksToY(tree, ATTRIB_L,  isData=True)
@@ -497,8 +499,8 @@ def getOnClickDefs(tree, t):
     strLC = format(
             zip(
                 [getFunName(e)                        for e in LCNodes],
-                [util.schema.getParentTabGroup(e).tag for e in LCNodes],
-                [getFunName(util.schema.getLink(e))   for e in LCNodes]
+                [getFunName(util.schema.getLink(e))   for e in LCNodes],
+                [util.schema.getParentTabGroup(e).tag for e in LCNodes]
             ),
             fmtLC,
             newline='\n\n'
@@ -615,8 +617,13 @@ def getDefsTabGroupBindsNew(tree):
     createFunNames = [getFunName(n) for n in nodes]
 
     fmt = \
-      'void new%s (){' \
+    '\nvoid new%s(String parent){' \
     '\n  String tabgroup = "%s";' \
+    '\n  if (!isNull(parent)) {' \
+    '\n    triggerAutoSave();' \
+    '\n    parentTabgroup   = parent;' \
+    '\n    parentTabgroup__ = parent;' \
+    '\n  }' \
     '\n  %s' \
     '\n' \
     '\n  setUuid(tabgroup, null);' \
@@ -626,10 +633,22 @@ def getDefsTabGroupBindsNew(tree):
     '\n  %s' \
     '\n' \
     '\n  onCreate%s__();' \
+    '\n}' \
+    '\n' \
+    '\nvoid new%s (){' \
+    '\n  new%s(null);' \
     '\n}'
 
     return format(
-            zip(newFunNames, refs, noNextIds, incAutoNums, createFunNames),
+            zip(
+                newFunNames,
+                refs,
+                noNextIds,
+                incAutoNums,
+                createFunNames,
+                newFunNames,
+                newFunNames
+            ),
             fmt
     )
 
@@ -964,13 +983,17 @@ def getControlStartingIdPaths(tree, t):
     return t.replace(placeholder, replacement)
 
 def getQrBinds(tree, t):
-    nodes      = getXLinksToY(tree, ATTRIB_LQ, isData=False)
-    buttonRefs = [util.schema.getPathString(n) for n in nodes]
-    fieldRefs  = [util.schema.getLink(n)       for n in nodes]
+    nodes      = getXLinksToY(tree, ATTRIB_L,  isData=None, hasQrLink=True)
+    nodes     += getXLinksToY(tree, ATTRIB_LC, isData=None, hasQrLink=True)
 
-    fmt         = 'bindQrScanning("%s", "%s");'
+    buttonRefs = [util.schema.getPathString(n)     for n in nodes]
+    fieldRefs  = [util.schema.getLink(n)           for n in nodes]
+    isChild    = [util.xml.hasAttrib(n, ATTRIB_LC) for n in nodes]
+    isChild    = [str(c).lower()                   for c in isChild]
+
+    fmt         = 'bindQrScanning("%s", "%s", %s);'
     placeholder = '{{binds-qr}}'
-    replacement = format(zip(buttonRefs, fieldRefs), fmt);
+    replacement = format(zip(buttonRefs, fieldRefs, isChild), fmt);
 
     return t.replace(placeholder, replacement)
 
