@@ -15,20 +15,27 @@ def getDefaultDollarFmtStr(node):
 def convertDefaultDollar(dataElement, fmtStr):
     return fmtStr.replace('$0', getDefaultDollarFmtStr(dataElement))
 
-def addRels(source, target):
-    copyRels(source, target)
-    genRels (source, target)
+def getRels(node):
+    # This function returns the children of <rels> elements (plus a few other
+    # elements). `relsNodes` stores the found <rels> elements (not their
+    # children!)
+    relsNodes = util.xml.getAll(node, lambda n: n.tag == TAG_RELS)
+    relsNode = []
+    if len(relsNodes) > 0:
+        relsNode = relsNodes[0]
+    for n in relsNode:
+        n.tail = None
 
-def copyRels(source, target):
-    exp     = '//rels/*'
-    matches = source.xpath(exp)
-    for m in matches:
-        m.tail = None
-        target.append(m)
+    rels  = []
+    rels += relsNode
+    rels += getGennedRels(node)
 
-def genRels(source, target):
-    exp     = '//*[@lc]'
-    matches = source.xpath(exp)
+    return rels
+
+def getGennedRels(node):
+    gennedRels = []
+
+    matches = util.xml.getAll(node, lambda n: util.xml.hasAttrib(n, ATTRIB_LC))
     for m in matches:
         r                = etree.Element('RelationshipElement')
         r.attrib['name'] = util.data.getRelName(m)
@@ -48,18 +55,16 @@ def genRels(source, target):
         r.append(p)
         r.append(c)
 
-        target.append(r)
+        gennedRels.append(r)
 
-def addEnts(source, target):
-    exp     = '//*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_TAB_GROUP)
-    cond    = lambda e: not util.schema.isFlagged(e, FLAG_NODATA)
-    matches = source.xpath(exp)
-    matches = filter(cond, matches)
+    return gennedRels
 
-    for m in matches:
-        addEnt(m, target)
+def getEnts(node):
+    isData = lambda e: not util.schema.isFlagged(e, FLAG_NODATA)
+    matches = util.schema.getTabGroups(node, isData)
+    return [getEnt(m) for m in matches]
 
-def addEnt(node, target):
+def getEnt(node):
     a                = etree.Element('ArchaeologicalElement')
     a.attrib['name'] = util.data.getArchEntName(node)
 
@@ -67,33 +72,32 @@ def addEnt(node, target):
     d.text = getDescriptionText(node)
 
     a.append(d)
-    target.append(a)
+    a.extend(getProps(node))
 
-    addProps(node, a)
+    return a
 
-def addProps(source, target):
+def getProps(node):
     # Get data elements
     f = lambda e: util.data.isDataElement(e) and util.schema.isGuiDataElement(e)
-    matches = util.xml.getAll(source, f)
+    matches = util.xml.getAll(node, f)
 
-    for m in matches:
-        addProp(m, target)
+    return [getProp(m) for m in matches]
 
-def addProp(dataElement, target):
+def getProp(node):
     # make prop
     prp                = etree.Element('property')
-    prp.attrib['name'] = util.data.getAttribName(dataElement)
-    prp.attrib['type'] = util.data.getAttribType(dataElement, True)
-    if util.schema.isFlagged(dataElement, FLAG_ID):
+    prp.attrib['name'] = util.data.getAttribName(node)
+    prp.attrib['type'] = util.data.getAttribType(node, True)
+    if util.schema.isFlagged(node, FLAG_ID):
         prp.attrib['isIdentifier'] = 'true'
-    if util.data.hasFileType(dataElement):
+    if util.data.hasFileType(node):
         prp.attrib['file']         = 'true'
-    if util.data.hasFileType(dataElement) and not util.schema.isFlagged(dataElement, [FLAG_NOTHUMB, FLAG_NOTHUMBNAIL]):
+    if util.data.hasFileType(node) and not util.schema.isFlagged(node, [FLAG_NOTHUMB, FLAG_NOTHUMBNAIL]):
         prp.attrib['thumbnail']    = 'true'
 
     # make description
     dsc      = etree.Element('description')
-    dsc.text = getDescriptionText(dataElement)
+    dsc.text = getDescriptionText(node)
 
     # make (1) format and (2) append character strings.
     # (3) make <lookup> nodes
@@ -106,11 +110,11 @@ def addProp(dataElement, target):
 
     # (1) format string
     exp     = './str/fmt'
-    matches = dataElement.xpath(exp)
+    matches = node.xpath(exp)
     fmtText = ''
     if matches:
         fmtText = matches[0].text
-        fmtText = convertDefaultDollar(dataElement, fmtText)
+        fmtText = convertDefaultDollar(node, fmtText)
     if not fmtText:
         fmtText = fmtDefault
 
@@ -119,7 +123,7 @@ def addProp(dataElement, target):
 
     # (2) append character string
     exp     = './str/app'
-    matches = dataElement.xpath(exp)
+    matches = node.xpath(exp)
     appText = ''
     if matches:
         appText = matches[0].text
@@ -130,11 +134,11 @@ def addProp(dataElement, target):
     app.text = appText
 
     # (3) lookup nodes
-    lup = makeLookup(dataElement)
+    lup = makeLookup(node)
 
     # (4) pos nodes
     exp     = './str/pos'
-    matches = dataElement.xpath(exp)
+    matches = node.xpath(exp)
     posText = ''
     if matches:
         posText = matches[0].text
@@ -148,8 +152,8 @@ def addProp(dataElement, target):
     util.xml.appendNotNone(app, prp)
     util.xml.appendNotNone(lup, prp)
     util.xml.appendNotNone(pos, prp)
-    # append prp to parent archent
-    target.append(prp)
+
+    return prp
 
 def makeLookup(dataElement):
     exp     = './opts'
@@ -232,10 +236,11 @@ def getDescriptionText(node):
     else        : return ''
 
 def getDataSchema(node):
-    dataSchema = etree.Element('dataSchema')
+    children  = getRels(node)
+    children += getEnts(node)
 
-    addRels (node, dataSchema)
-    addEnts (node, dataSchema)
+    dataSchema = etree.Element('dataSchema')
+    dataSchema.extend(children)
 
     sortPropsByPos(dataSchema)
     delPosNodes   (dataSchema)
