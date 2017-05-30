@@ -216,8 +216,7 @@ INTENDED PURPOSE OF THE <rels> TAG
   something is awry with its contents.
 
   Because the <rels> tags' contents are directly copied, in principle you could
-  put anything in there which you want to appear in the data schema. Doing so
-  would make you a bad person.
+  put anything in there which you want to appear in the data schema.
 ________________________________________________________________________________
 
 SEMANTICS OF <cols> TAGS
@@ -408,8 +407,7 @@ GENERATION OF THE ARCH16N FILE
       I_m_cool_=I'm cool!
       I_m_cool_=I'm cool?
   Moreover, the programmer is not warned if such a conflict exists, as, in
-  practise, it assumed that such conflicts are very rare and checking for them
-  in XSLT 1.0 violates Article 5 of 'The Universal Declaration of Human Rights'.
+  practise, it assumed that such conflicts are very rare.
 ________________________________________________________________________________
 
 KNOWN ISSUES
