@@ -1023,6 +1023,29 @@ def getIncAutonumMap(tree, t):
 
     return t.replace(placeholder, replacement)
 
+def markdownToHtml(markdown):
+    p = subprocess.Popen(
+            ['pandoc', '-S', '--normalize'],
+            stdout=subprocess.PIPE,
+            stdin =subprocess.PIPE,
+            stderr=subprocess.STDOUT
+    )
+    stdout, stderr = p.communicate(input=markdown.encode('utf-8'))
+    return stdout.decode('utf-8')
+
+def getPopulationMarkdown(tree, t):
+    nodes = util.xml.getAll(tree, lambda n: n.tag == TAG_MARKDOWN)
+    refs  = [util.schema.getParentGuiDataElement(n) for n in nodes]
+    refs  = [util.schema.getPathString(r)           for r in refs]
+    html  = [markdownToHtml(n.text)                 for n in nodes]
+    html  = [util.escape(h)                         for h in html]
+
+    fmt         = 'populateWebViewHtml("%s", "%s");'
+    placeholder = '{{population-markdown}}'
+    replacement = format(zip(refs, html), fmt)
+
+    return t.replace(placeholder, replacement)
+
 def getEntityMenus(tree, t):
     isEntList    = lambda e: util.xml.hasAttrib(e, ATTRIB_E ) or \
                              util.xml.hasAttrib(e, ATTRIB_EC)
@@ -1126,6 +1149,7 @@ def getUiLogic(tree):
     t = getControlStartingIdPaths(tree, t)
     t = getQrBinds(tree, t)
     t = getIncAutonumMap(tree, t)
+    t = getPopulationMarkdown(tree, t)
     t = getEntityMenus(tree, t)
     t = getEntityLoading(tree, t)
     t = getHandWrittenLogic(tree, t)

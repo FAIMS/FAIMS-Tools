@@ -1,5 +1,6 @@
 import re
 import sys
+import string
 from copy import deepcopy
 
 def normaliseSpace(s):
@@ -67,3 +68,11 @@ class Tree(object):
 
     def flattened(self):
         return [self] + sum([t.flattened() for t in self.children], [])
+
+def escape(s):
+  s = s.replace('\\', '\\\\')
+  s = s.replace('"',  '\\"')
+  s = s.replace('\n', '\\n')
+  s = s.replace('\r', '\\r')
+
+  return s

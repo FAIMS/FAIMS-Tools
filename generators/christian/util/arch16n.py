@@ -45,6 +45,7 @@ def hasArch16Entry(node):
     if node.tag == TAG_FMT:                     return False
     if node.tag == TAG_GROUP:                   return False
     if node.tag == TAG_LOGIC:                   return False
+    if node.tag == TAG_MARKDOWN:                return False
     if node.tag == TAG_MODULE:                  return False
     if node.tag == TAG_OPTS:                    return False
     if node.tag == TAG_POS:                     return False

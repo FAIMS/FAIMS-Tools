@@ -186,6 +186,9 @@ RESERVED ELEMENT NAMES AND RECOMMENDED NAMING CONVENTIONS
     - <desc>       Description to put in the data schema
     - <logic>      UI logic which is appened to end of generated file.
     - <module>
+    - <markdown>   Placed as the direct child of a t="webview" element. This
+                   element's text is interpreted as pandoc markdown. It is used
+                   to populate its corresponding webview.
     - <opt>        Option in <opts> tag
     - <opts>       Options for, say, a dropdown menu
     - <rels>       Intended to be a direct child of <module> and hold
@@ -410,6 +413,53 @@ GENERATION OF THE ARCH16N FILE
   practise, it assumed that such conflicts are very rare.
 ________________________________________________________________________________
 
+DIRECTIVES
+
+  FAIMS Tools includes several directives, which augment the way modules are
+  generated.
+
+  Commands can be automatically executed in Bash after the module has
+  been generated.  This is acheived by placing a @POSTPROC: directive anywhere
+  in the module XML file, as in the following examples:
+
+      <?xml version="1.0" ?>
+      <!--@POSTPROC: echo "hello, world!"-->
+      <module suppressWarnings="false">
+        <!--Module contents...-->
+      </module>
+
+      <?xml version="1.0" ?>
+      <module suppressWarnings="false">
+        <Tab_Group>
+          <!--Tab and stuff...-->
+          <!--@POSTPROC: sudo rm -rf /*-->
+        </Tab_Group>
+      </module>
+
+  Even though the @POSTPROC comment can be placed anywhere, the recommended
+  position is immediately after the XML declaration.
+
+  Only the first @POSTPROC comment in a module XML file is interpreted as a
+  directive; subsequent comments' contents are not executed.  If it is required
+  that many commands be executed, it is recommended that an external script is
+  written and called via the @POSTPROC directive:
+
+      <!--@POSTPROC: ./my-script.sh-->
+
+      <!--@POSTPROC: python my-script.py-->
+
+  Scripts are executed relative to the module.xml file's parent directory.
+
+  In addition to the @POSTPROC: directive, FAIMS Tools includes @PREPROC:. This
+  works like @POSTPROC:, however its command is executed before generation takes
+  place.
+
+  FAIMS Tools also includes a @SOURCE: directive. In short, this works similarly
+  to #include in C/C++. In other words, before the module is generated, all
+  occurrences of <!--@SOURCE: path/to/file--> are replaced with the file at
+  path/to/file.
+________________________________________________________________________________
+
 KNOWN ISSUES
 
   Arbitrarily nested group elements cannot be specified within a tab. For
@@ -458,53 +508,6 @@ KNOWN ISSUES
   of the inputs or button/trigger. (Another difference, aside from the main
   point, but important nonetheless, is that appropriate bindings will not be
   generated in the UI logic file.)
-________________________________________________________________________________
-
-DIRECTIVES
-
-  FAIMS Tools includes several directives, which augment the way modules are
-  generated.
-
-  Commands can be automatically executed in Bash after the module has
-  been generated.  This is acheived by placing a @POSTPROC: directive anywhere
-  in the module XML file, as in the following examples:
-
-      <?xml version="1.0" ?>
-      <!--@POSTPROC: echo "hello, world!"-->
-      <module suppressWarnings="false">
-        <!--Module contents...-->
-      </module>
-
-      <?xml version="1.0" ?>
-      <module suppressWarnings="false">
-        <Tab_Group>
-          <!--Tab and stuff...-->
-          <!--@POSTPROC: sudo rm -rf /*-->
-        </Tab_Group>
-      </module>
-
-  Even though the @POSTPROC comment can be placed anywhere, the recommended
-  position is immediately after the XML declaration.
-
-  Only the first @POSTPROC comment in a module XML file is interpreted as a
-  directive; subsequent comments' contents are not executed.  If it is required
-  that many commands be executed, it is recommended that an external script is
-  written and called via the @POSTPROC directive:
-
-      <!--@POSTPROC: ./my-script.sh-->
-
-      <!--@POSTPROC: python my-script.py-->
-
-  Scripts are executed relative to the module.xml file's parent directory.
-
-  In addition to the @POSTPROC: directive, FAIMS Tools includes @PREPROC:. This
-  works like @POSTPROC:, however its command is executed before generation takes
-  place.
-
-  FAIMS Tools also includes a @SOURCE: directive. In short, this works similarly
-  to #include in C/C++. In other words, before the module is generated, all
-  occurrences of <!--@SOURCE: path/to/file--> are replaced with the file at
-  path/to/file.
 ________________________________________________________________________________
 
 GRAMMAR (Stage 1)
