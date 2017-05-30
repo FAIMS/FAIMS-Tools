@@ -33,19 +33,20 @@ escape_sed() {
 }
 
 cleanUp() {
-    mv "$modulePath/.${module}.original" "$modulePath/$module"
+    mv    "$modulePath/.$module.original" "$modulePath/$module"
+    rm -f "$modulePath/$module.sed"
     exit
 }
 trap cleanUp SIGHUP SIGINT SIGTERM
 
-if [ -f ".${module}.original" ]
+if [ -f ".$module.original" ]
 then
     echo "A previous run terminated unexpectedly. A backup of '$module' was" \
-      "saved as '.${module}.original'. Please either restore or delete this" \
+      "saved as '.$module.original'. Please either restore or delete this" \
       "backup file before running this script. Exiting."
     exit
 else
-    cp "$module" ".${module}.original"
+    cp "$module" ".$module.original"
 fi
 
 
@@ -65,7 +66,8 @@ do
     whitespace='\s*'                           # Zero or more whitespace chars
     escaped_filename=$(escape_sed "$filename") # Escape slashes in filename
 
-    sed -i -e "/<!--@SOURCE:$whitespace$escaped_filename$whitespace-->/{
+    sed -i.sed \
+        -e "/<!--@SOURCE:$whitespace$escaped_filename$whitespace-->/{
         r $filename
         d
     }" "$module"
