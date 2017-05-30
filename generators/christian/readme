@@ -462,11 +462,14 @@ KNOWN ISSUES
   generated in the UI logic file.)
 ________________________________________________________________________________
 
-POST PROCESSING
+DIRECTIVES
 
-  Commands can be automatically executed in Bash after the module has been
-  generated.  This is acheived by placing a @POSTPROC: directive anywhere in the
-  module XML file as in the following examples:
+  FAIMS Tools includes several directives, which augment the way modules are
+  generated.
+
+  Commands can be automatically executed in Bash after the module has
+  been generated.  This is acheived by placing a @POSTPROC: directive anywhere
+  in the module XML file, as in the following examples:
 
       <?xml version="1.0" ?>
       <!--@POSTPROC: echo "hello, world!"-->
@@ -493,6 +496,17 @@ POST PROCESSING
       <!--@POSTPROC: ./my-script.sh-->
 
       <!--@POSTPROC: python my-script.py-->
+
+  Scripts are executed relative to the module.xml file's parent directory.
+
+  In addition to the @POSTPROC: directive, FAIMS Tools includes @PREPROC:. This
+  works like @POSTPROC:, however its command is executed before generation takes
+  place.
+
+  FAIMS Tools also includes a @SOURCE: directive. In short, this works similarly
+  to #include in C/C++. In other words, before the module is generated, all
+  occurrences of <!--@SOURCE: path/to/file--> are replaced with the file at
+  path/to/file.
 ________________________________________________________________________________
 
 GRAMMAR (Stage 1)
