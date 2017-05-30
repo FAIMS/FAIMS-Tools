@@ -185,14 +185,29 @@ def getPerfHierarchy(tree, t):
     return t.replace(placeholder, replacement)
 
 def getIsInTestTime(tree, t):
-    isInTestTime = str(util.xml.getAttribVal(tree, ATTRIB_TEST_MODE)).lower()
-    isInTestTime = isInTestTime == 'true'
-    isInTestTime = str(isInTestTime)
+    isInTestTime = str(util.schema.isInTestTime(tree))
 
     placeholder = '{{is-in-test-time}}'
     replacement = isInTestTime.lower()
 
     return t.replace(placeholder, replacement)
+
+def getPerfTimedCalls(tree, t):
+    anchorText  = '{{perf-anchor-end}}'
+    anchorIndex = t.find(anchorText)
+
+    if anchorText > -1 and util.schema.isInTestTime(tree):
+        before = t[:anchorIndex]
+        after  = t[anchorIndex:]
+
+        after = after.replace('fetchAll',           'timedFetchAll')
+        after = after.replace('fetchOne',           'timedFetchOne')
+        after = after.replace('populateCursorList', 'timedPopulateCursorList')
+
+        t = before + after
+        t = t.replace(anchorText, '')
+
+    return t
 
 def getPersistBinds(tree, t):
     isPersist = lambda e: util.schema.isFlagged(e, FLAG_PERSIST) or \
@@ -1077,6 +1092,7 @@ def getUiLogic(tree):
     t = getVpRefs(tree, t)
     t = getHierRefs(tree, t)
     t = getNodataTabGroups(tree, t)
+    t = getPerfTimedCalls(tree, t)
     t = getPerfHierarchy(tree, t)
     t = getIsInTestTime(tree, t)
     t = getPersistBinds(tree, t)

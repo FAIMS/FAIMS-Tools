@@ -554,7 +554,6 @@ AtomicInteger         PERF_NUM_CBS_DONE_SET  = null;
 AtomicInteger         PERF_NUM_CBS_TODO_FILE = null;
 AtomicInteger         PERF_NUM_CBS_TODO_SAVE = null;
 AtomicInteger         PERF_NUM_CBS_TODO_SET  = null;
-boolean               PERF_DO_LOG_QUERIES    = false;
 boolean               PERF_ALLOW_CREATION    = false;
 String                PERF_TEST_IMG          = "";
                       PERF_TYPE_TREE         = null;
@@ -749,21 +748,11 @@ TimedFetchCallback(String query, FetchCallback cb, int callerIdx) {
 }
 
 void timedFetchOne(String q, FetchCallback cb, int callerIdx) {
-  if (!PERF_DO_LOG_QUERIES) {
-    fetchOne(q, cb);
-    return;
-  }
-
   tcb = TimedFetchCallback(q, cb, callerIdx);
   fetchOne(q, tcb);
 }
 
 void timedFetchAll(String q, FetchCallback cb, int callerIdx) {
-  if (!PERF_DO_LOG_QUERIES) {
-    fetchAll(q, cb);
-    return;
-  }
-
   tcb = TimedFetchCallback(q, cb, callerIdx);
   fetchAll(q, tcb);
 }
@@ -785,12 +774,10 @@ void timedFetchAll(String q) {
 }
 
 void timedPopulateCursorList(String ref, String q, int limit) {
-  if (PERF_DO_LOG_QUERIES) {
-    String boundQ = q;
-    boundQ = dbReplaceFirst(boundQ, "?", limit + "");
-    boundQ = dbReplaceFirst(boundQ, "?", "0");
-    timedFetchAll(boundQ, null, 2);
-  }
+  String boundQ = q;
+  boundQ = dbReplaceFirst(boundQ, "?", limit + "");
+  boundQ = dbReplaceFirst(boundQ, "?", "0");
+  timedFetchAll(boundQ, null, 2);
 
   populateCursorList(ref, q, limit);
 }
@@ -1254,9 +1241,6 @@ void setUpPerfTestMode() {
   if (!isInTestTime())
     return;
 
-  // Enable performance logging
-  PERF_DO_LOG_QUERIES = true;
-
   // Download test image
   PerfImageDownloader().start();
 
@@ -1271,7 +1255,7 @@ if (!isNull(USER_MENU_PATH)) {
   addOnEvent(userMenuTabGroup, "show",  "setUpPerfActionBarItems()");
   addOnEvent(userMenuTabGroup, "leave", "setUpPerfActionBarItems()");
 }
-
+{{perf-anchor-end}}
 /******************************************************************************/
 /*                           LOCALSETTINGS UPDATES                            */
 /******************************************************************************/
@@ -1284,7 +1268,7 @@ void insertIntoLocalSettings(String key, String val) {
   String q = "REPLACE INTO localSettings(key, value) VALUES(%s, %s)";
   q = dbReplaceFirst(q, key);
   q = dbReplaceFirst(q, val);
-  timedFetchOne(q);
+  fetchOne(q);
 }
 
 void insertIntoLocalSettings(String key, Integer val) {
@@ -1324,7 +1308,7 @@ void setFieldValueFromLocalSettings(
     }
   };
 
-  timedFetchOne(q, set);
+  fetchOne(q, set);
 }
 
 void setFieldValueFromLocalSettings(
@@ -1750,7 +1734,7 @@ void fetchMenuValues(String cb) {
     }
   };
 
-  timedFetchAll(q, populateHashMap);
+  fetchAll(q, populateHashMap);
 }
 
 fetchMenuValues("makeVocabs()");
@@ -1953,7 +1937,7 @@ void populateListForUsers(){
   q += "   FROM user ";
   q += "  WHERE userdeleted is null";
 
-  timedFetchAll(q, new FetchCallback() {
+  fetchAll(q, new FetchCallback() {
     onFetch(result) {
       {{users-populate-call}}
     }
@@ -2336,7 +2320,7 @@ void newRecord(String tabgroup, boolean doUpdateRelVars) {
         newRecord(tabgroup, false);
       }
     };
-    timedFetchAll(q, updateRelVars);
+    fetchAll(q, updateRelVars);
     return;
   }
 
@@ -2446,7 +2430,7 @@ void loadEntityFrom(String entityID) {
                            "  JOIN aenttype " +
                            " USING (aenttypeid) " +
                            " WHERE uuid = '" + entityID + "'";
-  timedFetchAll(getEntTypeNameQ, new FetchCallback() {
+  fetchAll(getEntTypeNameQ, new FetchCallback() {
     onFetch(result) {
       if (
           result               == null ||
@@ -2508,7 +2492,7 @@ void search(){
   searchQuery = dbReplaceFirst(searchQuery, "{type}", type);
   searchQuery = dbReplaceFirst(searchQuery, "{type}", type);
 
-  timedPopulateCursorList(refEntityList, searchQuery, 25);
+  populateCursorList(refEntityList, searchQuery, 25);
   refreshTabgroupCSS("{{tab-group-search}}");
 
   Log.d("Module", "Search query: " + searchQuery);
@@ -2582,7 +2566,7 @@ void fillInGPS(String tabgroup) {
                  "  FROM latestnondeletedarchent, vocabulary " +
                  " WHERE uuid = '" + currentUuid + "';";
 
-  timedFetchOne(query, new FetchCallback() {
+  fetchOne(query, new FetchCallback() {
     onFetch(result) {
       print("[fillInGPS()] Fetched DB transformed geometry: " + result);
       setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Longitude" , result.get(0));
@@ -2662,7 +2646,7 @@ void loadOrCreateEntityFromScannedAttrib(
     }
   };
 
-  timedFetchAll(q, loadOrCreateEntity);
+  fetchAll(q, loadOrCreateEntity);
 }
 
 void initScannedAttrib(String ref) {
@@ -2793,8 +2777,8 @@ void populateMenuWithEntities (
   else                    q = getChildEntitiesQ;
 
   switch (viewType) {
-    case "dropdown": timedFetchAll(q, cbPopulateDropDown); break;
-    case "list":     timedPopulateCursorList(ref, q, 25);  break;
+    case "dropdown": fetchAll(q, cbPopulateDropDown); break;
+    case "list":     populateCursorList(ref, q, 25); break;
   }
 }
 

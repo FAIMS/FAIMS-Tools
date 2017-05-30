@@ -513,6 +513,12 @@ def replaceElement(element, replacements, tag='__REPLACE__'):
 
     return xml.replaceElement(element, replacements)
 
+def isInTestTime(node):
+    aVal = util.xml.getAttribVal(node, ATTRIB_TEST_MODE)
+
+    return str(aVal).lower() == \
+           str(True).lower()
+
 def getLink(node):
     link = util.xml.getAttribVal(node, ATTRIB_L)
     if link:
