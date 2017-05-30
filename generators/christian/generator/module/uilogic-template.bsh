@@ -2604,7 +2604,10 @@ void bindQrScanning(String refButton, String refField, boolean isChild) {
   if (isChild) parentTabGroup = getTabGroupRef(refButton);
   else         parentTabGroup = null;
 
-  String stmt = fun2str("scanRecordFromQrCode", parentTabGroup, refField);
+  String stmt = fun2str(
+      "scanRecordFromQrCode",
+      new Object[]{parentTabGroup, refField}
+  );
 
   addOnEvent(refButton, event, stmt);
 }
@@ -2612,8 +2615,7 @@ void bindQrScanning(String refButton, String refField, boolean isChild) {
 void scanRecordFromQrCode(String parentTabGroup, String refField) {
   String callback = fun2str(
       "loadOrCreateEntityFromScannedAttrib",
-      parentTabGroup,
-      refField
+      new Object[]{parentTabGroup, refField}
   );
   scanCode(callback);
 }

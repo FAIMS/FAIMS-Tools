@@ -205,9 +205,8 @@ def getPerfTimedCalls(tree, t):
         after = after.replace('populateCursorList', 'timedPopulateCursorList')
 
         t = before + after
-        t = t.replace(anchorText, '')
 
-    return t
+    return t.replace(anchorText, '')
 
 def getPersistBinds(tree, t):
     isPersist = lambda e: util.schema.isFlagged(e, FLAG_PERSIST) or \
@@ -453,12 +452,12 @@ def getOnClickDefs(tree, t):
     '\n  new%s("%s");' \
     '\n}'
 
-    LNDNodes  = getXLinksToY(tree, ATTRIB_L,  isData=True)
-    LDNodes   = getXLinksToY(tree, ATTRIB_L,  isData=False)
-    LLNDNodes = getXLinksToY(tree, ATTRIB_LL, isData=True)
-    LLDNodes  = getXLinksToY(tree, ATTRIB_LL, isData=False)
+    LNDNodes  = getXLinksToY(tree, ATTRIB_L,  isData=False)
+    LDNodes   = getXLinksToY(tree, ATTRIB_L,  isData=True)
+    LLNDNodes = getXLinksToY(tree, ATTRIB_LL, isData=False)
+    LLDNodes  = getXLinksToY(tree, ATTRIB_LL, isData=True)
     LLNodes   = LLNDNodes + LLDNodes
-    LCNodes   = getXLinksToY(tree, ATTRIB_LC, isData=False)
+    LCNodes   = getXLinksToY(tree, ATTRIB_LC, isData=True)
 
     strLND = format(
             zip(
@@ -528,7 +527,7 @@ def getOnClickDefs(tree, t):
 def getOnClickBinds(tree, t):
     LNodes  = getXLinksToY(tree, ATTRIB_L,  isData=None)
     LLNodes = getXLinksToY(tree, ATTRIB_LL, isData=None)
-    LCNodes = getXLinksToY(tree, ATTRIB_LC, isData=False)
+    LCNodes = getXLinksToY(tree, ATTRIB_LC, isData=True)
 
     nodes = LNodes + LLNodes + LCNodes
     refs     = [util.schema.getPathString(n) for n in nodes]

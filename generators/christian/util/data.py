@@ -69,14 +69,18 @@ def hasVocabType(node):
     return schema.guessType(node) in MENU_UI_TYPES
 
 def getRelName(node):
-    if not xml.hasAttrib(node, 'lc'):          return ''
+    if not xml.hasAttrib(node, ATTRIB_LC):     return ''
     if schema.getParentTabGroup(node) == None: return ''
 
-    parentName = schema.getParentTabGroup(node)
-    parentName = parentName.tag
+    parentNode = schema.getParentTabGroup(node)
+    childNode  = schema.getLinkedNode(node)
+    if schema.getType(childNode) != TYPE_TAB_GROUP:
+        childNode = schema.getParentTabGroup(childNode)
+
+    parentName = parentNode.tag
     parentName = parentName.replace('_', ' ')
 
-    childName = node.attrib['lc']
+    childName = childNode.tag
     childName = childName.replace('_', ' ')
 
     return '%s - %s' % (parentName, childName)
@@ -116,8 +120,14 @@ def getHierarchy(node):
 def getHierarchyForTopLevelNode(node, seenLinks=None):
     seenLinks = seenLinks or []
 
+    # Handles qr links
+    gui2tg = lambda n : schema.getParentTabGroup(n) \
+            if schema.getType(n) == TYPE_GUI_DATA \
+            else n
+
     link         = lambda n : (node.tag, n.tag)
-    linkedNodes  = schema.getLinkedNodes(node)
+    linkedNodes  = schema.getLinkedNodes(node, ATTRIB_LC)
+    linkedNodes  = [gui2tg(n) for n in linkedNodes]
     linkedNodes  = filter(isDataElement, linkedNodes)
     linkedNodes  = filter(schema.isTabGroup, linkedNodes)
     unseenNodes  = [n for n in linkedNodes if link(n) not in seenLinks]

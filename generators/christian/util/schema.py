@@ -519,35 +519,33 @@ def isInTestTime(node):
     return str(aVal).lower() == \
            str(True).lower()
 
-def getLink(node):
-    link = util.xml.getAttribVal(node, ATTRIB_L)
-    if link:
-        return link
+def getLink(node, attribName=None):
+    linkAttribs = [
+        ATTRIB_L,
+        ATTRIB_LL,
+        ATTRIB_LC,
+    ]
 
-    link = util.xml.getAttribVal(node, ATTRIB_LL)
-    if link:
-        return link
+    if attribName != None:
+        return util.xml.getAttribVal(node, attribName)
 
-    link = util.xml.getAttribVal(node, ATTRIB_LC)
-    if link:
-        return link
-
-    link = util.xml.getAttribVal(node, ATTRIB_LQ)
-    if link:
-        return link
+    for linkAttrib in linkAttribs:
+        link = util.xml.getAttribVal(node, linkAttrib)
+        if link:
+            return link
 
     return None
 
-def getLinks(node):
+def getLinks(node, attribName=None):
     if node == None:
         return []
-    if hasLink(node):
-        return [getLink(node)]
+    if hasLink(node, attribName):
+        return [getLink(node, attribName)]
 
-    return sum([getLinks(n) for n in node], [])
+    return sum([getLinks(n, attribName) for n in node], [])
 
-def hasLink(node):
-    return bool(getLink(node))
+def hasLink(node, attribName=None):
+    return bool(getLink(node, attribName))
 
 def hasValidLink(node):
     return getLinkedNode(node) != None
@@ -579,9 +577,9 @@ def getNodeAtPath(tree, path):
 def getLinkedNode(node):
     return getNodeAtPath(node, getLink(node))
 
-def getLinkedNodes(node):
+def getLinkedNodes(node, attribName=None):
     root = node.getroottree().getroot()
-    return [getNodeAtPath(root, path) for path in getLinks(node)]
+    return [getNodeAtPath(root, path) for path in getLinks(node, attribName)]
 
 def isValidPath(root, path, pathType):
     if not path:
