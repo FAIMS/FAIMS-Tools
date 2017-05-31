@@ -1156,25 +1156,13 @@ def getUiLogic(tree):
 
     return t
 
-################################################################################
-#                                  PARSE XML                                   #
-################################################################################
-filenameModule = sys.argv[1]
-tree = util.xml.parseXml(filenameModule)
-util.schema.normalise(tree)
-util.schema.annotateWithXmlTypes(tree)
-util.schema.canonicalise(tree)
+if __name__ == '__main__':
+    # PARSE XML
+    filenameModule = sys.argv[1]
+    tree = util.xml.parseXml(filenameModule)
+    util.schema.normalise(tree)
+    util.schema.annotateWithXmlTypes(tree)
+    util.schema.canonicalise(tree)
 
-################################################################################
-#                        GENERATE AND OUTPUT DATA SCHEMA                       #
-################################################################################
-
-# Useful for debugging
-#print etree.tostring(
-        #tree,
-        #pretty_print=True,
-        #xml_declaration=True,
-        #encoding='utf-8'
-#)
-
-print getUiLogic(tree).encode('utf-8'),
+    # GENERATE AND OUTPUT UI LOGIC
+    print getUiLogic(tree).encode('utf-8'),

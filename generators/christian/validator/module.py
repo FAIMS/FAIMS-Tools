@@ -15,7 +15,6 @@ from   lxml import etree # TODO: Delete
 ################################################################################
 print 'Parsing XML...'
 filenameModule = sys.argv[1]
-print 'HERE!', filenameModule
 tree = util.xml.parseXml(filenameModule)
 print 'Done!'
 print
@@ -49,12 +48,12 @@ for d in disallowed:
     helpers.eMsg(msg, affectedNodes, expectedItems)
 
 # TODO: Delete
-print etree.tostring(
-        tree,
-        pretty_print=True,
-        xml_declaration=True,
-        encoding='utf-8'
-),
+#print etree.tostring(
+        #tree,
+        #pretty_print=True,
+        #xml_declaration=True,
+        #encoding='utf-8'
+#),
 
 ############# COARSE-GRAINED VALIDATION OF ATTRIBUTES OF ELEMENTS ##############
 # Only consider nodes flagged with `RESERVED_XML_TYPE`
@@ -183,15 +182,12 @@ mod  = TYPE_MODULE
 t    = TYPE_TAB
 tg   = TYPE_TAB_GROUP
 
-data = 'data'
-ui   = 'UI'
+helpers.checkTagCardinalityConstraints(tree, TYPE_MODULE,    TYPE_TAB_GROUP)
+helpers.checkTagCardinalityConstraints(tree, TYPE_TAB_GROUP, TYPE_TAB)
+helpers.checkTagCardinalityConstraints(tree, TYPE_TAB,       TYPE_GUI_DATA)
 
-helpers.checkTagCardinalityConstraints(tree, mod, tg, ui)
-helpers.checkTagCardinalityConstraints(tree, tg,  t,  ui)
-helpers.checkTagCardinalityConstraints(tree, t,  el,  ui)
-
-helpers.checkTagCardinalityConstraints(tree, mod, tg, data)
-helpers.checkTagCardinalityConstraints(tree, mod, el, data)
+#TODO: Check data schema
+helpers.checkDataSchemaConstraints(tree)
 
 ################################# MISC ERRORS ##################################
 

@@ -2,7 +2,7 @@ import tablehelper
 
 ATTRIBS = '''
 XML TYPE           | ATTRIBUTES ALLOWED
-module             | suppressWarnings test_mode
+module             | suppressWarnings, test_mode
 tab group          | f
 tab                | f
 group              | t
@@ -32,7 +32,7 @@ c            |                             |
 f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, readonly, user, persist, persist!
 l            | $link-all                   |
 ll           | $link-all                   |
-lc           | $link-tabgroup              |
+lc           | $link-all                   |
 ec           | $link-tabgroup              |
 t            | audio, button, camera, checkbox, dropdown, file, gpsdiag, group, input, list, map, picture, radio, table, video, viewfiles, web, webview |
 p            |                             |

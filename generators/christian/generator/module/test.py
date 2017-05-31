@@ -129,17 +129,14 @@ def moduleToString(node):
 
     return topMatter + midMatter + endMatter
 
-################################################################################
-#                                  PARSE XML                                   #
-################################################################################
-filenameModule = sys.argv[1]
-tree = util.xml.parseXml(filenameModule)
-util.schema.normalise(tree)
-util.schema.annotateWithXmlTypes(tree)
-util.schema.expandCompositeElements(tree)
-util.schema.annotateWithXmlTypes(tree)
+if __name__ == '__main__':
+    # PARSE XML
+    filenameModule = sys.argv[1]
+    tree = util.xml.parseXml(filenameModule)
+    util.schema.normalise(tree)
+    util.schema.annotateWithXmlTypes(tree)
+    util.schema.expandCompositeElements(tree)
+    util.schema.annotateWithXmlTypes(tree)
 
-################################################################################
-#                        GENERATE AND OUTPUT DATA SCHEMA                       #
-################################################################################
-print moduleToString(tree),
+    # GENERATE AND OUTPUT UI TEST HELPER
+    print moduleToString(tree),

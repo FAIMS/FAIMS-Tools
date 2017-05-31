@@ -15,6 +15,11 @@ def getDefaultDollarFmtStr(node):
 def convertDefaultDollar(dataElement, fmtStr):
     return fmtStr.replace('$0', getDefaultDollarFmtStr(dataElement))
 
+def getDataElement(node):
+    if util.data.formsProp(node):    return getProp(node)
+    if util.data.formsArchEnt(node): return getArchEnt(node)
+    return None
+
 def getRels(node):
     # This function returns the children of <rels> elements (plus a few other
     # elements). `relsNodes` stores the found <rels> elements (not their
@@ -59,12 +64,10 @@ def getGennedRels(node):
 
     return gennedRels
 
-def getEnts(node):
-    isData = lambda e: not util.schema.isFlagged(e, FLAG_NODATA)
-    matches = util.schema.getTabGroups(node, isData)
-    return [getEnt(m) for m in matches]
+def getArchEnts(node):
+    return [getArchEnt(m) for m in util.data.getArchEnts(node)]
 
-def getEnt(node):
+def getArchEnt(node):
     a                = etree.Element('ArchaeologicalElement')
     a.attrib['name'] = util.data.getArchEntName(node)
 
@@ -78,10 +81,7 @@ def getEnt(node):
 
 def getProps(node):
     # Get data elements
-    f = lambda e: util.data.isDataElement(e) and util.schema.isGuiDataElement(e)
-    matches = util.xml.getAll(node, f)
-
-    return [getProp(m) for m in matches]
+    return [getProp(m) for m in util.data.getProps(node)]
 
 def getProp(node):
     # make prop
@@ -237,7 +237,7 @@ def getDescriptionText(node):
 
 def getDataSchema(node):
     children  = getRels(node)
-    children += getEnts(node)
+    children += getArchEnts(node)
 
     dataSchema = etree.Element('dataSchema')
     dataSchema.extend(children)
@@ -247,23 +247,19 @@ def getDataSchema(node):
 
     return dataSchema
 
-################################################################################
-#                                  PARSE XML                                   #
-################################################################################
-filenameModule = sys.argv[1]
-tree = util.xml.parseXml(filenameModule)
-util.schema.normalise(tree)
-util.schema.annotateWithXmlTypes(tree)
-util.schema.canonicalise(tree)
+if __name__ == '__main__':
+    # PARSE XML
+    filenameModule = sys.argv[1]
+    tree = util.xml.parseXml(filenameModule)
+    util.schema.normalise(tree)
+    util.schema.annotateWithXmlTypes(tree)
+    util.schema.canonicalise(tree)
 
-################################################################################
-#                        GENERATE AND OUTPUT DATA SCHEMA                       #
-################################################################################
-dataSchema = getDataSchema(tree)
-
-print etree.tostring(
-        dataSchema,
-        pretty_print=True,
-        xml_declaration=True,
-        encoding='utf-8'
-),
+    #GENERATE AND OUTPUT DATA SCHEMA
+    dataSchema = getDataSchema(tree)
+    print etree.tostring(
+            dataSchema,
+            pretty_print=True,
+            xml_declaration=True,
+            encoding='utf-8'
+    ),

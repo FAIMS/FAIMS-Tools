@@ -1,8 +1,9 @@
 #!/usr/bin/env python2
 
-print '.required {'
-print '}'
-print ''
-print '.required-label {'
-print '  color: red;'
-print '}'
+if __name__ == '__main__':
+    print '.required {'
+    print '}'
+    print ''
+    print '.required-label {'
+    print '  color: red;'
+    print '}'

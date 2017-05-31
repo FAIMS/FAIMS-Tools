@@ -29,6 +29,22 @@ def isDataElement(node):
     ]
     return schema.isTabGroup(node) or schema.guessType(node) in dataTypes
 
+def formsArchEnt(node):
+    return bool(getArchEntName(node))
+
+def formsProp(node):
+    return bool(getAttribName(node))
+
+def getDataElements(node):
+    return xml.getAll(node, isDataElement)
+
+# Gets the elements in the schema which can be made into arch ents
+def getArchEnts(node):
+    return xml.getAll(node, formsArchEnt)
+
+def getProps(node):
+    return xml.getAll(node, formsProp)
+
 def getArchEntName(node, doRecurse=False):
     if node is None:
         return ''
@@ -43,6 +59,10 @@ def getAttribName(node):
         return node.tag.replace('_', ' ')
     else:
         return ''
+
+def getName(node):
+    return util.data.getAttribName(node) or \
+           util.data.getArchEntName(node)
 
 def getAttribType(node, isSpecific=False):
     if not isDataElement(node): return ''

@@ -257,23 +257,20 @@ def getUiSchema(node):
 
     return uiSchema
 
-################################################################################
-#                                  PARSE XML                                   #
-################################################################################
-filenameModule = sys.argv[1]
-tree = util.xml.parseXml(filenameModule)
-util.schema.normalise(tree)
-util.schema.annotateWithXmlTypes(tree)
-util.schema.canonicalise(tree)
+if __name__ == '__main__':
+    # PARSE XML
+    filenameModule = sys.argv[1]
+    tree = util.xml.parseXml(filenameModule)
+    util.schema.normalise(tree)
+    util.schema.annotateWithXmlTypes(tree)
+    util.schema.canonicalise(tree)
 
-################################################################################
-#                        GENERATE AND OUTPUT DATA SCHEMA                       #
-################################################################################
-uiSchema = getUiSchema(tree)
+    # GENERATE AND OUTPUT UI SCHEMA
+    uiSchema = getUiSchema(tree)
 
-print etree.tostring(
-        uiSchema,
-        pretty_print=True,
-        xml_declaration=True,
-        encoding='utf-8'
-),
+    print etree.tostring(
+            uiSchema,
+            pretty_print=True,
+            xml_declaration=True,
+            encoding='utf-8'
+    ),

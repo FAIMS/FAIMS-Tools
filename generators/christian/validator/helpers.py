@@ -1,9 +1,12 @@
 from   lxml import etree
 import copy
 import re
-import util.consts
+from   util.consts import *
+import generator.module.dataschema
+import util.data
 import util.schema
 import util.xml
+import itertools
 
 def wMsg(notice, nodes=None, expected=None):
     if expected is None: expected = []
@@ -129,7 +132,7 @@ def satisfiesTypeCardinalityConstraint(parent, constraint, children='direct'):
         children = './/'
     matches = parent.xpath(
             '%s*[@%s="%s"]' %
-            (children, util.consts.RESERVED_XML_TYPE, type)
+            (children, RESERVED_XML_TYPE, type)
     )
 
     if min != None and len(matches) < min: return False
@@ -138,14 +141,14 @@ def satisfiesTypeCardinalityConstraint(parent, constraint, children='direct'):
 
 # English is dumb
 def childWithGrammaticalNumber(number):
-    if number == 1:
-        return 'child'
-    return 'children'
+    if number == 1: return 'child'
+    else:           return 'children'
+
 def descendantWithGrammaticalNumber(number):
     d = 'descendant'; s = 's'
-    if number == 1:
-        return d
-    return  d + s
+    if number == 1: return d
+    else:           return d + s
+
 def descChildNounPhrase(childDirectness , number):
     if  childDirectness == 'direct':
         childNum = childWithGrammaticalNumber (number)
@@ -153,47 +156,63 @@ def descChildNounPhrase(childDirectness , number):
     else:
         return descendantWithGrammaticalNumber(number)
 
-def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild, schemaType):
-    assert schemaType in ['UI', 'data']
-
+def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild):
     elements = tree.xpath(
             '//*[@%s="%s"]' %
-            (util.consts.RESERVED_XML_TYPE, nodeTypeChild)
+            (RESERVED_XML_TYPE, nodeTypeChild)
     )
 
     for original in elements:
         duplicatesAndSelf = original.xpath(
                 './ancestor::*[@%s="%s"]//%s[@%s="%s" and not(@%s="true")]' %
                 (
-                    util.consts.RESERVED_XML_TYPE, nodeTypeParent, original.tag,
-                    util.consts.RESERVED_XML_TYPE, nodeTypeChild,
-                    util.consts.RESERVED_IGNORE
+                    RESERVED_XML_TYPE, nodeTypeParent, original.tag,
+                    RESERVED_XML_TYPE, nodeTypeChild,
+                    RESERVED_IGNORE
                 )
         )
-        if schemaType == 'UI'  : cond = lambda n: not util.schema.isFlagged(n, 'noui')
-        if schemaType == 'data': cond = lambda n: not util.schema.isFlagged(n, 'nodata')
+        cond = lambda n: not util.schema.isFlagged(n, FLAG_NOUI)
         duplicatesAndSelf = filter(cond, duplicatesAndSelf)
 
         for original in duplicatesAndSelf: # Make sure not to re-check duplicate
-            original.attrib[util.consts.RESERVED_IGNORE] = "true"
+            original.attrib[RESERVED_IGNORE] = "true"
         if len(duplicatesAndSelf) <= 1:
             continue # If this runs, no duplicates were found
 
-        capitalisedType = nodeTypeChild[0].upper() + nodeTypeChild[1:]
+        msg  = '%s `%s` is illegally duplicated in its parent %s'
+        msg %= (nodeTypeChild.capitalize(), original.tag, nodeTypeParent)
+        eMsg(msg, duplicatesAndSelf)
 
-        msg  = '%s `%s` is illegally duplicated in its parent %s when the %s '
-        msg += 'schema is generated.  (Note that some reserved elements are '
-        msg += 'shorthand for sets of elements)'
-        msg  = msg % \
-                (
-                        capitalisedType,
-                        original.tag,
-                        nodeTypeParent,
-                        schemaType
-                )
-        eMsg(
-                msg,
-                duplicatesAndSelf
-        )
+    util.xml.deleteAttribFromTree(elements, RESERVED_IGNORE)
 
-    util.xml.deleteAttribFromTree(elements, util.consts.RESERVED_IGNORE)
+def checkDataSchemaConstraints(node):
+    props = util.data.getProps(node)
+    props = sorted(props, key=util.data.getName)
+    for _, g in itertools.groupby(props, util.data.getName):
+        checkDataElementConstraints(list(g))
+
+    archEnts = util.data.getArchEnts(node)
+    archEnts = sorted(archEnts, key=util.data.getName)
+    for _, g in itertools.groupby(archEnts, util.data.getName):
+        checkDataElementConstraints(list(g))
+
+def checkDataElementConstraints(nodes):
+    # All the data schema elements have the same name
+    assert len(set([util.data.getName(n) for n in nodes])) == 1
+    # All the nodes have the same tag in the data schema
+    assert len(set([util.data.formsProp   (n) for n in nodes])) == 1
+    assert len(set([util.data.formsArchEnt(n) for n in nodes])) == 1
+
+    dataNodes   = [generator.module.dataschema.getDataElement(n) for n in nodes]
+    nodeStrings = [etree.tostring(d, encoding='utf-8') for d in dataNodes]
+
+    # Constraint check happens here. The constraint is that all properties which
+    # have the same attrib name must also have the same representation in the
+    # data schema.
+    if len(set(nodeStrings)) == 1:
+        return # Properties satisfy constraint
+
+    msg  = '%s elements share the name `%s` but have different representations'
+    msg += ' in the data schema'
+    msg %= (util.schema.getType(nodes[0]).capitalize(), nodes[0].tag)
+    eMsg(msg, nodes)

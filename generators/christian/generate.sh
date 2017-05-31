@@ -49,7 +49,6 @@ else
     cp "$module" ".$module.original"
 fi
 
-
 if [ "$WIREFRAME" != "true" ]
 then
     echo "Notice: Wireframe not being generated. Run this script using the -w" \

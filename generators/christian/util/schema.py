@@ -596,6 +596,7 @@ def isValidPath(root, path, pathType):
         result |= isValidPath(root, path, TYPE_GUI_DATA)
         result |= isValidPath(root, path, TYPE_TAB)
         result |= isValidPath(root, path, TYPE_TAB_GROUP)
+        result |= isValidPath(root, path, LINK_SIGNUP)
         return result
     elif pathType == LINK_SIGNUP:
         return path == LINK_SIGNUP
