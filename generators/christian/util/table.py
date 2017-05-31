@@ -227,7 +227,7 @@ on_and_bluetooth_connected=on and bluetooth connected
 on_and_bluetooth_disconnected=on and bluetooth disconnected
 The_current_record_has_not_been_saved_yet=The current record has not been saved yet. Press 'OK' to create a new record without waiting for any new data to be saved.
 err_load_entity_head=Record Could Not Be Loaded
-err_load_entity_body=The record could not be loaded. It may have been deleted by another user.
+err_load_entity_body=A record with the provided UUID could not be found.
 please_fill_out_the_following_fields=Please fill out the following fields:\\n
 all_fields_contain_valid_data=All fields contain valid data!
 validation_results=Validation Results
@@ -285,6 +285,9 @@ perf_update_body_3=records being created. Do you wish to create them? Tap 'OK' t
 
 signup_head=Signup Successful
 signup_body=You have successfuly signed up. You may now log in as the newly created user.
+
+load_scanned_err_head=Could Not Load Record
+load_scanned_err_body=The QR code or barcode you have scanned does not contain a valid UUID.
 '''
 
 ATTRIBS       = tablehelper.parseTable(ATTRIBS)

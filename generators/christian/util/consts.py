@@ -14,6 +14,7 @@ ATTRIB_L         = 'l'
 ATTRIB_LL        = 'll'
 ATTRIB_LC        = 'lc'
 ATTRIB_LQ        = 'lq'
+ATTRIB_LCQ       = 'lcq'
 ATTRIB_P         = 'p'
 ATTRIB_S         = 's'
 ATTRIB_T         = 't'
@@ -21,6 +22,11 @@ ATTRIB_VP        = 'vp'
 ATTRIBS = [
         v for k, v in dict(globals()).iteritems()
         if k.startswith('ATTRIB_')
+]
+
+LINK_ATTRIBS = [
+        v for k, v in dict(globals()).iteritems()
+        if k.startswith('ATTRIB_L')
 ]
 
 BIND_DATE    = 'date'

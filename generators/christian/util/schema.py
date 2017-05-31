@@ -520,16 +520,10 @@ def isInTestTime(node):
            str(True).lower()
 
 def getLink(node, attribName=None):
-    linkAttribs = [
-        ATTRIB_L,
-        ATTRIB_LL,
-        ATTRIB_LC,
-    ]
-
     if attribName != None:
         return util.xml.getAttribVal(node, attribName)
 
-    for linkAttrib in linkAttribs:
+    for linkAttrib in LINK_ATTRIBS:
         link = util.xml.getAttribVal(node, linkAttrib)
         if link:
             return link

@@ -2421,6 +2421,10 @@ void loadEntity(Boolean isDropdown) {
 }
 
 void loadEntityFrom(String entityID) {
+  loadEntityFrom(entityID, "");
+}
+
+void loadEntityFrom(String entityID, String onFail) {
   if (isNull(entityID)) {
     return;
   }
@@ -2440,6 +2444,7 @@ void loadEntityFrom(String entityID) {
         String head  = "{err_load_entity_head}";
         String body  = "{err_load_entity_body}";
         showWarning(head, body);
+        execute(onFail);
         return;
       }
 
@@ -2448,6 +2453,9 @@ void loadEntityFrom(String entityID) {
       eval(loadFunction);
     }
   });
+}
+
+void showLoadEntityWarning() {
 }
 
 {{defs-tabgroup-binds}}
@@ -2597,7 +2605,11 @@ void clearGpsInTab(String tabRef) {
 /******************************************************************************/
 /*               LOADING AND CREATION OF RECORDS FROM QR CODES                */
 /******************************************************************************/
-void bindQrScanning(String refButton, String refField, boolean isChild) {
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+
+void bindQrScanning(String refButton, String refChild, boolean isChild) {
   String event = "click";
 
   String parentTabGroup;
@@ -2606,68 +2618,38 @@ void bindQrScanning(String refButton, String refField, boolean isChild) {
 
   String stmt = fun2str(
       "scanRecordFromQrCode",
-      new Object[]{parentTabGroup, refField}
+      new Object[]{parentTabGroup, refChild}
   );
 
   addOnEvent(refButton, event, stmt);
 }
 
-void scanRecordFromQrCode(String parentTabGroup, String refField) {
+void scanRecordFromQrCode(String parentTabGroup, String refChild) {
   String callback = fun2str(
       "loadOrCreateEntityFromScannedAttrib",
-      new Object[]{parentTabGroup, refField}
+      new Object[]{parentTabGroup, refChild}
   );
   scanCode(callback);
 }
 
 void loadOrCreateEntityFromScannedAttrib(
     String parentTabGroup,
-    String refField
+    String refChild
 ) {
-  String attrName = getAttributeName(refField);
-  String attribVal  = getLastScanContents();
+  String code = getLastScanContents();
 
-  String q = "";
-  q += "SELECT uuid ";
-  q += "  FROM latestnondeletedaentvalue ";
-  q += "  JOIN latestnondeletedarchent USING (uuid) ";
-  q += "  JOIN attributekey            USING (attributeid) ";
-  q += " WHERE attributename = {attrName} ";
-  q += "   AND measure       = {attribVal} ";
-  q  = dbReplaceFirst(q, "{attrName}",  attrName );
-  q  = dbReplaceFirst(q, "{attribVal}", attribVal);
+  String  uuidString  = "";
+  Pattern uuidPattern = Pattern.compile("(\\d{19})");
+  Matcher matcher     = uuidPattern.matcher(code);
+  while (matcher.find())
+    uuidString = matcher.group(1);
 
-  FetchCallback loadOrCreateEntity = new FetchCallback() {
-    onFetch(result) {
-      if (isNull(result) || result.size() == 0) {
-        createRecordFromScannedAttrib(parentTabGroup, refField);
-      } else {
-        String uuid = result.get(0).get(0);
-        loadEntityFrom(uuid);
-      }
-    }
-  };
+  if (isNull(uuidString)) {
+    showWarning("{load_scanned_err_head}", "{load_scanned_err_body}");
+    return;
+  }
 
-  fetchAll(q, loadOrCreateEntity);
-}
-
-void initScannedAttrib(String ref) {
-  String oldCode = getFieldValue(ref);
-  String newCode = getLastScanContents();
-
-  if (isNull(oldCode))
-    setFieldValue(ref, newCode);
-}
-
-void createRecordFromScannedAttrib(String parentTabGroup, String refField) {
-  String tabGroup = getTabGroupRef(refField);
-
-  if (isNull(parentTabGroup))
-    newRecord(tabGroup);
-  else
-    newRecord(tabGroup, parentTabGroup);
-
-  initScannedAttrib(refField);
+  loadEntityFrom(uuidString);
 }
 
 {{binds-qr}}

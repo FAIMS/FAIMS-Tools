@@ -405,23 +405,18 @@ def getOnShowBinds(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getXLinksToY(tree, attribVal, isData, hasQrLink=False):
-    assert attribVal in (ATTRIB_L, ATTRIB_LC, ATTRIB_LL, ATTRIB_LQ)
+def getXLinksToY(tree, attribName, isData):
+    assert attribName in LINK_ATTRIBS
 
-    hasAttrib = lambda e: util.xml.hasAttrib(e, attribVal)
-    notSignup = lambda e: util.xml.getAttribVal(e, attribVal) != LINK_SIGNUP
+    hasAttrib = lambda e: util.xml.hasAttrib(e, attribName)
+    notSignup = lambda e: util.xml.getAttribVal(e, attribName) != LINK_SIGNUP
     isLink    = lambda e: hasAttrib(e) and notSignup(e)
     isDataEl  = lambda e: util.data.isDataElement(util.schema.getLinkedNode(e))
-    hasQrLink_ = lambda e: util.schema.getType(
-            util.schema.getLinkedNode(e)
-    ) == TYPE_GUI_DATA
 
     nodes = util.xml.getAll(tree)
     nodes = filter(isLink, nodes)
     if isData == True:     nodes = filter(lambda e :     isDataEl(e), nodes)
     if isData == False:    nodes = filter(lambda e : not isDataEl(e), nodes)
-    if hasQrLink == True:  nodes = filter(lambda e :     hasQrLink_(e), nodes)
-    if hasQrLink == False: nodes = filter(lambda e : not hasQrLink_(e), nodes)
 
     return nodes
 
@@ -997,13 +992,13 @@ def getControlStartingIdPaths(tree, t):
     return t.replace(placeholder, replacement)
 
 def getQrBinds(tree, t):
-    nodes      = getXLinksToY(tree, ATTRIB_L,  isData=None, hasQrLink=True)
-    nodes     += getXLinksToY(tree, ATTRIB_LC, isData=None, hasQrLink=True)
+    nodes      = getXLinksToY(tree, ATTRIB_LQ,  isData=None)
+    nodes     += getXLinksToY(tree, ATTRIB_LCQ, isData=None)
 
-    buttonRefs = [util.schema.getPathString(n)     for n in nodes]
-    fieldRefs  = [util.schema.getLink(n)           for n in nodes]
-    isChild    = [util.xml.hasAttrib(n, ATTRIB_LC) for n in nodes]
-    isChild    = [str(c).lower()                   for c in isChild]
+    buttonRefs = [util.schema.getPathString(n)      for n in nodes]
+    fieldRefs  = [util.schema.getLink(n)            for n in nodes]
+    isChild    = [util.xml.hasAttrib(n, ATTRIB_LCQ) for n in nodes]
+    isChild    = [str(c).lower()                    for c in isChild]
 
     fmt         = 'bindQrScanning("%s", "%s", %s);'
     placeholder = '{{binds-qr}}'
