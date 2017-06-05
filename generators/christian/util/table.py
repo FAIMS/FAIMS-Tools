@@ -250,7 +250,7 @@ perf_dummy_busy_head=Creating Entities...
 perf_dummy_busy_body=entities are currently being created. This can take a few minutes. During this time the module may appear to freeze. Please wait.
 
 
-perf_digest_1_head=Entities Created!
+perf_digest_1_head=Record Digest
 perf_digest_1_body_1=entities have been successfully created.
 perf_digest_1_body_2=The total number of entities on this device, by type, is as follows:\\n\\n
 
@@ -267,8 +267,8 @@ each=each
 
 
 perf_rec_num_body_1=How many
-perf_rec_num_body_2=records should
-perf_rec_num_body_3=contain?\\n\\nTap 'OK' to set a new value, or 'Cancel' to retain the previous one. Tap anywhere outside this dialogue box to dismiss it and skip this wizard's record creation step.
+perf_rec_num_body_2=records should be created in
+perf_rec_num_body_3=?\\n\\nTap 'OK' to set a new value, or 'Cancel' to retain the previous one. Tap anywhere outside this dialogue box to dismiss it and skip this wizard's record creation step.
 
 perf_wiz_head=Welcome to The Record Creation Wizard
 perf_wiz_body=The record creation wizard will guide you through the process of creating dummy records.\\n\\nThe first step is to set the number of records you want to create. Tap 'OK' to do so, or 'Cancel' exit the wizard.
@@ -288,6 +288,9 @@ signup_body=You have successfuly signed up. You may now log in as the newly crea
 
 load_scanned_err_head=Could Not Load Record
 load_scanned_err_body=The QR code or barcode you have scanned does not contain a valid UUID.
+
+perf_dummy_err_head=Could Not Begin Record Creation Wizard
+perf_dummy_err_body=The record creation wizard could not begin because syncing could not be automatically disabled. Please disable it manually and try again.
 '''
 
 ATTRIBS       = tablehelper.parseTable(ATTRIBS)
