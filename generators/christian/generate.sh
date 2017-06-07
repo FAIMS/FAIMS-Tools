@@ -87,10 +87,13 @@ cd - >/dev/null
 ############################ PERFORM THE TRANSFORMS ############################
 mkdir -p "$modulePath/module"
 mkdir -p "$modulePath/wireframe"
+mkdir -p "$modulePath/tests"
 
 cp "$thisScriptPath/generator/wireframe/makeElement.sh"          "$modulePath/wireframe"
 cp "$thisScriptPath/generator/wireframe/arch16nForWireframe.awk" "$modulePath/wireframe"
 cp "$thisScriptPath/generator/wireframe/wireframeElements.xsl"   "$modulePath/wireframe"
+cp "$thisScriptPath/tests/module/mock.bsh"                       "$modulePath/tests"
+cp "$thisScriptPath/tests/module/test.bsh"                       "$modulePath/tests"
 
 cd "$thisScriptPath"
 echo "Generating arch16n..."
@@ -98,7 +101,7 @@ python2 -m generator.module.arch16n       "$modulePath/$module" >"$modulePath/mo
 echo "Generating data schema..."
 python2 -m generator.module.dataschema    "$modulePath/$module" >"$modulePath/module/data_schema.xml"
 echo "Generating UI test helpers..."
-python2 -m generator.module.test          "$modulePath/$module" >"$modulePath/module/ModuleUtil.java"
+python2 -m generator.module.test          "$modulePath/$module" >"$modulePath/tests/ModuleUtil.java"
 echo "Generating logic..."
 python2 -m generator.module.uilogic       "$modulePath/$module" >"$modulePath/module/ui_logic.bsh"
 echo "Generating UI schema..."

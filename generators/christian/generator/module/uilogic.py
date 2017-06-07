@@ -184,10 +184,10 @@ def getPerfHierarchy(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getIsInTestTime(tree, t):
+def getIsInPerfTestTime(tree, t):
     isInTestTime = str(util.schema.isInTestTime(tree))
 
-    placeholder = '{{is-in-test-time}}'
+    placeholder = '{{is-in-perf-test-time}}'
     replacement = isInTestTime.lower()
 
     return t.replace(placeholder, replacement)
@@ -1111,7 +1111,7 @@ def getUiLogic(tree):
     t = getNodataTabGroups(tree, t)
     t = getPerfTimedCalls(tree, t)
     t = getPerfHierarchy(tree, t)
-    t = getIsInTestTime(tree, t)
+    t = getIsInPerfTestTime(tree, t)
     t = getPersistBinds(tree, t)
     t = getInheritanceBinds(tree, t)
     t = getGpsDiagUpdate(tree, t)
