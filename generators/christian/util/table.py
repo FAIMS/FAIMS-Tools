@@ -235,7 +235,7 @@ validation_results=Validation Results
 
 
 perf_mode_head=Performance Testing Mode Enabled
-perf_mode_body=Performance testing mode has been enabled for this session. Performance testing mode adds some features which help to benchmark queries, however it may reduce the responsiveness of the module.\\n\\nTo disable performance testing mode, set your device's date to any year after 2015.
+perf_mode_body=This module has been compiled with performance testing mode enabled. Performance testing mode adds some features which help to benchmark queries, however it may reduce the responsiveness of the module.\\n\\nTo disable performance testing mode, delete test_mode="true" from this module's module.xml file then recomile it.
 
 perf_create_on_head=Record Creation Enabled!
 perf_create_on_body=Record creation is now enabled during this session. Records can be created via the action bar.
