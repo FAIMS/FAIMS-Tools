@@ -441,6 +441,8 @@ def getSearch(node):
         annotateWithXmlTypes(n)
     search.attrib[RESERVED_XML_TYPE] = TYPE_SEARCH
 
+    btn.text = 'Search'
+
     return search,
 
 def getTimestamp(node):
