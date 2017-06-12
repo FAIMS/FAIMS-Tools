@@ -268,9 +268,9 @@ def annotateWithXmlTypes(node):
 
 def normaliseSchema(node):
     normaliseSchemaRec(node)
-    canonicaliseCols(node)
-    canonicaliseMedia(node)
-    canonicaliseImplied(node)
+    normaliseCols(node)
+    normaliseMedia(node)
+    normaliseImplied(node)
 
 def normaliseSchemaRec(node):
     newNodes = None
@@ -284,7 +284,7 @@ def normaliseSchemaRec(node):
     for n in node:
         normaliseSchemaRec(n)
 
-def canonicaliseCols(node):
+def normaliseCols(node):
     colsList = xml.getAll(node, keep=lambda e: e.tag == TAG_COLS)
 
     # 1. Transform this...
@@ -322,7 +322,7 @@ def canonicaliseCols(node):
             col.attrib[ATTRIB_T] = 'group'
             col.attrib[ATTRIB_S] = 'even'
 
-def canonicaliseMedia(node):
+def normaliseMedia(node):
     mediaList = xml.getAll(node, keep=lambda e: getUiType(e) in MEDIA_UI_TYPES)
 
     for media in mediaList:
@@ -334,7 +334,7 @@ def canonicaliseMedia(node):
         button.text = arch16n.getArch16nVal(media)
         xml.insertAfter(media, button)
 
-def canonicaliseImplied(node):
+def normaliseImplied(node):
     # f="notnull" implies c="required"
     isNotNull = lambda e: isFlagged(
             e,
