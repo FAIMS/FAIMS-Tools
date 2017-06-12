@@ -51,7 +51,7 @@ def getFunctionString(ref, type, funName, javaType=None):
 def tabGroupToString(node):
     s = getFunctionString(
             ref     = util.schema.getPathString(node),
-            type    = util.schema.guessType    (node),
+            type    = util.schema.getUiType    (node),
             funName = functionName             (node)
     )
     return s
@@ -59,13 +59,13 @@ def tabGroupToString(node):
 def tabToString(node):
     s = getFunctionString(
             ref     = util.schema.getPathString(node),
-            type    = util.schema.guessType    (node),
+            type    = util.schema.getUiType    (node),
             funName = functionName             (node)
     )
     return s
 
 def uiElementToString(node):
-    uiType   = util.schema.guessType(node)
+    uiType   = util.schema.getUiType(node)
     javaType = ''
 
     isEditText  = uiType == 'input'
@@ -78,7 +78,7 @@ def uiElementToString(node):
 
     s = getFunctionString(
             ref      = util.schema.getPathString(node),
-            type     = util.schema.guessType    (node),
+            type     = util.schema.getUiType    (node),
             funName  = functionName             (node),
             javaType = javaType
     )
@@ -87,7 +87,7 @@ def uiElementToString(node):
 # Sort a list of LXML nodes by path and group them by type
 def sortedNodes(nodes):
     nodes = sorted(nodes, key=util.schema.getPathString)
-    nodes = sorted(nodes, key=util.schema.guessType    )
+    nodes = sorted(nodes, key=util.schema.getUiType)
     return nodes
 
 def getModuleFunctions(node):
@@ -133,10 +133,7 @@ if __name__ == '__main__':
     # PARSE XML
     filenameModule = sys.argv[1]
     tree = util.xml.parseXml(filenameModule)
-    util.schema.normalise(tree)
-    util.schema.annotateWithXmlTypes(tree)
-    util.schema.expandCompositeElements(tree)
-    util.schema.annotateWithXmlTypes(tree)
+    util.schema.parseSchema(tree)
 
     # GENERATE AND OUTPUT UI TEST HELPER
     print moduleToString(tree),

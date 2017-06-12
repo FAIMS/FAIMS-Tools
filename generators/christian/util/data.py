@@ -27,7 +27,7 @@ def isDataElement(node):
         UI_TYPE_RADIO,
         UI_TYPE_VIDEO,
     ]
-    return schema.isTabGroup(node) or schema.guessType(node) in dataTypes
+    return schema.isTabGroup(node) or schema.getUiType(node) in dataTypes
 
 def formsArchEnt(node):
     return bool(getArchEntName(node))
@@ -80,13 +80,13 @@ def getAttribType(node, isSpecific=False):
     return ''
 
 def hasMeasureType(node):
-    return schema.guessType(node) in MEASURE_UI_TYPES
+    return schema.getUiType(node) in MEASURE_UI_TYPES
 
 def hasFileType(node):
-    return schema.guessType(node) in FILE_UI_TYPES
+    return schema.getUiType(node) in FILE_UI_TYPES
 
 def hasVocabType(node):
-    return schema.guessType(node) in MENU_UI_TYPES
+    return schema.getUiType(node) in MENU_UI_TYPES
 
 def getRelName(node):
     if not xml.hasAttrib(node, ATTRIB_LC):     return ''
@@ -94,7 +94,7 @@ def getRelName(node):
 
     parentNode = schema.getParentTabGroup(node)
     childNode  = schema.getLinkedNode(node)
-    if schema.getType(childNode) != TYPE_TAB_GROUP:
+    if schema.getXmlType(childNode) != TYPE_TAB_GROUP:
         childNode = schema.getParentTabGroup(childNode)
 
     parentName = parentNode.tag
@@ -142,7 +142,7 @@ def getHierarchyForTopLevelNode(node, seenLinks=None):
 
     # Handles qr links
     gui2tg = lambda n : schema.getParentTabGroup(n) \
-            if schema.getType(n) == TYPE_GUI_DATA \
+            if schema.getXmlType(n) == TYPE_GUI_DATA \
             else n
 
     link         = lambda n : (node.tag, n.tag)
@@ -159,7 +159,7 @@ def getHierarchyForTopLevelNode(node, seenLinks=None):
     )
 
 def getTopLevelArchEntNodes(node, parentNode=None):
-    if schema.getType(node) == TYPE_MODULE:
+    if schema.getXmlType(node) == TYPE_MODULE:
         return list(set(getTopLevelArchEntNodes(schema.getEntryPoint(node))))
     if node == None:
         return []

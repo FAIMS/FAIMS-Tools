@@ -214,5 +214,5 @@ def checkDataElementConstraints(nodes):
 
     msg  = '%s elements share the name `%s` but have different representations'
     msg += ' in the data schema'
-    msg %= (util.schema.getType(nodes[0]).capitalize(), nodes[0].tag)
+    msg %= (util.schema.getXmlType(nodes[0]).capitalize(), nodes[0].tag)
     eMsg(msg, nodes)

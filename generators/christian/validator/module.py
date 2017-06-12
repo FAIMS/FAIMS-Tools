@@ -8,8 +8,6 @@ import util.data
 import util.schema
 import util.xml
 
-from   lxml import etree # TODO: Delete
-
 ################################################################################
 #                                  PARSE XML                                   #
 ################################################################################
@@ -19,7 +17,7 @@ tree = util.xml.parseXml(filenameModule)
 print 'Done!'
 print
 
-util.schema.normalise(tree)
+util.schema.normaliseXml(tree)
 
 ################################################################################
 #                               VALIDATE SCHEMA                                #
@@ -46,14 +44,6 @@ for d in disallowed:
     affectedNodes = [d]
     expectedItems = helpers.getExpectedTypes(util.table.TYPES, d, None)
     helpers.eMsg(msg, affectedNodes, expectedItems)
-
-# TODO: Delete
-#print etree.tostring(
-        #tree,
-        #pretty_print=True,
-        #xml_declaration=True,
-        #encoding='utf-8'
-#),
 
 ############# COARSE-GRAINED VALIDATION OF ATTRIBUTES OF ELEMENTS ##############
 # Only consider nodes flagged with `RESERVED_XML_TYPE`
@@ -167,26 +157,24 @@ matches = tree.xpath(exp)
 for m in matches:
     msg  = 'No value for the attribute t of the element `%s` is present.  '
     msg += 'Assuming a value of `%s`'
-    msg %= (m.tag, util.schema.guessType(m))
+    msg %= (m.tag, util.schema.getUiType(m))
 
     helpers.wMsg(msg, [m])
 
 ################ VALIDATE CARDINALITIES FOR COMPOSITE ELEMENTS #################
 
-util.schema.expandCompositeElements(tree)
-util.schema.annotateWithXmlTypes(tree)
+util.schema.normaliseSchema(tree)
 
 # Check cardinality contraints
-el   = TYPE_GUI_DATA
-mod  = TYPE_MODULE
-t    = TYPE_TAB
-tg   = TYPE_TAB_GROUP
+el  = TYPE_GUI_DATA
+mod = TYPE_MODULE
+t   = TYPE_TAB
+tg  = TYPE_TAB_GROUP
 
 helpers.checkTagCardinalityConstraints(tree, TYPE_MODULE,    TYPE_TAB_GROUP)
 helpers.checkTagCardinalityConstraints(tree, TYPE_TAB_GROUP, TYPE_TAB)
 helpers.checkTagCardinalityConstraints(tree, TYPE_TAB,       TYPE_GUI_DATA)
 
-#TODO: Check data schema
 helpers.checkDataSchemaConstraints(tree)
 
 ################################# MISC ERRORS ##################################
@@ -249,7 +237,7 @@ exp  = '//*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
 # Select all user-flagged elements from those
 cond1 = lambda e: util.schema.isFlagged(e, FLAG_USER)
 # Select all elements whose type is not dropdown nor list
-cond2 = lambda e: util.schema.guessType(e) not in (UI_TYPE_DROPDOWN, UI_TYPE_LIST)
+cond2 = lambda e: util.schema.getUiType(e) not in (UI_TYPE_DROPDOWN, UI_TYPE_LIST)
 matches = tree.xpath(exp)
 matches = filter(cond1, matches)
 matches = filter(cond2, matches)
@@ -375,7 +363,7 @@ msg += 'may contain <opts> tags: %s' % ', '.join(util.table.MENU_TS)
 # Get <opts> tags which are the children of GUI/data elements
 exp  = '//*[@%s="%s"]/opts' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
 # Filter out <opts> tags whose element's t attrib *is* in DESC_TS
-cond = lambda e: not util.schema.guessType(e.getparent()) in util.table.MENU_TS
+cond = lambda e: not util.schema.getUiType(e.getparent()) in util.table.MENU_TS
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 # Effectively, filter out <opts> tags which were already complained about
@@ -408,7 +396,7 @@ msg += 'may contain <desc> tags: %s' % ', '.join(util.table.DESC_TS)
 # Get <desc> tags which are the children of GUI/data elements
 exp  = '//*[@%s="%s"]/desc' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
 # Filter out <desc> tags whose element's t attrib *is* in DESC_TS
-cond = lambda e: not util.schema.guessType(e.getparent()) in util.table.DESC_TS
+cond = lambda e: not util.schema.getUiType(e.getparent()) in util.table.DESC_TS
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 # Effectively, filter out <desc> tags which were already complained about

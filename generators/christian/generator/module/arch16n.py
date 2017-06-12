@@ -11,9 +11,7 @@ if __name__ == '__main__':
     # PARSE XML
     filenameModule = sys.argv[1]
     tree = util.xml.parseXml(filenameModule)
-    util.schema.normalise(tree)
-    util.schema.annotateWithXmlTypes(tree)
-    util.schema.canonicalise(tree)
+    util.schema.parseSchema(tree)
 
     # GENERATE AND OUTPUT ARCH16N
     # Collect arch16n entries

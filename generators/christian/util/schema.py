@@ -108,7 +108,13 @@ def nextFreeName(baseName, node):
     takenNames = [n.tag for n in parent]
     return util.nextFreeName(baseName, takenNames)
 
-def normalise(node):
+# Warning: Modifies `node` by reference
+def parseSchema(node):
+    normaliseXml(node)
+    annotateWithXmlTypes(node)
+    normaliseSchema(node)
+
+def normaliseXml(node):
     normaliseAttributes(node)
     stripComments(node)
 
@@ -132,8 +138,7 @@ def stripComments(node):
         p = c.getparent()
         p.remove(c)
 
-# TODO: Choose better names for this and getType
-def guessType(node):
+def getUiType(node):
     '''
     Returns the value of the node's `t` attribute if it has been defined.
     Otherwise, a guess of what it might have been intended to be is returned
@@ -206,7 +211,7 @@ def annotateWithXmlTypes(node):
         parentType = ''
 
     # Guess UI type
-    guessedType = schema.guessType(node)
+    guessedType = schema.getUiType(node)
 
     # Determine XML type
     type = ''
@@ -261,24 +266,23 @@ def annotateWithXmlTypes(node):
         for child in node:
             annotateWithXmlTypes(child)
 
-# TODO: The roles of this and `schema.normalise` are easily confused
-def canonicalise(node):
-    canonicaliseRec(node)
+def normaliseSchema(node):
+    normaliseSchemaRec(node)
     canonicaliseCols(node)
     canonicaliseMedia(node)
     canonicaliseImplied(node)
 
-def canonicaliseRec(node):
+def normaliseSchemaRec(node):
     newNodes = None
-    if getType(node) == TYPE_AUTHOR:    newNodes = getAuthor   (node)
-    if getType(node) == TYPE_AUTONUM:   newNodes = getAutonum  (node)
-    if getType(node) == TYPE_GPS:       newNodes = getGps      (node)
-    if getType(node) == TYPE_SEARCH:    newNodes = getSearch   (node)
-    if getType(node) == TYPE_TIMESTAMP: newNodes = getTimestamp(node)
+    if getXmlType(node) == TYPE_AUTHOR:    newNodes = getAuthor   (node)
+    if getXmlType(node) == TYPE_AUTONUM:   newNodes = getAutonum  (node)
+    if getXmlType(node) == TYPE_GPS:       newNodes = getGps      (node)
+    if getXmlType(node) == TYPE_SEARCH:    newNodes = getSearch   (node)
+    if getXmlType(node) == TYPE_TIMESTAMP: newNodes = getTimestamp(node)
     newNodes = xml.replaceElement(node, newNodes)
 
     for n in node:
-        canonicaliseRec(n)
+        normaliseSchemaRec(n)
 
 def canonicaliseCols(node):
     colsList = xml.getAll(node, keep=lambda e: e.tag == TAG_COLS)
@@ -299,7 +303,7 @@ def canonicaliseCols(node):
     #
     for cols in colsList:
         for child in cols:
-            if getType(child) in (TYPE_GUI_DATA, TYPE_AUTHOR, TYPE_TIMESTAMP):
+            if getXmlType(child) in (TYPE_GUI_DATA, TYPE_AUTHOR, TYPE_TIMESTAMP):
                 newCol = Element(
                         'col',
                         { RESERVED_XML_TYPE : TYPE_COL }
@@ -319,7 +323,7 @@ def canonicaliseCols(node):
             col.attrib[ATTRIB_S] = 'even'
 
 def canonicaliseMedia(node):
-    mediaList = xml.getAll(node, keep=lambda e: guessType(e) in MEDIA_UI_TYPES)
+    mediaList = xml.getAll(node, keep=lambda e: getUiType(e) in MEDIA_UI_TYPES)
 
     for media in mediaList:
         button = Element(
@@ -347,7 +351,7 @@ def getAuthor(node):
 
     e = Element(
             schema.getParentTabGroup(node).tag + '_author',
-            { RESERVED_XML_TYPE : getType(node) },
+            { RESERVED_XML_TYPE : getXmlType(node) },
             t=UI_TYPE_INPUT,
             f=FLAG_READONLY + SEP_FLAGS + flags,
     )
@@ -450,7 +454,7 @@ def getTimestamp(node):
 
     e = Element(
             schema.getParentTabGroup(node).tag + '_timestamp',
-            { RESERVED_XML_TYPE : getType(node) },
+            { RESERVED_XML_TYPE : getXmlType(node) },
             t=UI_TYPE_INPUT,
             f=FLAG_READONLY + SEP_FLAGS + flags,
     )
@@ -461,46 +465,6 @@ def getTimestamp(node):
     else:         e.text = 'Timestamp'
 
     return e,
-
-def expandCompositeElements(tree):
-    # (1) REPLACE ELEMENTS HAVING A CERTAIN T ATTRIBUTE
-    for attrib, replacements in table.REPLACEMENTS_BY_T_ATTRIB.iteritems():
-        exp     = '//*[@%s]' % RESERVED_XML_TYPE
-        cond    = lambda e: guessType(e) == attrib
-        matches = tree.xpath(exp)
-        matches = filter(cond, matches)
-
-        for m in matches:
-            replaceElement(m, replacements, m.tag)
-
-    # (2) REPLACE ELEMENTS HAVING A CERTAIN TAG NAME
-    # <autonum> tags get special treatment
-    tagMatches  = tree.xpath('//autonum')
-    if tagMatches:
-        tagMatch = tagMatches[0]
-
-        cond        = lambda e: schema.isFlagged(e, 'autonum')
-        exp         = './/*[@%s="%s"]'
-        exp        %= RESERVED_XML_TYPE, TYPE_GUI_DATA
-        flagMatches = tree.xpath(exp)
-        flagMatches = filter(cond, flagMatches)
-
-        replacements = table.REPLACEMENTS_BY_TAG['autonum'] * len(flagMatches)
-        replacements = replaceElement(tagMatch, replacements)
-
-        for autonumDest, autonumSrc in zip(flagMatches, replacements):
-            needle      = '__REPLACE__'
-            haystack    = autonumSrc .tag
-            replacement = autonumDest.tag
-
-            autonumSrc.tag = haystack.replace(needle, replacement)
-
-    # Replace non-<autonum> tags similarly to in (1).
-    for tag, replacements in table.REPLACEMENTS_BY_TAG.iteritems():
-        exp = '//%s[@%s]' % (tag, RESERVED_XML_TYPE)
-        matches = tree.xpath(exp)
-        for m in matches:
-            replaceElement(m, replacements)
 
 def replaceElement(element, replacements, tag='__REPLACE__'):
     replacements = replacements.replace('\n', ' ')
@@ -582,11 +546,11 @@ def isValidPath(root, path, pathType):
         return False
 
     if   pathType == TYPE_GUI_DATA:
-        return getType(getNodeAtPath(root, path)) == TYPE_GUI_DATA
+        return getXmlType(getNodeAtPath(root, path)) == TYPE_GUI_DATA
     elif pathType in ('tab', TYPE_TAB):
-        return getType(getNodeAtPath(root, path)) == TYPE_TAB
+        return getXmlType(getNodeAtPath(root, path)) == TYPE_TAB
     elif pathType in ('tabgroup', TYPE_TAB_GROUP):
-        return getType(getNodeAtPath(root, path)) == TYPE_TAB_GROUP
+        return getXmlType(getNodeAtPath(root, path)) == TYPE_TAB_GROUP
     elif pathType == 'all':
         result  = False
         result |= isValidPath(root, path, TYPE_GUI_DATA)
@@ -619,10 +583,10 @@ def isUserDefinedName(name):
     return name != None and name.istitle()
 
 def isHierarchical(node):
-    return guessType(node) in MENU_UI_TYPES \
+    return getUiType(node) in MENU_UI_TYPES \
             and bool(node.xpath('.//opt/opt'))
 
-def getType(node):
+def getXmlType(node):
     '''
     Returns the type assigned during annotation with `annotateWithXmlTypes`.
     '''
@@ -633,20 +597,20 @@ def getType(node):
     return node.attrib[RESERVED_XML_TYPE]
 
 def getLogic(node):
-    nodes = xml.getAll(node, lambda e: getType(e) == TYPE_LOGIC)
+    nodes = xml.getAll(node, lambda e: getXmlType(e) == TYPE_LOGIC)
     if len(nodes) < 1:
         return ''
     else:
         return nodes[0].text
 
 def isTabGroup(node):
-    return getType(node) == TYPE_TAB_GROUP
+    return getXmlType(node) == TYPE_TAB_GROUP
 
 def isTab(node):
-    return getType(node) in (TYPE_TAB, TYPE_SEARCH)
+    return getXmlType(node) in (TYPE_TAB, TYPE_SEARCH)
 
 def isGuiDataElement(node):
-    return getType(node) in GUI_DATA_UI_TYPES
+    return getXmlType(node) in GUI_DATA_UI_TYPES
 
 def getByType(node, typeFun, keep, descendantOrSelf):
     if keep: everythingToKeep = lambda e : typeFun(e) and keep(e)

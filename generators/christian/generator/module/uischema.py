@@ -91,7 +91,7 @@ def getBodyTab(node):
     return tab
 
 def getBodyTabChildren(node):
-    type    = util.schema.guessType(node)
+    type    = util.schema.getUiType(node)
     hasType = bool(type)
     isGui   = util.gui.isGuiNode(node)
 
@@ -261,9 +261,7 @@ if __name__ == '__main__':
     # PARSE XML
     filenameModule = sys.argv[1]
     tree = util.xml.parseXml(filenameModule)
-    util.schema.normalise(tree)
-    util.schema.annotateWithXmlTypes(tree)
-    util.schema.canonicalise(tree)
+    util.schema.parseSchema(tree)
 
     # GENERATE AND OUTPUT UI SCHEMA
     uiSchema = getUiSchema(tree)

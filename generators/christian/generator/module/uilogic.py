@@ -18,7 +18,7 @@ def getUserMenuUiType(tree):
     nodes = util.xml.getAll(tree, isFlagged)
     if len(nodes) != 1: return None
     node = nodes[0]
-    return util.schema.guessType(node)
+    return util.schema.getUiType(node)
 
 def isGuiAndData(e):
     return util.gui. isGuiNode    (e) and \
@@ -51,7 +51,7 @@ def getHeader(tree, t):
 def getRefsToTypes(tree, t):
     nodes = util.schema.getGuiDataElements(tree)
     refs  = [util.schema.getPathString(n) for n in nodes]
-    types = [util.schema.guessType(n)     for n in nodes]
+    types = [util.schema.getUiType(n)     for n in nodes]
 
     fmt         = 'REF_TO_TYPE.put("%s", "%s");'
     placeholder = '{{refs-to-types}}'
@@ -62,7 +62,7 @@ def getRefsToTypes(tree, t):
 def getDataRefs(tree, t):
     nodes = util.schema.getGuiDataElements(tree, util.data.isDataElement)
     refs  = [util.schema.getPathString(n) for n in nodes]
-    types = [util.schema.guessType(n)     for n in nodes]
+    types = [util.schema.getUiType(n)     for n in nodes]
 
     fmt         = 'DATA_REFS.add("%s");'
     placeholder = '{{data-refs}}'
@@ -75,7 +75,7 @@ def getNoUiRefs(tree, t):
 
     nodes = util.schema.getGuiDataElements(tree, isNoUi)
     refs  = [util.schema.getPathString(n) for n in nodes]
-    types = [util.schema.guessType(n)     for n in nodes]
+    types = [util.schema.getUiType(n)     for n in nodes]
 
     fmt         = 'NO_UI_REFS.add("%s");'
     placeholder = '{{no-ui-refs}}'
@@ -357,7 +357,7 @@ def getValidation(tree, t):
     return t.replace(placeholder, replacement)
 
 def getAuthor(tree, t):
-    isAuthor      = lambda e: util.schema.getType(e) == TAG_AUTHOR
+    isAuthor      = lambda e: util.schema.getXmlType(e) == TAG_AUTHOR
     authors       = util.xml.getAll(tree, isAuthor)
     tabGroupNames = [util.schema.getParentTabGroup(a).tag for a in authors]
     refs          = [util.schema.getPathString(a)         for a in authors]
@@ -369,7 +369,7 @@ def getAuthor(tree, t):
     return t.replace(placeholder, replacement)
 
 def getTimestamp(tree, t):
-    isTimestamp   = lambda e: util.schema.getType(e) == TAG_TIMESTAMP
+    isTimestamp   = lambda e: util.schema.getXmlType(e) == TAG_TIMESTAMP
     timestamp     = util.xml.getAll(tree, isTimestamp)
     tabGroupNames = [util.schema.getParentTabGroup(a).tag for a in timestamp]
     refs          = [util.schema.getPathString(a)         for a in timestamp]
@@ -548,7 +548,7 @@ def getMediaBinds(tree, t):
 
     refs    = [util.schema.getPathString(n) for n in nodes]
     btnRefs = [util.schema.getPathString(n.getnext()) for n in nodes]
-    types   = [util.schema.guessType(n) for n in nodes]
+    types   = [util.schema.getUiType(n) for n in nodes]
     funs    = [type2fun[type] for type in types]
     fmt     = 'addOnEvent("%s", "click", "%s(\\"%s\\")");'
 
@@ -698,10 +698,10 @@ def getDefsTabGroupBindsDuplicateMP_(nodes):
             UI_TYPE_FILE   : 'populateFileList',
             UI_TYPE_VIDEO  : 'populateVideoGallery',
     }
-    isMediaType = lambda e: util.schema.guessType(e) in type2Fun
+    isMediaType = lambda e: util.schema.getUiType(e) in type2Fun
     nodes = util.xml.getAll(nodes, isMediaType)
 
-    funs  = [type2Fun[util.schema.guessType(n)] for n in nodes]
+    funs  = [type2Fun[util.schema.getUiType(n)] for n in nodes]
     refs  = [util.schema.getPathString(n)       for n in nodes]
 
     fmt = '%s("%s", new ArrayList());'
@@ -711,7 +711,7 @@ def getDefsTabGroupBindsDuplicateMP(nodes):
     return [getDefsTabGroupBindsDuplicateMP_(n) for n in nodes]
 
 def getDefsTabGroupBindsDuplicateME_(nodes):
-    isMediaType = lambda e: util.schema.guessType(e) in MEDIA_UI_TYPES
+    isMediaType = lambda e: util.schema.getUiType(e) in MEDIA_UI_TYPES
     nodes       = util.xml.getAll(nodes, isMediaType)
     attribNames = [util.data.getAttribName(n) for n in nodes]
 
@@ -864,7 +864,7 @@ def getNavButtonBindsAdd(tree, t):
     return t.replace(placeholder, replacement)
 
 def getSearchTabGroupString(tree):
-    hasSearchType = lambda e: util.schema.getType(e) == TYPE_SEARCH
+    hasSearchType = lambda e: util.schema.getXmlType(e) == TYPE_SEARCH
     nodes = util.xml.getAll(tree, hasSearchType)
     if not len(nodes): return ''
     search = nodes[0]
@@ -892,7 +892,7 @@ def getSearchTabGroup(tree, t):
     return t.replace(placeholder, replacement)
 
 def getSearchEntities(tree, t):
-    hasSearchType = lambda e: util.schema.getType(e) == TYPE_SEARCH
+    hasSearchType = lambda e: util.schema.getXmlType(e) == TYPE_SEARCH
     searchNodes = util.xml.getAll(tree, hasSearchType)
 
     nodes = util.schema.getTabGroups(tree, isGuiAndData)
@@ -950,7 +950,7 @@ def getLoadEntityDefs(tree, t):
     return t.replace(placeholder, replacement)
 
 def getTakeFromGpsBinds(tree, t):
-    isGps  = lambda e: util.schema.getType(e) == TYPE_GPS
+    isGps  = lambda e: util.schema.getXmlType(e) == TYPE_GPS
     nodes  = util.xml.getAll(tree, isGps)
     btns   = [n.getnext().getnext() for n in nodes] # Take from GPS buttons
     parTgs = [util.schema.getParentTabGroup(n) for n in nodes]
@@ -965,7 +965,7 @@ def getTakeFromGpsBinds(tree, t):
     return t.replace(placeholder, replacement)
 
 def getTakeFromGpsMappings(tree, t):
-    isGps  = lambda e: util.schema.getType(e) == TYPE_GPS
+    isGps  = lambda e: util.schema.getXmlType(e) == TYPE_GPS
     nodes  = util.xml.getAll(tree, isGps)
 
     tabs      = [util.schema.getParentTab     (n) for n in nodes]
@@ -1069,8 +1069,9 @@ def getEntityMenus(tree, t):
     return t.replace(placeholder, replacement)
 
 def getEntityLoading(tree, t):
-    dropdown = lambda e: 'true' if util.schema.guessType(e) == UI_TYPE_DROPDOWN \
-                    else ''
+    dropdown = lambda e: 'true' if util.schema.getUiType(e) == \
+                                    UI_TYPE_DROPDOWN \
+                                else ''
 
     nodes = util.xml.getAll(tree, util.schema.hasEntity)
     refs  = [util.schema.getPathString(n) for n in nodes]
@@ -1155,9 +1156,7 @@ if __name__ == '__main__':
     # PARSE XML
     filenameModule = sys.argv[1]
     tree = util.xml.parseXml(filenameModule)
-    util.schema.normalise(tree)
-    util.schema.annotateWithXmlTypes(tree)
-    util.schema.canonicalise(tree)
+    util.schema.parseSchema(tree)
 
     # GENERATE AND OUTPUT UI LOGIC
     print getUiLogic(tree).encode('utf-8'),
