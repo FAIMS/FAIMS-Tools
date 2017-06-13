@@ -1,4 +1,4 @@
 module/*
 wireframe/*
-tests/*
+tests/*.*
 **/*.pyc

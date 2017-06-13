@@ -166,3 +166,7 @@ def insertAfter(node, nodeToInsert):
     '''
     index = node.getparent().index(node) # Index of `node`
     node.getparent().insert(index+1, nodeToInsert)
+
+def insertBefore(node, nodeToInsert):
+    index = node.getparent().index(node) # Index of `node`
+    node.getparent().insert(index, nodeToInsert)

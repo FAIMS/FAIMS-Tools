@@ -271,6 +271,7 @@ def normaliseSchema(node):
     normaliseCols(node)
     normaliseMedia(node)
     normaliseImplied(node)
+    normaliseSignup(node)
 
 def normaliseSchemaRec(node):
     newNodes = None
@@ -345,6 +346,40 @@ def normaliseImplied(node):
 
     for n in notNull:
         xml.appendToAttrib(n, ATTRIB_C, CSS_REQUIRED)
+
+def normaliseSignup(node):
+    isSignup = lambda e: getLink(e) == LINK_SIGNUP
+    signupNodes = getGuiDataElements(node, isSignup)
+
+    for n in signupNodes:
+        xml.insertBefore(n, getSignupGuide(n)[0])
+
+def getSignupGuide(node):
+    tagGuide     = nextFreeName('Signup_Guide', node)
+    attribsGuide = {
+        RESERVED_XML_TYPE : TYPE_GUI_DATA,
+        ATTRIB_F          : FLAG_NOLABEL,
+        ATTRIB_T          : UI_TYPE_WEBVIEW,
+    }
+
+    tagMd  = TAG_MARKDOWN
+    textMd  = '---\n'
+    textMd += 'Please ensure you are online before attempting to sign up.\n'
+    textMd += '\n'
+    textMd += 'When signing up, please choose a strong password, which has at '
+    textMd += 'least 6 characters, one uppercase letter, one lowercase letter, '
+    textMd += 'one digit and one symbol. Examples of strong passwords '
+    textMd += 'include:\n'
+    textMd += '\n'
+    textMd += '* D!gging4bi0facts.\n'
+    textMd += '* L0$TCiTY\n'
+    textMd += '* 2_artif&ctS\n'
+    textMd += '* Tr0ub4dor&3\n'
+
+    g = Element   (   tagGuide, attribsGuide)
+    m = SubElement(g, tagMd                 ); m.text = textMd
+
+    return g,
 
 def getAuthor(node):
     flags = getFlagsString(node)
@@ -496,6 +531,7 @@ def getLink(node, attribName=None):
 
     return None
 
+# Recursive version of `getLink`
 def getLinks(node, attribName=None):
     if node == None:
         return []

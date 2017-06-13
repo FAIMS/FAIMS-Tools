@@ -292,8 +292,10 @@ void fetchOne(String s) { fetchOne(s, null); }
 void fetchOne(String s, FetchCallback c) { if (c != null) c.onFetch(null); }
 void onEvent(String s1, String s2, String s3) { print(funName()); }
 void onFocus(String s1, String s2, String s3) { print(funName()); }
+void populateCursorList(String s1, String s2, int i) { print(funName()); }
 void populateCheckBoxGroup(String s, Collection c) { print(funName()); }
 void populateDropDown(String s, Collection c, boolean b) { print(funName()); }
+void populateDropDown(String s, Collection c) { print(funName()); }
 void populateHierarchicalDropDown(String s, Collection c) { print(funName()); }
 void populateHierarchicalPictureGallery(String s, Collection c) { print(funName()); }
 void populateList(String s, Collection c) { print(funName()); }
