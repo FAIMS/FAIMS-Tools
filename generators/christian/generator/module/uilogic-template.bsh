@@ -2257,7 +2257,7 @@ void saveTabGroup(String tabgroup, String callback) {
   String  parentTabgroupUuid_ = getUuid(parentTabgroup_);
   Boolean userWasSet          = !username.equals("");
 
-  callback += "; onSave" + getArchEntTypePascalCased(tabgroup) + "__()";
+  callback += "; " + fun2str("executeOnEvent", new Object[]{tabgroup, "save"});
 
   parentTabgroup = null;
 
@@ -2502,10 +2502,25 @@ void newRecord(String tabgroup, boolean doUpdateRelVars) {
 
 // Deletes the current record of the given tabgroup
 void deleteRecord(String tabgroup) {
-  String deleteTabGroupFunction = "delete" + tabgroup.replaceAll("_", "") + "()"; // Typical value: "deleteTabgroup()"
-  eval(deleteTabGroupFunction);
+  if (isNull(getUuid(tabgroup))) {
+    cancelTabGroup(tabgroup, true);
+  } else {
+    showAlert(
+        "{Confirm_Deletion}",
+        "{Press_OK_to_Delete_this_Record}",
+        fun2str("reallyDeleteRecord", tabgroup),
+        "doNotDelete()"
+    );
+  }
 
   Log.d("deleteRecord", tabgroup);
+}
+
+void reallyDeleteRecord(String tabgroup) {
+  deleteArchEnt(getUuid(tabgroup));
+  cancelTabGroup(tabgroup, false);
+  populateEntityListsOfArchEnt(tabgroup);
+  executeOnEvent(tabgroup, "delete");
 }
 
 // Duplicates the current record of the given tabgroup
@@ -2623,9 +2638,6 @@ void loadEntityFrom(String entityID, String onFail) {
       eval(loadFunction);
     }
   });
-}
-
-void showLoadEntityWarning() {
 }
 
 {{defs-tabgroup-binds}}

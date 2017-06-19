@@ -623,7 +623,6 @@ def getDefsTabGroupBindsNew(tree):
     refs           = [util.schema.getPathString(n) for n in nodes]
     noNextIds      = [getNoNextIds (n) for n in nodes]
     incAutoNums    = [getIncAutoNum(n) for n in nodes]
-    createFunNames = [getFunName(n) for n in nodes]
 
     fmt = \
     '\nvoid new%s(String parent){' \
@@ -641,7 +640,7 @@ def getDefsTabGroupBindsNew(tree):
     '\n  populateEntityListsInTabGroup(tabgroup);' \
     '\n  %s' \
     '\n' \
-    '\n  onCreate%s__();' \
+    '\n  executeOnEvent(tabgroup, "create");' \
     '\n}' \
     '\n' \
     '\nvoid new%s (){' \
@@ -654,31 +653,11 @@ def getDefsTabGroupBindsNew(tree):
                 refs,
                 noNextIds,
                 incAutoNums,
-                createFunNames,
                 newFunNames,
                 newFunNames
             ),
             fmt
     )
-
-def getDefsTabGroupBindsEvents(tree, funPrefix, evtName):
-    ''' Get function definitions ("defs") for triggering events bound to tab
-        groups.
-    '''
-    nodes = util.schema.getTabGroups(tree, isGuiAndData)
-    funNames = [getFunName(n, funPrefix)     for n in nodes]
-    refs     = [util.schema.getPathString(n) for n in nodes]
-    evtNames = [evtName]*len(nodes)
-
-    fmt =  \
-      'void %s__(){' \
-    '\n  String ref      = "%s";' \
-    '\n  String event    = "%s";' \
-    '\n  String stmtsStr = getStatementsString(ref, event);' \
-    '\n  execute(stmtsStr);' \
-    '\n}'
-
-    return format(zip(funNames, refs, evtNames), fmt)
 
 def getOnSaveBinds(tree, t):
     tabGroups    = util.schema.getTabGroups(tree, isGuiAndData)
@@ -728,7 +707,6 @@ def getDefsTabGroupBindsDuplicate(tree):
     refs          = [util.schema.getPathString(n) for n in nodes]
     incAutoNums   = [getIncAutoNum(n) for n in nodes]
     mediaPopulate = getDefsTabGroupBindsDuplicateMP(nodes)
-    cpyFunNames   = [getFunName(n) for n in nodes]
     mediaExcludes = getDefsTabGroupBindsDuplicateME(nodes)
 
     fmt = \
@@ -742,7 +720,7 @@ def getDefsTabGroupBindsDuplicate(tree):
     '\n  populateAuthorAndTimestamp(tabgroup);' \
     '\n  populateEntityListsInTabGroup(tabgroup);' \
     '\n  %s' \
-    '\n  onCopy%s__();' \
+    '\n  executeOnEvent(tabgroup, "copy");' \
     '\n' \
     '\n  saveCallback = new SaveCallback() {' \
     '\n    onSave(uuid, newRecord) {' \
@@ -786,59 +764,16 @@ def getDefsTabGroupBindsDuplicate(tree):
                 refs,
                 incAutoNums,
                 mediaPopulate,
-                cpyFunNames,
                 mediaExcludes
             ),
             fmt
     )
 
-def getDefsTabGroupBindsDelete(tree):
-    nodes   = util.schema.getTabGroups(tree, isGuiAndData)
-    refs    = [util.schema.getPathString(n) for n in nodes]
-    funName = [getFunName(n)                   for n in nodes]
-
-    fmt = \
-      'void delete%s(){' \
-    '\n  String tabgroup = "%s";' \
-    '\n  if (isNull(getUuid(tabgroup))) {' \
-    '\n    cancelTabGroup(tabgroup, true);' \
-    '\n  } else {' \
-    '\n    showAlert("{Confirm_Deletion}", "{Press_OK_to_Delete_this_Record}", "reallyDelete%s()", "doNotDelete()");' \
-    '\n  }' \
-    '\n}'
-
-    return format(zip(funName, refs, funName), fmt)
-
-def getDefsTabGroupBindsReallyDelete(tree):
-    nodes   = util.schema.getTabGroups(tree, isGuiAndData)
-    refs    = [util.schema.getPathString(n) for n in nodes]
-    funName = [getFunName(n)                   for n in nodes]
-
-    fmt = \
-      'void reallyDelete%s (){' \
-    '\n  String tabgroup = "%s";' \
-    '\n' \
-    '\n  deleteArchEnt(getUuid(tabgroup));' \
-    '\n  cancelTabGroup(tabgroup, false);' \
-    '\n  populateEntityListsOfArchEnt(tabgroup);' \
-    '\n  onDelete%s__();' \
-    '\n}' \
-
-    return format(zip(funName, refs, funName), fmt)
-
 def getDefsTabGroupBinds(tree, t):
     placeholder = '{{defs-tabgroup-binds}}'
     replacement = '\n'.join([
         getDefsTabGroupBindsNew         (tree),
-        getDefsTabGroupBindsEvents      (tree, 'onCreate',   'create'),
-        getDefsTabGroupBindsEvents      (tree, 'onPrefetch', 'prefetch'),
-        getDefsTabGroupBindsEvents      (tree, 'onFetch',    'fetch'),
-        getDefsTabGroupBindsEvents      (tree, 'onSave',     'save'),
-        getDefsTabGroupBindsEvents      (tree, 'onCopy',     'copy'),
-        getDefsTabGroupBindsEvents      (tree, 'onDelete',   'delete'),
         getDefsTabGroupBindsDuplicate   (tree),
-        getDefsTabGroupBindsDelete      (tree),
-        getDefsTabGroupBindsReallyDelete(tree),
     ])
 
     return t.replace(placeholder, replacement)
@@ -938,14 +873,14 @@ def getLoadEntityDefs(tree, t):
     '\n  FetchCallback cb = new FetchCallback() {' \
     '\n    onFetch(result) {' \
     '\n      populateEntityListsInTabGroup(tabgroup);' \
-    '\n      onFetch%s__();' \
+    '\n      executeOnEvent(tabgroup, "fetch");' \
     '\n    }' \
     '\n  };' \
     '\n' \
-    '\n  onPrefetch%s__();' \
+    '\n  executeOnEvent(tabgroup, "prefetch");' \
     '\n  showTabGroup(tabgroup, uuid, cb);' \
     '\n}'
-    replacement = format(zip(funNames, refs, funNames, funNames), fmt)
+    replacement = format(zip(funNames, refs), fmt)
 
     return t.replace(placeholder, replacement)
 
