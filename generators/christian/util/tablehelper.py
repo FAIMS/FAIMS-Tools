@@ -51,7 +51,7 @@ def parseArch16n(arch16n):
     arch16nDict = {}
 
     for line in arch16nLines:
-        splittedLine = line.split('=')
+        splittedLine = line.split('=', 1)
 
         if len(splittedLine) != 2:
             continue
