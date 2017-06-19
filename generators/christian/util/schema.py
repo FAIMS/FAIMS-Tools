@@ -364,17 +364,18 @@ def getSignupGuide(node):
 
     tagMd  = TAG_MARKDOWN
     textMd  = '---\n'
-    textMd += 'Please ensure you are online before attempting to sign up.\n'
+    textMd += 'In order to sign up, please ensure:\n'
     textMd += '\n'
-    textMd += 'When signing up, please choose a strong password, which has at '
-    textMd += 'least 6 characters, one uppercase letter, one lowercase letter, '
-    textMd += 'one digit and one symbol. Examples of strong passwords '
-    textMd += 'include:\n'
+    textMd += '1. Your device is online\n'
+    textMd += '2. FAIMS is connected to the correct server\n'
+    textMd += '3. You have choosen a strong password\n'
     textMd += '\n'
-    textMd += '* D!gging4bi0facts.\n'
-    textMd += '* L0$TCiTY\n'
+    textMd += 'A strong password has at least 6 characters, 1 uppercase letter,'
+    textMd += ' 1 lowercase letter, 1 digit and 1 symbol. Examples of strong '
+    textMd += 'passwords:\n'
+    textMd += '\n'
+    textMd += '* D!gging4bi0facts\n'
     textMd += '* 2_artif&ctS\n'
-    textMd += '* Tr0ub4dor&3\n'
 
     g = Element   (   tagGuide, attribsGuide)
     m = SubElement(g, tagMd                 ); m.text = textMd
