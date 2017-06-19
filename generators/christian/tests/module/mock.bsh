@@ -296,11 +296,14 @@ void populateCursorList(String s1, String s2, int i) { print(funName()); }
 void populateCheckBoxGroup(String s, Collection c) { print(funName()); }
 void populateDropDown(String s, Collection c, boolean b) { print(funName()); }
 void populateDropDown(String s, Collection c) { print(funName()); }
-void populateHierarchicalDropDown(String s, Collection c) { print(funName()); }
-void populateHierarchicalPictureGallery(String s, Collection c) { print(funName()); }
+void populateHierarchicalDropDown(String s1, String s2) { print(funName()); }
+void populateHierarchicalDropDown(String s1, String s2, boolean b) { print(funName()); }
+void populateHierarchicalPictureGallery(String s1, String s2) { print(funName()); }
 void populateList(String s, Collection c) { print(funName()); }
 void populatePictureGallery(String s, Collection c) { print(funName()); }
 void populateRadioGroup(String s, Collection c) { print(funName()); }
+void populateWebViewHtml(String s1, String s2) { print(funName()); }
+void populateWebView(String s1, String s2) { print(funName()); }
 void setFieldValue(String s1, String s2) { print(funName()); }
 void setFileSyncEnabled(boolean b) { print(funName()); }
 void setSyncDelay(float f) { print(funName()); }
@@ -331,3 +334,4 @@ void saveArchEnt(String s1, String s2, List l1, List l2, SaveCallback c) {
   print(funName() + "\n        " + s1 + " | " + s2 + " | " + l1 + " | " + l2);
   if (c != null) c.onSave("uuid", true);
 }
+String getAttachedFilePath(String s) { print(funName()); return ""; }
