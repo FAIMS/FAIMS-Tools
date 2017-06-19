@@ -1,5 +1,6 @@
 import android.util.Log;
 import android.os.Build.MODEL;
+import java.util.concurrent.atomic.AtomicInteger;
 
 // Beanshell won't let me write "\0".
 final String SEP = Character.toString ((char) 0);
@@ -390,8 +391,15 @@ String getArchEntTypePascalCased(String ref) {
 /* `delOnEvents` calls. Calling `bindOnEvents` is what actually establishes   */
 /* the bindings once they have been added to the accumulator.                 */
 /******************************************************************************/
+// This counts the number of _a_synchonrous jobs before the module is considered
+// to be loaded.
+//     Only one synchronous job is counted, and that's loading this script; that
+// is why this variable is initialised to 1.
+AtomicInteger NUM_JOBS_TILL_LOADED = new AtomicInteger(1);
+
 Map EVENTS        = new HashMap(); // (ref, event type) -> callback statement
 Set CUSTOM_EVENTS = new HashSet(); // Events not handled by `onEvent`
+
 CUSTOM_EVENTS.add("blur");
 CUSTOM_EVENTS.add("copy");
 CUSTOM_EVENTS.add("create");
@@ -441,6 +449,11 @@ String getStatementsString(String ref, String event) {
   return stmtsStr;
 }
 
+void executeOnEvent(String ref, String event) {
+  String stmtsStr = getStatementsString(ref, event);
+  execute(stmtsStr);
+}
+
 boolean hasOnEvent(String ref, String event, String statement) {
   return getStatements(ref, event).contains(statement);
 }
@@ -461,12 +474,14 @@ void bindOnEvent(String ref, String event) {
   String focusStmtStr = getStatementsString(ref, "focus");
   String blurStmtStr  = getStatementsString(ref, "blur" );
 
-  if (!CUSTOM_EVENTS.contains(event)) {
-    onEvent(ref, event, stmtsStr);
+  if (event.equals("load") && ref.equals("module")) {
+    ;
   } else if (event.equals("focus")) {
     onFocus(ref, focusStmtStr, blurStmtStr);
   } else if (event.equals("blur" )) {
     onFocus(ref, focusStmtStr, blurStmtStr);
+  } else if (!CUSTOM_EVENTS.contains(event)) {
+    onEvent(ref, event, stmtsStr);
   } else {
     ; // Other events are implemented using auto-generated callback functions
   }
@@ -492,6 +507,25 @@ void onLeaveTabGroup(String ref) {
   String event    = "leave";
   String stmtsStr = getStatementsString(ref, event);
   execute(stmtsStr);
+}
+
+void incJobsTillLoaded() {
+  NUM_JOBS_TILL_LOADED.incrementAndGet();
+}
+
+boolean isModuleLoaded() {
+  return NUM_JOBS_TILL_LOADED.get() == 0;
+}
+
+/* Returns `true` if the module has loaded.
+ */
+boolean decJobsTillLoaded() {
+  return NUM_JOBS_TILL_LOADED.decrementAndGet() == 0;
+}
+
+void decAndExecIfModuleLoaded() {
+  if (decJobsTillLoaded())
+    executeOnEvent("module", "load");
 }
 
 /* Establishes `onEvent` bindings necessary to make the "leave" event work. The
@@ -574,7 +608,6 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 ConcurrentLinkedQueue PERF_FILES             = new ConcurrentLinkedQueue();
@@ -1422,10 +1455,10 @@ void setFieldValueFromLocalSettings(
 
 void setFieldValueFromLocalSettings(
     String  key,
-    String  val,
+    String  ref,
     boolean doOverwrite
 ) {
-  setFieldValueFromLocalSettings(key, val, doOverwrite, null);
+  setFieldValueFromLocalSettings(key, ref, doOverwrite, null);
 }
 
 void setFieldValueFromLocalSettings(
@@ -1438,6 +1471,10 @@ void setFieldValueFromLocalSettings(
 
 void setFieldValueFromLocalSettings(String ref, boolean doOverwrite) {
   setFieldValueFromLocalSettings(ref, ref, doOverwrite);
+}
+
+void setFieldValueFromLocalSettings(String key, String ref) {
+  setFieldValueFromLocalSettings(key, ref, false);
 }
 
 void setFieldValueFromLocalSettings(String ref) {
@@ -1696,6 +1733,13 @@ void makeVocab(
     return;
   }
 
+  if (!isModuleLoaded()) {
+    String head = "Logic Error";
+    String body = "makeVocab called before module loaded";
+    showWarning(head, body);
+    return;
+  }
+
   // Make a filtered vocab
   List menuEntries = getMenuEntries(attrName);
   if (vocabExclusions == null) vocabExclusions = new ArrayList();
@@ -1717,19 +1761,31 @@ void makeVocab(
   // Populate menu
   switch(type) {
     case "checkbox":
+    case "CheckBoxGroup":
       populateCheckBoxGroup             (ref, filteredVocab);          break;
     case "dropdown":
+    case "DropDown":
       populateDropDown                  (ref, filteredVocab, hasNull); break;
     case "hierarchicaldropdown":
+    case "HierarchicalDropDown":
       populateHierarchicalDropDown      (ref, attrName, hasNull);      break;
     case "hierarchicalpicture":
+    case "HierarchicalPictureGallery":
       populateHierarchicalPictureGallery(ref, attrName);               break;
+    case "List":
     case "list":
       populateList                      (ref, filteredVocab);          break;
     case "picture":
+    case "PictureGallery":
       populatePictureGallery            (ref, filteredVocab);          break;
     case "radio":
+    case "RadioGroup":
       populateRadioGroup                (ref, filteredVocab);          break;
+    default:
+      Log.e(
+          "makeVocab()",
+          "Can't make populate vocab; type not recognised"
+      );
   }
 
   // Execute callback
@@ -1811,7 +1867,7 @@ List getVocabIdsFromRef(String ref) {
  * Initialises `VOCABID_TO_VOCABNAME` with the (vocabid -> vocabname) mapping of
  * every menu.
  */
-void fetchMenuValues(String cb) {
+void fetchMenuValues() {
   String q = "";
   q += "   SELECT vocabid, vocabname, attributename, pictureurl";
   q += "     FROM vocabulary";
@@ -1842,14 +1898,16 @@ void fetchMenuValues(String cb) {
         addMenuEntry(attrName, vocabId, vocabName, picUrl);
       }
 
-      execute(cb);
+      decAndExecIfModuleLoaded();
     }
   };
 
+  incJobsTillLoaded();
   fetchAll(q, populateHashMap);
 }
 
-fetchMenuValues("makeVocabs()");
+addOnEvent("module", "load", "makeVocabs()");
+fetchMenuValues();
 
 /* Returns a menu's vocabname, instead of the (counter-intuitive) vocabid.
  */
@@ -2965,3 +3023,4 @@ for (m : ENTITY_MENUS) {
 /* Stuff which needs to be done last.                                         */
 /******************************************************************************/
 bindOnEvents();
+decAndExecIfModuleLoaded();
