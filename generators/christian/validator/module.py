@@ -201,7 +201,7 @@ msg  = 'Style in c attribute not applied; styling conflict exists due to '
 msg += '"autonum" flag'
 
 # Select all autonum-flagged elements which also have their b attributes set
-exp  = '//*[@c]'
+exp  = '//*[@c != "required"]'
 cond = lambda e: util.schema.isFlagged(e, FLAG_AUTONUM)
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
@@ -217,7 +217,7 @@ msg  = 'Style in c attribute not applied; styling conflict exists due to '
 msg += '"notnull" flag'
 
 # Select all notnull-flagged elements which also have their b attributes set
-exp  = '//*[@c]'
+exp  = '//*[@c != "required"]'
 cond = lambda e: util.schema.isFlagged(e, FLAG_NOTNULL)
 matches = tree.xpath(exp)
 matches = filter(cond, matches)

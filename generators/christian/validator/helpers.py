@@ -22,6 +22,8 @@ def eMsg(notice, nodes=None, expected=None):
 
 def printNotice(notice, nodes=None, expected=None):
     if expected is None: expected = []
+    if nodes != None:
+        nodes = filter(lambda x: x.sourceline != None, nodes)
 
     if   nodes      == None:
         location = ''
