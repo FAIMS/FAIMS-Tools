@@ -136,6 +136,12 @@ HashSet DATA_REFS                      = new HashSet();
 HashSet NO_UI_REFS                     = new HashSet();
 HashSet HIER_REFS                      = new HashSet();
 Map     VP_REF_TO_REF                  = new HashMap();
+HashSet REFS_AS_HASH_SET               = null;
+List    REFS_AS_LIST                   = null;
+List    TAB_GROUPS_AS_LIST             = new ArrayList();
+HashSet TAB_GROUPS_AS_HASH_SET         = null;
+List    TABS_AS_LIST                   = new ArrayList();
+HashSet TABS_AS_HASH_SET               = null;
 
 {{refs-to-types}}
 
@@ -147,6 +153,10 @@ Map     VP_REF_TO_REF                  = new HashMap();
 
 {{hier-refs}}
 
+{{get-tab-groups}}
+
+{{get-tabs}}
+
 String getType(String ref) {
   String type = REF_TO_TYPE.get(ref);
   if (type == null) return "";
@@ -154,7 +164,19 @@ String getType(String ref) {
 }
 
 List getRefs() {
-  return new ArrayList(REF_TO_TYPE.keySet());
+  return getRefsAsList();
+}
+
+List getRefsAsList() {
+  if (REFS_AS_LIST == null)
+    REFS_AS_LIST = new ArrayList(REF_TO_TYPE.keySet());
+  return REFS_AS_LIST;
+}
+
+HashSet getRefsAsHashSet() {
+  if (REFS_AS_HASH_SET == null)
+    REFS_AS_HASH_SET = new HashSet(REF_TO_TYPE.keySet());
+  return REFS_AS_HASH_SET;
 }
 
 List getRefsByType(String type) {
@@ -185,10 +207,22 @@ boolean isHier(String ref) {
   return HIER_REFS.contains(ref);
 }
 
-List getTabGroups() {
-  List tabGroups = new ArrayList();
-  {{get-tab-groups}}
-  return tabGroups;
+List getTabGroups() { return getTabGroupsAsList(); }
+List getTabGroupsAsList() { return TAB_GROUPS_AS_LIST; }
+
+HashSet getTabGroupsAsHashSet() {
+  if (TAB_GROUPS_AS_HASH_SET == null)
+    TAB_GROUPS_AS_HASH_SET = new HashSet(TAB_GROUPS_AS_LIST);
+  return TAB_GROUPS_AS_HASH_SET;
+}
+
+List getTabs() { return getTabGroupsAsList(); }
+List getTabsAsList() { return TABS_AS_LIST; }
+
+HashSet getTabsAsHashSet() {
+  if (TABS_AS_HASH_SET == null)
+    TABS_AS_HASH_SET = new HashSet(TABS_AS_LIST);
+  return TABS_AS_HASH_SET;
 }
 
 List getStartingIdRefs() {
@@ -463,6 +497,18 @@ void delOnEvent(String ref, String event, String statement) {
 }
 
 void addOnEvent(String ref, String event, String statement) {
+  if (
+      !getRefsAsHashSet()     .contains(ref) &&
+      !getTabsAsHashSet()     .contains(ref) &&
+      !getTabGroupsAsHashSet().contains(ref) &&
+      !"module".equals(ref)
+  ) {
+    Log.w(
+        this.namespace.getInvocationText(),
+        "Ref '" + ref + "' may not refer to a UI element"
+    );
+  }
+
   // Calling `delOnEvent()` first ensures statement occurs once in the list, at
   // the end.
   delOnEvent  (ref, event, statement);

@@ -110,9 +110,19 @@ def getTabGroups(tree, t):
     nodes = util.schema.getTabGroups(tree)
     refs  = [util.schema.getPathString(tg) for tg in nodes]
 
-    fmt          = 'tabGroups.add("%s");'
+    fmt          = 'TAB_GROUPS_AS_LIST.add("%s");'
     placeholder  = '{{get-tab-groups}}'
-    replacement  = format(refs, fmt, indent='  ')
+    replacement  = format(refs, fmt)
+
+    return t.replace(placeholder, replacement)
+
+def getTabs(tree, t):
+    nodes = util.schema.getTabs(tree)
+    refs  = [util.schema.getPathString(n) for n in nodes]
+
+    fmt          = 'TABS_AS_LIST.add("%s");'
+    placeholder  = '{{get-tabs}}'
+    replacement  = format(refs, fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -1037,6 +1047,7 @@ def getUiLogic(tree):
     t = t.decode('utf-8')
     t = getHeader(tree, t)
     t = getTabGroups(tree, t)
+    t = getTabs(tree, t)
     t = getMenuTypes(tree, t)
     t = getMediaTypes(tree, t)
     t = getRefsToTypes(tree, t)
