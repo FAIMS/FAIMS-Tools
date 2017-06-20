@@ -1143,7 +1143,7 @@ PerfImageDownloader() {
     String filStr = "/sdcard/faims/modules/" + getModuleId() +
         "/files/app/test.jpg";
     String urlStr = "https://raw.githubusercontent.com/FAIMS/FAIMS-Tools/" +
-        "autogen-py/test-images/lenna-4096x4096.jpg";
+        "autogen-py/test-images/construction-2894x1924.jpg";
 
     if (detectFile(filStr))
       return;
