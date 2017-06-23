@@ -6,6 +6,7 @@ from   util.consts import *
 import util.data
 import util.schema
 import util.xml
+import re
 
 def getDefaultDollarFmtStr(node):
     if util.data.hasVocabType  (node): return '$1'

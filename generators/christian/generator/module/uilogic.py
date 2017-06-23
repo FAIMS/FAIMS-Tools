@@ -126,6 +126,19 @@ def getTabs(tree, t):
 
     return t.replace(placeholder, replacement)
 
+def getAttribNamesNonStandard(tree, t):
+    hasNonStdAttr = lambda n: util.xml.hasAttrib(n, RESERVED_PROP_NAME)
+
+    nodes     = util.xml.getAll(tree, hasNonStdAttr)
+    refs      = [util.schema.getPathString(n) for n in nodes]
+    attrNames = [util.data.getAttribName(n) for n in nodes]
+
+    fmt         = 'ATTRIB_NAMES_NON_STANDARD.put("%s", "%s");'
+    placeholder = '{{attrib-names-non-standard}}'
+    replacement = format(zip(refs, attrNames), fmt)
+
+    return t.replace(placeholder, replacement)
+
 def getMenuTypes(tree, t):
     fmt          = 'menuTypes.add("%s");'
     placeholder  = '{{menu-ui-types}}'
@@ -702,7 +715,7 @@ def getDefsTabGroupBindsDuplicateMP(nodes):
 def getDefsTabGroupBindsDuplicateME_(nodes):
     isMediaType = lambda e: util.schema.getUiType(e) in MEDIA_UI_TYPES
     nodes       = util.xml.getAll(nodes, isMediaType)
-    attribNames = [util.data.getAttribName(n) for n in nodes]
+    attribNames   = [util.data.getAttribName(n) for n in nodes]
 
     fmt = 'excludeAttributes.add("%s");'
 
@@ -1048,6 +1061,7 @@ def getUiLogic(tree):
     t = getHeader(tree, t)
     t = getTabGroups(tree, t)
     t = getTabs(tree, t)
+    t = getAttribNamesNonStandard(tree, t)
     t = getMenuTypes(tree, t)
     t = getMediaTypes(tree, t)
     t = getRefsToTypes(tree, t)
@@ -1056,7 +1070,6 @@ def getUiLogic(tree):
     t = getVpRefs(tree, t)
     t = getHierRefs(tree, t)
     t = getNodataTabGroups(tree, t)
-    t = getPerfTimedCalls(tree, t)
     t = getPerfHierarchy(tree, t)
     t = getIsInPerfTestTime(tree, t)
     t = getPersistBinds(tree, t)
@@ -1095,6 +1108,7 @@ def getUiLogic(tree):
     t = getEntityMenus(tree, t)
     t = getEntityLoading(tree, t)
     t = getHandWrittenLogic(tree, t)
+    t = getPerfTimedCalls(tree, t)
 
     return t
 

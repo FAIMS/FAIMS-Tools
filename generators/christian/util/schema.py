@@ -17,6 +17,7 @@ import schema
 import gui
 import data
 import arch16n
+import itertools
 
 def getPath(node):
     nodeTypes = [
@@ -181,7 +182,7 @@ def hasElementFlaggedWith(tabGroup, flag):
 def hasElementFlaggedWithId(tabGroup):
     return hasElementFlaggedWith(tabGroup, 'id')
 
-def getParent(node, xmlType):
+def getParent(node, xmlType, parentOrSelf=False):
     if node == None:
         return None
 
@@ -190,14 +191,14 @@ def getParent(node, xmlType):
     if matches: return matches[0]
     else:       return None
 
-def getParentTabGroup(node):
-    return getParent(node, TYPE_TAB_GROUP)
+def getParentTabGroup(node, parentOrSelf=False):
+    return getParent(node, TYPE_TAB_GROUP, parentOrSelf)
 
-def getParentTab(node):
-    return getParent(node, TYPE_TAB)
+def getParentTab(node, parentOrSelf=False):
+    return getParent(node, TYPE_TAB, parentOrSelf)
 
-def getParentGuiDataElement(node):
-    return getParent(node, TYPE_GUI_DATA)
+def getParentGuiDataElement(node, parentOrSelf=False):
+    return getParent(node, TYPE_GUI_DATA, parentOrSelf)
 
 def annotateWithXmlTypes(node):
     if node == []:   return
@@ -225,6 +226,7 @@ def annotateWithXmlTypes(node):
         if   util.isNonLower(node.tag):   type = TYPE_TAB
         elif node.tag == TAG_DESC:        type = TYPE_DESC
         elif node.tag == TAG_SEARCH:      type = TYPE_SEARCH
+        elif node.tag == TAG_FMT:         type = TYPE_FMT
     elif parentType == TYPE_TAB:
         if   guessedType == TAG_GROUP:    type = TYPE_GROUP
         elif util.isNonLower(node.tag):   type = TYPE_GUI_DATA
@@ -267,11 +269,26 @@ def annotateWithXmlTypes(node):
             annotateWithXmlTypes(child)
 
 def normaliseSchema(node):
+    normaliseProps(node)
+    normaliseImplied(node)
     normaliseSchemaRec(node)
     normaliseCols(node)
     normaliseMedia(node)
-    normaliseImplied(node)
     normaliseSignup(node)
+
+def normaliseProps(node):
+    homoProps = data.getHomonymousProps(node)
+    homoProps = itertools.chain.from_iterable(homoProps) # Flatten
+
+    for p in homoProps:
+        propName = \
+                data.getArchEntName(p, True) + \
+                SEP_DATA + \
+                data.getAttribName(p)
+        xml.appendToAttrib(p, RESERVED_PROP_NAME, propName)
+
+    homoProps = data.getHomonymousProps(node)
+    homoProps = itertools.chain.from_iterable(homoProps) # Flatten
 
 def normaliseSchemaRec(node):
     newNodes = None
@@ -336,6 +353,10 @@ def normaliseMedia(node):
         xml.insertAfter(media, button)
 
 def normaliseImplied(node):
+    normaliseImpliedCss(node)
+    normaliseImpliedFmt(node)
+
+def normaliseImpliedCss(node):
     # f="notnull" implies c="required"
     isNotNull = lambda e: isFlagged(
             e,
@@ -346,6 +367,69 @@ def normaliseImplied(node):
 
     for n in notNull:
         xml.appendToAttrib(n, ATTRIB_C, CSS_REQUIRED)
+
+def normaliseImpliedFmt(node):
+    # <fmt>{{Attrib_Name}}</fmt> implies <Attrib_Name f="id>...
+    nodes = util.schema.getTabGroups(node)
+    for n in nodes:
+        normaliseImpliedFmtInTabGroup(n)
+
+def normaliseImpliedFmtInTabGroup(schemaTabGroup):
+    newFmtStr = schemaTabGroup.xpath('./fmt')
+    if len(newFmtStr) == 0:
+        return
+    newFmtStr = newFmtStr[0].text
+    newFmtStr = newFmtStr.strip()
+
+    reChunk  = '((?!}}).)+((?!{{).)+'
+    reAttrib = '{{((?!}}).)+}}'
+
+    # Chunk fmt string spec
+    chunks = [chunk.group() for chunk in re.finditer(reChunk, newFmtStr)]
+
+    # Get fmt strings
+    # Replaces "my{{Identifer}}isgreat" with "my$0isgreat" in each chunk
+    fmtStrs = [re.sub(reAttrib, '$0', chunk) for chunk in chunks]
+
+    # Get fmt attrib names
+    attribsWithCurls = [awc.group() for awc in re.finditer(reAttrib, newFmtStr)]
+    attribNames = [awc[2:-2] for awc in attribsWithCurls]
+    if len(attribNames) == 0:
+        isId = lambda e: util.schema.isFlagged(e, FLAG_ID)
+        idNodes = util.xml.getAll(schemaTabGroup, isId)
+        idNode = idNodes[0]
+
+        attribNames.append(idNode.tag)
+
+    # Convert attrib names to nodes
+    attribNodes = []
+    for aName in attribNames:
+        getByTag = lambda n: n.tag == aName
+        node = util.data.getProps(schemaTabGroup, keep=getByTag)[0]
+
+        attribNodes.append(node)
+
+    # Get fmt positions
+    fmtPoss = [str(i) for i in range(len(fmtStrs))]
+
+    # Add str tags to the affected attribNodes if they don't exist
+    for aNode in attribNodes:
+        strNodes = aNode.xpath('./str')
+        if len(strNodes) == 0:
+            etree.SubElement(aNode, TAG_STR)
+
+    # Flag affected attribNodes with f="id"
+    for aNode in attribNodes:
+        xml.appendToAttrib(aNode, ATTRIB_F, FLAG_ID)
+
+    # Make and append fmt tags to attribNodes
+    for aNode, fmtStr, fmtPos in zip(attribNodes, fmtStrs, fmtPoss):
+        strNodes = aNode.xpath('./str')
+        strNode = strNodes[0]
+        fmtNode = etree.SubElement(strNode, TAG_FMT); fmtNode.text = fmtStr
+        posNode = etree.SubElement(strNode, TAG_POS); posNode.text = fmtPos
+
+        aNode.append(strNode)
 
 def normaliseSignup(node):
     isSignup = lambda e: getLink(e) == LINK_SIGNUP
@@ -561,18 +645,19 @@ def getEntity(node):
 def hasEntity(node):
     return bool(getEntity(node))
 
-def getNodeAtPath(tree, path):
-    if not path:
+def getNodeAtPath(tree, pathString):
+    if not pathString:
         return None
 
-    nodes = tree.xpath('/module/' + path)
-    if len(nodes) != 1:
-        return None
+    for n in xml.getAll(tree):
+        pathString_ = getPathString(n)
+        if pathString_ == pathString:
+            return n
 
-    return nodes[0]
+    return None
 
 def getLinkedNode(node):
-    return getNodeAtPath(node, getLink(node))
+    return getNodeAtPath(node.getroottree().getroot(), getLink(node))
 
 def getLinkedNodes(node, attribName=None):
     root = node.getroottree().getroot()
@@ -582,7 +667,7 @@ def isValidPath(root, path, pathType):
     if not path:
         return False
 
-    if   pathType == TYPE_GUI_DATA:
+    if   pathType in ('gui', TYPE_GUI_DATA):
         return getXmlType(getNodeAtPath(root, path)) == TYPE_GUI_DATA
     elif pathType in ('tab', TYPE_TAB):
         return getXmlType(getNodeAtPath(root, path)) == TYPE_TAB

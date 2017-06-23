@@ -142,6 +142,7 @@ List    TAB_GROUPS_AS_LIST             = new ArrayList();
 HashSet TAB_GROUPS_AS_HASH_SET         = null;
 List    TABS_AS_LIST                   = new ArrayList();
 HashSet TABS_AS_HASH_SET               = null;
+HashMap ATTRIB_NAMES_NON_STANDARD      = new HashMap();
 
 {{refs-to-types}}
 
@@ -156,6 +157,8 @@ HashSet TABS_AS_HASH_SET               = null;
 {{get-tab-groups}}
 
 {{get-tabs}}
+
+{{attrib-names-non-standard}}
 
 String getType(String ref) {
   String type = REF_TO_TYPE.get(ref);
@@ -366,12 +369,13 @@ String guessArch16nVal(String ref) {
 
 String getAttributeName(String ref) {
   String guiElementRef = getGuiElementRef(ref);
-  if (isNull(guiElementRef)) {
+  if (isNull(guiElementRef))
     return null;
-  }
 
-  String attributeName = guiElementRef.replaceAll("_", " ");
-  return attributeName;
+  if (ATTRIB_NAMES_NON_STANDARD.containsKey(ref))
+    return ATTRIB_NAMES_NON_STANDARD.get(ref);
+
+  return guiElementRef.replaceAll("_", " ");
 }
 
 String getArchEntType(String ref) {
@@ -1453,6 +1457,8 @@ void insertIntoLocalSettings(String ref) {
 }
 
 void insertIntoLocalSettings(String key, String val) {
+  if (val == null) val = "";
+
   String q = "REPLACE INTO localSettings(key, value) VALUES(%s, %s)";
   q = dbReplaceFirst(q, key);
   q = dbReplaceFirst(q, val);
@@ -1667,7 +1673,7 @@ void inheritFieldValue(
  * if `getTabGroupRef(src)` was the previously displayed tab group.
  */
 void inheritFieldValue(String src, String dst, boolean doCheckParent) {
-  inheritFieldValue(src, dst, doCheckParent, false);
+  inheritFieldValue(src, dst, doCheckParent, true);
 }
 
 void inheritFieldValue(String src, String dst) {
@@ -1740,6 +1746,9 @@ void makeVocabs() {
 }
 
 void makeVocab(String ref) {
+  if (!hasMenuType(ref))
+    return;
+
   if (hasVpRef(ref))
     makeVocab(getMakeVocabType(ref), ref, getAttributeName(getVpRef(ref)));
   else
@@ -1764,9 +1773,6 @@ void makeVocab(
     List   vocabExclusions,
     String callbackFunction
 ){
-  if (!hasMenuType(ref))
-    return;
-
   if (
       isNull(type) ||
       isNull(ref) ||

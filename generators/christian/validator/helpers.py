@@ -1,12 +1,9 @@
-from   lxml import etree
 import copy
 import re
 from   util.consts import *
-import generator.module.dataschema
 import util.data
 import util.schema
 import util.xml
-import itertools
 
 def wMsg(notice, nodes=None, expected=None):
     if expected is None: expected = []
@@ -96,6 +93,8 @@ def getAttributes(table, xmlType, rowIndex=1):
                 rowAttribs[i] = 'a valid link to a tab group'
             elif rowAttribs[i] == '$link-tab':
                 rowAttribs[i] = 'a valid link to a tab'
+            elif rowAttribs[i] == '$link-gui':
+                rowAttribs[i] = 'a valid link to a gui/data element'
 
         if rowXmlType == xmlType:
             return rowAttribs
@@ -188,33 +187,18 @@ def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild):
     util.xml.deleteAttribFromTree(elements, RESERVED_IGNORE)
 
 def checkDataSchemaConstraints(node):
-    props = util.data.getProps(node)
-    props = sorted(props, key=util.data.getName)
-    for _, g in itertools.groupby(props, util.data.getName):
-        checkDataElementConstraints(list(g))
+    checkDataSchemaConstraintsForType(node, util.data.getProps)
+    checkDataSchemaConstraintsForType(node, util.data.getArchEnts)
 
-    archEnts = util.data.getArchEnts(node)
-    archEnts = sorted(archEnts, key=util.data.getName)
-    for _, g in itertools.groupby(archEnts, util.data.getName):
-        checkDataElementConstraints(list(g))
+def checkDataSchemaConstraintsForType(node, getNodesFun):
+    homonymousNodes = util.data.getHomonymousNodes(node, getNodesFun)
 
-def checkDataElementConstraints(nodes):
-    # All the data schema elements have the same name
-    assert len(set([util.data.getName(n) for n in nodes])) == 1
-    # All the nodes have the same tag in the data schema
-    assert len(set([util.data.formsProp   (n) for n in nodes])) == 1
-    assert len(set([util.data.formsArchEnt(n) for n in nodes])) == 1
-
-    dataNodes   = [generator.module.dataschema.getDataElement(n) for n in nodes]
-    nodeStrings = [etree.tostring(d, encoding='utf-8') for d in dataNodes]
-
-    # Constraint check happens here. The constraint is that all properties which
-    # have the same attrib name must also have the same representation in the
-    # data schema.
-    if len(set(nodeStrings)) == 1:
-        return # Properties satisfy constraint
-
-    msg  = '%s elements share the name `%s` but have different representations'
-    msg += ' in the data schema'
-    msg %= (util.schema.getXmlType(nodes[0]).capitalize(), nodes[0].tag)
-    eMsg(msg, nodes)
+    for nodeGroup in homonymousNodes:
+        if nodeGroup != []:
+            msg  = '%s elements share the name `%s` but have different'
+            msg += 'representations in the data schema'
+            msg %= (
+                    util.schema.getXmlType(nodeGroup[0]).capitalize(),
+                    nodeGroup[0].tag
+            )
+            eMsg(msg, nodeGroup)

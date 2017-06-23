@@ -7,6 +7,9 @@ import util
 import schema
 import xml
 from   consts import *
+import generator.module.dataschema
+import itertools
+from   lxml import etree
 
 def isDataElement(node):
     if node is None:                        return False
@@ -42,8 +45,10 @@ def getDataElements(node):
 def getArchEnts(node):
     return xml.getAll(node, formsArchEnt)
 
-def getProps(node):
-    return xml.getAll(node, formsProp)
+def getProps(node, keep=None):
+    if keep == None: keep_ = lambda n: formsProp(n)
+    else:            keep_ = lambda n: formsProp(n) and keep(n)
+    return xml.getAll(node, keep_)
 
 def getArchEntName(node, doRecurse=False):
     if node is None:
@@ -55,7 +60,11 @@ def getArchEntName(node, doRecurse=False):
     return ''
 
 def getAttribName(node):
-    if isDataElement(node) and schema.isGuiDataElement(node):
+    attribName = xml.getAttribVal(node, RESERVED_PROP_NAME)
+
+    if attribName:
+        return attribName
+    elif isDataElement(node) and schema.isGuiDataElement(node):
         return node.tag.replace('_', ' ')
     else:
         return ''
@@ -92,18 +101,15 @@ def getRelName(node):
     if not xml.hasAttrib(node, ATTRIB_LC):     return ''
     if schema.getParentTabGroup(node) == None: return ''
 
-    parentNode = schema.getParentTabGroup(node)
-    childNode  = schema.getLinkedNode(node)
-    if schema.getXmlType(childNode) != TYPE_TAB_GROUP:
-        childNode = schema.getParentTabGroup(childNode)
+    nodeParent = schema.getParentTabGroup(node)
+    nodeChild  = schema.getLinkedNode(node)
+    if schema.getXmlType(nodeChild) != TYPE_TAB_GROUP:
+        nodeChild = schema.getParentTabGroup(nodeChild)
 
-    parentName = parentNode.tag
-    parentName = parentName.replace('_', ' ')
+    nameParent = getArchEntName(nodeParent)
+    nameChild  = getArchEntName(nodeChild)
 
-    childName = childNode.tag
-    childName = childName.replace('_', ' ')
-
-    return '%s - %s' % (parentName, childName)
+    return '%s - %s' % (nameParent, nameChild)
 
     # Replace non-<autonum> tags similarly to in (1).
     for tag, replacements in table.REPLACEMENTS_BY_TAG.iteritems():
@@ -176,3 +182,35 @@ def isTopLevelArchEntNode(node, parentNode):
             schema.isTabGroup(node) and \
             isDataElement(node) and \
             not isDataElement(parentNode)
+
+# Returns a list of lists, with homonymous nodes grouped by their names. Nodes
+# are "homonymous" if they share the same name but have different contents.
+def getHomonymousNodes(node, getNodesFun):
+    homonymousNodes = []
+
+    nodes = getNodesFun(node)
+    nodes = sorted(nodes, key=getName)
+    for _, g in itertools.groupby(nodes, getName):
+        groupedNodes = list(g)
+        if isHomonymousNodeGroup(groupedNodes):
+            homonymousNodes.append(groupedNodes)
+
+    return homonymousNodes
+
+def isHomonymousNodeGroup(nodes):
+    # All the data schema elements have the same name
+    assert len(set([util.data.getName(n) for n in nodes])) == 1
+    # All the nodes have the same tag in the data schema
+    assert len(set([util.data.formsProp   (n) for n in nodes])) == 1
+    assert len(set([util.data.formsArchEnt(n) for n in nodes])) == 1
+
+    dataNodes   = [generator.module.dataschema.getDataElement(n) for n in nodes]
+    nodeStrings = [etree.tostring(d, encoding='utf-8') for d in dataNodes]
+
+    # Constraint check happens here. The constraint is that all properties which
+    # have the same attrib name must also have the same representation in the
+    # data schema.
+    return len(set(nodeStrings)) != 1
+
+def getHomonymousProps(node):
+    return getHomonymousNodes(node, getProps)

@@ -33,6 +33,8 @@ f            |                             | autonum, hidden, id, noannotation, 
 l            | $link-all                   |
 ll           | $link-all                   |
 lc           | $link-all                   |
+vp           | $link-gui                   |
+i            | $link-gui                   |
 ec           | $link-tabgroup              |
 t            | audio, button, camera, checkbox, dropdown, file, gpsdiag, group, input, list, map, picture, radio, table, video, viewfiles, web, webview |
 p            |                             |
@@ -49,6 +51,7 @@ module          | 0 <= rels    <= 1     |
 tab group       | 1 <= tab              |
 tab group       | 0 <= desc     <= 1    |
 tab group       | 0 <= search   <= 1    |
+tab group       | 0 <= fmt      <= 1    |
 
 tab             | 0 <= autonum     <= 1 |
 tab             | 0 <= cols             |
@@ -83,6 +86,7 @@ module               | rels        | <rels>
 tab group            | /[^a-z]/    | tab
 tab group            | desc        | <desc>
 tab group            | search      | <search>
+tab group            | fmt         | <fmt>
 
 tab                  | /[^a-z]/    | GUI/data element
 tab                  | author      | <author>

@@ -1,7 +1,7 @@
 from   lxml import etree
 import hashlib
 import re
-import consts
+from consts import *
 
 def parseXml(filename):
     parser = etree.XMLParser(strip_cdata=False)
@@ -34,16 +34,14 @@ def getAttribVal(node, attribName):
     return None
 
 def appendToAttrib(node, attribName, attribVal):
-    oldAttribVal = getAttribVal(node, attribName)
-    if oldAttribVal == None:
-        oldAttribVal = ''
+    oldAttribVal = getAttribVal(node, attribName) or ''
     if not attribVal:
         return
     if attribVal in oldAttribVal.split():
         return
 
-    if oldAttribVal: newAttribVal = oldAttribVal + ' ' + attribVal
-    else:            newAttribVal =                      attribVal
+    if oldAttribVal: newAttribVal = oldAttribVal + SEP_FLAGS + attribVal
+    else:            newAttribVal =                            attribVal
 
     node.attrib[attribName] = newAttribVal
 
