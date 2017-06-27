@@ -425,9 +425,15 @@ String getArchEntTypePascalCased(String ref) {
 /*         first time the tab group is saved as well as subsequent            */
 /*         onSave(String, Boolean) calls.                                     */
 /*                                                                            */
-/* A single call to `bindOnEvents` must occur after all the `addOnEvent` and  */
-/* `delOnEvents` calls. Calling `bindOnEvents` is what actually establishes   */
-/* the bindings once they have been added to the accumulator.                 */
+/* Additionally, the binding accumulator augments the "load" event so that    */
+/* the `statement` in addOnEvent("module", "load", statement) gets executed   */
+/* after the module has finished loading. (That is, when this script has been */
+/* loaded, including the execution of any asynchronous functions.)            */
+/*                                                                            */
+/* Importantly, a single call to `bindOnEvents` must occur after all the      */
+/* `addOnEvent` and `delOnEvents` calls. Calling `bindOnEvents` is what       */
+/* actually establishes the bindings once they have been added to the         */
+/* accumulator.                                                               */
 /******************************************************************************/
 // This counts the number of _a_synchonrous jobs before the module is considered
 // to be loaded.
@@ -1583,21 +1589,29 @@ void persistOverSessions(String ref) {
 /*                                                                            */
 /* Provides an easy way to copy field values, even between vocabs.            */
 /******************************************************************************/
+boolean isSelected(String ref, String vocabName) {
+  String vocabNameActual = getMenuValue(ref);
+
+  if (vocabNameActual == null)
+    return vocabNameActual == vocabName;
+  else
+    return vocabNameActual.equals(vocabName);
+}
+
 boolean setMenuValue(String ref, String vocabName) {
   String attrName = getAttributeName(ref);
   String vocabId = getVocabId(attrName, vocabName);
 
   if (isNull(vocabId))
     return false;
-  else {
-    setFieldValue(ref, vocabId);
-    return true;
-  }
+
+  setFieldValue(ref, vocabId);
+  return isSelected(ref, vocabName);
 }
 
-void copyFieldValue(String src, String dst) {
+boolean copyFieldValue(String src, String dst) {
   Boolean doFindVocabId = true;
-  copyFieldValue(src, dst, doFindVocabId);
+  return copyFieldValue(src, dst, doFindVocabId);
 }
 
 /* `src`           The ref of the source field.
@@ -1612,7 +1626,7 @@ void copyFieldValue(String src, String dst) {
  *                 If `doFindVocabId` is false, the value returned by
  *                 `getFieldValue` is copied, without any database accesses.
  */
-void copyFieldValue(String src, String dst, Boolean doFindVocabId) {
+boolean copyFieldValue(String src, String dst, Boolean doFindVocabId) {
   String vocabIdSrc   = getFieldValue(src);
   String vocabNameSrc = getFieldValue(src, true);
 
@@ -1621,22 +1635,15 @@ void copyFieldValue(String src, String dst, Boolean doFindVocabId) {
 
   if (attrNameSrc.equals(attrNameDst) || !doFindVocabId) {
     setFieldValue(dst, vocabIdSrc);
-    return;
+    return true;
   }
 
-  if (!setMenuValue(dst, vocabNameSrc)) {
-    // Fall back to dumb field copying
-    copyFieldValue(src, dst, false);
-  }
-}
+  if (setMenuValue(dst, vocabNameSrc))
+    return true;
 
-boolean isSelected(String ref, String vocabName) {
-  String vocabNameActual = getMenuValue(ref);
-
-  if (vocabNameActual == null)
-    return vocabNameActual == vocabName;
-  else
-    return vocabNameActual.equals(vocabName);
+  // Fall back to dumb field copying
+  copyFieldValue(src, dst, false);
+  return false;
 }
 
 void clearField(String ref) {
@@ -1647,6 +1654,16 @@ void clearField(String ref) {
   }
 }
 
+/* Copies the value from the field at `src` to the field at `dst` whenever the
+ * a new record containing `dst` is created.
+ *
+ * `doCheckParent` If this is true, the value is only copied when the parent tab
+ *                 group of the tab group referred to by `dst` is equal to the
+ *                 tab group referred to by `src`. This is a way of checking
+ *                 whether the field referred to by `src` has been loaded.
+ * `doFindVocabId` Same as the `doFindVocabId` argument for the `copyFieldValue`
+ *                 function.
+ */
 void inheritFieldValue(
     String src,
     String dst,
