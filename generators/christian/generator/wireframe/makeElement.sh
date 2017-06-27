@@ -150,7 +150,7 @@ case "$3" in
 	cat >> $tmp/drawfile.mvg <<- EOM
 
 		<path d="M 5 5 L $[$width-5] 5 L $[$width-5] 35 L 5 35 Z" fill="lightgray"/>
-		<text x="$[$width/2]" y="24" font-family="Roboto" font-size="9" fill="black" text-anchor="middle"> $2 </text>
+		<text x="$[$width/2]" y="24" font-family="Roboto" font-size="14" fill="black" text-anchor="middle"> $2 </text>
 
 		fill lightgray
 		stroke lightgray

@@ -7,7 +7,7 @@
                 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                 xmlns:fn="http://www.w3.org/2005/xpath-functions"                
                 version="2.0">
-  <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
+  <xsl:output method="text" indent="yes" omit-xml-declaration="yes"/>
 
 
 
@@ -130,6 +130,11 @@
 
 
 </xsl:for-each>
+dot -Tsvg datastruct.gv &gt; wireframe.svg
+#rm *.xml
+#rm *.datastruct.gv
+#rm *.wireframeElements.sh
+
 </xsl:template>
 
 

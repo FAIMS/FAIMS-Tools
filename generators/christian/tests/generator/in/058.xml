@@ -10,6 +10,7 @@
       <List        f="notnull" t="list"><opts><opt>test opt</opt></opts></List>
       <Picture     f="notnull" t="picture"><opts><opt>test opt</opt></opts></Picture>
       <Radio       f="notnull" t="radio"><opts><opt>test opt</opt></opts></Radio>
+      <Camera      f="notnull" t="camera"><opts><opt>test opt</opt></opts></Radio>
     </Tab>
   </Tabgroup>
 </module>

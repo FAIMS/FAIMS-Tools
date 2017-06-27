@@ -1,0 +1,26 @@
+#!/usr/bin/env bsh
+
+assert(boolean condition) {
+  if (condition)
+    return;
+
+  print(
+    "Test failed: " +
+    "Line: " + this.namespace.getInvocationLine() +
+    ": "     + this.namespace.getInvocationText() +
+    ". "     + this.callstack
+  );
+}
+
+String funName() {
+  namespace = this.callstack.get(1);
+  return namespace.getInvocationLine() + ": " + namespace.getInvocationText();
+}
+
+sourceRelative("mock.bsh");
+sourceRelative("../module/ui_logic.bsh");
+try {
+  sourceRelative("tests.bsh");
+} catch (FileNotFoundException e) {
+  print("No tests implemented. Tests should be placed in `tests/tests.bsh`.");
+}

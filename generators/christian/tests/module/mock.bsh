@@ -1,0 +1,337 @@
+// CLASSES
+public interface FetchCallback {
+  void onFetch(Object result);
+}
+
+public interface SaveCallback {
+  public void onSave(String uuid, boolean newRecord);
+  public void onSaveAssociation(String entityId, String relationshpId);
+}
+
+public interface ActionButtonCallback {
+  public String actionOnLabel();
+  public void actionOn();
+}
+
+public interface ToggleActionButtonCallback implements ActionButtonCallback {
+  public boolean isActionOff();
+  public String actionOffLabel();
+  public void actionOff();
+}
+
+public class GPSLocation {
+  public double getLongitude() { return 1.0; }
+  public double getLatitude() { return 1.0; }
+  public long getTimeStamp() { return 1L; }
+  public String toString() { return "string"; }
+}
+
+public class NameValuePair {
+  public NameValuePair(String name, String value) {}
+  public String getName(){ return "name"; }
+  public String getValue(){ return "value"; }
+  public String toString() { return "string"; }
+  public String toJSON(){ return "json"; }
+  public boolean equals(Object o) { return true; }
+}
+
+public class DatabaseUtils {
+  public static String sqlEscapeString(String s) {
+    return "'" + s + "'";
+  }
+}
+
+public class Log {
+  public static e(String s1, String s2) { print(s1 + ": " + s2); }
+  public static d(String s1, String s2) { print(s1 + ": " + s2); }
+  public static w(String s1, String s2) { print(s1 + ": " + s2); }
+}
+
+public abstract class Attribute {
+  public static final String FREETEXT = "freetext";
+  public static final String MEASURE = "measure";
+  public static final String VOCAB = "vocab";
+  public static final String CERTAINTY = "certainty";
+
+  protected String name;
+  protected String text;
+  protected String vocab;
+  protected String certainty;
+  protected String type;
+  protected boolean isDeleted;
+  protected boolean dirty;
+  protected String dirtyReason;
+
+  private boolean file;
+
+  private boolean thumbnail;
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String value) {
+    name = value;
+  }
+
+  public String getText() {
+    return text;
+  }
+
+  public void setText(String value) {
+    text = value;
+  }
+
+  public String getVocab() {
+    return vocab;
+  }
+
+  public void setVocab(String value) {
+    vocab = value;
+  }
+
+  public String getCertainty() {
+    return certainty;
+  }
+
+  public void setCertainty(String value) {
+    certainty = value;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public boolean isDeleted() {
+    return isDeleted;
+  }
+
+  public void setDeleted(boolean isDeleted) {
+    this.isDeleted = isDeleted;
+  }
+
+  public String toString() {
+    return "(" + name + "," + text + "," + vocab + "," + certainty + "," + isDeleted + ")";
+  }
+
+  public void setDirty(boolean value) {
+    this.dirty = value;
+  }
+
+  public boolean isDirty() {
+    return this.dirty;
+  }
+
+  public void setDirtyReason(String value) {
+    this.dirtyReason = value;
+  }
+
+  public String getDirtyReason() {
+    return dirtyReason;
+  }
+
+  public void setIsFile(boolean b) {
+    this.file = b;
+  }
+
+  public boolean isFile() {
+    return file;
+  }
+
+  public void setUseThumbnail(boolean b) {
+    this.thumbnail = b;
+  }
+
+  public boolean useThumbnail() {
+    return thumbnail;
+  }
+
+  public abstract String getValue(String type);
+
+  public abstract String getAnnotation(String type);
+
+  public void blank() {
+    setText(null);
+    setVocab(null);
+    setCertainty(null);
+    setDeleted(false);
+  }
+
+}
+
+
+public class RelationshipAttribute extends Attribute {
+
+  private static final long serialVersionUID = 3049444829813552636L;
+
+  public RelationshipAttribute() {
+  
+  }
+
+  public RelationshipAttribute(String name, String text, String vocab, String certainty) {
+    this(name, text, vocab, certainty, false);
+  }
+
+  public RelationshipAttribute(String name, String text, String vocab, String certainty, boolean isDeleted) {
+    this.name = name;
+    this.text = text;
+    this.vocab = vocab;
+    this.certainty = certainty;
+    this.isDeleted = isDeleted;
+  }
+
+  public String getValue(String type) {
+    if (VOCAB.equals(type)) {
+      return vocab;
+    } else if (CERTAINTY.equals(type)) {
+      return certainty;
+    } else {
+      return text;
+    }
+  }
+
+  public String getAnnotation(String type) {
+    return text;
+  }
+
+}
+
+
+public class EntityAttribute extends RelationshipAttribute {
+
+  private static final long serialVersionUID = 6887790507746782461L;
+
+  private String measure;
+
+  public EntityAttribute() {
+  
+  }
+
+  public EntityAttribute(String name, String text, String measure, String vocab, String certainty) {
+    this(name, text, measure, vocab, certainty, false);
+  }
+
+  public EntityAttribute(String name, String text, String measure, String vocab, String certainty, boolean isDeleted) {
+    super(name, text, vocab, certainty, isDeleted);
+    this.measure = measure;
+  }
+
+  public String getMeasure() {
+    return measure;
+  }
+
+  public void setMeasure(String value) {
+    measure = value;
+  }
+
+  public String toString() {
+    return "(" + name + "," + text + "," + vocab + "," + measure + "," + certainty + "," + isDeleted + ")";
+  }
+
+  public String getValue(String type) {
+    if (MEASURE.equals(type)) {
+      return measure;
+    } else if (VOCAB.equals(type)) {
+      return vocab;
+    } else if (CERTAINTY.equals(type)) {
+      return certainty;
+    } else {
+      return text;
+    }
+  }
+
+  public String getAnnotation(String type) {
+    return text;
+  }
+
+  public void blank() {
+    super.blank();
+    setMeasure(null);
+  }
+}
+
+// POOR MAN'S PACKAGES:
+//  - android.os.Build.MODEL
+android() {
+  os() {
+    Build() {
+      MODEL = "faims-mock-device";
+      return this;
+    }
+
+    Build = Build();
+    return this;
+  }
+
+  os = os();
+  return this;
+}
+android = android();
+
+// FUNCTION DEFINITIONS
+Dialog cleanSyncedFiles() { return null; }
+Object getGPSEstimatedAccuracy() { return null;}
+Object getGPSPosition() { return new GPSLocation();}
+Object getGPSPositionProjected() { return new GPSLocation();}
+String getFieldValue(String s) { return ""; }
+String getModuleId() { return "module-id"; }
+boolean isBluetoothConnected() {return true;}
+boolean isExternalGPSOn() { return true;}
+boolean isInternalGPSOn() { return true;}
+boolean isNull(String s) { return s == null || "".equals(s); }
+void addActionBarItem(String s, ActionButtonCallback c) { if (c != null) c.actionOn(); }
+void addActionBarItem(String s, ToggleActionButtonCallback c) { if (c != null) c.actionOff(); }
+void execute(String s) { eval(s); }
+void fetchAll(String s) { fetchAll(s, null); }
+void fetchAll(String s, FetchCallback c) { if (c != null) c.onFetch(null); }
+void fetchOne(String s) { fetchOne(s, null); }
+void fetchOne(String s, FetchCallback c) { if (c != null) c.onFetch(null); }
+void onEvent(String s1, String s2, String s3) { print(funName()); }
+void onFocus(String s1, String s2, String s3) { print(funName()); }
+void populateCursorList(String s1, String s2, int i) { print(funName()); }
+void populateCheckBoxGroup(String s, Collection c) { print(funName()); }
+void populateDropDown(String s, Collection c, boolean b) { print(funName()); }
+void populateDropDown(String s, Collection c) { print(funName()); }
+void populateHierarchicalDropDown(String s1, String s2) { print(funName()); }
+void populateHierarchicalDropDown(String s1, String s2, boolean b) { print(funName()); }
+void populateHierarchicalPictureGallery(String s1, String s2) { print(funName()); }
+void populateList(String s, Collection c) { print(funName()); }
+void populatePictureGallery(String s, Collection c) { print(funName()); }
+void populateRadioGroup(String s, Collection c) { print(funName()); }
+void populateWebViewHtml(String s1, String s2) { print(funName()); }
+void populateWebView(String s1, String s2) { print(funName()); }
+void setFieldValue(String s1, String s2) { print(funName()); }
+void setFileSyncEnabled(boolean b) { print(funName()); }
+void setSyncDelay(float f) { print(funName()); }
+void setSyncEnabled(boolean b) { print(funName()); }
+void setSyncMaxInterval(float f) { print(funName()); }
+void setSyncMinInterval(float f) { print(funName()); }
+void showToast(String s) { print(funName() + s1); }
+void showWarning(String s1, String s2) { print(funName() + s1 + " | " + s2); }
+void startExternalGPS() { print(funName()); }
+void startInternalGPS() { print(funName()); }
+void stopGPS() { print(funName()); }
+EntityAttribute createEntityAttribute(String name, String text, String vocab, String measure, String certainty){
+  return createEntityAttribute(name, text, vocab, measure, certainty, false);
+}
+EntityAttribute createEntityAttribute(String name, String text, String vocab, String measure, String certainty, boolean isDeleted) {
+  EntityAttribute attribute = new EntityAttribute();
+  attribute.setName(name);
+  attribute.setText(text);
+  attribute.setVocab(vocab);
+  attribute.setMeasure(measure);
+  attribute.setCertainty(certainty);
+  attribute.setDeleted(isDeleted);
+  return attribute;
+}
+String attachFile(String filePath, boolean sync, String dir, String callback) { eval(callback); return "path/to/file"; }
+Dialog showBusy(String s1, String s2) { print(funName()); return null; }
+void saveArchEnt(String s1, String s2, List l1, List l2, SaveCallback c) {
+  print(funName() + "\n        " + s1 + " | " + s2 + " | " + l1 + " | " + l2);
+  if (c != null) c.onSave("uuid", true);
+}
+String getAttachedFilePath(String s) { print(funName()); return ""; }
