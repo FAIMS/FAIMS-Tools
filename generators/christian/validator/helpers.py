@@ -27,11 +27,18 @@ def printNotice(notice, nodes=None, expected=None):
     elif len(nodes) == 0:
         return
     elif len(nodes) == 1:
-        location = 'Occurs at line ' + str(nodes[0].sourceline) + '.  '
+        node = nodes[0]
+        pathString = util.schema.getPathString(node)
+
+        location  = 'Occurs at line ' + str(node.sourceline)
+        location += ' (%s)' % pathString if pathString else ''
+        location += '.  '
     elif len(nodes) >= 2:
         location = 'Occurs at:'
         for node in nodes:
+            pathString = util.schema.getPathString(node)
             location += '\n  - Line ' + str(node.sourceline)
+            location += ' (%s)' % pathString if pathString else ''
 
     if   len(expected) == 0:
         expected = ''
@@ -187,6 +194,7 @@ def checkTagCardinalityConstraints(tree, nodeTypeParent, nodeTypeChild):
     util.xml.deleteAttribFromTree(elements, RESERVED_IGNORE)
 
 def checkDataSchemaConstraints(node):
+    checkDataSchemaConstraintsWarn(node)
     checkDataSchemaConstraintsForType(node, util.data.getProps)
     checkDataSchemaConstraintsForType(node, util.data.getArchEnts)
 
@@ -195,10 +203,19 @@ def checkDataSchemaConstraintsForType(node, getNodesFun):
 
     for nodeGroup in homonymousNodes:
         if nodeGroup != []:
-            msg  = '%s elements share the name `%s` but have different'
+            msg  = '%s elements share the name `%s` but have different '
             msg += 'representations in the data schema'
             msg %= (
                     util.schema.getXmlType(nodeGroup[0]).capitalize(),
                     nodeGroup[0].tag
             )
             eMsg(msg, nodeGroup)
+
+def checkDataSchemaConstraintsWarn(node):
+    wasRenamed = lambda n: util.xml.hasAttrib(n, RESERVED_PROP_NAME)
+    nodes = util.xml.getAll(node, wasRenamed)
+
+    msg  = 'Elements which share the same name but have different '
+    msg += 'representations in the data schema are present.  These will have '
+    msg += 'long-form names when the data schema is produced'
+    wMsg(msg, nodes)

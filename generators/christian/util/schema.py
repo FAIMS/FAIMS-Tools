@@ -19,7 +19,7 @@ import data
 import arch16n
 import itertools
 
-def getPath(node):
+def getPath(node, isInitialCall=True):
     nodeTypes = [
             TYPE_GUI_DATA,
             TYPE_SEARCH,
@@ -31,12 +31,14 @@ def getPath(node):
 
     if node == None:
         return []
+    if isInitialCall and getXmlType(node) not in nodeTypes:
+        return []
     if RESERVED_XML_TYPE not in node.attrib:
-        return getPath(node.getparent()) + []
-    if node.attrib[RESERVED_XML_TYPE] not in nodeTypes:
-        return getPath(node.getparent()) + []
+        return getPath(node.getparent(), False) + []
+    if getXmlType(node) not in nodeTypes:
+        return getPath(node.getparent(), False) + []
     else:
-        return getPath(node.getparent()) + [node.tag]
+        return getPath(node.getparent(), False) + [node.tag]
 
 def getPathString(node, sep='/'):
     return sep.join(getPath(node))
@@ -182,7 +184,7 @@ def hasElementFlaggedWith(tabGroup, flag):
 def hasElementFlaggedWithId(tabGroup):
     return hasElementFlaggedWith(tabGroup, 'id')
 
-def getParent(node, xmlType, parentOrSelf=False):
+def getParent(node, xmlType):
     if node == None:
         return None
 
@@ -191,14 +193,14 @@ def getParent(node, xmlType, parentOrSelf=False):
     if matches: return matches[0]
     else:       return None
 
-def getParentTabGroup(node, parentOrSelf=False):
-    return getParent(node, TYPE_TAB_GROUP, parentOrSelf)
+def getParentTabGroup(node):
+    return getParent(node, TYPE_TAB_GROUP)
 
-def getParentTab(node, parentOrSelf=False):
-    return getParent(node, TYPE_TAB, parentOrSelf)
+def getParentTab(node):
+    return getParent(node, TYPE_TAB)
 
-def getParentGuiDataElement(node, parentOrSelf=False):
-    return getParent(node, TYPE_GUI_DATA, parentOrSelf)
+def getParentGuiDataElement(node):
+    return getParent(node, TYPE_GUI_DATA)
 
 def annotateWithXmlTypes(node):
     if node == []:   return
@@ -269,8 +271,8 @@ def annotateWithXmlTypes(node):
             annotateWithXmlTypes(child)
 
 def normaliseSchema(node):
-    normaliseProps(node)
     normaliseImplied(node)
+    normaliseProps(node)
     normaliseSchemaRec(node)
     normaliseCols(node)
     normaliseMedia(node)
@@ -378,28 +380,43 @@ def normaliseImpliedFmtInTabGroup(schemaTabGroup):
     newFmtStr = schemaTabGroup.xpath('./fmt')
     if len(newFmtStr) == 0:
         return
+    if not newFmtStr[0].text:
+        return
     newFmtStr = newFmtStr[0].text
     newFmtStr = newFmtStr.strip()
 
-    reChunk  = '((?!}}).)+((?!{{).)+'
-    reAttrib = '{{((?!}}).)+}}'
+    reChunk   = '((?!}}).)+((?!{{).)+'
+    reCurlies = '({{((?!}}).)+}})'
+    reAttrib  = '{{(((?!(}})|\s).)+)(((?!}}).)*)}}' # attrib    = group 1,
+                                                    # condition = group 4
 
-    # Chunk fmt string spec
-    chunks = [chunk.group() for chunk in re.finditer(reChunk, newFmtStr)]
+    # Chunk the fmt string. Each chunk corresponds to an old-style format
+    # string, for individual properties
+    split = re.split(reCurlies, newFmtStr)
+    chunks = []
+    while len(split) >= 2:
+        chunk  = split.pop(0)
+        chunk += split.pop(0)
+        split.pop(0)
+
+        chunks.append(chunk)
+    while len(split) > 0:
+        if len(chunks) == 0: chunks     += [split.pop(0)]
+        else:                chunks[-1] +=  split.pop(0)
 
     # Get fmt strings
-    # Replaces "my{{Identifer}}isgreat" with "my$0isgreat" in each chunk
-    fmtStrs = [re.sub(reAttrib, '$0', chunk) for chunk in chunks]
+    # Replaces "my{{Identifer}}isgreat" with "my$0isgreat" in each chunk and
+    # Replaces "my{{Identifer if $0 then "$0" }}isgreat" with "my{{Identifer if
+    # $0 then "$0" }}isgreat"
+    fmtStrs = [re.sub(reAttrib, '{{\\4}}', chunk) for chunk in chunks]
+    fmtStrs = [fmtStr.replace('{{}}', '$0') for fmtStr in fmtStrs]
 
     # Get fmt attrib names
-    attribsWithCurls = [awc.group() for awc in re.finditer(reAttrib, newFmtStr)]
-    attribNames = [awc[2:-2] for awc in attribsWithCurls]
+    attribNames = [awc.group(1) for awc in re.finditer(reAttrib, newFmtStr)]
     if len(attribNames) == 0:
         isId = lambda e: util.schema.isFlagged(e, FLAG_ID)
         idNodes = util.xml.getAll(schemaTabGroup, isId)
-        idNode = idNodes[0]
-
-        attribNames.append(idNode.tag)
+        attribNames = [n.tag for n in idNodes]
 
     # Convert attrib names to nodes
     attribNodes = []
@@ -646,18 +663,16 @@ def hasEntity(node):
     return bool(getEntity(node))
 
 def getNodeAtPath(tree, pathString):
-    if not pathString:
-        return None
+    pathString = pathString.replace('!', '')
 
-    for n in xml.getAll(tree):
-        pathString_ = getPathString(n)
-        if pathString_ == pathString:
-            return n
+    root  = tree.getroottree().getroot()
+    nodes = xml.getAll(root, lambda n: getPathString(n) == pathString)
 
-    return None
+    if len(nodes): return nodes[0]
+    else:          return None
 
 def getLinkedNode(node):
-    return getNodeAtPath(node.getroottree().getroot(), getLink(node))
+    return getNodeAtPath(node, getLink(node))
 
 def getLinkedNodes(node, attribName=None):
     root = node.getroottree().getroot()
@@ -731,8 +746,9 @@ def isTabGroup(node):
 def isTab(node):
     return getXmlType(node) in (TYPE_TAB, TYPE_SEARCH)
 
-def isGuiDataElement(node):
-    return getXmlType(node) in GUI_DATA_UI_TYPES
+def isGuiDataElement(node, includeCols=False):
+    if includeCols: return getXmlType(node) in GUI_DATA_UI_TYPES + [TYPE_COLS]
+    else:           return getXmlType(node) in GUI_DATA_UI_TYPES
 
 def getByType(node, typeFun, keep, descendantOrSelf):
     if keep: everythingToKeep = lambda e : typeFun(e) and keep(e)

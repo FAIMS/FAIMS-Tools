@@ -24,21 +24,16 @@ def isGuiAndData(e):
     return util.gui. isGuiNode    (e) and \
            util.data.isDataElement(e)
 
-def getFunName(node, prefix='', pathLen=3):
-    if type(node) == etree._Element:
-        path = util.schema.getPath(node)
-    elif type(node) == str:
-        path = [node]
-    else:
-        raise TypeError(
-                'Argument `node` has type %s. ' \
-                'Expected `lxml.etree._Element` or `str`.' % type(node)
-        )
-
+def getFunName(node):
     pathSep = ''
-    path = path[:pathLen]
 
-    return prefix + pathSep.join(path).replace('_', '')
+    if type(node) == str: path = node.split('/')
+    else:                 path = util.schema.getPath(node)
+
+    if len(path) == 3:
+        path = path[0], path[-1]
+
+    return pathSep.join(path).replace('_', '')
 
 def getHeader(tree, t):
     header  = '/*\n'
@@ -49,7 +44,10 @@ def getHeader(tree, t):
     return header + t
 
 def getRefsToTypes(tree, t):
-    nodes = util.schema.getGuiDataElements(tree)
+    hasRef = lambda n : bool(util.schema.getPathString(n))
+
+    nodes = util.schema.getGuiDataElements(tree, keep=hasRef) + \
+            util.schema.getTabs(tree, keep=hasRef)
     refs  = [util.schema.getPathString(n) for n in nodes]
     types = [util.schema.getUiType(n)     for n in nodes]
 

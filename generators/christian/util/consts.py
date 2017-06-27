@@ -169,7 +169,6 @@ MEASURE_UI_TYPES = [
 
 GUI_DATA_UI_TYPES = [
         TYPE_AUTHOR,
-        TYPE_COLS,
         TYPE_GPS,
         TYPE_GROUP,
         TYPE_GUI_DATA,
