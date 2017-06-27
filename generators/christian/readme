@@ -1,3 +1,13 @@
+IMPORTANT: This version of the autogen intended to be used with old module.xml
+  files. A module.xml file is considered "old" if the first three lines of its
+  ui_logic.bsh file does not contain something similar to the following:
+
+      /*
+       * GENERATED WITH FAIMS-TOOLS, SHA1: 5db20e...
+       */
+
+
+
 QUICK START
 
   1. Modify the example module.xml. If you see something there which you don't
