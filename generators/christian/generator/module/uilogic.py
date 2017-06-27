@@ -977,14 +977,22 @@ def getIncAutonumMap(tree, t):
     return t.replace(placeholder, replacement)
 
 def markdownToHtml(markdown):
-    p = subprocess.Popen(
-            ['pandoc', '-S', '--normalize'],
-            stdout=subprocess.PIPE,
-            stdin =subprocess.PIPE,
-            stderr=subprocess.STDOUT
-    )
-    stdout, stderr = p.communicate(input=markdown.encode('utf-8'))
-    return stdout.decode('utf-8')
+    try:
+        p = subprocess.Popen(
+                ['pandoc', '-S', '--normalize'],
+                stdout=subprocess.PIPE,
+                stdin =subprocess.PIPE,
+                stderr=subprocess.STDOUT
+        )
+        stdout, stderr = p.communicate(input=markdown.encode('utf-8'))
+        return stdout.decode('utf-8')
+    except:
+        sys.stderr.write(
+                '    Executable `pandoc` could not be found. '
+                'Please install pandoc and try again.'
+                '\n'
+        )
+        exit()
 
 def getPopulationMarkdown(tree, t):
     nodes = util.xml.getAll(tree, lambda n: n.tag == TAG_MARKDOWN)
