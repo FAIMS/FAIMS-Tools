@@ -30,10 +30,12 @@ ATTRIBUTES
                      should be thoroughly tested. (See also, 'QR Codes and
                      Barcodes'.)
   lq                 When used on a clickable UI element, this displays
-                     Android's QR scanner. The scanned QR code is used to either
-                     create a new record or load an existing one. The scanned QR
-                     code appears in the field whose path is the value of the lq
-                     attribute.
+                     Android's QR scanner. The scanned QR code is parsed to find
+                     the first substring which has the format of a UUID. If a
+                     UUID is found in the string, and a record exists on the
+                     device which has that UUID, the record is loaded and
+                     displayed. The user is notified if the record does not
+                     exist.
   p                  In <opt> tags, equivalent to pictureURL attribute, however
                      "files/data/" is prepended.
   suppressWarnings   Prevents warnings from being shown when equal to "true" and
