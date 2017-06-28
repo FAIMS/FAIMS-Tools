@@ -975,6 +975,9 @@ def getIncAutonumMap(tree, t):
     return t.replace(placeholder, replacement)
 
 def markdownToHtml(markdown):
+    markdown = markdown or ''
+    markdown = markdown.strip()
+
     try:
         p = subprocess.Popen(
                 ['pandoc', '-S', '--normalize'],
