@@ -357,7 +357,7 @@ def normaliseMedia(node):
 
 def normaliseImplied(node):
     normaliseImpliedCss(node)
-    normaliseImpliedFlags(node)
+    #normaliseImpliedFlags(node)
     normaliseImpliedFmt(node)
 
 def normaliseImpliedCss(node):
