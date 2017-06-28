@@ -7,6 +7,7 @@ tab group          | f
 tab                | f
 group              | t
 GUI/data element   | b, c, e, ec, f, l, lc, ll, lq, t, s, vp, i
+markdown           |
 cols               | f
 opts               |
 str                |
@@ -59,9 +60,10 @@ tab             | 0 <= gps         <= 1 |
 tab             | 0 <= author      <= 1 |
 tab             | 0 <= timestamp   <= 1 |
 
-GUI/data element | 0 <= desc   <= 1      |
-GUI/data element | 0 <= opts   <= 1      |
-GUI/data element | 0 <= str    <= 1      |
+GUI/data element | 0 <= desc     <= 1      |
+GUI/data element | 0 <= opts     <= 1      |
+GUI/data element | 0 <= str      <= 1      |
+GUI/data element | 0 <= markdown <= 1      |
 
 opts          | 1 <= opt              |
 
@@ -103,6 +105,7 @@ tab                  | timestamp   | <timestamp>
 GUI/data element     | desc        | <desc>
 GUI/data element     | opts        | <opts>
 GUI/data element     | str         | <str>
+GUI/data element     | markdown    | <markdown>
 
 <str>                | app         | <app>
 <str>                | fmt         | <fmt>

@@ -53,8 +53,8 @@ def hasArch16Entry(node):
 
     return True
 
-def getArch16nVal(node):
-    if not hasArch16Entry(node): return ''
+def getArch16nVal(node, force=False):
+    if not force and not hasArch16Entry(node): return ''
 
     return getLabelFromText(node) or getLabelFromTag(node)
 

@@ -251,6 +251,7 @@ def annotateWithXmlTypes(node):
         if   node.tag == TAG_DESC:        type = TYPE_DESC
         elif node.tag == TAG_OPTS:        type = TYPE_OPTS
         elif node.tag == TAG_STR:         type = TYPE_STR
+        elif node.tag == TAG_MARKDOWN:    type = TYPE_MARKDOWN
     elif parentType == TYPE_STR:
         if   node.tag == TAG_APP:         type = TYPE_APP
         elif node.tag == TAG_FMT:         type = TYPE_FMT
@@ -351,11 +352,12 @@ def normaliseMedia(node):
                 { RESERVED_XML_TYPE : TYPE_GUI_DATA },
                 t=UI_TYPE_BUTTON
         )
-        button.text = arch16n.getArch16nVal(media)
+        button.text = arch16n.getArch16nVal(media, force=True)
         xml.insertAfter(media, button)
 
 def normaliseImplied(node):
     normaliseImpliedCss(node)
+    normaliseImpliedFlags(node)
     normaliseImpliedFmt(node)
 
 def normaliseImpliedCss(node):
@@ -369,6 +371,14 @@ def normaliseImpliedCss(node):
 
     for n in notNull:
         xml.appendToAttrib(n, ATTRIB_C, CSS_REQUIRED)
+
+def normaliseImpliedFlags(node):
+    isList = lambda n: getUiType(n) == UI_TYPE_LIST
+    lists = util.xml.getAll(node, isList)
+
+    tabs = [getParentTab(l) for l in lists]
+    for t in tabs:
+        xml.appendToAttrib(t, ATTRIB_F, FLAG_NOSCROLL)
 
 def normaliseImpliedFmt(node):
     # <fmt>{{Attrib_Name}}</fmt> implies <Attrib_Name f="id>...
