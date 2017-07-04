@@ -110,8 +110,11 @@ echo "Generating CSS..."
 python2 -m generator.module.uistyling     "$modulePath/$module" >"$modulePath/module/ui_styling.css"
 echo "Generating validation schema..."
 python2 -m generator.module.validation    "$modulePath/$module" >"$modulePath/module/validation.xml"
-echo "Generating wireframe .gv file..."
-python2 -m generator.wireframe.datastruct "$modulePath/$module" >"$modulePath/wireframe/datastruct.gv"
+if [ "$WIREFRAME" = "true" ]
+then
+    echo "Generating wireframe .gv file..."
+    python2 -m generator.wireframe.datastruct "$modulePath/$module" >"$modulePath/wireframe/datastruct.gv"
+fi
 
 ################################## WIREFRAME ###################################
 cd - >/dev/null
