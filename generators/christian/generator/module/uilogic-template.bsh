@@ -1154,9 +1154,12 @@ void enqueueTestFiles(String cb) {
 void enqueueTestFiles(int numFiles, String cb) {
   if (isNull(PERF_TEST_IMG)) {
     String head; String body;
-    head  = "Could Not Enqueue Test Files";
+    head  = "Record Creation Aborted";
     body  = "The master file from which test files are enqueued could not be ";
-    body += "found on disk.";
+    body += "found on disk. Record creation cannot take place unless this file";
+    body += " is present. Please ensure that your device is connected to the ";
+    body += "internet, re-load the module, and try to run a create dummy ";
+    body += "records again.";
     showWarning(head, body);
     return;
   }
@@ -1199,7 +1202,7 @@ PerfImageDownloader() {
     String filStr = "/sdcard/faims/modules/" + getModuleId() +
         "/files/app/test.jpg";
     String urlStr = "https://raw.githubusercontent.com/FAIMS/FAIMS-Tools/" +
-        "autogen-py/test-images/construction-2894x1924.jpg";
+        "master/test-images/construction-2894x1924.jpg";
 
     if (detectFile(filStr))
       return;
