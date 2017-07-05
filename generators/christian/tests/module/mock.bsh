@@ -254,23 +254,48 @@ public class EntityAttribute extends RelationshipAttribute {
   }
 }
 
-// POOR MAN'S PACKAGES:
-//  - android.os.Build.MODEL
-android() {
-  os() {
-    Build() {
-      MODEL = "faims-mock-device";
-      return this;
-    }
+public class GeometryStyle {
+}
 
-    Build = Build();
-    return this;
+public class GeometryTextStyle {
+}
+
+public class Color {
+  static int BLACK       = -16777216;
+  static int BLUE        = -16776961;
+  static int CYAN        = -16711681;
+  static int DKGRAY      = -12303292;
+  static int GRAY        = -7829368;
+  static int GREEN       = -16711936;
+  static int LTGRAY      = -3355444;
+  static int MAGENTA     = -65281;
+  static int RED         = -65536;
+  static int TRANSPARENT = 0;
+  static int WHITE       = -1;
+  static int YELLOW      = -256;
+
+  public static int parseColor(String s) {
+    return 0;
+  }
+}
+
+public class Typeface {
+  static Typeface SANS_SERIF = null;
+}
+
+public class android {
+  public class graphics {
+    public class Typeface {
+      static Typeface SANS_SERIF = null;
+    }
   }
 
-  os = os();
-  return this;
+  public class os {
+    public class Build {
+      static String MODEL = "faims-mock-device";
+    }
+  }
 }
-android = android();
 
 // FUNCTION DEFINITIONS
 Dialog cleanSyncedFiles() { return null; }
@@ -312,9 +337,14 @@ void setSyncMaxInterval(float f) { print(funName()); }
 void setSyncMinInterval(float f) { print(funName()); }
 void showToast(String s) { print(funName() + s1); }
 void showWarning(String s1, String s2) { print(funName() + s1 + " | " + s2); }
+void showDatabaseLayer(String ref, String layerName, boolean isEntity, String queryName, String querySql,GeometryStyle pointStyle, GeometryStyle lineStyle, GeometryStyle polygonStyle, GeometryTextStyle textStyle) { print(funName()); }
 void startExternalGPS() { print(funName()); }
 void startInternalGPS() { print(funName()); }
 void stopGPS() { print(funName()); }
+GeometryStyle createLineStyle(int minZoom, int color, float width, float pickWidth, GeometryStyle pointStyle) { return new GeometryStyle(); }
+GeometryStyle createPointStyle(int minZoom, int color, float size, float pickSize) { return new GeometryStyle(); }
+GeometryStyle createPolygonStyle(int minZoom, int color, GeometryStyle lineStyle) { return new GeometryStyle(); }
+GeometryTextStyle createTextStyle(int minZoom, int color, int size, android.graphics.Typeface font) { return new GeometryTextStyle(); }
 EntityAttribute createEntityAttribute(String name, String text, String vocab, String measure, String certainty){
   return createEntityAttribute(name, text, vocab, measure, certainty, false);
 }
