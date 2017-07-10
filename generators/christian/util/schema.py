@@ -184,23 +184,26 @@ def hasElementFlaggedWith(tabGroup, flag):
 def hasElementFlaggedWithId(tabGroup):
     return hasElementFlaggedWith(tabGroup, 'id')
 
-def getParent(node, xmlType):
+def getParent(node, xmlType, orSelf=False):
     if node == None:
         return None
 
-    exp = './ancestor::*[@%s="%s"]' % (RESERVED_XML_TYPE, xmlType)
+    if orSelf: axis = 'ancestor-or-self'
+    else:      axis = 'ancestor'
+    exp = './%s::*[@%s="%s"]' % (axis, RESERVED_XML_TYPE, xmlType)
+
     matches = node.xpath(exp)
     if matches: return matches[0]
     else:       return None
 
-def getParentTabGroup(node):
-    return getParent(node, TYPE_TAB_GROUP)
+def getParentTabGroup(node, orSelf=False):
+    return getParent(node, TYPE_TAB_GROUP, orSelf)
 
-def getParentTab(node):
-    return getParent(node, TYPE_TAB)
+def getParentTab(node, orSelf=False):
+    return getParent(node, TYPE_TAB, orSelf)
 
-def getParentGuiDataElement(node):
-    return getParent(node, TYPE_GUI_DATA)
+def getParentGuiDataElement(node, orSelf=False):
+    return getParent(node, TYPE_GUI_DATA, orSelf)
 
 def annotateWithXmlTypes(node):
     if node == []:   return

@@ -7,6 +7,7 @@ from   util.consts import *
 import util.data
 import util.schema
 import util.xml
+import itertools
 
 ################################################################################
 #                                  PARSE XML                                   #
@@ -451,3 +452,35 @@ matches = filter(cond, matches)
 matches.sort(key=lambda e: e.sourceline)
 
 helpers.wMsg(msg, matches)
+
+################################################################################
+
+msg  = 'Elements having certain types (i.e. %s) may render incorrectly unless '
+msg += 'their parent tab group is flagged with `f="noscroll"`'
+msg %= ', '.join(NO_SCROLL_UI_TYPES)
+
+cond = lambda e: util.schema.getUiType(e) in NO_SCROLL_UI_TYPES and \
+        not util.schema.isFlagged(util.schema.getParentTab(e), FLAG_NOSCROLL)
+matches = util.xml.getAll(tree, cond)
+helpers.wMsg(msg, matches)
+
+################################################################################
+
+msg  = 'The `ll` attribute might be more appropriate than `l` for one or more '
+msg += 'elements'
+
+# By the end of this, `linkerNodes` should contain the elements that:
+#   1) Share a tab group with an element that has f="user"; and
+#   2) Link to a tab group other than that mentioned in 1).
+userNodes = util.xml.getAll(tree, lambda e: util.schema.isFlagged(e, FLAG_USER))
+parentTabGroups = [util.schema.getParentTabGroup(n) for n in userNodes]
+
+cond = lambda n: util.schema.getParentTabGroup(
+                util.schema.getLinkedNode(n), True
+        ) not in (None, util.schema.getParentTabGroup(n))
+linkerNodes = [util.xml.getAll(n, util.schema.hasLink) for n in parentTabGroups]
+linkerNodes = itertools.chain.from_iterable(linkerNodes) # Flatten
+linkerNodes = filter(lambda n: not util.xml.hasAttrib(n, ATTRIB_LL), linkerNodes)
+linkerNodes = filter(cond, linkerNodes)
+
+helpers.wMsg(msg, linkerNodes)
