@@ -114,6 +114,7 @@ def disallowedAttribVals(tree, m, ATTRIB_VALS):
         if attrib not in m.attrib: # Set intersection of attrib and m.attrib
             continue
 
+        # TODO: This code is horrible
         if oneOf:
             if '$link' in oneOf:
                 link = m.attrib[attrib]
@@ -124,9 +125,17 @@ def disallowedAttribVals(tree, m, ATTRIB_VALS):
                 if m.attrib[attrib] not in oneOf:
                     disallowed.append((attrib, m.attrib[attrib], m))
         if manyOf:
-            for flag in m.attrib[attrib].split():
-                if flag not in manyOf:
-                    disallowed.append((attrib, flag,             m))
+            if '$link' in manyOf:
+                links = m.attrib[attrib].split()
+                linkType = manyOf[6:] # 'all', 'tab', or 'tabgroup'
+                for link in links:
+                    if not util.schema.isValidPath(tree, link, linkType):
+                        disallowed.append((attrib, m.attrib[attrib], m))
+            else:
+                for flag in m.attrib[attrib].split():
+                    if flag not in manyOf:
+                        disallowed.append((attrib, flag,             m))
+
     return disallowed
 
 def satisfiesTypeCardinalityConstraint(parent, constraint, children='direct'):

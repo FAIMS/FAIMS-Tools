@@ -35,7 +35,7 @@ l            | $link-all                   |
 ll           | $link-all                   |
 lc           | $link-all                   |
 vp           | $link-gui                   |
-i            | $link-gui                   |
+i            |                             | $link-gui
 ec           | $link-tabgroup              |
 t            | audio, button, camera, checkbox, dropdown, file, gpsdiag, group, input, list, map, picture, radio, table, video, viewfiles, web, webview |
 p            |                             |
