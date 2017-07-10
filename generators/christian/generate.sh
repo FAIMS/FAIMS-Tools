@@ -89,9 +89,12 @@ mkdir -p "$modulePath/module"
 mkdir -p "$modulePath/wireframe"
 mkdir -p "$modulePath/tests"
 
-cp "$thisScriptPath/generator/wireframe/makeElement.sh"          "$modulePath/wireframe"
-cp "$thisScriptPath/generator/wireframe/arch16nForWireframe.awk" "$modulePath/wireframe"
-cp "$thisScriptPath/generator/wireframe/wireframeElements.xsl"   "$modulePath/wireframe"
+if [ "$WIREFRAME" != "true" ]
+then
+    cp "$thisScriptPath/generator/wireframe/makeElement.sh"          "$modulePath/wireframe"
+    cp "$thisScriptPath/generator/wireframe/arch16nForWireframe.awk" "$modulePath/wireframe"
+    cp "$thisScriptPath/generator/wireframe/wireframeElements.xsl"   "$modulePath/wireframe"
+fi
 cp "$thisScriptPath/tests/module/mock.bsh"                       "$modulePath/tests"
 cp "$thisScriptPath/tests/module/test.bsh"                       "$modulePath/tests"
 
