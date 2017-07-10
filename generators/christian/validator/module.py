@@ -151,16 +151,6 @@ for d in disallowed:
         msg %= (name, typeParent, min, max, nounPhrase, typeChild)
     helpers.eMsg(msg, [node])
 
-exp  = '//*[@%s="%s" and not(@t)]'
-exp %= (RESERVED_XML_TYPE, TYPE_GUI_DATA)
-matches = tree.xpath(exp)
-for m in matches:
-    msg  = 'No value for the attribute t of the element `%s` is present.  '
-    msg += 'Assuming a value of `%s`'
-    msg %= (m.tag, util.schema.getUiType(m))
-
-    helpers.wMsg(msg, [m])
-
 ################ VALIDATE CARDINALITIES FOR COMPOSITE ELEMENTS #################
 
 util.schema.normaliseSchema(tree)
