@@ -32,12 +32,12 @@ escape_sed() {
         -e 's/\&/\\\&/g'
 }
 
-cleanUp() {
+clean_up() {
     mv    "$modulePath/.$module.original" "$modulePath/$module"
     rm -f "$modulePath/$module.sed"
     exit
 }
-trap cleanUp SIGHUP SIGINT SIGTERM
+trap clean_up SIGHUP SIGINT SIGTERM
 
 if [ -f ".$module.original" ]
 then
@@ -80,7 +80,7 @@ if [ ! -z "$cmd" ]
 then
     echo "Running pre-processing command:"
     echo "  $cmd"
-    eval $cmd
+    eval "$cmd"
 fi
 cd - >/dev/null
 
@@ -142,8 +142,8 @@ if [ ! -z "$cmd" ]
 then
     echo "Running post-processing command:"
     echo "  $cmd"
-    eval $cmd
+    eval "$cmd"
 fi
 cd - >/dev/null
 
-cleanUp
+clean_up
