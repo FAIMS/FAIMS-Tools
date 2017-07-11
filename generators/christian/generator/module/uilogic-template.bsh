@@ -358,13 +358,20 @@ String getArch16nKey(String ref) {
 }
 
 String guessArch16nVal(String ref) {
-  String arch16nKey = getArch16nKey(ref);
+  return guessArch16nValFromRef(ref);
+}
 
-  if (isNull(arch16nKey)) return "";
-  arch16nKey = arch16nKey.replaceAll("_", " ");
-  arch16nKey = arch16nKey.replaceAll("^\\{", "");
-  arch16nKey = arch16nKey.replaceAll("\\}$", "");
-  return arch16nKey;
+String guessArch16nValFromRef(String ref) {
+  String arch16nKey = getArch16nKey(ref);
+  return guessArch16nValFromKey(arch16nKey);
+}
+
+String guessArch16nValFromKey(String key) {
+  if (isNull(key)) return "";
+  key = key.replaceAll("_", " ");
+  key = key.replaceAll("^\\{", "");
+  key = key.replaceAll("\\}$", "");
+  return key;
 }
 
 String getAttributeName(String ref) {
