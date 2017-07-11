@@ -4,18 +4,19 @@ from   util.consts import *
 import util.data
 import util.schema
 import util.xml
+import validator
 
 def wMsg(notice, nodes=None, expected=None):
     if expected is None: expected = []
 
     notice = 'WARNING: ' + notice
-    printNotice(notice, nodes, expected)
+    if printNotice(notice, nodes, expected): validator.NUM_W += 1
 
 def eMsg(notice, nodes=None, expected=None):
     if expected is None: expected = []
 
     notice = 'ERROR:   ' + notice
-    printNotice(notice, nodes, expected)
+    if printNotice(notice, nodes, expected): validator.NUM_E += 1
 
 def printNotice(notice, nodes=None, expected=None):
     if expected is None: expected = []
@@ -25,7 +26,7 @@ def printNotice(notice, nodes=None, expected=None):
     if   nodes      == None:
         location = ''
     elif len(nodes) == 0:
-        return
+        return False
     elif len(nodes) == 1:
         node = nodes[0]
         pathString = util.schema.getPathString(node)
@@ -52,6 +53,7 @@ def printNotice(notice, nodes=None, expected=None):
 
     print notice + expected + location
     print
+    return True
 
 def getExpectedTypes(table, node, reserved=False):
     attribType = '__RESERVED_XML_TYPE__'

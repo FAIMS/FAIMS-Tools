@@ -8,6 +8,7 @@ import util.data
 import util.schema
 import util.xml
 import itertools
+import validator
 
 ################################################################################
 #                                  PARSE XML                                   #
@@ -15,7 +16,7 @@ import itertools
 print 'Parsing XML...'
 filenameModule = sys.argv[1]
 tree = util.xml.parseXml(filenameModule)
-print 'Done!'
+print 'Parsing XML completed'
 print
 
 util.schema.normaliseXml(tree)
@@ -24,8 +25,7 @@ util.schema.normaliseXml(tree)
 #                               VALIDATE SCHEMA                                #
 ################################################################################
 print 'Validating schema...'
-countWar = 0
-countErr = 0
+print
 
 ######################### FLAG NODES WITH THEIR TYPES ##########################
 util.schema.annotateWithXmlTypes(tree)
@@ -484,3 +484,10 @@ linkerNodes = filter(lambda n: not util.xml.hasAttrib(n, ATTRIB_LL), linkerNodes
 linkerNodes = filter(cond, linkerNodes)
 
 helpers.wMsg(msg, linkerNodes)
+
+################################################################################
+
+print 'Validation completed with %s errors and %s warnings.' % (
+        validator.NUM_E,
+        validator.NUM_W
+)
