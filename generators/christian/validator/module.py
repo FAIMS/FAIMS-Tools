@@ -487,6 +487,26 @@ helpers.wMsg(msg, linkerNodes)
 
 ################################################################################
 
+msg  = 'The `makeVocab` function is being called in <logic>.  Consider using'
+msg += ' the `vp` attribute instead.  If this cannot be done, ensure that '
+msg += 'handwritten calls to `makeVocab` occur upon module load by using '
+msg += '`addOnEvent("module", "load", ...)`'
+
+logicText = util.schema.getLogic(tree)
+if 'makeVocab' in logicText:
+    helpers.wMsg(msg)
+
+################################################################################
+
+msg  = 'The `createdat` column is being used in <logic>.  It might be more '
+msg += 'appropriate to write `parentchild.createdat` instead'
+
+logicText = util.schema.getLogic(tree)
+if ' createdat' in logicText:
+    helpers.wMsg(msg)
+
+################################################################################
+
 print 'Validation completed with %s errors and %s warnings.' % (
         validator.NUM_E,
         validator.NUM_W
