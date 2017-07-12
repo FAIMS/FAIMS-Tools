@@ -456,7 +456,7 @@ helpers.wMsg(msg, matches)
 ################################################################################
 
 msg  = 'Elements having certain types (i.e. %s) may render incorrectly unless '
-msg += 'their parent tab group is flagged with `f="noscroll"`'
+msg += 'their parent tab is flagged with `f="noscroll"`'
 msg %= ', '.join(NO_SCROLL_UI_TYPES)
 
 cond = lambda e: util.schema.getUiType(e) in NO_SCROLL_UI_TYPES and \
