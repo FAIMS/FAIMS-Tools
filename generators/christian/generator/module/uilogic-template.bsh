@@ -1759,6 +1759,25 @@ for (entry : REF_TO_TYPE.entrySet()) {
 /******************************************************************************/
 /*                              MENU POPULATION                               */
 /******************************************************************************/
+/* Deprecated: Fetches the contents of a specifed vocabulary and stores it in
+ * the given list.
+ */
+void fetchVocab(String vocabName, List storageList) {
+  fetchVocab(vocabName, storageList, null);
+}
+
+void fetchVocab(String vocabName, List storageList, String callbackFunction) {
+  fetchAll("select vocabid, vocabname from vocabulary left join attributekey using (attributeid) where attributename = '" + vocabName + "';", new FetchCallback() {
+    onFetch(result) {
+      storageList.addAll(result);
+      Log.d("fetchVocab()", "Fetched vocabulary \"" + vocabname + "\" contents: " + result.toString());
+      if (callbackFunction != null && !isNull(callbackFunction)) {
+        execute(callbackFunction);
+      }
+    }
+  });
+}
+
 /** Wrapper for to make a vocab without an exlusion list **/
 String getMakeVocabType(String ref) {
   if (isHier(ref)) return "hierarchical" + getType(ref);
