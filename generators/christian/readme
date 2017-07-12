@@ -66,6 +66,7 @@ FLAGS
 
   autonum         For use with <autonum> tag. (See 'Autonumbering'.)
   hidden          Equivalent to faims_hidden="true".
+  htmldesc        Equivalent to faims_html_description="true"
   id              Equivalent to isIdentifier="true".
   noannotation    Equivalent to faims_annotation="false".
   nocertainty     Equivalent to faims_certainty="false".

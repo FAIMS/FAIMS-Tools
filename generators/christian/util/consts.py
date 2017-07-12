@@ -49,6 +49,7 @@ CSS = [
 
 FLAG_AUTONUM      = 'autonum'
 FLAG_HIDDEN       = 'hidden'
+FLAG_HTMLDESC     = 'htmldesc'
 FLAG_ID           = 'id'
 FLAG_NOANNOTATION = 'noannotation'
 FLAG_NOCERTAINTY  = 'nocertainty'

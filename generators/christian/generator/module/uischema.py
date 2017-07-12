@@ -204,17 +204,19 @@ def getBodyLabelled(node, name, **kwargs):
     readOnly   = util.schema.isFlagged(node, FLAG_READONLY)
     hidden     = util.schema.isFlagged(node, FLAG_HIDDEN)
     noScroll   = util.schema.isFlagged(node, FLAG_NOSCROLL)
+    htmlDesc   = util.schema.isFlagged(node, FLAG_HTMLDESC)
 
     labelled = Element(name, **kwargs)
     labelled.append(getBodyLabel(node, isBlank))
 
-    if attribName: labelled.attrib['faims_attribute_name'] = attribName
-    if attribType: labelled.attrib['faims_attribute_type'] = attribType
-    if ref:        labelled.attrib['ref']                  = ref
-    if styleClass: labelled.attrib['faims_style_class']    = styleClass
-    if readOnly:   labelled.attrib['faims_read_only']      = 'true'
-    if hidden:     labelled.attrib['faims_hidden']         = 'true'
-    if noScroll:   labelled.attrib['faims_scrollable']     = 'false'
+    if attribName: labelled.attrib['faims_attribute_name']   = attribName
+    if attribType: labelled.attrib['faims_attribute_type']   = attribType
+    if ref:        labelled.attrib['ref']                    = ref
+    if styleClass: labelled.attrib['faims_style_class']      = styleClass
+    if readOnly:   labelled.attrib['faims_read_only']        = 'true'
+    if hidden:     labelled.attrib['faims_hidden']           = 'true'
+    if noScroll:   labelled.attrib['faims_scrollable']       = 'false'
+    if htmlDesc:   labelled.attrib['faims_html_description'] = 'true'
 
     return labelled
 
