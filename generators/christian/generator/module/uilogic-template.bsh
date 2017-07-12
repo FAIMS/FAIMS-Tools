@@ -1769,6 +1769,9 @@ void fetchVocab(String vocabName, List storageList) {
 void fetchVocab(String vocabName, List storageList, String callbackFunction) {
   fetchAll("select vocabid, vocabname from vocabulary left join attributekey using (attributeid) where attributename = '" + vocabName + "';", new FetchCallback() {
     onFetch(result) {
+      if (isNull(result))
+        result = new ArrayList();
+
       storageList.addAll(result);
       Log.d("fetchVocab()", "Fetched vocabulary \"" + vocabname + "\" contents: " + result.toString());
       if (callbackFunction != null && !isNull(callbackFunction)) {
