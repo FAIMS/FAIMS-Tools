@@ -47,6 +47,11 @@ ATTRIBUTES
   t                  Type of GUI element (See 'Types'). If this attribute is
                      omitted, FAIMS Tools will attempt to infer it from the
                      element's content. (See 'Type Guessing'.)
+  test_mode          When this is equal to "true" and present on the <module>
+                     tag, the module will be compiled with performance testing
+                     enabled. Performance testing mode profiles queries and adds
+                     the ability to generate records en masse from the module's
+                     login tab group.
   vp                 Vocabulary population. Populates the field having the vp
                      attribute with the vocab of the field whose path is the
                      value of the vp attribute.
