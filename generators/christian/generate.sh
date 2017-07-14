@@ -119,25 +119,26 @@ then
     echo "Generating wireframe .gv file..."
     python2 -m generator.wireframe.datastruct "$modulePath/$module" >"$modulePath/wireframe/datastruct.gv"
 fi
+cd - >/dev/null
 
 ################################## WIREFRAME ###################################
-cd - >/dev/null
-cd "$modulePath" >/dev/null
-gawk    -f "$modulePath/wireframe/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
-$proc -xsl:"$modulePath/wireframe/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
-
-cd - >/dev/null
-cd "$modulePath/wireframe/" >/dev/null
-chmod +x wireframeElements.sh
 if [ "$WIREFRAME" = "true" ]
 then
+  cd "$modulePath" >/dev/null
+
+  gawk    -f "$modulePath/wireframe/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
+  $proc -xsl:"$modulePath/wireframe/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
+
+  cd - >/dev/null
+  cd "$modulePath/wireframe/" >/dev/null
+  chmod +x wireframeElements.sh
     echo "Generating wireframe .pdf file..."
     ./wireframeElements.sh >/dev/null
     cairosvg wireframe.svg -d 70 -f pdf -o wireframe.pdf
     find . ! -name "wireframe.pdf" -type f -exec rm -f {} +
-fi
 
-cd - >/dev/null
+  cd - >/dev/null
+fi
 
 ####################### HANDLE POST-PROCESSING DIRECTIVE #######################
 cd "$modulePath" >/dev/null
