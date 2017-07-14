@@ -617,6 +617,7 @@ void makeLocalId(){
       "    id              INTEGER PRIMARY KEY," +
       "    deviceModel     TEXT," +
       "    sessStartMs     INTEGER," +
+      "    parentNameSpace TEXT," +
       "    srcLine         TEXT," +
       "    query           TEXT," +
       "    queryStartMs    INTEGER," +
@@ -871,17 +872,19 @@ TimedFetchCallback(String query, FetchCallback cb, int callerIdx) {
   }
 
   void updatePerfLog() {
-    String deviceModel  = android.os.Build.MODEL;
-    String sessStartMs  = SESS_START_TIME + "";
-    String srcLine      = super.cs_.get(super.callerIdx).getInvocationLine()+"";
-    String query        = super.query;
-    String queryStartMs = super.startTime + "";
-    String queryStopMs  = super.stopTime + "";
+    String deviceModel     = android.os.Build.MODEL;
+    String sessStartMs     = SESS_START_TIME + "";
+    String parentNameSpace = cs_.get(callerIdx + 1).getName() + "";
+    String srcLine         = cs_.get(callerIdx + 0).getInvocationLine() + "";
+    String query           = query;
+    String queryStartMs    = startTime + "";
+    String queryStopMs     = stopTime + "";
 
     String updateQuery = "";
     updateQuery += " INSERT INTO perflog (";
     updateQuery += "             deviceModel,";
     updateQuery += "             sessStartMs,";
+    updateQuery += "             parentNameSpace,";
     updateQuery += "             srcLine,";
     updateQuery += "             query,";
     updateQuery += "             queryStartMs,";
@@ -890,7 +893,7 @@ TimedFetchCallback(String query, FetchCallback cb, int callerIdx) {
     updateQuery += "             numAentvalue,";
     updateQuery += "             numRelationship,";
     updateQuery += "             numAentreln";
-    updateQuery += " )    SELECT %s, %s, %s, %s, %s, %s, a, av, r, ar";
+    updateQuery += " )    SELECT %s, %s, %s, %s, %s, %s, %s, a, av, r, ar";
     updateQuery += "        FROM";
     updateQuery += "             (SELECT COUNT(*) AS a  FROM archentity  ) a,";
     updateQuery += "             (SELECT COUNT(*) AS av FROM aentvalue   ) av,";
@@ -899,6 +902,7 @@ TimedFetchCallback(String query, FetchCallback cb, int callerIdx) {
 
     updateQuery = dbReplaceFirst(updateQuery, deviceModel);
     updateQuery = dbReplaceFirst(updateQuery, sessStartMs);
+    updateQuery = dbReplaceFirst(updateQuery, parentNameSpace);
     updateQuery = dbReplaceFirst(updateQuery, srcLine);
     updateQuery = dbReplaceFirst(updateQuery, query);
     updateQuery = dbReplaceFirst(updateQuery, queryStartMs);
