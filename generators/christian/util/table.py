@@ -151,29 +151,6 @@ REPLACEMENTS_BY_T_ATTRIB = {
         'video'  : '<__REPLACE__        t="dropdown"/>\
                     <Button___REPLACE__ t="button"/>',
 }
-REPLACEMENTS_BY_TAG = {
-        'author'    : '<Author t="input" f="readonly nodata"/>',
-        'autonum'   : '<Next___REPLACE__ t="input" b="decimal"\
-                                       f="readonly notnull"/>',
-        'gps'       : '<Colgroup_GPS t="group"/>              \
-                       <Latitude     t="input" f="readonly"/> \
-                       <Longitude    t="input" f="readonly"/> \
-                       <Northing     t="input" f="readonly"/> \
-                       <Easting      t="input" f="readonly"/>',
-        'search'    : '<Search f="readonly nodata">           \
-                         <Colgroup_0 t="group">               \
-                           <Col_0    t="group" s="even">      \
-                             <Search_Term t="input"/>         \
-                           </Col_0>                           \
-                           <Col_1    t="group" s="large">     \
-                             <Search_Button t="button"/>      \
-                           </Col_1>                           \
-                         </Colgroup_0>                        \
-                         <Entity_Types t="input"/>            \
-                         <Entity_List t="list"/>              \
-                       </Search>',
-        'timestamp' : '<Timestamp t="input" f="readonly nodata"/>'
-}
 
 ARCH16N = '''
 A_next_ID_has_not_been_entered_please_provide_one=A next ID has not been entered. Please provide one.

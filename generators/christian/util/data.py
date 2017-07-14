@@ -111,15 +111,6 @@ def getRelName(node):
 
     return '%s - %s' % (nameParent, nameChild)
 
-    # Replace non-<autonum> tags similarly to in (1).
-    for tag, replacements in table.REPLACEMENTS_BY_TAG.iteritems():
-        exp = '//%s[@%s]' % (tag, consts.RESERVED_XML_TYPE)
-        matches = tree.xpath(exp)
-        for m in matches:
-            replaceElement(m, replacements)
-
-    schema.annotateWithXmlTypes(tree)
-
 # Gets the relationship name implied by a node having an ec attribute
 def getRelNameEntityList(node):
     ecVal = xml.getAttribVal(node, ATTRIB_EC)
