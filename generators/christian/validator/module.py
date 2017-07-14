@@ -507,7 +507,7 @@ if ' createdat' in logicText:
 
 ################################################################################
 
-print 'Validation completed with %s errors and %s warnings.' % (
+print 'Validation completed with %s error(s) and %s warning(s).' % (
         validator.NUM_E,
         validator.NUM_W
 )
