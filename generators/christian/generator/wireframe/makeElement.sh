@@ -300,13 +300,6 @@ text 15,110 "List"
 
 		<rect x="5" y="5" width="190" height="255" style="fill:gray;stroke-width:1;stroke:black"/>
 		<text x="100" y="100" anchor="middle" font-family="Roboto" font-size="14" fill="black" text-anchor="middle"> Map Page </text>
-		<rect x="5" y="265" width="61" height="30" style="fill:lightgray;stroke-width:0;stroke:black"/>
-		<rect x="70" y="265" width="60" height="30" style="fill:lightgray;stroke-width:0;stroke:black"/>
-		<rect x="134" y="265" width="61" height="30" style="fill:lightgray;stroke-width:0;stroke:black"/>
-
-		<text x="35" y="284" anchor="middle" font-family="Roboto" font-size="10" fill="black" text-anchor="middle"> Centre Me </text>
-		<text x="101" y="284" anchor="middle" font-family="Roboto" font-size="10" fill="black" text-anchor="middle"> Save Map Set </text>
-		<text x="165" y="284" anchor="middle" font-family="Roboto" font-size="10" fill="black" text-anchor="middle"> User Defined </text>
 
 		image src-over 0,0 400, 382 "mapSource.png"
 
@@ -319,22 +312,13 @@ text 15,110 "List"
 
 		fill black
 
-		font-size 12
-		stroke-width 0
-		stroke-opacity 0
-		text 35,402 "Centre Me"
-
-		text 160,402 "Save Map Set"
-
-		text 290,402 "User Specified"
-
 	EOM
 
 	label=false
 	normalFlags=false
 
 
-	height=300
+	height=260
 
 	;;
 

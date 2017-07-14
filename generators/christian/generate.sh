@@ -90,7 +90,7 @@ mkdir -p "$modulePath/module"
 mkdir -p "$modulePath/wireframe"
 mkdir -p "$modulePath/tests"
 
-if [ "$WIREFRAME" != "true" ]
+if [ "$WIREFRAME" = "true" ]
 then
     cp "$thisScriptPath/generator/wireframe/makeElement.sh"          "$modulePath/wireframe"
     cp "$thisScriptPath/generator/wireframe/arch16nForWireframe.awk" "$modulePath/wireframe"
