@@ -280,6 +280,7 @@ def normaliseSchema(node):
     normaliseSchemaRec(node)
     normaliseCols(node)
     normaliseMedia(node)
+    normaliseMap(node)
     normaliseSignup(node)
 
 def normaliseProps(node):
@@ -357,6 +358,18 @@ def normaliseMedia(node):
         )
         button.text = arch16n.getArch16nVal(media, force=True)
         xml.insertAfter(media, button)
+
+def normaliseMap(node):
+    mapList = xml.getAll(node, keep=lambda e: getUiType(e) == UI_TYPE_MAP)
+
+    for map in mapList:
+        button = Element(
+                nextFreeName('Center_Me', map),
+                { RESERVED_XML_TYPE : TYPE_GUI_DATA },
+                t=UI_TYPE_BUTTON
+        )
+        button.text = 'Center Me'
+        xml.insertAfter(map, button)
 
 def normaliseImplied(node):
     normaliseImpliedCss(node)

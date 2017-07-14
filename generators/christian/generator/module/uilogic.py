@@ -284,6 +284,20 @@ def getGpsDiagUpdate(tree, t):
 
     return t.replace(placeholder, replacement)
 
+def getMap(tree, t):
+    mapNodes = util.gui.getAll(tree, UI_TYPE_MAP)
+    btnNodes = [n.getnext() for n in mapNodes]
+    mapRefs = [util.schema.getPathString(n) for n in mapNodes]
+    btnRefs = [util.schema.getPathString(n) for n in btnNodes]
+
+    fmt          = \
+      'void centerMe() { centerOnCurrentPosition("%s"); }' \
+    '\naddOnEvent("%s", "click", "centerMe()");'
+    placeholder  = '{{map}}'
+    replacement  = format(zip(mapRefs, btnRefs), fmt)
+
+    return t.replace(placeholder, replacement)
+
 def getGpsDiagRef(tree, t):
     nodes = util.gui.getAll(tree, UI_TYPE_GPSDIAG)
     refs  = [util.schema.getPathString(n) for n in nodes]
@@ -1084,6 +1098,7 @@ def getUiLogic(tree):
     t = getPersistBinds(tree, t)
     t = getInheritanceBinds(tree, t)
     t = getGpsDiagUpdate(tree, t)
+    t = getMap(tree, t)
     t = getGpsDiagRef(tree, t)
     t = getUsers(tree, t)
     t = getUsersPopulateCall(tree, t)
