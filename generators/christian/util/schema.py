@@ -501,8 +501,10 @@ def getSignupGuide(node):
     textMd += ' 1 lowercase letter, 1 digit and 1 symbol. Examples of strong '
     textMd += 'passwords:\n'
     textMd += '\n'
-    textMd += '* D!gging4bi0facts\n'
-    textMd += '* 2_artif&ctS\n'
+    textMd += '* 2.Howareyou\n'
+    textMd += '* Artifact5.\n'
+    textMd += '* Banana@453\n'
+    textMd += '* Binford_1980\n'
 
     g = Element   (   tagGuide, attribsGuide)
     m = SubElement(g, tagMd                 ); m.text = textMd
