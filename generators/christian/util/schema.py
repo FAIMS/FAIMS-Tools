@@ -448,9 +448,10 @@ def normaliseImpliedFmtInTabGroup(schemaTabGroup):
     attribNodes = []
     for aName in attribNames:
         getByTag = lambda n: n.tag == aName
-        node = util.data.getProps(schemaTabGroup, keep=getByTag)[0]
-
-        attribNodes.append(node)
+        nodes = util.data.getProps(schemaTabGroup, keep=getByTag)
+        if len(nodes) > 0:
+            node = nodes[0]
+            attribNodes.append(node)
 
     # Get fmt positions
     fmtPoss = [str(i) for i in range(len(fmtStrs))]
