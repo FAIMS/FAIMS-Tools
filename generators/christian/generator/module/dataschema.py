@@ -96,6 +96,12 @@ def getProp(node):
     if util.data.hasFileType(node) and not util.schema.isFlagged(node, [FLAG_NOTHUMB, FLAG_NOTHUMBNAIL]):
         prp.attrib['thumbnail']    = 'true'
 
+    if ATTRIB_SP in node.attrib:
+        prp.attrib['SemanticMapPredicate'] = node.attrib[ATTRIB_SP]
+
+    if ATTRIB_SU in node.attrib:
+        prp.attrib['SemanticMapURL'] = node.attrib[ATTRIB_SU]
+
     # make description
     dsc      = etree.Element('description')
     dsc.text = getDescriptionText(node)
@@ -184,8 +190,14 @@ def getDescText(node):
 def addTerm(source, target):
     term = etree.Element('term')
 
-    if 'p' in source.attrib:
+    if ATTRIB_P in source.attrib:
         term.attrib['pictureURL'] = 'files/data/' + source.attrib['p']
+
+    if ATTRIB_SP in source.attrib:
+        term.attrib['SemanticMapPredicate'] = source.attrib[ATTRIB_SP]
+
+    if ATTRIB_SU in source.attrib:
+        term.attrib['SemanticMapURL'] = source.attrib[ATTRIB_SU]
 
     dsc      = etree.Element('description')
     dsc.text = getDescText(source)

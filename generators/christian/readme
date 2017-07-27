@@ -42,8 +42,12 @@ ATTRIBUTES
                      exist.
   p                  In <opt> tags, equivalent to pictureURL attribute, however
                      "files/data/" is prepended.
-  suppressWarnings   Prevents warnings from being shown when equal to "true" and
-                     present in the <module> tag. Does not suppress errors.
+  suppressWarnings   Deprecated. Used to prevent warnings from being shown when
+                     equal to "true" and present in the <module> tag. Does not
+                     suppress errors.
+  sp, su             In <opt> tags and GUI elements, equivalent to
+                     SemanticMapPredicate and SemanticMapURL attributes,
+                     respectively.
   t                  Type of GUI element (See 'Types'). If this attribute is
                      omitted, FAIMS Tools will attempt to infer it from the
                      element's content. (See 'Type Guessing'.)

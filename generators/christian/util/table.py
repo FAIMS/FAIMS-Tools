@@ -6,13 +6,13 @@ module             | suppressWarnings, test_mode
 tab group          | f
 tab                | f
 group              | t
-GUI/data element   | b, c, e, ec, f, l, lc, ll, lq, t, s, vp, i
+GUI/data element   | b, c, e, ec, f, l, lc, ll, lq, t, s, vp, i, sp, su
 markdown           |
 cols               | f
 opts               |
 str                |
 col                | f
-opt                | p
+opt                | p, sp, su
 app                |
 author             | f
 autonum            |
@@ -30,15 +30,17 @@ ATTRIB_VALS = '''
 ATTRIBUTE    | ALLOWED VALUES (ONE-OF)     | ALLOWED VALUES (MANY-OF)
 b            | date, decimal, string, time |
 c            |                             |
-f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, readonly, user, persist, persist!, htmldesc
-l            | $link-all                   |
-ll           | $link-all                   |
-lc           | $link-all                   |
-vp           | $link-gui                   |
-i            |                             | $link-gui
 ec           | $link-tabgroup              |
-t            | audio, button, camera, checkbox, dropdown, file, gpsdiag, group, input, list, map, picture, radio, table, video, viewfiles, web, webview |
+f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, readonly, user, persist, persist!, htmldesc
+i            |                             | $link-gui
+l            | $link-all                   |
+lc           | $link-all                   |
+ll           | $link-all                   |
 p            |                             |
+sp           |                             |
+su           |                             |
+t            | audio, button, camera, checkbox, dropdown, file, gpsdiag, group, input, list, map, picture, radio, table, video, viewfiles, web, webview |
+vp           | $link-gui                   |
 '''
 
 CARDINALITIES = '''
