@@ -365,3 +365,8 @@ void saveArchEnt(String s1, String s2, List l1, List l2, SaveCallback c) {
   if (c != null) c.onSave("uuid", true);
 }
 String getAttachedFilePath(String s) { print(funName()); return ""; }
+void setMapZoom(String ref, float zoom) { print(funName()); }
+int createCanvasLayer(String ref, String layerName) { return 0; }
+void setSelectedLayer(String ref, int layerId) { print(funName()); }
+void setSelectedLayer(String ref, String layerName) { print(funName()); }
+
