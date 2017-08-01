@@ -514,6 +514,14 @@ cond = lambda n: not util.schema.isTab(n) and \
 matches = util.xml.getAll(tree, cond)
 helpers.eMsg(msg, matches)
 
+################################################################################
+
+msg  = 'Only inputs may have the `b` attribute'
+
+cond = lambda n: util.xml.hasAttrib(n, ATTRIB_B) and \
+             not util.schema.getUiType(n) == UI_TYPE_INPUT
+matches = util.xml.getAll(tree, cond)
+helpers.eMsg(msg, matches)
 
 ################################################################################
 
