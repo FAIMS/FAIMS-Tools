@@ -40,7 +40,7 @@ cd "$modulePath" >/dev/null
 # In module.xml, replace any line <!--@SOURCE: path/to/file--> with the contents
 # of the file at path/to/file.
 echo "Applying @SOURCE directives..."
-for filename in $(grep "(?<=<\!--@SOURCE:).+(?=-->)" . -RohP)
+for filename in $(grep "(?<=<\!--@SOURCE:).+(?=-->)" "$moduleName" -RohP)
 do
     whitespace='\s*'                           # Zero or more whitespace chars
     escaped_filename=$(escape_sed "$filename") # Escape slashes in filename
