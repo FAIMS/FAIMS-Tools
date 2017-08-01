@@ -507,6 +507,16 @@ if ' createdat' in logicText:
 
 ################################################################################
 
+msg  = 'Only tabs may be flagged with `noscroll`'
+
+cond = lambda n: not util.schema.isTab(n) and \
+        util.schema.isFlagged(n, FLAG_NOSCROLL)
+matches = util.xml.getAll(tree, cond)
+helpers.eMsg(msg, matches)
+
+
+################################################################################
+
 print 'Validation completed with %s error(s) and %s warning(s).' % (
         validator.NUM_E,
         validator.NUM_W
