@@ -274,6 +274,25 @@ def getInheritanceBinds(tree, t):
 
     return t.replace(placeholder, replacement)
 
+def getNodataMenus(tree, t):
+    isOpt    = lambda n: util.schema.getXmlType(n) == TAG_OPT
+    isNodata = lambda n: util.schema.isFlagged(n, FLAG_NODATA)
+
+    isNoDataOpt = lambda n: isOpt(n) and isNodata(n)
+
+    noDataOptNodes = util.xml.getAll(tree, isNoDataOpt)
+    parentNodes    = [util.schema.getParentGuiDataElement(n) for n in noDataOptNodes]
+
+    refs = [util.schema.getPathString(n) for n in parentNodes]
+    keys = [util.arch16n.getArch16nKey(n) for n in noDataOptNodes]
+    vals = keys
+
+    placeholder = '{{nodata-menus}}'
+    fmt         = 'addNodataDropdownEntry("%s", "%s", "%s");'
+    replacement = format(zip(refs, keys, vals), fmt)
+
+    return t.replace(placeholder, replacement)
+
 def getGpsDiagUpdate(tree, t):
     nodes = util.gui.getAll(tree, UI_TYPE_GPSDIAG)
     refs  = [util.schema.getPathString(n) for n in nodes]
@@ -314,18 +333,6 @@ def getUsers(tree, t):
 
     placeholder  = '{{user-menu-path}}'
     replacement  = format(refs)
-
-    return t.replace(placeholder, replacement)
-
-def getUsersPopulateCall(tree, t):
-    placeholder = '{{users-populate-call}}'
-
-    if   getUserMenuUiType(tree) == UI_TYPE_LIST:
-        replacement = 'populateList(USER_MENU_PATH, result);'
-    elif getUserMenuUiType(tree) == UI_TYPE_DROPDOWN:
-        replacement = 'populateDropDown(USER_MENU_PATH, result, true);'
-    else:
-        replacement = 'return;'
 
     return t.replace(placeholder, replacement)
 
@@ -982,9 +989,9 @@ def getIncAutonumMap(tree, t):
     srcRefs    = [util.schema.getPathString(n)           for n in nodes]
     dstRefs    = [util.xml.getAttribVal(n, AUTONUM_DEST) for n in nodes]
 
-    fmt         = 'destToSource.put("%s", "%s");'
+    fmt         = 'AUTONUM_DEST_TO_SOURCE.put("%s", "%s");'
     placeholder = '{{incautonum-map}}'
-    replacement = format(zip(dstRefs, srcRefs), fmt, indent='  ')
+    replacement = format(zip(dstRefs, srcRefs), fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -1097,11 +1104,11 @@ def getUiLogic(tree):
     t = getIsInPerfTestTime(tree, t)
     t = getPersistBinds(tree, t)
     t = getInheritanceBinds(tree, t)
+    t = getNodataMenus(tree, t)
     t = getGpsDiagUpdate(tree, t)
     t = getMap(tree, t)
     t = getGpsDiagRef(tree, t)
     t = getUsers(tree, t)
-    t = getUsersPopulateCall(tree, t)
     t = getUsersSelectedUser(tree, t)
     t = getBindsOnClickSignup(tree, t)
     t = getValidation(tree, t)
@@ -1140,7 +1147,7 @@ if __name__ == '__main__':
     # PARSE XML
     filenameModule = sys.argv[1]
     tree = util.xml.parseXml(filenameModule)
-    util.schema.parseSchema(tree)
+    tree = util.schema.parseSchema(tree)
 
     # GENERATE AND OUTPUT UI LOGIC
     print getUiLogic(tree).encode('utf-8'),

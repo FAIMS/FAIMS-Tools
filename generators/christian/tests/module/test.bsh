@@ -1,17 +1,5 @@
 #!/usr/bin/env bsh
 
-assert(boolean condition) {
-  if (condition)
-    return;
-
-  print(
-    "Test failed: " +
-    "Line: " + this.namespace.getInvocationLine() +
-    ": "     + this.namespace.getInvocationText() +
-    ". "     + this.callstack
-  );
-}
-
 String funName() {
   namespace = this.callstack.get(1);
   return namespace.getInvocationLine() + ": " + namespace.getInvocationText();

@@ -5,12 +5,27 @@
   <User>
     <Select_User t="dropdown" f="user"/>
     <Login       t="button"   l="Simple"/>
+    <Signup l="signup"/>
+    <Guide t="webview">
+      <markdown>
+This module was created for the The Tundzha Regional Archaeological Project, based at Macquarie University, Sydney, Australia. The module has been designed to document the current condition and an exact location of burial mounds by broader community in Bulgaria. This module is designed to foster awareness of and community engagement in monitoring cultural heritage in Bulgaria.
+
+![](files/data/gallery/Front_Page_And_Icon/Mound.jpg)
+      </markdown>
+    </Guide>
   </User>
 </User>
 
 <Simple>
   <Tab>
-    <Attic f="id"/>
+    <Attic su="su1" sp="sp1" f="id">
+      <opts>
+        <opt su="su2" sp="sp2">
+          My Opt
+          <opt su="su3" sp="sp3">Monkey</opt>
+        </opt>
+      </opts>
+    </Attic>
   </Tab>
 </Simple>
 

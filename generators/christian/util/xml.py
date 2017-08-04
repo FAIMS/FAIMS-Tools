@@ -133,6 +133,17 @@ def nodeHash(node, hashLen=10):
     hash = hash[:hashLen]
     return hash
 
+def treeHash(node):
+    s = etree.tostring(
+            node,
+            pretty_print=True,
+            xml_declaration=True,
+            encoding='utf-8'
+    )
+    hash = hashlib.sha256(s)
+    hash = hash.hexdigest()
+    return hash
+
 def replaceElement(element, replacements):
     if replacements is None:
         return

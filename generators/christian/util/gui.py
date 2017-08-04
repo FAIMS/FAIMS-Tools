@@ -37,6 +37,6 @@ def isTab       (node): return isGuiNode(node) and schema.isTab(node)
 def isGuiElement(node): return isGuiNode(node) and schema.isGuiDataElement(
         node, includeCols=True)
 
-def getTabGroups  (node): return xml.getAll(node, keep=isTabGroup)
-def getTabs       (node): return xml.getAll(node, keep=isTab)
-def getGuiElements(node): return xml.getAll(node, keep=isGuiElement)
+def getTabGroups  (node, keep=None): return schema.getByType(node, isTabGroup, keep, True)
+def getTabs       (node, keep=None): return schema.getByType(node, isTab, keep, True)
+def getGuiElements(node, keep=None): return schema.getByType(node, isGuiElement, keep, True)

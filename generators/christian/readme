@@ -87,7 +87,8 @@ FLAGS
                   file and video elements in the data schema.
   noscroll        Equivalent to faims_scrollable="false".
   noui            Only allows code related to the data schema to be generated.
-  nodata          Generates code as usual, but ommits data schema entries.
+  nodata          Generates code as usual, but omits data schema entries.
+  nowire          Excludes a tab group, tab, or GUI element from the wireframe.
   readonly        Equivalent to faims_read_only="true".
   persist         Causes field value to persist over multiple sessions on the
                   user's device.

@@ -7,6 +7,12 @@ import util.schema
 import util.gui
 from   util.consts import *
 
+def isNoWire(node):
+    return util.schema.isFlagged(node, FLAG_NOWIRE)
+
+def isWire(node):
+    return not isNoWire(node)
+
 ################################################################################
 
 class GraphModule(object):
@@ -31,7 +37,7 @@ class GraphModule(object):
         self.links     = self.getLinks    (node)
 
     def getTabGroups(self, node):
-        return [GraphTabGroup(n) for n in util.gui.getTabGroups(node)]
+        return [GraphTabGroup(n) for n in util.gui.getTabGroups(node, isWire)]
 
     def getLinks(self, node):
         links  = self.getTabLabelLinks         (node)
@@ -42,9 +48,9 @@ class GraphModule(object):
     def getTabLabelLinks(self, node):
         links = ['/* Intra-tab, label-to-label links */']
 
-        tabGroups = util.gui.getTabGroups(node)
+        tabGroups = util.gui.getTabGroups(node, isWire)
         for tabGroup in tabGroups:
-            tabs = util.gui.getTabs(tabGroup)
+            tabs = util.gui.getTabs(tabGroup, isWire)
             for i in range(len(tabs) - 1):
                 tabFrom = tabs[i  ]; idFrom = GraphTab.nodeId(tabFrom)
                 tabTo   = tabs[i+1]; idTo   = GraphTab.nodeId(tabTo  )
@@ -66,6 +72,10 @@ class GraphModule(object):
                 nodeTo = util.schema.getTabs(nodeTo)[0]
 
             if nodeTo == None:
+                continue
+            if isNoWire(nodeTo):
+                continue
+            if isNoWire(nodeFrom):
                 continue
 
             # Determine `idFrom` and `idTo`
@@ -89,6 +99,10 @@ class GraphModule(object):
                 nodeTo = util.schema.getParentTabGroup(nodeTo)
 
             if nodeTo == None:
+                continue
+            if isNoWire(nodeTo):
+                continue
+            if isNoWire(nodeFrom):
                 continue
 
             # Determine `idFrom` and `idTo`
@@ -144,7 +158,7 @@ class GraphTabGroup(object):
         return "%s%s" % (cls.prefix, util.xml.nodeHash(node))
 
     def getTabs(self, node):
-        return [GraphTab(n) for n in util.gui.getTabs(node)]
+        return [GraphTab(n) for n in util.gui.getTabs(node, isWire)]
 
     def toString(self):
         tabs = ''
@@ -191,7 +205,8 @@ class GraphTab(object):
         return "%s%s" % (cls.prefix,       util.xml.nodeHash(node))
 
     def getGuiBlocks(self, node):
-        return [GuiBlock(n) for n in node if util.gui.isGuiElement(n)]
+        isWireIsGui = lambda n: isWire(n) and util.gui.isGuiElement(n)
+        return [GuiBlock(n) for n in node if isWireIsGui(n)]
 
     def getTabBarStructString(self, hasPrecedingTab, hasFollowingTab):
         out  = '\n\t\t\t%s [' % self.nodeIdLabel(self.node)
@@ -320,7 +335,7 @@ class GuiBlock(object):
 ################################################################################
 filenameModule = sys.argv[1]
 tree = util.xml.parseXml(filenameModule)
-util.schema.parseSchema(tree)
+tree = util.schema.parseSchema(tree)
 
 ################################################################################
 #                        GENERATE AND OUTPUT DATASTRUCT                        #

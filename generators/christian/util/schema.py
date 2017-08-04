@@ -18,6 +18,7 @@ import gui
 import data
 import arch16n
 import itertools
+import os.path
 
 def getPath(node, isInitialCall=True):
     nodeTypes = [
@@ -87,7 +88,7 @@ def isFlaggedList(node, flags, checkAncestors=True, attribName=ATTRIB_F):
 
 def isFlaggedStr(node, flag, checkAncestors=None, attribName=ATTRIB_F):
     # Set the default value of `checkAncestors` if it hasn't been passed
-    requiresAncestorCheck = (FLAG_NODATA, FLAG_NOUI)
+    requiresAncestorCheck = (FLAG_NODATA, FLAG_NOUI, FLAG_NOWIRE)
     if checkAncestors == None:
         checkAncestors = flag in requiresAncestorCheck
 
@@ -111,11 +112,34 @@ def nextFreeName(baseName, node):
     takenNames = [n.tag for n in parent]
     return util.nextFreeName(baseName, takenNames)
 
+def getSchemaCacheFilename(node):
+    return '/tmp/%s.xml' % xml.treeHash(node)
+
+def getCachedSchema(filename):
+    if os.path.isfile(filename):
+        return xml.parseXml(filename)
+    else:
+        return None
+
+def cacheSchema(node, filename):
+    s = etree.tostring(node)
+    with open(filename, 'w') as f:
+        f.write(s)
+
 # Warning: Modifies `node` by reference
 def parseSchema(node):
+    filename = getSchemaCacheFilename(node)
+    cachedSchema = getCachedSchema(filename)
+    if cachedSchema != None:
+        return cachedSchema
+
     normaliseXml(node)
     annotateWithXmlTypes(node)
     normaliseSchema(node)
+
+    cacheSchema(node, filename)
+
+    return node
 
 def normaliseXml(node):
     normaliseAttributes(node)

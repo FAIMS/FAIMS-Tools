@@ -60,7 +60,7 @@ if __name__ == '__main__':
     # PARSE XML
     filenameModule = sys.argv[1]
     tree = util.xml.parseXml(filenameModule)
-    util.schema.parseSchema(tree)
+    tree = util.schema.parseSchema(tree)
 
     # GENERATE AND OUTPUT VALIDATION SCHEMA
     validationSchema = getValidationSchema(tree)

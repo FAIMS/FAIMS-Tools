@@ -48,7 +48,7 @@ CSS = [
         if k.startswith('CSS_')
 ]
 
-
+FLAG_NOWIRE       = 'nowire'
 FLAG_AUTONUM      = 'autonum'
 FLAG_HIDDEN       = 'hidden'
 FLAG_HTMLDESC     = 'htmldesc'

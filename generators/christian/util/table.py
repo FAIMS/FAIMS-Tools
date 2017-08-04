@@ -31,7 +31,7 @@ ATTRIBUTE    | ALLOWED VALUES (ONE-OF)     | ALLOWED VALUES (MANY-OF)
 b            | date, decimal, string, time |
 c            |                             |
 ec           | $link-tabgroup              |
-f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, readonly, user, persist, persist!, htmldesc
+f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, nowire, readonly, user, persist, persist!, htmldesc
 i            |                             | $link-gui
 l            | $link-all                   |
 lc           | $link-all                   |
