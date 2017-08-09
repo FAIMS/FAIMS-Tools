@@ -3044,7 +3044,7 @@ void fillInGPS(String tabgroup) {
                  "       y(transform(geospatialcolumn,                4326)) as latitude, " +
                  "       x(transform(geospatialcolumn, "+getModuleSrid()+")) as easting, " +
                  "       y(transform(geospatialcolumn, "+getModuleSrid()+")) as northing " +
-                 "  FROM latestnondeletedarchent, vocabulary " +
+                 "  FROM latestnondeletedarchent " +
                  " WHERE uuid = '" + currentUuid + "';";
 
   fetchOne(query, new FetchCallback() {
