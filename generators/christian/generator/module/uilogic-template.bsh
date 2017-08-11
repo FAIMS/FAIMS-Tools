@@ -110,6 +110,23 @@ String escape(String s) {
   return translate(s, dict);
 }
 
+String getRandomString(int len) {
+  char[] chars  = (
+      "abcdefghijklmnopqrstuvwxyz" +
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+      "1234567890"
+  ).toCharArray();
+  Random random = new Random();
+
+  StringBuilder sb = new StringBuilder();
+  for (int i = 0; i < len; i++) {
+      char c = chars[random.nextInt(chars.length)];
+      sb.append(c);
+  }
+
+  return sb.toString();
+}
+
 String args2str(Object[] args) {
   String str = "";
   String sep = ", ";
@@ -139,6 +156,36 @@ String fun2str(String funName, Object[] args) {
 
 String fun2str(String funName, Object args) {
   return fun2str(funName, new Object[]{args});
+}
+
+/************************** FUNCTION-STRING MAPPING ***************************/
+/* Allows `Callable` and `Runnable` functions to be associated with a key and */
+/* called later on. This is mostly useful for de-spagehettifying calls to     */
+/* `addOnEvent`, which would otherwise effectively use eval.                  */
+/******************************************************************************/
+import java.util.concurrent.Callable;
+
+Map KEY_TO_CALLABLE = new HashMap();
+
+String callable2key(Callable c) {
+  String key = getRandomString(64); // 64 ==> Odds of collision ~= 1e-115
+  KEY_TO_CALLABLE.put(key, c);
+  return key;
+}
+
+Callable key2callable(String key) {
+  return KEY_TO_CALLABLE.get(key);
+}
+
+key2call(String key) {
+  Callable c = key2callable(key);
+  if (c != null)
+    return c.call();
+  return null;
+}
+
+String callable2callableString(Callable c) {
+  return fun2str("key2call", callable2key(c));
 }
 
 /******************************************************************************/
@@ -619,6 +666,20 @@ void addOnEvent(String ref, String event, String statement) {
   addOnEvent(ref, event, statement, 0);
 }
 
+void addOnEvent(String ref, String event, Callable statement, int precedence) {
+  String statementString = callable2callableString(statement);
+  addOnEvent(ref, event, statementString);
+}
+
+void addOnEvent(String ref, String event, Callable statement) {
+  addOnEvent(ref, event, statement, 0);
+}
+
+void addOnEventCond(String ref, String event, Callable check) {
+  String checkString = runnable2runnableString(check);
+  addOnEvent(ref, event, checkString);
+}
+
 void bindOnEvent(String ref, String event) {
   String stmtsStr     = getStatementsString(ref, event);
   String focusStmtStr = getStatementsString(ref, "focus");
@@ -1065,23 +1126,6 @@ String randomMenuValue(String ref) {
   int    i   = r.nextInt(len);
 
   return vocabIds.get(i);
-}
-
-String getRandomString(int len) {
-  char[] chars  = (
-      "abcdefghijklmnopqrstuvwxyz" +
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-      "1234567890"
-  ).toCharArray();
-  Random random = new Random();
-
-  StringBuilder sb = new StringBuilder();
-  for (int i = 0; i < len; i++) {
-      char c = chars[random.nextInt(chars.length)];
-      sb.append(c);
-  }
-
-  return sb.toString();
 }
 
 String randomInputValue(String ref) {
