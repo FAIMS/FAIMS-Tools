@@ -1,6 +1,7 @@
 import android.util.Log;
 import android.os.Build.MODEL;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.Callable;
 
 // Beanshell won't let me write "\0".
 final String SEP = Character.toString ((char) 0);
@@ -163,8 +164,6 @@ String fun2str(String funName, Object args) {
 /* called later on. This is mostly useful for de-spagehettifying calls to     */
 /* `addOnEvent`, which would otherwise effectively use eval.                  */
 /******************************************************************************/
-import java.util.concurrent.Callable;
-
 Map KEY_TO_CALLABLE = new HashMap();
 
 String callable2key(Callable c) {
