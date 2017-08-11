@@ -23,7 +23,7 @@ PARAMETERS
              working directory.
 ________________________________________________________________________________
 
-ATTRIBUTES
+SCHEMA ATTRIBUTES
 
   b                  Binding (See 'Bindings')
   c                  Alias for faims_style_class
