@@ -6,8 +6,21 @@ QUICK START
      understand, check this file.
   2. Run `./generate.sh`. (You can also run `./generate.sh /path/to/module.xml`
      if your module.xml is somewhere other than this directory.)
-  3. Collect your new shiny new module from the 'module' directory and your
-     shiny new wireframe from the 'wireframe' directory.
+________________________________________________________________________________
+
+PARAMETERS
+
+  generate.sh
+      path   A path to a module.xml file. This is relative to the current
+             working directory.
+
+      -w     Compiles the module with a wireframe. The wireframe is stored in
+             the wireframe/wireframe.pdf directory, relative to the module.xml
+             file.
+
+  validate.sh
+      path   A path to a module.xml file. This is relative to the current
+             working directory.
 ________________________________________________________________________________
 
 ATTRIBUTES
