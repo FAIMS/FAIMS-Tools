@@ -30,7 +30,7 @@ def isDataElement(node):
         UI_TYPE_RADIO,
         UI_TYPE_VIDEO,
     ]
-    return schema.isTabGroup(node) or schema.getUiType(node) in dataTypes
+    return schema.isTabGroup(node) or schema.getUiType(node, True) in dataTypes
 
 def formsArchEnt(node):
     return bool(getArchEntName(node))

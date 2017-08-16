@@ -165,7 +165,7 @@ def stripComments(node):
         p = c.getparent()
         p.remove(c)
 
-def getUiType(node):
+def getUiType(node, force=False):
     '''
     Returns the value of the node's `t` attribute if it has been defined.
     Otherwise, a guess of what it might have been intended to be is returned
@@ -183,7 +183,7 @@ def getUiType(node):
     if len(path) == 2: return TYPE_TAB
 
     # It doesn't have a type
-    if not gui.isGuiElement(node):
+    if not force and not gui.isGuiElement(node):
         return ''
 
     if isFlagged(node, FLAG_USER):
