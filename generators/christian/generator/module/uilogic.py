@@ -310,7 +310,8 @@ def getMap(tree, t):
     btnRefs = [util.schema.getPathString(n) for n in btnNodes]
 
     fmt          = \
-      'void centerMe() { centerOnCurrentPosition("%s"); }' \
+      'final String MAP_REF = "%s";' \
+    '\nvoid centerMe() { centerOnCurrentPosition(MAP_REF); }' \
     '\naddOnEvent("%s", "click", "centerMe()");'
     placeholder  = '{{map}}'
     replacement  = format(zip(mapRefs, btnRefs), fmt)
