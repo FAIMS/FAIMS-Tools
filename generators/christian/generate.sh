@@ -1,53 +1,9 @@
 #!/usr/bin/env bash
 
-proc="saxonb-xslt"
-
-############################## ARGUMENT HANDLING ###############################
-module="module.xml"
-while [[ $# -gt 0 ]]
-do
-    key="$1"
-
-    case $key in
-        -w|--wireframe)
-        WIREFRAME="true"
-        ;;
-        *)
-        module=$key
-        ;;
-    esac
-
-    shift
-done
-
-modulePath=$( dirname  $( readlink -e "$module" ))
-moduleName=$( basename $( readlink -e "$module" ))
 thisScriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "$thisScriptPath/shared.sh"
 
-# Escape sed's special characters
-escape_sed() {
-    echo "$1" |
-    sed \
-        -e 's/\//\\\//g' \
-        -e 's/\&/\\\&/g'
-}
-
-clean_up() {
-    mv    "$modulePath/.$module.original" "$modulePath/$module"
-    rm -f "$modulePath/$module.sed"
-    exit
-}
-trap clean_up SIGHUP SIGINT SIGTERM
-
-if [ -f ".$module.original" ]
-then
-    echo "A previous run terminated unexpectedly. A backup of '$module' was" \
-      "saved as '.$module.original'. Please either restore or delete this" \
-      "backup file before running this script. Exiting."
-    exit
-else
-    cp "$module" ".$module.original"
-fi
+check_last_run_ended_cleanly
 
 if [ "$WIREFRAME" != "true" ]
 then
@@ -57,32 +13,9 @@ fi
 
 cd "$modulePath" >/dev/null
 
-# In module.xml, replace any line <!--@SOURCE: path/to/file--> with the contents
-# of the file at path/to/file.
-echo "Applying @SOURCE directives..."
-for filename in $(grep "(?<=<\!--@SOURCE:).+(?=-->)" "$moduleName" -RohP)
-do
-    whitespace='\s*'                           # Zero or more whitespace chars
-    escaped_filename=$(escape_sed "$filename") # Escape slashes in filename
+apply_source_directives
+apply_preproc_directives
 
-    sed -i.sed \
-        -e "/<!--@SOURCE:$whitespace$escaped_filename$whitespace-->/{
-        r $filename
-        d
-    }" "$module"
-done
-echo
-
-####################### HANDLE PRE-PROCESSING DIRECTIVE ########################
-# This will require some clean up after the transforms occur                   #
-################################################################################
-cmd=$( grep "@PREPROC:" "$moduleName" | head -n 1 | sed -rn 's/^\s*<!--\s*@PREPROC:\s*(.*[^ ])\s*-->\s*$/\1/p' )
-if [ ! -z "$cmd" ]
-then
-    echo "Running pre-processing command:"
-    echo "  $cmd"
-    eval "$cmd"
-fi
 cd - >/dev/null
 
 ############################ PERFORM THE TRANSFORMS ############################
@@ -126,8 +59,8 @@ if [ "$WIREFRAME" = "true" ]
 then
   cd "$modulePath" >/dev/null
 
-  gawk    -f "$modulePath/wireframe/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
-  $proc -xsl:"$modulePath/wireframe/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
+  gawk          -f "$modulePath/wireframe/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
+  saxonb-xslt -xsl:"$modulePath/wireframe/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
 
   cd - >/dev/null
   cd "$modulePath/wireframe/" >/dev/null
@@ -142,13 +75,7 @@ fi
 
 ####################### HANDLE POST-PROCESSING DIRECTIVE #######################
 cd "$modulePath" >/dev/null
-cmd=$( grep "@POSTPROC:" "$moduleName" | head -n 1 | sed -rn 's/^\s*<!--\s*@POSTPROC:\s*(.*[^ ])\s*-->\s*$/\1/p' )
-if [ ! -z "$cmd" ]
-then
-    echo "Running post-processing command:"
-    echo "  $cmd"
-    eval "$cmd"
-fi
+apply_postproc_directives
 cd - >/dev/null
 
 clean_up
