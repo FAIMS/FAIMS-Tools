@@ -1,14 +1,17 @@
 OS:
-	16.04.03 LTS
+  16.04.03 LTS
 
 Module dependencies:
-	git
-	python-lxml
-	pandoc (universe)
+  git
+  python-lxml
+  pandoc (universe)
 
 Wireframe dependencies:
-	gawk
-	libsaxonb-java
-	default-jre
-	graphviz
-	python-cairosvg
+  gawk
+  libsaxonb-java
+  default-jre
+  graphviz
+  python-cairosvg
+
+Testing dependencies:
+  bsh
