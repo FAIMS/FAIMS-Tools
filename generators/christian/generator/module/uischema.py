@@ -205,6 +205,8 @@ def getBodyLabelled(node, name, **kwargs):
     hidden     = util.schema.isFlagged(node, FLAG_HIDDEN)
     noScroll   = util.schema.isFlagged(node, FLAG_NOSCROLL)
     htmlDesc   = util.schema.isFlagged(node, FLAG_HTMLDESC)
+    noAnno     = util.schema.isFlagged(node, FLAG_NOANNOTATION)
+    noCert     = util.schema.isFlagged(node, FLAG_NOCERTAINTY)
 
     labelled = Element(name, **kwargs)
     labelled.append(getBodyLabel(node, isBlank))
@@ -217,6 +219,8 @@ def getBodyLabelled(node, name, **kwargs):
     if hidden:     labelled.attrib['faims_hidden']           = 'true'
     if noScroll:   labelled.attrib['faims_scrollable']       = 'false'
     if htmlDesc:   labelled.attrib['faims_html_description'] = 'true'
+    if noAnno:     labelled.attrib['faims_annotation']       = 'false'
+    if noCert:     labelled.attrib['faims_certainty']        = 'false'
 
     return labelled
 
