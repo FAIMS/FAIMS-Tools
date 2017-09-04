@@ -311,15 +311,22 @@ class GuiBlock(object):
                 table[j][i] = elm
 
         # TRANSFORMATION 2: Convert `table` to markup code.
+        cellEmpty = '\n\t\t\t\t\t\t<TD></TD>'
+        cellFull  = '\n\t\t\t\t\t\t<TD PORT="%s"><IMG SRC="%s.svg"></IMG></TD>'
+
         guiBlock = ''
         for row in table:
             tdElms = ''
             for elm in row:
                 if   elm == None:
-                    tdElms += '\n\t\t\t\t\t\t<TD></TD>'
+                    tdElms += cellEmpty
+                elif util.schema.getUiType(elm) == UI_TYPE_GROUP:
+                    tdElms += cellEmpty
                 else:
-                    tdElms += '\n\t\t\t\t\t\t<TD PORT="%s"><IMG SRC="%s.svg"></IMG></TD>'
-                    tdElms %= GuiBlock.nodeIdElem(elm), util.schema.getPathString(elm, '_')
+                    id   = GuiBlock.nodeIdElem(elm)
+                    path = util.schema.getPathString(elm, '_')
+
+                    tdElms += cellFull % (id, path)
 
             guiBlock += '\n\t\t\t\t\t<TR>'
             guiBlock += tdElms
