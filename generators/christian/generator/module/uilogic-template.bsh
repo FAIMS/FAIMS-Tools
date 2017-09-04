@@ -1396,7 +1396,7 @@ void enqueueTestFiles(int numFiles, String cb) {
   numPhotosToMake -= PERF_FILES.size();
   numPhotosToMake  = Math.max(0, numPhotosToMake);
   // We're going to count returns from attachFile too, hence multiplication by 2
-  PERF_NUM_CBS_TODO_FILE = new AtomicInteger(2*numPhotosToMake);
+  PERF_NUM_CBS_TODO_FILE = new AtomicInteger(numPhotosToMake + 1);
   PERF_NUM_CBS_DONE_FILE = new AtomicInteger(0);
 
   // Make records
@@ -1409,8 +1409,8 @@ void enqueueTestFiles(int numFiles, String cb) {
     );
 
     PERF_FILES.add(fileName);
-    checkEnqueueTestFilesIsDone(cb);
   }
+  checkEnqueueTestFilesIsDone(cb);
 }
 
 void checkEnqueueTestFilesIsDone(String onDone) {
