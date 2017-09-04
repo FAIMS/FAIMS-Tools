@@ -370,3 +370,4 @@ int createCanvasLayer(String ref, String layerName) { return 0; }
 void setSelectedLayer(String ref, int layerId) { print(funName()); }
 void setSelectedLayer(String ref, String layerName) { print(funName()); }
 public List getGeometryList(String ref, int layerId) { print(funName()); return null; }
+void showBaseMap(String s1, String s2, String s3) { print(funName()); }
