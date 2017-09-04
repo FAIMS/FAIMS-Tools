@@ -277,6 +277,9 @@ load_scanned_err_body=The QR code or barcode you have scanned does not contain a
 
 perf_dummy_err_head=Could Not Begin Record Creation Wizard
 perf_dummy_err_body=The record creation wizard could not begin because syncing could not be automatically disabled. Please disable it manually and try again.
+
+Saved_Map_Configuration=Saved Map Configuration
+Loaded_Map_Configuration=Loaded Map Configuration
 '''
 
 ATTRIBS       = tablehelper.parseTable(ATTRIBS)

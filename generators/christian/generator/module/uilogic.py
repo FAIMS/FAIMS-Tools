@@ -305,16 +305,20 @@ def getGpsDiagUpdate(tree, t):
 
 def getMap(tree, t):
     mapNodes = util.gui.getAll(tree, UI_TYPE_MAP)
-    btnNodes = [n.getnext() for n in mapNodes]
-    mapRefs = [util.schema.getPathString(n) for n in mapNodes]
-    btnRefs = [util.schema.getPathString(n) for n in btnNodes]
+    btnCNodes = [n.getnext()[0][0] for n in mapNodes]
+    btnRNodes = [n.getnext()[1][0] for n in mapNodes]
+    mapRefs   = [util.schema.getPathString(n) for n in mapNodes]
+    btnCRefs  = [util.schema.getPathString(n) for n in btnCNodes]
+    btnRRefs  = [util.schema.getPathString(n) for n in btnRNodes]
 
     fmt          = \
       'final String MAP_REF = "%s";' \
     '\nvoid centerMe() { centerOnCurrentPosition(MAP_REF); }' \
-    '\naddOnEvent("%s", "click", "centerMe()");'
+    '\naddOnEvent("%s", "click", "centerMe()");' \
+    '\naddOnEvent("%s", "click", "saveMapSettings()");' \
+    '\naddOnEvent("module", "load", "loadMapSettings()");'
     placeholder  = '{{map}}'
-    replacement  = format(zip(mapRefs, btnRefs), fmt)
+    replacement  = format(zip(mapRefs, btnCRefs, btnRRefs), fmt)
 
     return t.replace(placeholder, replacement)
 

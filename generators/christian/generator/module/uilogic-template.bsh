@@ -2403,7 +2403,25 @@ void updateGPSDiagnostics() {
   setFieldValue(diagnosticsRef, status);
 }
 
+final String MAP_CFG_PATH = "files/data/saved_config.json";
 {{map}}
+
+void loadMapSettings() {
+  String filePath = getAttachedFilePath(MAP_CFG_PATH);
+
+  if (!new File(filePath).exists())
+    return;
+
+  String toast = "showToast(\"{Loaded_Map_Configuration}\")";
+  loadMapViewConfiguration(MAP_REF, filePath, toast);
+}
+
+void saveMapSettings() {
+  String filePath = getAttachedFilePath(MAP_CFG_PATH);
+
+  String toast = "showToast(\"{Saved_Map_Configuration}\")";
+  saveMapViewConfiguration(MAP_REF, filePath, toast);
+}
 
 /******************************************************************************/
 /*                                 ACTION BAR                                 */

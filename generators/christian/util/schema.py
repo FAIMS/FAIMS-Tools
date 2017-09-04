@@ -302,9 +302,9 @@ def normaliseSchema(node):
     normaliseImplied(node)
     normaliseProps(node)
     normaliseSchemaRec(node)
+    normaliseMap(node)
     normaliseCols(node)
     normaliseMedia(node)
-    normaliseMap(node)
     normaliseSignup(node)
 
 def normaliseProps(node):
@@ -387,13 +387,29 @@ def normaliseMap(node):
     mapList = xml.getAll(node, keep=lambda e: getUiType(e) == UI_TYPE_MAP)
 
     for map in mapList:
-        button = Element(
+        # Make 'Center Me' button
+        btnCenter = Element(
                 nextFreeName('Center_Me', map),
                 { RESERVED_XML_TYPE : TYPE_GUI_DATA },
                 t=UI_TYPE_BUTTON
         )
-        button.text = 'Center Me'
-        xml.insertAfter(map, button)
+        btnCenter.text = 'Center Me'
+
+        # Make 'Save Map Settings' button
+        btnSave = Element(
+                nextFreeName('Save_Map_Settings', map),
+                { RESERVED_XML_TYPE : TYPE_GUI_DATA },
+                t=UI_TYPE_BUTTON
+        )
+        btnSave.text = 'Save Map Settings'
+
+        # Make cols
+        cols = Element(TAG_COLS, { RESERVED_XML_TYPE : TYPE_COLS })
+        cols.append(btnCenter)
+        cols.append(btnSave)
+
+        # Add cols below map
+        xml.insertAfter(map, cols)
 
 def normaliseImplied(node):
     normaliseImpliedCss(node)
