@@ -20,4 +20,5 @@ apt-get install \
         pandoc \
         python-cairosvg \
         python-lxml \
+        sqlite3 \
         -y
