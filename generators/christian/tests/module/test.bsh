@@ -7,8 +7,13 @@ String funName() {
 
 sourceRelative("mock.bsh");
 sourceRelative("../module/ui_logic.bsh");
+print("");
 try {
   sourceRelative("tests.bsh");
+  print("=== ALL TESTS PASSED ===");
 } catch (FileNotFoundException e) {
-  print("No tests implemented. Tests should be placed in `tests/tests.bsh`.");
+  print(
+      "=== NO TESTS IMPLEMENTED. TESTS SHOULD BE PLACED IN " +
+      "`tests/tests.bsh`. ==="
+  );
 }
