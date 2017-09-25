@@ -297,12 +297,21 @@ public class android {
   }
 }
 
+Map FIELD_VALUES = new HashMap();
+
 // FUNCTION DEFINITIONS
 Dialog cleanSyncedFiles() { return null; }
 Object getGPSEstimatedAccuracy() { return null;}
 Object getGPSPosition() { return new GPSLocation();}
 Object getGPSPositionProjected() { return new GPSLocation();}
-String getFieldValue(String s) { return ""; }
+String getFieldValue(String ref) {
+  String out = FIELD_VALUES.get(ref);
+  if (out == null)
+    return "";
+  else
+    return out;
+}
+
 String getModuleId() { return "module-id"; }
 boolean isBluetoothConnected() {return true;}
 boolean isExternalGPSOn() { return true;}
@@ -329,7 +338,9 @@ void populatePictureGallery(String s, Collection c) { return; }
 void populateRadioGroup(String s, Collection c) { return; }
 void populateWebViewHtml(String s1, String s2) { return; }
 void populateWebView(String s1, String s2) { return; }
-void setFieldValue(String ref, Object value) { return; }
+void setFieldValue(String ref, Object val) {
+  FIELD_VALUES.put(ref, "" + val);
+}
 void setFileSyncEnabled(boolean b) { return; }
 void setSyncDelay(float f) { return; }
 void setSyncEnabled(boolean b) { return; }
@@ -377,3 +388,4 @@ boolean hasView(String ref) { return true; }
 void removeView(String ref) { return; }
 String getModuleSrid() { return ""; }
 void triggerAutoSave() { return; }
+void removeNavigationButton(String s) { return; }
