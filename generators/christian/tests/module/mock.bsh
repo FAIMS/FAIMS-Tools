@@ -389,3 +389,8 @@ void removeView(String ref) { return; }
 String getModuleSrid() { return ""; }
 void triggerAutoSave() { return; }
 void removeNavigationButton(String s) { return; }
+void showRasterMap(String ref, String layerName, String filename) { return; }
+void writeBluetoothMessage(String message) { return; }
+void createBluetoothConnection(String s, int i) { return; }
+void destroyBluetoothConnection() { return; }
+boolean isBluetoothConnected() { return false; }
