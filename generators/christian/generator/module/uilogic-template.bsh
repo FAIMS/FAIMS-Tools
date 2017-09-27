@@ -354,6 +354,9 @@ boolean isFlaggedNodata(String tabGroup) {
 }
 
 void updateDisplayedTabGroup(String tabGroup) {
+  if (tabGroup.equals(CURRENTLY_DISPLAYED_TAB_GROUP))
+    return;
+
   PREVIOUSLY_DISPLAYED_TAB_GROUP = CURRENTLY_DISPLAYED_TAB_GROUP;
   CURRENTLY_DISPLAYED_TAB_GROUP  = tabGroup;
 }
@@ -808,21 +811,20 @@ boolean isDoingFetchEvent() {
 /* Establishes `onEvent` bindings necessary to make the "leave" event work. The
  * "leave" event is really triggered upon "show" of another tab.
  */
-for (tg : getTabGroups()) {
-  String ref      = tg;
-  String event    = "show";
+for (String ref : getTabGroups()) {
   String callback;
 
   // Update (previously) displayed tab group
   callback = fun2str("updateDisplayedTabGroup", ref);
-  addOnEvent(ref, event, callback, PRECEDENCE_MAX);
+  addOnEvent(ref, "show",   callback, PRECEDENCE_MAX);
+  addOnEvent(ref, "create", callback, PRECEDENCE_MAX);
 
   // Trigger on leave tab group event
   callback = "onLeaveTabGroup()";
-  addOnEvent(ref, event, callback, PRECEDENCE_MAX);
+  addOnEvent(ref, "show", callback, PRECEDENCE_MAX);
 }
 
-for (tg : getTabGroups()) {
+for (String tg : getTabGroups()) {
   if (isFlaggedNodata(tg))
     continue;
 
@@ -830,7 +832,7 @@ for (tg : getTabGroups()) {
       tg,
       "prefetch",
       "NUM_FETCHES_OCCURING.incrementAndGet()",
-      Integer.MAX_VALUE
+      PRECEDENCE_MAX
   );
   addOnEvent(
       tg,
@@ -1925,7 +1927,7 @@ void inheritFieldValue(
     boolean doFindVocabId
 ) {
   String fun = "";
-  fun += "if (!{check} || getDisplayedTabGroup().equals(\"{parent}\"))";
+  fun += "if (!{check} || getPreviouslyDisplayedTabGroup().equals(\"{parent}\"))";
   fun += "  copyFieldValue(\"{src}\", \"{dst}\", {find})";
 
   fun = replaceFirst(fun, "{check}",  doCheckParent + "");
