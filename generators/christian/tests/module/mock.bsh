@@ -394,3 +394,5 @@ void writeBluetoothMessage(String message) { return; }
 void createBluetoothConnection(String s, int i) { return; }
 void destroyBluetoothConnection() { return; }
 boolean isBluetoothConnected() { return false; }
+void addNavigationButton(String name, ActionButtonCallback callback) { return; }
+void addNavigationButton(String name, ActionButtonCallback callback, String type) { return; }
