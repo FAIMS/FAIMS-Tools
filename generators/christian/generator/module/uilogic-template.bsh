@@ -1883,23 +1883,24 @@ boolean copyFieldValue(String src, String dst) {
  *                 `getFieldValue` is copied, without any database accesses.
  */
 boolean copyFieldValue(String src, String dst, Boolean doFindVocabId) {
-  String vocabIdSrc   = getFieldValue(src);
-  String vocabNameSrc = getFieldValue(src, true);
-
-  String attrNameSrc = getAttributeName(src);
-  String attrNameDst = getAttributeName(dst);
-
-  if (attrNameSrc.equals(attrNameDst) || !doFindVocabId) {
-    setFieldValue(dst, vocabIdSrc);
+  if (!doFindVocabId) {
+    String valSrc = getFieldValue(src);
+    setFieldValue(dst, valSrc);
     return true;
   }
 
-  if (setMenuValue(dst, vocabNameSrc))
-    return true;
+  String valSrc;
+  if (hasMenuType(src)) valSrc = getMenuValue (src);
+  else                  valSrc = getFieldValue(src);
 
-  // Fall back to dumb field copying
-  copyFieldValue(src, dst, false);
-  return false;
+  if (hasMenuType(dst)) setMenuValue (dst, valSrc);
+  else                  setFieldValue(dst, valSrc);
+
+  String valDst;
+  if (hasMenuType(dst)) valDst = getMenuValue (dst);
+  else                  valDst = getFieldValue(dst);
+
+  return valDst.equals(valSrc);
 }
 
 void clearField(String ref) {
