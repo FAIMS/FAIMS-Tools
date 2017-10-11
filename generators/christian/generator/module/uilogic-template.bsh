@@ -197,6 +197,8 @@ String function2callableString(String function, Object[] args) {
 /******************************************************************************/
 String  PREVIOUSLY_DISPLAYED_TAB_GROUP = "";
 String  CURRENTLY_DISPLAYED_TAB_GROUP  = "";
+String  PREVIOUSLY_DISPLAYED_TAB       = "";
+String  CURRENTLY_DISPLAYED_TAB        = "";
 Map     REF_TO_TYPE                    = new HashMap();
 HashSet DATA_REFS                      = new HashSet();
 HashSet NO_UI_REFS                     = new HashSet();
@@ -302,7 +304,7 @@ HashSet getTabGroupsAsHashSet() {
   return TAB_GROUPS_AS_HASH_SET;
 }
 
-List getTabs() { return getTabGroupsAsList(); }
+List getTabs() { return getTabsAsList(); }
 List getTabsAsList() { return TABS_AS_LIST; }
 
 HashSet getTabsAsHashSet() {
@@ -353,6 +355,22 @@ boolean isFlaggedNodata(String tabGroup) {
   return flaggedTabGroups.contains(tabGroup);
 }
 
+void updateDisplayedTab(String tab) {
+  if (tab.equals(CURRENTLY_DISPLAYED_TAB))
+    return;
+
+  PREVIOUSLY_DISPLAYED_TAB = CURRENTLY_DISPLAYED_TAB;
+  CURRENTLY_DISPLAYED_TAB  = tab;
+}
+
+String getPreviouslyDisplayedTab() {
+  return PREVIOUSLY_DISPLAYED_TAB;
+}
+
+String getDisplayedTab() {
+  return CURRENTLY_DISPLAYED_TAB;
+}
+
 void updateDisplayedTabGroup(String tabGroup) {
   if (tabGroup.equals(CURRENTLY_DISPLAYED_TAB_GROUP))
     return;
@@ -374,7 +392,8 @@ String getDisplayedTabGroup() {
 }
 
 boolean isDisplayed(String ref) {
-  return getDisplayedTabGroup().equals(ref);
+  return getDisplayedTabGroup().equals(ref) ||
+         getDisplayedTab     ().equals(ref);
 }
 
 String getTabGroupRef(String fullRef) {
@@ -772,6 +791,19 @@ void bindOnEvents() {
   }
 }
 
+void onLeaveTab() {
+  onLeaveTabGroup(getPreviouslyDisplayedTab());
+}
+
+/* Execute the "leave" event for the tab group at `ref` if a callback for it
+ * exists.
+ */
+void onLeaveTabGroup(String ref) {
+  String event    = "leave";
+  String stmtsStr = getStatementsString(ref, event);
+  execute(stmtsStr);
+}
+
 void onLeaveTabGroup() {
   onLeaveTabGroup(getPreviouslyDisplayedTabGroup());
 }
@@ -808,8 +840,9 @@ boolean isDoingFetchEvent() {
   return NUM_FETCHES_OCCURING.get() > 0;
 }
 
-/* Establishes `onEvent` bindings necessary to make the "leave" event work. The
- * "leave" event is really triggered upon "show" of another tab.
+/* Establishes `onEvent` bindings necessary to make the "leave" event work for
+ * tab groups. The "leave" event is really triggered upon "show" of another tab
+ * group.
  */
 for (String ref : getTabGroups()) {
   String callback;
@@ -821,6 +854,21 @@ for (String ref : getTabGroups()) {
 
   // Trigger on leave tab group event
   callback = "onLeaveTabGroup()";
+  addOnEvent(ref, "show", callback, PRECEDENCE_MAX);
+}
+
+/* Establishes `onEvent` bindings necessary to make the "leave" event work for
+ * tabs. The "leave" event is really triggered upon "show" of another tab.
+ */
+for (String ref : getTabs()) {
+  String callback;
+
+  // Update (previously) displayed tab group
+  callback = fun2str("updateDisplayedTab", ref);
+  addOnEvent(ref, "show",   callback, PRECEDENCE_MAX);
+
+  // Trigger on leave tab group event
+  callback = "onLeaveTab()";
   addOnEvent(ref, "show", callback, PRECEDENCE_MAX);
 }
 
