@@ -42,9 +42,9 @@ public class DatabaseUtils {
 }
 
 public class Log {
-  public static e(String s1, String s2) { print(s1 + ": " + s2); }
-  public static d(String s1, String s2) { print(s1 + ": " + s2); }
-  public static w(String s1, String s2) { print(s1 + ": " + s2); }
+  public static e(String s1, String s2) { stdout(s1 + ": " + s2); }
+  public static d(String s1, String s2) { stdout(s1 + ": " + s2); }
+  public static w(String s1, String s2) { stdout(s1 + ": " + s2); }
 }
 
 public abstract class Attribute {
@@ -346,8 +346,8 @@ void setSyncDelay(float f) { return; }
 void setSyncEnabled(boolean b) { return; }
 void setSyncMaxInterval(float f) { return; }
 void setSyncMinInterval(float f) { return; }
-void showToast(String s) { print(funName() + s1); }
-void showWarning(String s1, String s2) { print(funName() + s1 + " | " + s2); }
+void showToast(String s) { stdout(funName() + s1); }
+void showWarning(String s1, String s2) { stdout(funName() + s1 + " | " + s2); }
 void showDatabaseLayer(String ref, String layerName, boolean isEntity, String queryName, String querySql,GeometryStyle pointStyle, GeometryStyle lineStyle, GeometryStyle polygonStyle, GeometryTextStyle textStyle) { return; }
 void startExternalGPS() { return; }
 void startInternalGPS() { return; }
@@ -372,7 +372,7 @@ EntityAttribute createEntityAttribute(String name, String text, String vocab, St
 String attachFile(String filePath, boolean sync, String dir, String callback) { eval(callback); return "path/to/file"; }
 Dialog showBusy(String s1, String s2) { return null; }
 void saveArchEnt(String s1, String s2, List l1, List l2, SaveCallback c) {
-  print(funName() + "\n        " + s1 + " | " + s2 + " | " + l1 + " | " + l2);
+  stdout(funName() + "\n        " + s1 + " | " + s2 + " | " + l1 + " | " + l2);
   if (c != null) c.onSave("uuid", true);
 }
 String getAttachedFilePath(String s) { return ""; }

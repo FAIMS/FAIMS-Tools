@@ -5,6 +5,28 @@ String funName() {
   return namespace.getInvocationLine() + ": " + namespace.getInvocationText();
 }
 
+String getStdout(Object runnable) {
+  // Create a stream to hold the output
+  ByteArrayOutputStream baos = new ByteArrayOutputStream();
+  PrintStream ps = new PrintStream(baos);
+  // IMPORTANT: Save the old System.out!
+  PrintStream old = System.out;
+  // Tell Java to use your special stream
+  System.setOut(ps);
+  // Print some output: goes to your special stream
+  runnable.run();
+  // Put things back
+  System.out.flush();
+  System.setOut(old);
+  // Show what happened
+  return baos.toString();
+}
+
+void stdout(String s) {
+  // Alternative to `print` which allows stdout to be grabbed using `getStdout`
+  System.out.println(s);
+}
+
 sourceRelative("mock.bsh");
 sourceRelative("../module/ui_logic.bsh");
 print("");
