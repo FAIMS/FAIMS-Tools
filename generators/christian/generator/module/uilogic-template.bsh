@@ -46,6 +46,13 @@ void assert(boolean condition) {
   throw new Exception(msg);
 }
 
+// Like `any` in Python
+boolean any(List booleans) {
+  for (b : booleans)
+    if (b) return true;
+  return false;
+}
+
 /******************************************************************************/
 /*                                STRING UTILS                                */
 /******************************************************************************/
@@ -108,6 +115,37 @@ String escape(String s) {
   dict.put('\r', "\\r" );
 
   return translate(s, dict);
+}
+
+Map MEMOISED_FILTERED_BY_REGEX = new HashMap();
+
+List filterListByRegex(List unfiltered, String regex, boolean forceUpdate) {
+  // Return a copy of the memoised result if possible. It's important to return
+  // a copy because if the contents of the list are modified, memoisation will
+  // break.
+  List key = new ArrayList();
+  key.add(unfiltered);
+  key.add(regex);
+
+  List memoised = MEMOISED_FILTERED_BY_REGEX.get(key);
+  if (memoised != null && !forceUpdate)
+    return new ArrayList(memoised);
+
+  // Compute the filtered list
+  List filteredList;
+  Set  filteredSet = new HashSet();
+  for (element : unfiltered)
+    if (element.matches(regex))
+      filteredSet.add(element);
+  filteredList = new ArrayList(filteredSet);
+
+  // Memoise and return
+  MEMOISED_FILTERED_BY_REGEX.put(key, filteredList);
+  return new ArrayList(filteredList);
+}
+
+List filterListByRegex(List unfiltered, String regex) {
+  return filterListByRegex(unfiltered, regex, false);
 }
 
 String getRandomString(int len) {
@@ -211,6 +249,8 @@ HashSet TAB_GROUPS_AS_HASH_SET         = null;
 List    TABS_AS_LIST                   = new ArrayList();
 HashSet TABS_AS_HASH_SET               = null;
 HashMap ATTRIB_NAMES_NON_STANDARD      = new HashMap();
+List    NODATA_TAB_GROUPS              = new ArrayList();
+{{is-flagged-nodata}}
 
 {{refs-to-types}}
 
@@ -350,9 +390,7 @@ boolean hasMediaType(String ref) {
 }
 
 boolean isFlaggedNodata(String tabGroup) {
-  List flaggedTabGroups = new ArrayList();
-  {{is-flagged-nodata}}
-  return flaggedTabGroups.contains(tabGroup);
+  return NODATA_TAB_GROUPS.contains(tabGroup);
 }
 
 void updateDisplayedTab(String tab) {
@@ -515,6 +553,15 @@ String getArchEntTypePascalCased(String ref) {
   }
 
   return archEntType.replaceAll(" ", "");
+}
+
+List getRefsMatching(String pattern) {
+  Map dict = new HashMap();
+  dict.put('/', "\\/");
+  dict.put('*', ".*");
+  String regex = translate(pattern, dict);
+
+  return filterListByRegex(getRefs(), regex);
 }
 
 /******************************************************************************/

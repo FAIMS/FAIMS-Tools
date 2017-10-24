@@ -157,7 +157,7 @@ def getNodataTabGroups(tree, t):
     nodes = util.schema.getTabGroups(tree, keep=isNodata)
     refs  = [util.schema.getPathString(tg) for tg in nodes]
 
-    fmt          = 'flaggedTabGroups.add("%s");'
+    fmt          = 'NODATA_TAB_GROUPS.add("%s");'
     placeholder  = '{{is-flagged-nodata}}'
     replacement  = format(refs, fmt, indent='  ')
 
@@ -284,12 +284,12 @@ def getNodataMenus(tree, t):
     parentNodes    = [util.schema.getParentGuiDataElement(n) for n in noDataOptNodes]
 
     refs = [util.schema.getPathString(n) for n in parentNodes]
+    vals = [util.arch16n.getArch16nVal(n) for n in noDataOptNodes]
     keys = [util.arch16n.getArch16nKey(n) for n in noDataOptNodes]
-    vals = keys
 
     placeholder = '{{nodata-menus}}'
     fmt         = 'addNodataDropdownEntry("%s", "%s", "%s");'
-    replacement = format(zip(refs, keys, vals), fmt)
+    replacement = format(zip(refs, vals, keys), fmt)
 
     return t.replace(placeholder, replacement)
 
