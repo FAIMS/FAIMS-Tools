@@ -89,13 +89,13 @@ def getAttribType(node, isSpecific=False):
     return ''
 
 def hasMeasureType(node):
-    return schema.getUiType(node) in MEASURE_UI_TYPES
+    return schema.getUiType(node, True) in MEASURE_UI_TYPES
 
 def hasFileType(node):
-    return schema.getUiType(node) in FILE_UI_TYPES
+    return schema.getUiType(node, True) in FILE_UI_TYPES
 
 def hasVocabType(node):
-    return schema.getUiType(node) in MENU_UI_TYPES
+    return schema.getUiType(node, True) in MENU_UI_TYPES
 
 def getRelName(node):
     if not xml.hasAttrib(node, ATTRIB_LC):     return ''
