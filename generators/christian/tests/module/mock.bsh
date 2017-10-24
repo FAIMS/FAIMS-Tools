@@ -41,6 +41,29 @@ public class DatabaseUtils {
   }
 }
 
+public class MapPos {
+  public MapPos(double d1, double d2) {
+  }
+}
+
+public class PointStyle {
+  public PointStyle() { }
+}
+
+public class Label {
+  public Label() { }
+}
+
+public class StyleSet {
+  public StyleSet() { }
+}
+
+public class Point {
+  public Point(MapPos mapPos, Label label, PointStyle pointStyle, java.lang.Object userData) { }
+  public Point(MapPos mapPos, Label label, StyleSet styles, java.lang.Object userData) { }
+  public Point(MapPos mapPos) { }
+}
+
 public class Log {
   public static e(String s1, String s2) { print(s1 + ": " + s2); }
   public static d(String s1, String s2) { print(s1 + ": " + s2); }
@@ -317,8 +340,8 @@ boolean isBluetoothConnected() {return true;}
 boolean isExternalGPSOn() { return true;}
 boolean isInternalGPSOn() { return true;}
 boolean isNull(String s) { return s == null || "".equals(s); }
-void addActionBarItem(String s, ActionButtonCallback c) { if (c != null) c.actionOn(); }
-void addActionBarItem(String s, ToggleActionButtonCallback c) { if (c != null) c.actionOff(); }
+void addActionBarItem(String s, ActionButtonCallback c) { }
+void addActionBarItem(String s, ToggleActionButtonCallback c) { }
 void execute(String s) { eval(s); }
 void fetchAll(String s) { fetchAll(s, null); }
 void fetchAll(String s, FetchCallback c) { if (c != null) c.onFetch(null); }
@@ -346,8 +369,8 @@ void setSyncDelay(float f) { return; }
 void setSyncEnabled(boolean b) { return; }
 void setSyncMaxInterval(float f) { return; }
 void setSyncMinInterval(float f) { return; }
-void showToast(String s) { print(funName() + s1); }
-void showWarning(String s1, String s2) { print(funName() + s1 + " | " + s2); }
+void showToast(String s) { print("showToast: " + s1); }
+void showWarning(String s1, String s2) { print("showWarning: " + s1 + " | " + s2); }
 void showDatabaseLayer(String ref, String layerName, boolean isEntity, String queryName, String querySql,GeometryStyle pointStyle, GeometryStyle lineStyle, GeometryStyle polygonStyle, GeometryTextStyle textStyle) { return; }
 void startExternalGPS() { return; }
 void startInternalGPS() { return; }
@@ -396,3 +419,7 @@ void destroyBluetoothConnection() { return; }
 boolean isBluetoothConnected() { return false; }
 void addNavigationButton(String name, ActionButtonCallback callback) { return; }
 void addNavigationButton(String name, ActionButtonCallback callback, String type) { return; }
+void stopTrackingGPS() { return; }
+void startTrackingGPS(String type, int value, String callback){ return; }
+List createAttributeList() { return new ArrayList(); }
+Object getGPSHeading() { return null; }
