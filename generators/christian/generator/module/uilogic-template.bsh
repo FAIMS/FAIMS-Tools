@@ -718,6 +718,8 @@ void addToOnEventPriorities(
   assert(precedence >= 0);
   assert(precedence <= Integer.MAX_VALUE);
 
+  validateRef(ref);
+
   String    key = getOnEventKey       (ref, event);
   ArrayList val = getOnEventPriorities(ref, event, map);
 
@@ -768,6 +770,8 @@ boolean hasOnEvent(String ref, String event, String statement) {
 }
 
 void delOnEvent(String ref, String event, String statement) {
+  validateRef(ref);
+
   String    key = getOnEventKey(ref, event);
   ArrayList val = (ArrayList) ON_EVT_STMTS.get(key);
 
@@ -782,12 +786,10 @@ void delOnEvent(String ref, String event, String statement) {
 }
 
 void addOnEvent(String ref, String event, String statement, int precedence) {
-  validateRef(ref);
   addToOnEventPriorities(ref, event, statement, precedence, ON_EVT_STMTS);
 }
 
 void addOnEventCond(String ref, String event, String check) {
-  validateRef    (ref);
   addToOnEventPriorities(ref, event, check, PRECEDENCE_MID, ON_EVT_CONDS);
 }
 
