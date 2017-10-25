@@ -71,7 +71,8 @@ def getDataRefs(tree, t):
 def getNoUiRefs(tree, t):
     isNoUi = lambda e: util.schema.isFlagged(e, FLAG_NOUI)
 
-    nodes = util.schema.getGuiDataElements(tree, isNoUi)
+    nodes = util.schema.getGuiDataElements(tree, isNoUi) + \
+            util.schema.getTabGroups(tree, keep=isNoUi)
     refs  = [util.schema.getPathString(n) for n in nodes]
     types = [util.schema.getUiType(n)     for n in nodes]
 
