@@ -53,6 +53,22 @@ boolean any(List booleans) {
   return false;
 }
 
+String listToSqlString(List l){
+  String sqlString = "(";
+  for (int i = 0; i < l.size() - 1; i++) {
+    element = l.get(i);
+    sqlString += "'" + element + "', ";
+  }
+  if (l.size() > 0) {
+    int lastIndex = l.size() - 1;
+    element = l.get(lastIndex);
+    sqlString += "'" + element + "'";
+  }
+  sqlString += ")";
+
+  return sqlString;
+}
+
 /******************************************************************************/
 /*                                STRING UTILS                                */
 /******************************************************************************/
@@ -534,6 +550,19 @@ String getAttributeName(String ref) {
     return ATTRIB_NAMES_NON_STANDARD.get(ref);
 
   return guiElementRef.replaceAll("_", " ");
+}
+
+List getAttribsMatchingRef(String pattern) {
+  Set attribsSet;
+
+  List attribsList = new ArrayList();
+  for (ref : getRefsMatching(pattern))
+    attribsList.add(getAttributeName(ref));
+
+  attribsSet  = new HashSet(attribsList);
+  attribsList = new ArrayList(attribsSet);
+
+  return attribsList;
 }
 
 String getArchEntType(String ref) {
