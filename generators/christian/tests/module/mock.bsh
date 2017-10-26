@@ -424,3 +424,4 @@ void startTrackingGPS(String type, int value, String callback){ return; }
 List createAttributeList() { return new ArrayList(); }
 Object getGPSHeading() { return null; }
 void addDatabaseLayerQuery(String ref, String name, String sql) { return; }
+void refreshTabgroupCSS(String ref) { return; }
