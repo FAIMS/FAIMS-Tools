@@ -38,4 +38,7 @@ try {
       "=== NO TESTS IMPLEMENTED. TESTS SHOULD BE PLACED IN " +
       "`tests/tests.bsh`. ==="
   );
+} catch (Exception e) {
+  print(e);
+  print("=== ONE OR MORE TESTS FAILED ===");
 }
