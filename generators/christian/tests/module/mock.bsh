@@ -425,3 +425,4 @@ List createAttributeList() { return new ArrayList(); }
 Object getGPSHeading() { return null; }
 void addDatabaseLayerQuery(String ref, String name, String sql) { return; }
 void refreshTabgroupCSS(String ref) { return; }
+void refreshMap(String ref) { return; }
