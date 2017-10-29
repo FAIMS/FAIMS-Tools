@@ -2292,7 +2292,7 @@ boolean populateMenu(
     default:
       Log.e(
           "populateMenu()",
-          "Can't populate vocab; type not recognised"
+          "Can't populate vocab; type '" + type + "' not recognised"
       );
       return false;
   }
