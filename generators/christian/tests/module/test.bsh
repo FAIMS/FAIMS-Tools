@@ -27,9 +27,30 @@ void stdout(String s) {
   System.out.println(s);
 }
 
+void validateRefs() {
+  Set  ignore = new HashSet(); ignore.add("REF_TO_TYPE");
+  List vars   = Arrays.asList(super.namespace.getVariableNames());
+  List refs   = new ArrayList();
+
+  for (var : vars) {
+    if (ignore.contains(var))    continue;
+    if (!var.startsWith("REF_")) continue;
+
+    refs.add("" + eval(var));
+  }
+
+  for (ref : refs)
+    if (!isValidRef(ref))
+      throw new Exception("Ref '" + ref + "' may not refer to a UI element");
+}
+
 sourceRelative("mock.bsh");
 sourceRelative("../module/ui_logic.bsh");
+
+validateRefs();
+print("=== ALL VARIABLES STARTING WITH 'REF' CONTAIN VALID REFS ===");
 print("");
+
 try {
   sourceRelative("tests.bsh");
   print("=== ALL TESTS PASSED ===");
