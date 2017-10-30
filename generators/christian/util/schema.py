@@ -483,8 +483,8 @@ def normaliseImpliedFmtInTabGroup(schemaTabGroup):
 
     # Get fmt strings
     # Replaces "my{{Identifer}}isgreat" with "my$0isgreat" in each chunk and
-    # Replaces "my{{Identifer if $0 then "$0" }}isgreat" with "my{{Identifer if
-    # $0 then "$0" }}isgreat"
+    # replaces "my{{Identifer if $0 then "$0" }}isgreat" with "my{{ if $0 then
+    # "$0" }}isgreat"
     fmtStrs = [re.sub(reAttrib, '{{\\4}}', chunk) for chunk in chunks]
     fmtStrs = [fmtStr.replace('{{}}', '$0') for fmtStr in fmtStrs]
 
