@@ -439,16 +439,27 @@ def normaliseImpliedFlags(node):
 def normaliseImpliedFmt(node):
     # <fmt>{{Attrib_Name}}</fmt> implies <Attrib_Name f="id>...
     nodes = util.schema.getTabGroups(node)
+    invalidAttribNames = []
     for n in nodes:
-        normaliseImpliedFmtInTabGroup(n)
+        invalidAttribNames += normaliseImpliedFmtInTabGroup(n)
+
+    return invalidAttribNames
 
 def normaliseImpliedFmtInTabGroup(schemaTabGroup):
-    newFmtStr = schemaTabGroup.xpath('./fmt')
-    if len(newFmtStr) == 0:
-        return
-    if not newFmtStr[0].text:
-        return
-    newFmtStr = newFmtStr[0].text
+    ''' Converts the `<fmt>` tags which are direct children of tab groups into
+        `<fmt>` tags which are direct children of GUI/Data elements.
+
+        Returns the curly brace-enclosed components of the tab group's `<fmt>`
+        text which did not refer to a GUI/Data element.
+    '''
+    newFmtStrNodes = schemaTabGroup.xpath('./fmt')
+    if len(newFmtStrNodes) == 0:
+        return []
+
+    newFmtStrNode = newFmtStrNodes[0]
+    if not newFmtStrNode.text:
+        return []
+    newFmtStr = newFmtStrNode.text
     newFmtStr = newFmtStr.strip()
 
     reChunk   = '((?!}}).)+((?!{{).)+'
@@ -486,14 +497,19 @@ def normaliseImpliedFmtInTabGroup(schemaTabGroup):
 
     # Convert attrib names to nodes
     attribNodes = []
+    invalidAttribNames = []
     for aName in attribNames:
         getByTag = lambda n: n.tag == aName
         nodes = util.data.getProps(schemaTabGroup, keep=getByTag)
+
+        if len(nodes) == 0:
+            invalidAttribNames.append((aName, newFmtStrNode))
+
         if len(nodes) > 0:
             node = nodes[0]
             attribNodes.append(node)
 
-    # Get fmt positions
+    # Get fmt positions (i.e. the positions they should take in the data schema)
     fmtPoss = [str(i) for i in range(len(fmtStrs))]
 
     # Add str tags to the affected attribNodes if they don't exist
@@ -514,6 +530,8 @@ def normaliseImpliedFmtInTabGroup(schemaTabGroup):
         posNode = etree.SubElement(strNode, TAG_POS); posNode.text = fmtPos
 
         aNode.append(strNode)
+
+    return invalidAttribNames
 
 def normaliseSignup(node):
     isSignup = lambda e: getLink(e) == LINK_SIGNUP

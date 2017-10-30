@@ -525,6 +525,16 @@ helpers.eMsg(msg, matches)
 
 ################################################################################
 
+msg  = 'GUI/Data elements referenced in <fmt> elements do not exist in their '
+msg += 'parent tab groups'
+
+matches = util.schema.normaliseImpliedFmt(tree)
+if len(matches): locations, nodes = zip(*matches)
+else:            locations, nodes = [], []
+helpers.eMsg(msg, nodes, moreLocations=locations)
+
+################################################################################
+
 print 'Validation completed with %s error(s) and %s warning(s).' % (
         validator.NUM_E,
         validator.NUM_W
