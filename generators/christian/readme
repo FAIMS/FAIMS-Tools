@@ -535,6 +535,16 @@ DIRECTIVES
   path/to/file.
 ________________________________________________________________________________
 
+UNIT TESTING
+
+  FAIMS-Tools generates files for unit testing whenever a module is compiled.
+  These get placed in the `tests` directory (relative to the `module.xml` file).
+  Unit tests are implemented in `tests/tests.bsh`. Executing `tests/test.bsh`
+  runs all tests in `tests.bsh`.
+
+  More information can be found on the FAIMS Wiki, at https://faimsproject.atlassian.net/wiki/spaces/FAIMS/pages/89161789/Unit+Testing+for+Modules
+________________________________________________________________________________
+
 KNOWN ISSUES
 
   Arbitrarily nested group elements cannot be specified within a tab. For
