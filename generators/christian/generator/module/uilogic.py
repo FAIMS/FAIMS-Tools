@@ -774,7 +774,7 @@ def getDefsTabGroupBindsDuplicate(tree):
     '\n    onSave(uuid, newRecord) {' \
     '\n      setUuid(tabgroup, uuid);' \
     '\n' \
-    '\n      timedFetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){' \
+    '\n      fetchAll(getDuplicateRelnQuery(uuidOld), new FetchCallback(){' \
     '\n        onFetch(result) {' \
     '\n          Log.e("Module", result.toString());' \
     '\n' \
@@ -795,7 +795,7 @@ def getDefsTabGroupBindsDuplicate(tree):
     '\n  };' \
     '\n' \
     '\n  String extraDupeAttributes = "";' \
-    '\n  timedFetchAll(getDuplicateAttributeQuery(uuidOld, extraDupeAttributes), new FetchCallback(){' \
+    '\n  fetchAll(getDuplicateAttributeQuery(uuidOld, extraDupeAttributes), new FetchCallback(){' \
     '\n    onFetch(result) {' \
     '\n      excludeAttributes = new ArrayList();' \
     '\n' \
