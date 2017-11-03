@@ -426,3 +426,4 @@ Object getGPSHeading() { return null; }
 void addDatabaseLayerQuery(String ref, String name, String sql) { return; }
 void refreshTabgroupCSS(String ref) { return; }
 void refreshMap(String ref) { return; }
+void fetchArchEnt(String id, FetchCallback callback) { if (callback != null) callback.onFetch(null); }
