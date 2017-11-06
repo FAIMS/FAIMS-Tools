@@ -20,6 +20,8 @@ import arch16n
 import itertools
 import os.path
 
+INVALID_ATTRIB_NAMES_IN_FMT = None
+
 def getPath(node, isInitialCall=True):
     nodeTypes = [
             TYPE_GUI_DATA,
@@ -50,6 +52,15 @@ def nodeHash(node, hashLen=10):
     hash = hash.hexdigest()
     hash = hash[:hashLen]
     return hash
+
+def insertIntoInvalidAttribNamesInFmt(attribName):
+    global INVALID_ATTRIB_NAMES_IN_FMT
+
+    if INVALID_ATTRIB_NAMES_IN_FMT == None:
+        INVALID_ATTRIB_NAMES_IN_FMT = []
+
+    if attribName != None:
+        INVALID_ATTRIB_NAMES_IN_FMT.append(attribName)
 
 def filterUnannotated(nodes):
     cond = lambda e: isAnnotated(e)
@@ -439,11 +450,8 @@ def normaliseImpliedFlags(node):
 def normaliseImpliedFmt(node):
     # <fmt>{{Attrib_Name}}</fmt> implies <Attrib_Name f="id>...
     nodes = util.schema.getTabGroups(node)
-    invalidAttribNames = []
     for n in nodes:
-        invalidAttribNames += normaliseImpliedFmtInTabGroup(n)
-
-    return invalidAttribNames
+        normaliseImpliedFmtInTabGroup(n)
 
 def normaliseImpliedFmtInTabGroup(schemaTabGroup):
     ''' Converts the `<fmt>` tags which are direct children of tab groups into
@@ -454,11 +462,13 @@ def normaliseImpliedFmtInTabGroup(schemaTabGroup):
     '''
     newFmtStrNodes = schemaTabGroup.xpath('./fmt')
     if len(newFmtStrNodes) == 0:
-        return []
+        insertIntoInvalidAttribNamesInFmt(None)
+        return
 
     newFmtStrNode = newFmtStrNodes[0]
     if not newFmtStrNode.text:
-        return []
+        insertIntoInvalidAttribNamesInFmt(None)
+        return
     newFmtStr = newFmtStrNode.text
     newFmtStr = newFmtStr.strip()
 
@@ -497,13 +507,14 @@ def normaliseImpliedFmtInTabGroup(schemaTabGroup):
 
     # Convert attrib names to nodes
     attribNodes = []
-    invalidAttribNames = []
     for aName in attribNames:
         getByTag = lambda n: n.tag == aName
         nodes = util.data.getProps(schemaTabGroup, keep=getByTag)
 
         if len(nodes) == 0:
-            invalidAttribNames.append((aName, newFmtStrNode))
+            insertIntoInvalidAttribNamesInFmt(
+                    (aName, schemaTabGroup.tag, newFmtStrNode)
+            )
 
         if len(nodes) > 0:
             node = nodes[0]
@@ -530,8 +541,6 @@ def normaliseImpliedFmtInTabGroup(schemaTabGroup):
         posNode = etree.SubElement(strNode, TAG_POS); posNode.text = fmtPos
 
         aNode.append(strNode)
-
-    return invalidAttribNames
 
 def normaliseSignup(node):
     isSignup = lambda e: getLink(e) == LINK_SIGNUP

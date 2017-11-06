@@ -528,9 +528,15 @@ helpers.eMsg(msg, matches)
 msg  = 'GUI/Data elements referenced in <fmt> elements do not exist in their '
 msg += 'parent tab groups'
 
-matches = util.schema.normaliseImpliedFmt(tree)
-if len(matches): locations, nodes = zip(*matches)
-else:            locations, nodes = [], []
+matches = util.schema.INVALID_ATTRIB_NAMES_IN_FMT
+if len(matches): attribs, tabGroups, nodes = zip(*matches)
+else:            attribs, tabGroups, nodes = [], [], []
+
+locations = [
+        'Referenced element "%s" in tab group "%s"' % (a, t) \
+        for a, t in zip(attribs, tabGroups)
+]
+
 helpers.eMsg(msg, nodes, moreLocations=locations)
 
 ################################################################################
