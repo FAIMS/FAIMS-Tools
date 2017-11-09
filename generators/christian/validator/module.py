@@ -472,8 +472,10 @@ msg += 'elements'
 # By the end of this, `linkerNodes` should contain the elements that:
 #   1) Share a tab group with an element that has f="user"; and
 #   2) Link to a tab group other than that mentioned in 1).
+cond = lambda e: e != None
 userNodes = util.xml.getAll(tree, lambda e: util.schema.isFlagged(e, FLAG_USER))
 parentTabGroups = [util.schema.getParentTabGroup(n) for n in userNodes]
+parentTabGroups = filter(cond, parentTabGroups)
 
 cond = lambda n: util.schema.getParentTabGroup(
                 util.schema.getLinkedNode(n), True
