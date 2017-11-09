@@ -44,7 +44,7 @@ void validateRefs() {
       throw new Exception("Ref '" + ref + "' may not refer to a UI element");
 }
 
-sourceRelative("mock.bsh");
+sourceRelative("mock/mock.bsh");
 sourceRelative("../module/ui_logic.bsh");
 
 validateRefs();

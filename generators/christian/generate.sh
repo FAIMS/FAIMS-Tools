@@ -29,8 +29,8 @@ then
     cp "$thisScriptPath/generator/wireframe/arch16nForWireframe.awk" "$modulePath/wireframe"
     cp "$thisScriptPath/generator/wireframe/wireframeElements.xsl"   "$modulePath/wireframe"
 fi
-cp "$thisScriptPath/tests/module/mock.bsh"                       "$modulePath/tests"
-cp "$thisScriptPath/tests/module/test.bsh"                       "$modulePath/tests"
+cp -r  "$thisScriptPath/tests/module/"*                               "$modulePath/tests/"
+rm -rf "$modulePath/tests/mock/database/formatter"
 
 cd "$thisScriptPath"
 echo "Generating arch16n..."
