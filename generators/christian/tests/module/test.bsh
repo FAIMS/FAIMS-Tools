@@ -1,5 +1,3 @@
-#!/usr/bin/env bsh
-
 String funName() {
   namespace = this.callstack.get(1);
   return namespace.getInvocationLine() + ": " + namespace.getInvocationText();

@@ -30,7 +30,7 @@ then
     cp "$thisScriptPath/generator/wireframe/wireframeElements.xsl"   "$modulePath/wireframe"
 fi
 cp -r  "$thisScriptPath/tests/module/"*                               "$modulePath/tests/"
-rm -rf "$modulePath/tests/mock/database/formatter"
+rm -rf "$modulePath/tests/mock/src"
 
 cd "$thisScriptPath"
 echo "Generating arch16n..."
