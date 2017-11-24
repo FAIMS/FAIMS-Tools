@@ -306,6 +306,8 @@ def getGpsDiagUpdate(tree, t):
 
 def getMap(tree, t):
     mapNodes = util.gui.getAll(tree, UI_TYPE_MAP)
+    mapNodes = mapNodes[:1]
+
     btnCNodes = [n.getnext()[0][0] for n in mapNodes]
     btnRNodes = [n.getnext()[1][0] for n in mapNodes]
     mapRefs   = [util.schema.getPathString(n) for n in mapNodes]
