@@ -427,3 +427,6 @@ void addDatabaseLayerQuery(String ref, String name, String sql) { return; }
 void refreshTabgroupCSS(String ref) { return; }
 void refreshMap(String ref) { return; }
 void fetchArchEnt(String id, FetchCallback callback) { if (callback != null) callback.onFetch(null); }
+void showAlert(String title, String message, String okCallback, String cancelCallback) {
+  stdout("showAlert: " + title + " | " + message + " | " + okCallback + " | " + cancelCallback);
+}
