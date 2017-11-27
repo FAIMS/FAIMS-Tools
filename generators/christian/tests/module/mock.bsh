@@ -369,7 +369,7 @@ void setSyncDelay(float f) { return; }
 void setSyncEnabled(boolean b) { return; }
 void setSyncMaxInterval(float f) { return; }
 void setSyncMinInterval(float f) { return; }
-void showToast(String s) { stdout("showToast: " + s1); }
+void showToast(String s) { stdout("showToast: " + s); }
 void showWarning(String s1, String s2) { stdout("showWarning: " + s1 + " | " + s2); }
 void showDatabaseLayer(String ref, String layerName, boolean isEntity, String queryName, String querySql,GeometryStyle pointStyle, GeometryStyle lineStyle, GeometryStyle polygonStyle, GeometryTextStyle textStyle) { return; }
 void startExternalGPS() { return; }
@@ -430,3 +430,7 @@ void fetchArchEnt(String id, FetchCallback callback) { if (callback != null) cal
 void showAlert(String title, String message, String okCallback, String cancelCallback) {
   stdout("showAlert: " + title + " | " + message + " | " + okCallback + " | " + cancelCallback);
 }
+void showSpatialLayer(String ref, String layerName, String filename, String tableName, String idColumn, String labelColumn, GeometryStyle pointStyle, GeometryStyle lineStyle, GeometryStyle polygonStyle, GeometryTextStyle textStyle) {
+}
+void onMapEvent(String ref, String clickCallback, selectCallback) { }
+List getGeometryHighlights(String ref) { return new ArrayList(); }
