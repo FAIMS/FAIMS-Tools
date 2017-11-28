@@ -1841,6 +1841,13 @@ void insertIntoLocalSettings(String key, Integer val) {
   insertIntoLocalSettings(key, Integer.toString(val));
 }
 
+void deleteFromLocalSettings(String key) {
+  String q = "DELETE FROM localsettings WHERE key=%s";
+  q = dbReplaceFirst(q, key);
+
+  fetchOne(q);
+}
+
 void insertIntoLocalSettingsOnChange(String ref) {
   String val = getFieldValue(ref);
 
@@ -2791,6 +2798,10 @@ Map tabgroupToUuid = Collections.synchronizedMap(new HashMap());
 
 String getUuid(String tabgroup) {
   return tabgroupToUuid.get(tabgroup);
+}
+
+String getUuid() {
+  return getUuid(getDisplayedTabGroup());
 }
 
 void setUuid(String tabgroup, String uuid) {
