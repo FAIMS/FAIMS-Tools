@@ -434,3 +434,4 @@ void showSpatialLayer(String ref, String layerName, String filename, String tabl
 }
 void onMapEvent(String ref, String clickCallback, selectCallback) { }
 List getGeometryHighlights(String ref) { return new ArrayList(); }
+void setMapFocusPoint(String ref, double longitude, double latitude) { }
