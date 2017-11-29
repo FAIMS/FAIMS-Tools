@@ -9,6 +9,19 @@ if [ "$WIREFRAME" != "true" ]
 then
     echo "Notice: Wireframe not being generated. Run this script using the -w" \
       "argument to produce a wireframe."
+    echo
+fi
+
+if [ $(check_backwards_compatibility) = "0" ]
+then
+
+    echo -e "Notice: The module produced during this run may be broken as it" \
+      "was originally compiled with a different version of FAIMS-Tools. To" \
+      "compile it with the same version (recommended), run the following" \
+      "command in your FAIMS-Tools directory:\n" \
+      "  git checkout $(prev_build_autogen_hash)\n" \
+      "\bThis message will not be displayed next run."
+    echo
 fi
 
 cd "$modulePath" >/dev/null
