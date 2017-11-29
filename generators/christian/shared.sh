@@ -17,12 +17,13 @@ done
 
 modulePath=$( dirname  $( readlink -e "$module" ))
 moduleName=$( basename $( readlink -e "$module" ))
+thisScriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 check_last_run_ended_cleanly() {
     if [ -f ".$module.original" ]
     then
-        echo "A previous run terminated unexpectedly. A backup of '$module' " \
-          "was saved as '.$module.original'. Please either restore or delete " \
+        echo "A previous run terminated unexpectedly. A backup of '$module'" \
+          "was saved as '.$module.original'. Please either restore or delete" \
           "this backup file before running this script. Exiting."
         exit
     else
@@ -49,6 +50,49 @@ clean_up() {
     exit
 }
 trap clean_up SIGHUP SIGINT SIGTERM
+
+prev_build_autogen_hash() {
+    logicFilePath="$modulePath/module/ui_logic.bsh"
+
+    if [ -f "$logicFilePath" ]
+    then
+        sed \
+          -e 's/.* //g' \
+          -e '2q' \
+          -e 'd' \
+          "$logicFilePath"
+    else
+        printf ""
+    fi
+}
+
+this_build_autogen_hash() {
+    cd "$thisScriptPath" >/dev/null
+
+    git log | sed \
+      -e 's/.* //g' \
+      -e '1q'
+
+    cd - >/dev/null
+}
+
+check_backwards_compatibility() {
+    prevHash=$(prev_build_autogen_hash)
+    thisHash=$(this_build_autogen_hash)
+
+    if [ "$prevHash" = "" ]
+    then
+        printf "1"
+        return 0
+    fi
+
+    if [ "$prevHash" = "$thisHash" ]
+    then
+        printf "1"
+    else
+        printf "0"
+    fi
+}
 
 apply_source_directives() {
     # In module.xml, replace any line <!--@SOURCE: path/to/file--> with the contents
