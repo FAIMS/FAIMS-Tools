@@ -531,8 +531,8 @@ msg  = 'GUI/Data elements referenced in <fmt> elements do not exist in their '
 msg += 'parent tab groups'
 
 matches = util.schema.INVALID_ATTRIB_NAMES_IN_FMT
-if len(matches): attribs, tabGroups, nodes = zip(*matches)
-else:            attribs, tabGroups, nodes = [], [], []
+if matches: attribs, tabGroups, nodes = zip(*matches)
+else:       attribs, tabGroups, nodes = [], [], []
 
 locations = [
         'Referenced element "%s" in tab group "%s"' % (a, t) \
