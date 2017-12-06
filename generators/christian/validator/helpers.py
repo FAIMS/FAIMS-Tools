@@ -7,14 +7,10 @@ import util.xml
 import validator
 
 def wMsg(notice, nodes=None, expected=None, moreLocations=None):
-    if expected is None: expected = []
-
     notice = 'WARNING: ' + notice
     if printNotice(notice, nodes, expected, moreLocations): validator.NUM_W += 1
 
 def eMsg(notice, nodes=None, expected=None, moreLocations=None):
-    if expected is None: expected = []
-
     notice = 'ERROR:   ' + notice
     if printNotice(notice, nodes, expected, moreLocations): validator.NUM_E += 1
 
@@ -24,7 +20,8 @@ def printNotice(notice, nodes=None, expected=None, moreLocations=None):
         nodes = filter(lambda x: x.sourceline != None, nodes)
 
     if moreLocations == None:
-        pathStrings   = [util.schema.getPathString(node) for node in nodes]
+        pathNodes     = nodes or []
+        pathStrings   = [util.schema.getPathString(node) for node in pathNodes]
         moreLocations = [
                 ' (%s)' % pathString if pathString else '' \
                 for pathString in pathStrings
