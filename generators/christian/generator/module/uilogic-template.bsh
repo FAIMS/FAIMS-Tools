@@ -5,6 +5,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 // Beanshell won't let me write "\0".
 final String SEP = Character.toString ((char) 0);
 
+final String MSG_LOADING = "Loading...";
+
 final String USER_MENU_PATH = "{{user-menu-path}}";
 userMenuPath = USER_MENU_PATH; // Depricated. Use `USER_MENU_PATH` instead
 
@@ -627,7 +629,7 @@ List getRefsMatching(String pattern) {
 /* loaded, including the execution of any asynchronous functions.)            */
 /*                                                                            */
 /* Importantly, a single call to `bindOnEvents` must occur after all the      */
-/* `addOnEvent` and `delOnEvents` calls. Calling `bindOnEvents` is what       */
+/* `addOnEvent` and `delOnEvent` calls. Calling `bindOnEvents` is what        */
 /* actually establishes the bindings once they have been added to the         */
 /* accumulator.                                                               */
 /******************************************************************************/
@@ -790,6 +792,8 @@ String getStatementsString(String ref, String event) {
 }
 
 void executeOnEvent(String ref, String event) {
+  validateRef(ref);
+
   String stmtsStr = getStatementsString(ref, event);
   execute(stmtsStr);
 }
@@ -812,6 +816,13 @@ void delOnEvent(String ref, String event, String statement) {
     if (statement.equals(obj.get(0)))
       i.remove();
   }
+}
+
+void delOnEvents(String ref, String event) {
+  validateRef(ref);
+
+  String key = getOnEventKey(ref, event);
+  ON_EVT_STMTS.remove(key);
 }
 
 void addOnEvent(String ref, String event, String statement, int precedence) {
@@ -2310,6 +2321,13 @@ boolean populateMenu(String ref, List entries) {
   return populateMenu(null, ref, "", entries, true);
 }
 
+void populateMenu(String ref, String entry) {
+  List entries  = new ArrayList();
+  entries.add(new NameValuePair(entry, ""));
+
+  populateMenu(ref, entries);
+}
+
 /******************************************************************************/
 /*                             MENU VALUE GETTER                              */
 /*                                                                            */
@@ -2655,6 +2673,8 @@ addActionBarItem("external_gps", new ToggleActionButtonCallback() {
 /******************************************************************************/
 /*                                 USER LOGIN                                 */
 /******************************************************************************/
+boolean USER_MENU_IS_LOADED = false;
+
 void populateListForUsers(){
   String q = "";
   q  = " SELECT          userid ";
@@ -2667,11 +2687,17 @@ void populateListForUsers(){
   q += "   FROM user ";
   q += "  WHERE userdeleted is null";
 
-  fetchAll(q, new FetchCallback() {
+
+  FetchCallback callback = new FetchCallback() {
     onFetch(result) {
       populateMenu(USER_MENU_PATH, result);
+      USER_MENU_IS_LOADED = true;
     }
-  });
+  };
+
+  USER_MENU_IS_LOADED = false;
+  populateMenu(USER_MENU_PATH, MSG_LOADING);
+  fetchAll(q, callback);
 }
 
 String getUserMenuValue(int i) {
@@ -2719,6 +2745,8 @@ if (!isNull(USER_MENU_PATH)) {
 
   addOnEvent(USER_MENU_PATH, "show",  "populateListForUsers()");
   addOnEvent(USER_MENU_PATH, "click", "selectUser()");
+
+  addOnEventCond(USER_MENU_PATH, "click", "USER_MENU_IS_LOADED");
 }
 
 {{binds-on-click-signup}}
@@ -3026,10 +3054,9 @@ void saveEntitiesToRel(String type, String entity1, String entity2, String callb
 /** Saves two entity id's as a hierachical relation with some callback executed. **/
 void saveEntitiesToHierRel(String type, String entity1, String entity2, String e1verb, String e2verb, String callback) {
   if (isNull(entity1) || isNull(entity2)) return;
-  saveRel(null, type, null, null, new SaveCallback() {
-    onSave(rel_id, newRecord) {
-      addReln(entity1, rel_id, e1verb);
-      addReln(entity2, rel_id, e2verb);
+
+  SaveCallback execCallback = new SaveCallback() {
+    onSaveAssociation(entity_id, rel_id) {
       if(!isNull(callback)) {
          execute(callback);
       }
@@ -3038,7 +3065,29 @@ void saveEntitiesToHierRel(String type, String entity1, String entity2, String e
       Log.e("saveEntitiesToHierRel", message);
       showToast(message);
     }
-  });
+  };
+
+  SaveCallback addMoreToRel = new SaveCallback() {
+    onSaveAssociation(entity_id, rel_id) {
+      addReln(entity2, rel_id, e2verb, execCallback);
+    }
+    onError(message) {
+      Log.e("saveEntitiesToHierRel", message);
+      showToast(message);
+    }
+  };
+
+  SaveCallback addToRel = new SaveCallback() {
+    onSave(rel_id, newRecord) {
+      addReln(entity1, rel_id, e1verb, addMoreToRel);
+    }
+    onError(message) {
+      Log.e("saveEntitiesToHierRel", message);
+      showToast(message);
+    }
+  };
+
+  saveRel(null, type, null, null, addToRel);
 }
 
 // Makes a new record of the given tabgroup
@@ -3100,10 +3149,19 @@ void deleteRecord(String tabgroup) {
 }
 
 void reallyDeleteRecord(String tabgroup) {
-  deleteArchEnt(getUuid(tabgroup));
+  DeleteCallback callback = new DeleteCallback() {
+    onDelete(uuid) {
+      populateEntityListsOfArchEnt(tabgroup);
+      executeOnEvent(tabgroup, "delete");
+    }
+
+    onError(message) {
+      showToast(message);
+    }
+  };
+
+  deleteArchEnt(getUuid(tabgroup), callback);
   cancelTabGroup(tabgroup, false);
-  populateEntityListsOfArchEnt(tabgroup);
-  executeOnEvent(tabgroup, "delete");
 }
 
 // Duplicates the current record of the given tabgroup
@@ -3268,6 +3326,7 @@ void search(){
   searchQuery = dbReplaceFirst(searchQuery, "{type}", type);
   searchQuery = dbReplaceFirst(searchQuery, "{type}", type);
 
+  populateMenu(refEntityList, MSG_LOADING);
   populateCursorList(refEntityList, searchQuery, 25);
   refreshTabgroupCSS("{{tab-group-search}}");
 
