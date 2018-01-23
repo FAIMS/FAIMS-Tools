@@ -595,6 +595,13 @@ List getRefsMatching(String pattern) {
   return filterListByRegex(getRefs(), regex);
 }
 
+String getRefMatching(String pattern) {
+  List matches = getRefsMatching(pattern);
+  if (matches.size() == 0)
+    return "";
+  return matches.get(0);
+}
+
 /******************************************************************************/
 /*                            BINDING ACCUMULATOR                             */
 /*                                                                            */
