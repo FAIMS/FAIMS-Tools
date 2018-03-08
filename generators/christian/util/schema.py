@@ -162,6 +162,8 @@ def normaliseAttributes(node):
         return
     # Do normalise everything else
     for key, val in node.attrib.iteritems():
+        if key == ATTRIB_P:
+            continue
         val = val.split()
         val.sort()
         node.attrib[key] = ' '.join(val)
