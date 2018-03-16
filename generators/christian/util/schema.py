@@ -207,6 +207,8 @@ def getUiType(node, force=False):
         return UI_TYPE_PICTURE
     if node.xpath(TAG_OPTS) and not node.xpath('.//opt[@p]'):
         return UI_TYPE_DROPDOWN
+    if ATTRIB_E in node.attrib:
+        return UI_TYPE_LIST
     if ATTRIB_EC in node.attrib:
         return UI_TYPE_LIST
     return UI_TYPE_INPUT
