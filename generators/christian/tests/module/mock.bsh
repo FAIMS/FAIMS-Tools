@@ -437,3 +437,4 @@ List getGeometryHighlights(String ref) { return new ArrayList(); }
 void setMapFocusPoint(String ref, double longitude, double latitude) { }
 void scanCode(String callback) { execute(callback); }
 String getLastScanContents(){ return null; }
+void removeActionBarItem(String name) { return; }
