@@ -630,6 +630,9 @@ String getRefMatching(String pattern) {
 /*   - "save" --- Triggered each time a tab group is saved. This includes the */
 /*         first time the tab group is saved as well as subsequent            */
 /*         onSave(String, Boolean) calls.                                     */
+/*   - "firstsave" --- Similar to "save", but only triggered upon the first   */
+/*         save (i.e. the save which creates the arch ent). When this event   */
+/*         is triggered, it occurs immediately before the "save" event.       */
 /*                                                                            */
 /* Additionally, the binding accumulator augments the "load" event so that    */
 /* the `statement` in addOnEvent("module", "load", statement) gets executed   */
@@ -666,6 +669,7 @@ CUSTOM_EVENTS.add("focus");
 CUSTOM_EVENTS.add("leave");
 CUSTOM_EVENTS.add("prefetch");
 CUSTOM_EVENTS.add("save");
+CUSTOM_EVENTS.add("firstsave");
 
 List getPrioritised(String statement, int priority) {
   List prioritised = new ArrayList();
@@ -2856,12 +2860,18 @@ void saveTabGroup(String tabgroup, String callback) {
   Boolean userWasSet          = !username.equals("");
 
   callback += "; " + fun2str("executeOnEvent", new Object[]{tabgroup, "save"});
+  callbackFirstSave =
+    fun2str("executeOnEvent", new Object[]{tabgroup, "firstsave"}) + "; " +
+    callback;
 
   parentTabgroup = null;
 
   SaveCallback saveCallback  = new SaveCallback() {
     onSave(uuid, newRecord) {
       setUuid(tabgroup, uuid);
+
+      String cb = newRecord ? callbackFirstSave : callback;
+
       // Make a child-parent relationship if need be.
       if (
           newRecord &&
@@ -2878,10 +2888,10 @@ void saveTabGroup(String tabgroup, String callback) {
           uuid,
           "Parent Of",
           "Child Of",
-          callback
+          cb
         );
       } else {
-        execute(callback);
+        execute(cb);
       }
 
       // This fixes an interesting bug. Without this, if a user was not set
@@ -2892,7 +2902,7 @@ void saveTabGroup(String tabgroup, String callback) {
       // Adding this allows subsequent saves to succeed. Presumably it plays
       // some role in helping FAIMS associate the correct user with a record.
       if (!userWasSet) {
-        saveTabGroup(tabgroup, callback);
+        saveTabGroup(tabgroup, cb);
       }
 
     }
