@@ -614,7 +614,8 @@ String getRefMatching(String pattern) {
 /*         events more consistent.                                            */
 /*   - "copy" --- Triggered as a record is duplicated, immediately before it  */
 /*         is first saved.                                                    */
-/*   - "create" --- Triggered after a record is first created.                */
+/*   - "create" --- Triggered after a savable, auto-generated tab group is    */
+/*         shown (but possibly before the "show" event is triggered).         */
 /*   - "delete" --- Triggered after a record is deleted.                      */
 /*   - "prefetch" --- Triggered before the "fetch" event. More specifically,  */
 /*         this event is triggered before a tab group is fetched and          */
