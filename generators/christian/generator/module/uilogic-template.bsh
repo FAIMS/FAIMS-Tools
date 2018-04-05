@@ -71,6 +71,43 @@ String listToSqlString(List l){
   return sqlString;
 }
 
+// Run a list of queries one-after-the-other. The next query starts executing
+// once the previous finishes.
+//
+// `callbacks` is a list of `FetchCallback` objects corresponding to each query
+// in `queries`. Although `callbacks` cannot be null, any of it elements can.
+void sequentialFetchAll(List queries, List callbacks) {
+  if (queries == null || callbacks == null)
+    throw IllegalArgumentException("Arguments cannot be null");
+  if (queries.size() != callbacks.size())
+    throw IllegalArgumentException("Argument lists must have the same length");
+
+  if (queries.size() == 0)
+    return;
+
+  String        queriesHead   = queries  .get(0);
+  FetchCallback callbacksHead = callbacks.get(0);
+
+  List queriesTail   = queries  .subList(1, queries  .size());
+  List callbacksTail = callbacks.subList(1, callbacks.size());
+
+  FetchCallback executeTail = new FetchCallback() {
+    onFetch(result) {
+      if (callbacksHead != null)
+        callbacksHead.onFetch(result);
+
+      sequentialFetchAll(queriesTail, callbacksTail);
+    }
+
+    onError(String message) {
+      if (callbacksHead != null)
+        callbacksHead.onError(message);
+    }
+  };
+
+  fetchAll(queriesHead, executeTail);
+}
+
 /******************************************************************************/
 /*                                STRING UTILS                                */
 /******************************************************************************/
