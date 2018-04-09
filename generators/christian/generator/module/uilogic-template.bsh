@@ -2872,6 +2872,7 @@ String validateFields(List fields, String format) {
 /*                                 AUTOSAVING                                 */
 /******************************************************************************/
 Map tabgroupToUuid = Collections.synchronizedMap(new HashMap());
+Set seenUuids = Collections.synchronizedSet(new HashSet());
 
 String getUuid(String tabgroup) {
   return tabgroupToUuid.get(tabgroup);
@@ -2906,6 +2907,13 @@ void saveTabGroup(String tabgroup, String callback) {
   SaveCallback saveCallback  = new SaveCallback() {
     onSave(uuid, newRecord) {
       setUuid(tabgroup, uuid);
+
+      // This is a workaround for a bug where `newRecord` can be `true` twice if
+      // a record was saved again shortly after it was created.
+      if (seenUuids.contains(uuid))
+        newRecord = false;
+      if (uuid != null)
+        seenUuids.add(uuid);
 
       String cb = newRecord ? callbackFirstSave : callback;
 
