@@ -172,7 +172,7 @@ String escape(String s) {
   return translate(s, dict);
 }
 
-Map MEMOISED_FILTERED_BY_REGEX = new HashMap();
+Map MEMOISED_FILTERED_BY_REGEX = new LinkedHashMap();
 
 List filterListByRegex(List unfiltered, String regex, boolean forceUpdate) {
   // Return a copy of the memoised result if possible. It's important to return
@@ -188,7 +188,7 @@ List filterListByRegex(List unfiltered, String regex, boolean forceUpdate) {
 
   // Compute the filtered list
   List filteredList;
-  Set  filteredSet = new HashSet();
+  Set  filteredSet = new LinkedHashSet();
   for (element : unfiltered)
     if (element.matches(regex))
       filteredSet.add(element);
@@ -292,7 +292,7 @@ String  PREVIOUSLY_DISPLAYED_TAB_GROUP = "";
 String  CURRENTLY_DISPLAYED_TAB_GROUP  = "";
 String  PREVIOUSLY_DISPLAYED_TAB       = "";
 String  CURRENTLY_DISPLAYED_TAB        = "";
-Map     REF_TO_TYPE                    = new HashMap();
+Map     REF_TO_TYPE                    = new LinkedHashMap();
 HashSet DATA_REFS                      = new HashSet();
 HashSet NO_UI_REFS                     = new HashSet();
 HashSet HIER_REFS                      = new HashSet();
