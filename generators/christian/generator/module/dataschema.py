@@ -201,6 +201,8 @@ def addTerm(source, target):
 
     dsc      = etree.Element('description')
     dsc.text = getDescText(source)
+    if dsc.text == '': # Workaround for a bug in FAIMS where infoboxes can
+        dsc.text = ' ' # contain 'null'
 
     term.text = util.arch16n.getArch16nKey(source) + '\n'
 
