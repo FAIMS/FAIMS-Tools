@@ -266,7 +266,10 @@ enable_record_creation=Enable Record Creation
 perf_update_head=Update Successful
 perf_update_body_1=The updated record quantities are as follows:\\n
 perf_update_body_2=\\n\\nThese quantities will result in a total of
-perf_update_body_3=records being created. Do you wish to create them? Tap 'OK' to do so, or 'Cancel' otherwise.
+perf_update_body_3=records and
+perf_update_body_4=photos being created. There is
+perf_update_body_5=MB of free space on this device, of which the created photos will use
+perf_update_body_6=MB.\\n\\nTap 'OK' to proceed, or 'Cancel' otherwise.
 
 
 signup_head=Signup Successful

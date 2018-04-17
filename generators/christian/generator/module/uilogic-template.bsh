@@ -1085,6 +1085,8 @@ makeLocalId();
 /* Code to a) time queries; and b) create dummy records. (The vast majority   */
 /* the code is for the latter.)                                               */
 /******************************************************************************/
+import android.os.StatFs;
+import android.os.Environment;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.channels.Channels;
@@ -1106,23 +1108,23 @@ String                PERF_TEST_IMG          = "";
                       PERF_TYPE_TREE         = null;
 int                   PERF_PHOTOS_PER_FIELD  = 1;
 
-int getNumPhotos() {
-  return getNumPhotos(PERF_TYPE_TREE);
+int getNumDummyPhotos() {
+  return getNumDummyPhotos(PERF_TYPE_TREE);
 }
 
-int getNumPhotos(tree) {
+int getNumDummyPhotos(tree) {
   if (tree == null) return 0;
 
   int childSum = 0;
   for (child : tree.getChildren())
-    childSum += getNumPhotos(child);
+    childSum += getNumDummyPhotos(child);
 
   boolean isRoot = isNull(tree.label);
   if (isRoot) return childSum;
-  else        return childSum + getNumPhotosAtNode(tree);
+  else        return childSum + getNumDummyPhotosAtNode(tree);
 }
 
-int getNumPhotosAtNode(tree) {
+int getNumDummyPhotosAtNode(tree) {
   // Figure out how many camera refs there are at this node (i.e. in this arch
   // ent).
   List cameraRefs = getRefsByType("camera");
@@ -1158,6 +1160,34 @@ int getNumDummyRecordsAtNode(tree) {
     sum *= tree.data;
   }
   return sum;
+}
+
+float getFileSizeInMBytes(String path) {
+  File file = new File(path);
+  return file.length() / 1000.f / 1000.f;
+}
+
+float getSizeDummyPhotosInMBytes() {
+  return getNumDummyPhotos() * getFileSizeInMBytes(PERF_TEST_IMG);
+}
+
+String megabytesToString(float mb) {
+  DecimalFormat df = new DecimalFormat();
+  df.setMaximumFractionDigits(1);
+  return df.format(mb);
+}
+
+String getSizeDummyPhotosInMBytesAsString() {
+  return megabytesToString(getSizeDummyPhotosInMBytes());
+}
+
+float getFreeSpaceInMBytes() {
+  StatFs statFs = new StatFs(Environment.getRootDirectory().getAbsolutePath());
+  return statFs.getBlockCount() * statFs.getBlockSize() / 1000.f / 1000.f;
+}
+
+String getFreeSpaceInMBytesAsString() {
+  return megabytesToString(getFreeSpaceInMBytes());
 }
 
 Tree(String label, Object data) {
@@ -1580,7 +1610,7 @@ void enqueueTestFiles(int numFiles, String cb) {
 
   // Set `PERF_NUM_CBS_TODO_FILE` and `PERF_NUM_CBS_DONE_FILE`
   int numPhotosToMake;
-  numPhotosToMake  = getNumPhotos();
+  numPhotosToMake  = getNumDummyPhotos();
   numPhotosToMake -= PERF_FILES.size();
   numPhotosToMake  = Math.max(0, numPhotosToMake);
   // We're going to count returns from attachFile too, hence multiplication by 2
@@ -1771,6 +1801,9 @@ void checkSetDummyRecordQuantityIsDone() {
   int cbsDone = PERF_NUM_CBS_DONE_SET.incrementAndGet();
   int cbsTodo = PERF_NUM_CBS_TODO_SET.get();
   if (cbsTodo == cbsDone) {
+    String totalImgs = getNumDummyPhotos() + "";
+    String totalSizs = getSizeDummyPhotosInMBytesAsString();
+    String totalFree = getFreeSpaceInMBytesAsString();
     String totalRecs = getNumDummyRecords() + "";
     String treeString = PERF_TYPE_TREE.toString();
     String treeStringNoRoot = treeString.substring(
@@ -1782,7 +1815,10 @@ void checkSetDummyRecordQuantityIsDone() {
     String body =
          "{perf_update_body_1} " + treeStringNoRoot +
         " {perf_update_body_2} " + totalRecs +
-        " {perf_update_body_3}";
+        " {perf_update_body_3} " + totalImgs +
+        " {perf_update_body_4} " + totalFree +
+        " {perf_update_body_5} " + totalSizs +
+        " {perf_update_body_6}";
 
     showAlert(head, body, "createDummyRecords()", "");
   }
@@ -1872,6 +1908,7 @@ if (!isNull(USER_MENU_PATH)) {
   addOnEvent(userMenuTabGroup, "show",  "setUpPerfActionBarItems()");
   addOnEvent(userMenuTabGroup, "leave", "setUpPerfActionBarItems()");
 }
+
 {{perf-anchor-end}}
 /******************************************************************************/
 /*                           LOCALSETTINGS UPDATES                            */
