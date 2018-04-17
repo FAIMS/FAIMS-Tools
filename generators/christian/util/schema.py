@@ -639,12 +639,21 @@ def getGps(node):
                 t=UI_TYPE_BUTTON
     )
 
-    colsTop.append(Element('Latitude',  t=UI_TYPE_INPUT, f=FLAG_READONLY))
-    colsTop.append(Element('Longitude', t=UI_TYPE_INPUT, f=FLAG_READONLY))
+    maybeNotNull = \
+            SEP_FLAGS + FLAG_NOTNULL \
+            if isFlagged(node, FLAG_NOTNULL) \
+            else ''
+    attribs = {
+            ATTRIB_T: UI_TYPE_INPUT,
+            ATTRIB_F: FLAG_READONLY + maybeNotNull
+    }
 
-    colsBot.append(Element('Northing',  t=UI_TYPE_INPUT, f=FLAG_READONLY))
-    colsBot.append(Element('Easting',   t=UI_TYPE_INPUT, f=FLAG_READONLY))
-    colsBot.append(Element('Accuracy',  t=UI_TYPE_INPUT, f=FLAG_READONLY))
+    colsTop.append(Element('Latitude',  attribs))
+    colsTop.append(Element('Longitude', attribs))
+
+    colsBot.append(Element('Northing', attribs))
+    colsBot.append(Element('Easting',  attribs))
+    colsBot.append(Element('Accuracy', attribs))
 
     for n in colsTop: annotateWithXmlTypes(n)
     for n in colsBot: annotateWithXmlTypes(n)

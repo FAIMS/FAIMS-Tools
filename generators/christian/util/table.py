@@ -18,7 +18,7 @@ author             | f
 autonum            |
 desc               |
 fmt                |
-gps                |
+gps                | f
 logic              |
 pos                |
 rels               |
