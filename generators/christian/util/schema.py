@@ -639,13 +639,13 @@ def getGps(node):
                 t=UI_TYPE_BUTTON
     )
 
-    maybeNotNull = \
-            SEP_FLAGS + FLAG_NOTNULL \
-            if isFlagged(node, FLAG_NOTNULL) \
-            else ''
+    isNotNull       = isFlagged(node, FLAG_NOTNULL)
+    attrValNotNull  = SEP_FLAGS + FLAG_NOTNULL if isNotNull else ''
+    attrValRequired = CSS_REQUIRED             if isNotNull else ''
     attribs = {
             ATTRIB_T: UI_TYPE_INPUT,
-            ATTRIB_F: FLAG_READONLY + maybeNotNull
+            ATTRIB_F: FLAG_READONLY + attrValNotNull,
+            ATTRIB_C: attrValRequired
     }
 
     colsTop.append(Element('Latitude',  attribs))
