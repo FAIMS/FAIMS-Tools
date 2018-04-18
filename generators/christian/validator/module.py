@@ -543,6 +543,32 @@ helpers.eMsg(msg, nodes, moreLocations=locations)
 
 ################################################################################
 
+msg  = 'Elements whose `%s` attribute is `%s` are not generated such that they '
+msg += 'can be used to collect data.  Consider using a different kind of menu '
+msg += '(e.g. %s) or flagging the affected element(s) with `%s` (e.g `%s="%s"`)'
+
+menuTypesNoList = list(MENU_UI_TYPES)
+menuTypesNoList.remove(UI_TYPE_LIST)
+menuTypesNoList = ', '.join(menuTypesNoList)
+
+msg %= (
+        ATTRIB_T,
+        UI_TYPE_LIST,
+        menuTypesNoList,
+        FLAG_NODATA,
+        ATTRIB_F,
+        FLAG_NODATA,
+)
+
+cond1 = lambda e: util.schema.getUiType(e) == UI_TYPE_LIST
+cond2 = lambda e: not util.schema.isFlagged(e, FLAG_NODATA)
+cond  = lambda e: cond1(e) and cond2(e)
+matches = util.xml.getAll(tree, cond)
+
+helpers.wMsg(msg, matches)
+
+################################################################################
+
 print 'Validation completed with %s error(s) and %s warning(s).' % (
         validator.NUM_E,
         validator.NUM_W
