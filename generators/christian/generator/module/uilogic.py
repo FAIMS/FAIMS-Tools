@@ -160,7 +160,7 @@ def getNodataTabGroups(tree, t):
 
     fmt          = 'NODATA_TAB_GROUPS.add("%s");'
     placeholder  = '{{is-flagged-nodata}}'
-    replacement  = format(refs, fmt, indent='  ')
+    replacement  = format(refs, fmt)
 
     return t.replace(placeholder, replacement)
 
