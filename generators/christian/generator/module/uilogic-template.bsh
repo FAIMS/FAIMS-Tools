@@ -3448,6 +3448,7 @@ Map getTakeFromGpsMappings() {
 
 /* Takes the current point using gps. */
 void takePoint(String tabgroup) {
+  triggerAutoSave();
   Map tabgroupToTabRef = getTakeFromGpsMappings();
 
   String archEntType = tabgroup.replaceAll("_", " ");
