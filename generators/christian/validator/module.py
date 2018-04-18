@@ -561,7 +561,7 @@ msg %= (
 )
 
 cond1 = lambda e: util.schema.getUiType(e) == UI_TYPE_LIST
-cond2 = lambda e: not util.schema.isFlagged(e, FLAG_NODATA)
+cond2 = lambda e: util.data.formsProp(e)
 cond  = lambda e: cond1(e) and cond2(e)
 matches = util.xml.getAll(tree, cond)
 
