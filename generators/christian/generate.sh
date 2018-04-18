@@ -16,8 +16,8 @@ if [ $(check_backwards_compatibility) = "0" ]
 then
 
     echo -e "Notice: The module produced during this run may be broken as it" \
-      "was compiled with a different version of FAIMS-Tools. To use the" \
-      "version of FAIMS-Tools that this module was compiled with" \
+      "was originally compiled with a different version of FAIMS-Tools. To" \
+      "use the version of FAIMS-Tools that this module was compiled with" \
       "(recommended), run the following command in your FAIMS-Tools directory" \
       "and compile the module again:\n" \
       "  git checkout $(prev_build_autogen_hash)\n" \
