@@ -375,17 +375,23 @@ boolean isHier(String ref) {
 }
 
 boolean isValidRef(String ref) {
-    return getRefsAsHashSet()     .contains(ref) ||
-           getTabsAsHashSet()     .contains(ref) ||
-           getTabGroupsAsHashSet().contains(ref);
+  boolean isValidRef = false;
+  if (!isInUnitTestTime())
+    isValidRef = isValidRef || linker.getUIRenderer().getViewByRef(ref) != null;
+  isValidRef = isValidRef || getRefsAsHashSet()     .contains(ref);
+  isValidRef = isValidRef || getTabsAsHashSet()     .contains(ref);
+  isValidRef = isValidRef || getTabGroupsAsHashSet().contains(ref);
+  return isValidRef;
 }
 
 boolean validateRef(ref) {
+  String msg =
+    isInUnitTestTime() ?
+    "Ref '" + ref + "' may not refer to a UI element" :
+    "Ref '" + ref + "' does not refer to a UI element";
+
   if (!isValidRef(ref) && !"module".equals(ref)) {
-    Log.w(
-        this.callstack.get(1).getInvocationText(),
-        "Ref '" + ref + "' may not refer to a UI element"
-    );
+    Log.w(this.callstack.get(1).getInvocationText(), msg);
     return false;
   }
   return true;
