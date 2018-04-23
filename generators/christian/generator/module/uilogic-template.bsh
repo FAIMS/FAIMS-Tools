@@ -3542,34 +3542,15 @@ void clearGpsInTab(String tabRef) {
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-
-void bindQrScanning(String refButton, String refChild, boolean isChild) {
-  String event = "click";
-
-  String parentTabGroup;
-  if (isChild) parentTabGroup = getTabGroupRef(refButton);
-  else         parentTabGroup = null;
-
-  String stmt = fun2str(
-      "scanRecordFromQrCode",
-      new Object[]{parentTabGroup, refChild}
-  );
-
-  addOnEvent(refButton, event, stmt);
+void bindQrScanning(String refButton) {
+  addOnEvent(refButton, "click", "scanEntityFromQrCode()");
 }
 
-void scanRecordFromQrCode(String parentTabGroup, String refChild) {
-  String callback = fun2str(
-      "loadOrCreateEntityFromScannedAttrib",
-      new Object[]{parentTabGroup, refChild}
-  );
-  scanCode(callback);
+void scanEntityFromQrCode() {
+  scanCode("loadEntityFromScannedQrCode()");
 }
 
-void loadOrCreateEntityFromScannedAttrib(
-    String parentTabGroup,
-    String refChild
-) {
+void loadEntityFromScannedQrCode() {
   String code = getLastScanContents();
 
   String  uuidString  = "";

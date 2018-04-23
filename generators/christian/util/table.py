@@ -276,7 +276,7 @@ signup_head=Signup Successful
 signup_body=You have successfuly signed up. You may now log in as the newly created user.
 
 load_scanned_err_head=Could Not Load Record
-load_scanned_err_body=The QR code or barcode you have scanned does not contain a valid UUID.
+load_scanned_err_body=No record could be found on this device which corresponds to the QR code or barcode you have scanned. This might be because this device has not been synchronised with the server. Synchronisation can be enabled via the action bar, which appears as an elipsis at the top-right of the screen. Please try scanning the QR code or barcode again once synchronisation is complete.
 
 perf_dummy_err_head=Could Not Begin Record Creation Wizard
 perf_dummy_err_body=The record creation wizard could not begin because syncing could not be automatically disabled. Please disable it manually and try again.
