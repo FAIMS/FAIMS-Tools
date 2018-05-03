@@ -48,12 +48,12 @@ CSS = [
         if k.startswith('CSS_')
 ]
 
-FLAG_NOWIRE       = 'nowire'
 FLAG_AUTONUM      = 'autonum'
 FLAG_HIDDEN       = 'hidden'
 FLAG_HTMLDESC     = 'htmldesc'
 FLAG_ID           = 'id'
 FLAG_NOANNOTATION = 'noannotation'
+FLAG_NOAUTOSAVE   = 'noautosave'
 FLAG_NOCERTAINTY  = 'nocertainty'
 FLAG_NODATA       = 'nodata'
 FLAG_NOLABEL      = 'nolabel'
@@ -63,6 +63,7 @@ FLAG_NOTHUMB      = 'nothumb'
 FLAG_NOTHUMBNAIL  = 'nothumbnail'
 FLAG_NOTNULL      = 'notnull'
 FLAG_NOUI         = 'noui'
+FLAG_NOWIRE       = 'nowire'
 FLAG_PERSIST      = 'persist'
 FLAG_PERSIST_OW   = 'persist!'
 FLAG_READONLY     = 'readonly'

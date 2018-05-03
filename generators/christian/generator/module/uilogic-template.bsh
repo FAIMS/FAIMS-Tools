@@ -289,28 +289,32 @@ String function2callableString(String function, Object[] args) {
 /******************************************************************************/
 /*                           DOCUMENT OBJECT MODEL                            */
 /******************************************************************************/
-String  PREVIOUSLY_DISPLAYED_TAB_GROUP = "";
-String  CURRENTLY_DISPLAYED_TAB_GROUP  = "";
-String  PREVIOUSLY_DISPLAYED_TAB       = "";
-String  CURRENTLY_DISPLAYED_TAB        = "";
-Map     REF_TO_TYPE                    = new LinkedHashMap();
-HashSet DATA_REFS                      = new HashSet();
-HashSet NO_UI_REFS                     = new HashSet();
-HashSet HIER_REFS                      = new HashSet();
-Map     VP_REF_TO_REF                  = new HashMap();
-HashSet REFS_AS_HASH_SET               = null;
-List    REFS_AS_LIST                   = null;
-List    TAB_GROUPS_AS_LIST             = new ArrayList();
-HashSet TAB_GROUPS_AS_HASH_SET         = null;
-List    TABS_AS_LIST                   = new ArrayList();
-HashSet TABS_AS_HASH_SET               = null;
-HashMap ATTRIB_NAMES_NON_STANDARD      = new HashMap();
-List    NODATA_TAB_GROUPS              = new ArrayList();
+String  PREVIOUSLY_DISPLAYED_TAB_GROUP    = "";
+String  CURRENTLY_DISPLAYED_TAB_GROUP     = "";
+String  PREVIOUSLY_DISPLAYED_TAB          = "";
+String  CURRENTLY_DISPLAYED_TAB           = "";
+Map     REF_TO_TYPE                       = new LinkedHashMap();
+HashSet DATA_REFS                         = new HashSet();
+HashSet NO_UI_REFS                        = new HashSet();
+HashSet HIER_REFS                         = new HashSet();
+Map     VP_REF_TO_REF                     = new HashMap();
+HashSet REFS_AS_HASH_SET                  = null;
+List    REFS_AS_LIST                      = null;
+List    TAB_GROUPS_AS_LIST                = new ArrayList();
+HashSet TAB_GROUPS_AS_HASH_SET            = null;
+List    TABS_AS_LIST                      = new ArrayList();
+HashSet TABS_AS_HASH_SET                  = null;
+HashMap ATTRIB_NAMES_NON_STANDARD         = new HashMap();
+List    NODATA_TAB_GROUPS                 = new ArrayList();
+List    NOAUTOSAVE_TAB_GROUPS             = new ArrayList();
+HashSet NOAUTOSAVE_TAB_GROUPS_AS_HASH_SET = null;
 {{is-flagged-nodata}}
 
 {{refs-to-types}}
 
 {{data-refs}}
+
+{{noautosave-tab-groups}}
 
 {{no-ui-refs}}
 
@@ -352,6 +356,20 @@ List getRefsByType(String type) {
     if (getType(ref).equals(type))
       refs.add(ref);
   return refs;
+}
+
+List getNoautosaveTabGroups() {
+  return NOAUTOSAVE_TAB_GROUPS;
+}
+
+HashSet getNoautosaveTabGroupsAsHashSet() {
+  if (NOAUTOSAVE_TAB_GROUPS_AS_HASH_SET == null)
+    NOAUTOSAVE_TAB_GROUPS_AS_HASH_SET = new HashSet(NOAUTOSAVE_TAB_GROUPS);
+  return NOAUTOSAVE_TAB_GROUPS_AS_HASH_SET;
+}
+
+boolean isFlaggedNoautosave(String ref) {
+  return getNoautosaveTabGroupsAsHashSet().contains(ref);
 }
 
 boolean hasData(String ref) {
@@ -2929,25 +2947,21 @@ void setUuid(String tabgroup, String uuid) {
   TABGROUP_TO_UUID.put(tabgroup, uuid);
 }
 
-void saveTabGroup(String tabgroup) {
-  saveTabGroup(tabgroup, "");
-}
-
-void saveTabGroup(String tabgroup, String callback) {
-  Boolean enableAutosave      = true;
-  String  id                  = getUuid(tabgroup);
-  String  parentTabgroup_     = parentTabgroup;
-  String  parentTabgroupUuid_ = getUuid(parentTabgroup_);
-  Boolean userWasSet          = !username.equals("");
-
-  callback += "; " + fun2str("executeOnEvent", new Object[]{tabgroup, "save"});
-  callbackFirstSave =
-    fun2str("executeOnEvent", new Object[]{tabgroup, "firstsave"}) + "; " +
-    callback;
+SaveCallback getDefaultSaveCallback(String tabgroup, String callback) {
+  String parentTabgroup_     = parentTabgroup;
+  String parentTabgroupUuid_ = getUuid(parentTabgroup_);
 
   parentTabgroup = null;
 
-  SaveCallback saveCallback  = new SaveCallback() {
+  Boolean userWasSet = !username.equals("");
+
+  callback += "; " + fun2str("executeOnEvent", new Object[]{tabgroup, "save"});
+
+  String callbackFirstSave =
+    fun2str("executeOnEvent", new Object[]{tabgroup, "firstsave"}) + "; " +
+    callback;
+
+  return new SaveCallback() {
     onSave(uuid, newRecord) {
       setUuid(tabgroup, uuid);
 
@@ -2998,10 +3012,21 @@ void saveTabGroup(String tabgroup, String callback) {
       showToast(message);
     }
   };
+}
+
+void saveTabGroup(String tabgroup) {
+  saveTabGroup(tabgroup, "");
+}
+
+void saveTabGroup(String tabgroup, String callback) {
+  Boolean enableAutosave = true;
+  String  uuid           = getUuid(tabgroup);
+
+  SaveCallback saveCallback = getDefaultSaveCallback(tabgroup, callback);
 
   saveTabGroup(
       tabgroup,
-      id,
+      uuid,
       autoSaveGeo,
       autoSaveAttrs,
       saveCallback,
@@ -3060,8 +3085,12 @@ void populateAuthorAndTimestamp(String tabgroup) {
   if (!isNull(timestampPath)) setFieldValue(timestampPath, getTimestampNow());
 }
 
-{{defs-on-show}}
-{{binds-on-show}}
+for (String tabGroup : getTabGroups()) {
+  if (isFlaggedNodata    (tabGroup)) continue;
+  if (hasNoUi            (tabGroup)) continue;
+  if (isFlaggedNoautosave(tabGroup)) continue;
+  addOnEvent(tabGroup, "show", "saveTabGroup", new Object[]{tabGroup});
+}
 
 {{defs-on-click}}
 {{binds-on-click}}
@@ -3457,12 +3486,8 @@ void takePoint(String tabgroup) {
   triggerAutoSave();
   Map tabgroupToTabRef = getTakeFromGpsMappings();
 
-  String archEntType = tabgroup.replaceAll("_", " ");
+  String archEntType = getArchEntType(tabgroup);
   String currentUuid = getUuid(tabgroup);
-  if (isNull(currentUuid)){
-    showToast("{Please_enter_data_first}");
-    return;
-  }
 
   boolean isInternalGPSOff = !isInternalGPSOn();
   boolean isExternalGPSOff = !isExternalGPSOn();
@@ -3478,45 +3503,36 @@ void takePoint(String tabgroup) {
   Double northing     = projPosition.getLatitude();
   Double easting      = projPosition.getLongitude();
 
-  samplePoint = new Point(new MapPos(easting, northing), null, (PointStyle) null, null);
+  String sLatitude    = "" + latitude;
+  String sLongitude   = "" + longitude;
+  String sNorthing    = "" + northing;
+  String sEasting     = "" + easting;
+
+  MapPos mapPos = new MapPos(easting, northing);
+  Point samplePoint = new Point(mapPos, null, (PointStyle) null, null);
   ArrayList geolist = new ArrayList();
   geolist.add(samplePoint);
 
   String accuracy = "" + getGPSEstimatedAccuracy();
-  setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Accuracy", accuracy);
+  setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Accuracy",  accuracy);
+  setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Longitude", sLatitude);
+  setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Latitude",  sLongitude);
+  setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Easting",   sNorthing);
+  setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Northing",  sEasting);
 
-  saveArchEnt(currentUuid, archEntType, geolist, null, new SaveCallback() {
-    onSave(uuid, newRecord) {
-      print("[takePoint()] Added geometry: " + geolist);
-      fillInGPS(tabgroup);
-    }
-  });
-}
+  List attribs = createAttributeList();
+  attribs.add(createEntityAttribute("Accuracy",  "", "", accuracy,   "1.0"));
+  attribs.add(createEntityAttribute("Longitude", "", "", sLatitude,  "1.0"));
+  attribs.add(createEntityAttribute("Latitude",  "", "", sLongitude, "1.0"));
+  attribs.add(createEntityAttribute("Northing",  "", "", sNorthing,  "1.0"));
+  attribs.add(createEntityAttribute("Easting",   "", "", sEasting,   "1.0"));
 
-/* Sets the value of GPS views for the given tab ref. */
-void fillInGPS(String tabgroup) {
-  Map tabgroupToTabRef = getTakeFromGpsMappings();
-  String currentUuid = getUuid(tabgroup);
-  if (isNull(currentUuid)) {
-    return;
-  }
-
-  String query = "SELECT x(transform(geospatialcolumn,                4326)) as longtiude, " +
-                 "       y(transform(geospatialcolumn,                4326)) as latitude, " +
-                 "       x(transform(geospatialcolumn, "+getModuleSrid()+")) as easting, " +
-                 "       y(transform(geospatialcolumn, "+getModuleSrid()+")) as northing " +
-                 "  FROM latestnondeletedarchent " +
-                 " WHERE uuid = '" + currentUuid + "';";
-
-  fetchOne(query, new FetchCallback() {
-    onFetch(result) {
-      print("[fillInGPS()] Fetched DB transformed geometry: " + result);
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Longitude" , result.get(0));
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Latitude"  , result.get(1));
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Easting"   , result.get(2));
-      setFieldValue(tabgroupToTabRef.get(tabgroup) + "/Northing"  , result.get(3));
-    }
-  });
+  String showToast = fun2str(
+      "showToast",
+      getArch16nKey(tabgroup) + " {toast_saved}"
+  );
+  SaveCallback saveCallback = getDefaultSaveCallback(tabgroup, showToast);
+  saveArchEnt(currentUuid, archEntType, geolist, attribs, saveCallback);
 }
 
 void clearGpsInTabGroup(String tabgroup) {

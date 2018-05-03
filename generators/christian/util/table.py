@@ -31,7 +31,7 @@ ATTRIBUTE    | ALLOWED VALUES (ONE-OF)     | ALLOWED VALUES (MANY-OF)
 b            | date, decimal, string, time |
 c            |                             |
 ec           | $link-tabgroup              |
-f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, nowire, readonly, user, persist, persist!, htmldesc
+f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, nowire, readonly, user, persist, persist!, htmldesc, noautosave
 i            |                             | $link-gui
 l            | $link-all                   |
 lc           | $link-all                   |
@@ -283,6 +283,8 @@ perf_dummy_err_body=The record creation wizard could not begin because syncing c
 
 Saved_Map_Configuration=Saved Map Configuration
 Loaded_Map_Configuration=Loaded Map Configuration
+
+toast_saved=saved
 '''
 
 ATTRIBS       = tablehelper.parseTable(ATTRIBS)

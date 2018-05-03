@@ -164,6 +164,18 @@ def getNodataTabGroups(tree, t):
 
     return t.replace(placeholder, replacement)
 
+def getNoautosaveTabGroups(tree, t):
+    isNoAutosave = lambda e : util.schema.isFlagged(e, FLAG_NOAUTOSAVE)
+
+    nodes = util.schema.getTabGroups(tree, keep=isNoAutosave)
+    refs  = [util.schema.getPathString(tg) for tg in nodes]
+
+    fmt          = 'NOAUTOSAVE_TAB_GROUPS.add("%s");'
+    placeholder  = '{{noautosave-tab-groups}}'
+    replacement  = format(refs, fmt)
+
+    return t.replace(placeholder, replacement)
+
 def perfHierToComment(hier):
     return str(hier).replace('\n', '\n  //') \
             [3:] # Removes first two spaces and newline character
@@ -427,31 +439,6 @@ def getTimestamp(tree, t):
     fmt         = 'tabgroupToTimestamp.put("%s", "%s");'
     placeholder = '{{timestamp}}'
     replacement = format(zip(tabGroupNames, refs), fmt, indent='  ')
-
-    return t.replace(placeholder, replacement)
-
-def getOnShowDefs(tree, t):
-    tabGroups    = util.schema.getTabGroups(tree, isGuiAndData)
-    funNames     = [getFunName(n)                for n in tabGroups]
-    tabGroupRefs = [util.schema.getPathString(n) for n in tabGroups]
-
-    placeholder = '{{defs-on-show}}'
-    fmt = \
-    'void onShow%s () {\n' \
-    '  saveTabGroup("%s");\n' \
-    '}\n'
-    replacement = format(zip(funNames, tabGroupRefs), fmt)
-
-    return t.replace(placeholder, replacement)
-
-def getOnShowBinds(tree, t):
-    tabGroups    = util.schema.getTabGroups(tree, isGuiAndData)
-    tabGroupRefs = [util.schema.getPathString(n) for n in tabGroups]
-    funNames     = [getFunName(n)                for n in tabGroups]
-
-    placeholder = '{{binds-on-show}}'
-    fmt         = 'addOnEvent("%s", "show", "onShow%s()");'
-    replacement = format(zip(tabGroupRefs, funNames), fmt)
 
     return t.replace(placeholder, replacement)
 
@@ -961,7 +948,7 @@ def getTakeFromGpsMappings(tree, t):
 
     fmt         = 'tabgroupToTabRef.put("%s", "%s");'
     placeholder = '{{take-from-gps-mappings}}'
-    replacement = format(zip(tabGroupRefs, tabRefs), fmt)
+    replacement = format(zip(tabGroupRefs, tabRefs), fmt, indent='  ')
 
     return t.replace(placeholder, replacement)
 
@@ -1108,6 +1095,7 @@ def getUiLogic(tree):
     t = getVpRefs(tree, t)
     t = getHierRefs(tree, t)
     t = getNodataTabGroups(tree, t)
+    t = getNoautosaveTabGroups(tree, t)
     t = getPerfHierarchy(tree, t)
     t = getIsInPerfTestTime(tree, t)
     t = getPersistBinds(tree, t)
@@ -1122,8 +1110,6 @@ def getUiLogic(tree):
     t = getValidation(tree, t)
     t = getAuthor(tree, t)
     t = getTimestamp(tree, t)
-    t = getOnShowDefs(tree, t)
-    t = getOnShowBinds(tree, t)
     t = getOnSaveBinds(tree, t)
     t = getOnClickDefs(tree, t)
     t = getOnClickBinds(tree, t)
