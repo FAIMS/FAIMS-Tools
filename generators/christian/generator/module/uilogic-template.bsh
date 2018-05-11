@@ -3454,7 +3454,7 @@ void search(){
                        "                 WHERE measure LIKE {term}||'%'  "+
                        "                   AND ( aenttypename = {type} OR '' = {type} ) "+
                        "                )  "+
-                       " ORDER BY response "+
+                       " ORDER BY substr(uuid, 7, 13) desc, response " +
                        " LIMIT ? "+
                        "OFFSET ? ";
   searchQuery = dbReplaceFirst(searchQuery, "{term}", term);
@@ -3673,7 +3673,7 @@ void populateMenuWithEntities (
     limit +
     "        )  " +
     "  JOIN latestNonDeletedArchEntFormattedIdentifiers ON (childuuid = uuid)   " +
-    "  order by createdat desc";
+    "  order by createdat desc, response";
 
   String getEntitiesQ = "" +
     "SELECT uuid, response "+
@@ -3682,7 +3682,7 @@ void populateMenuWithEntities (
     "                  FROM latestNonDeletedArchEntIdentifiers "+
     "                 WHERE aenttypename = '"+entType+"' OR '"+entType+"' = '' " +
     "               )  "+
-    " ORDER BY response " +
+    " ORDER BY substr(uuid, 7, 13) desc, response " +
     limit;
 
   FetchCallback cbPopulateDropDown = new FetchCallback() {
