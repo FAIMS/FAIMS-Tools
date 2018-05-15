@@ -605,6 +605,26 @@ String guessArch16nValFromKey(String key) {
   return key;
 }
 
+/* Example:
+ *   english.0.properties:
+ *       please=Please
+ *       enable_gps=enable GPS
+ *       ...
+ *
+ *   ui_logic.bsh:
+ *       arch16nSubstituteValues("{please} {enable_gps}.") ==
+ *           "Please enable GPS."
+ */
+String arch16nSubstituteValues(String unSubbed) {
+  if (isInUnitTestTime())
+    return "";
+
+  List entries = new ArrayList();
+  entries.add(new NameValuePair(unSubbed, ""));
+  entries = linker.convertToNameValuePairs(entries);
+  return entries.get(0).getName();
+}
+
 String getAttributeName(String ref) {
   String guiElementRef = getGuiElementRef(ref);
   if (isNull(guiElementRef))
