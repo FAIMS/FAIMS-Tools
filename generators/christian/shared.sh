@@ -15,8 +15,8 @@ do
     shift
 done
 
-modulePath=$( dirname  $( readlink -e "$module" ))
-moduleName=$( basename $( readlink -e "$module" ))
+modulePath="$( dirname  "$( readlink -e "$module" )")"
+moduleName="$( basename "$( readlink -e "$module" )")"
 thisScriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 check_last_run_ended_cleanly() {
