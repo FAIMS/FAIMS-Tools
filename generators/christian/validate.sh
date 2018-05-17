@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-thisScriptPath="$(dirname "$(readlink -f "$0")")"
+thisScriptPath="$(dirname "$(readlink -e "$0")")"
 source "$thisScriptPath/shared.sh"
-
-check_last_run_ended_cleanly
 
 cd "$modulePath" >/dev/null
 

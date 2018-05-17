@@ -3,31 +3,39 @@ while [[ $# -gt 0 ]]
 do
     key="$1"
 
-    case $key in
+    case "$key" in
         -w|--wireframe)
         WIREFRAME="true"
         ;;
         *)
-        module=$key
+        module="$key"
         ;;
     esac
 
     shift
 done
 
-modulePath="$( dirname  "$( readlink -e "$module" )")"
-moduleName="$( basename "$( readlink -e "$module" )")"
-thisScriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+if [ ! -f "$module" ]
+then
+    echo "Module file not found: $module"
+    exit
+fi
+
+moduleFull="$( readlink -e "$module" )"
+modulePath="$( dirname  "$moduleFull")"
+moduleName="$( basename "$moduleFull")"
+thisScriptPath="$(dirname "$(readlink -e "$0")")"
 
 check_last_run_ended_cleanly() {
-    if [ -f ".$module.original" ]
+    if [ -f "$moduleFull.original" ]
     then
-        echo "A previous run terminated unexpectedly. A backup of '$module'" \
-          "was saved as '.$module.original'. Please either restore or delete" \
-          "this backup file before running this script. Exiting."
+        echo "A previous run terminated unexpectedly. A backup of"
+          "'$moduleName' was saved as '$moduleFull.original'. Please either" \
+          "restore or delete this backup file before running this script." \
+          "Exiting."
         exit
     else
-        cp "$module" ".$module.original"
+        cp "$moduleFull" "$moduleFull.original"
     fi
 }
 
@@ -45,11 +53,10 @@ escape_sed() {
 }
 
 clean_up() {
-    mv    "$modulePath/.$module.original" "$modulePath/$module"
-    rm -f "$modulePath/$module.sed"
+    mv    "$moduleFull.original" "$moduleFull"
+    rm -f "$moduleFull.sed"
     exit
 }
-trap clean_up SIGHUP SIGINT SIGTERM
 
 prev_build_autogen_hash() {
     logicFilePath="$modulePath/module/ui_logic.bsh"
@@ -101,17 +108,20 @@ apply_source_directives() {
     while [[ ! -z $(get_next_source) ]]
     do
         filename=$(get_next_source)
-        if [ ! -f "$filename" ]; then
+        if [ ! -f "$filename" ]
+        then
             echo "  File '$filename' not found"
         fi
         whitespace='\s*'                           # Zero or more whitespace chars
         escaped_filename=$(escape_sed "$filename") # Escape slashes in filename
 
-        sed -i.sed \
+        temp=$(tempfile)
+        cat "$moduleFull" | sed \
             -e "/<!--@SOURCE:$whitespace$escaped_filename$whitespace-->/{
             r $filename
             d
-        }" "$module"
+        }" >"$temp"
+        mv "$temp" "$moduleFull"
     done
     echo
 }
@@ -141,3 +151,6 @@ apply_preproc_directives() {
 apply_postproc_directives() {
     apply_proc_directives 'post'
 }
+
+trap clean_up SIGHUP SIGINT SIGTERM
+check_last_run_ended_cleanly

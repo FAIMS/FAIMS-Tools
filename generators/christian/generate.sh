@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-thisScriptPath="$(dirname "$(readlink -f "$0")")"
+thisScriptPath="$(dirname "$(readlink -e "$0")")"
 source "$thisScriptPath/shared.sh"
-
-check_last_run_ended_cleanly
 
 if [ "$WIREFRAME" != "true" ]
 then
@@ -50,23 +48,23 @@ cp "$thisScriptPath/tests/module/test.bsh"                       "$modulePath/te
 
 cd "$thisScriptPath"
 echo "Generating arch16n..."
-python2 -m generator.module.arch16n       "$modulePath/$module" >"$modulePath/module/english.0.properties"
+python2 -m generator.module.arch16n       "$moduleFull" >"$modulePath/module/english.0.properties"
 echo "Generating data schema..."
-python2 -m generator.module.dataschema    "$modulePath/$module" >"$modulePath/module/data_schema.xml"
+python2 -m generator.module.dataschema    "$moduleFull" >"$modulePath/module/data_schema.xml"
 echo "Generating UI test helpers..."
-python2 -m generator.module.test          "$modulePath/$module" >"$modulePath/tests/ModuleUtil.java"
+python2 -m generator.module.test          "$moduleFull" >"$modulePath/tests/ModuleUtil.java"
 echo "Generating logic..."
-python2 -m generator.module.uilogic       "$modulePath/$module" >"$modulePath/module/ui_logic.bsh"
+python2 -m generator.module.uilogic       "$moduleFull" >"$modulePath/module/ui_logic.bsh"
 echo "Generating UI schema..."
-python2 -m generator.module.uischema      "$modulePath/$module" >"$modulePath/module/ui_schema.xml"
+python2 -m generator.module.uischema      "$moduleFull" >"$modulePath/module/ui_schema.xml"
 echo "Generating CSS..."
-python2 -m generator.module.uistyling     "$modulePath/$module" >"$modulePath/module/ui_styling.css"
+python2 -m generator.module.uistyling     "$moduleFull" >"$modulePath/module/ui_styling.css"
 echo "Generating validation schema..."
-python2 -m generator.module.validation    "$modulePath/$module" >"$modulePath/module/validation.xml"
+python2 -m generator.module.validation    "$moduleFull" >"$modulePath/module/validation.xml"
 if [ "$WIREFRAME" = "true" ]
 then
     echo "Generating wireframe .gv file..."
-    python2 -m generator.wireframe.datastruct "$modulePath/$module" >"$modulePath/wireframe/datastruct.gv"
+    python2 -m generator.wireframe.datastruct "$moduleFull" >"$modulePath/wireframe/datastruct.gv"
 fi
 cd - >/dev/null
 
