@@ -1,1 +1,1 @@
-generators/christian/generate.sh
+./generators/christian/generate.sh
