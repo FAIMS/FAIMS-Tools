@@ -157,11 +157,14 @@ def getHierarchyForTopLevelNode(node, seenLinks=None):
 
 def getTopLevelArchEntNodes(node, parentNode=None):
     if schema.getXmlType(node) == TYPE_MODULE:
-        return list(set(getTopLevelArchEntNodes(schema.getEntryPoint(node))))
+        nodes = list(set(getTopLevelArchEntNodes(schema.getEntryPoint(node))))
+        nodes.sort(key=getArchEntName)
+        return nodes
     if node == None:
         return []
 
     linkedNodes = schema.getLinkedNodes(node)
+    linkedNodes.sort(key=getArchEntName)
     top = sum([getTopLevelArchEntNodes(n, node) for n in linkedNodes], [])
     if isTopLevelArchEntNode(node, parentNode):
         return [node] + top
