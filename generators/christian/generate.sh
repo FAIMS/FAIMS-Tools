@@ -92,4 +92,7 @@ cd "$modulePath" >/dev/null
 apply_postproc_directives
 cd - >/dev/null
 
+########################### COPY CONVENIENCE SCRIPT ############################
+cp "$thisScriptPath/../../module-dev-scripts/upload.py" "$modulePath"
+
 clean_up_and_exit

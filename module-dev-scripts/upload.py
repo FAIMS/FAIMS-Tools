@@ -54,7 +54,7 @@ if len(sys.argv) > 1 and not hasFlag:
 else:
     # Set module location to that of this script
     moduleLocation = os.path.realpath(__file__)
-    moduleLocation = os.path.dirname(moduleLocation)
+    moduleLocation = os.path.dirname(moduleLocation) + os.sep + 'module'
 
 # Determine module name using a heuristic. If the module is in a (parent)
 # directory called 'module', it's generally reasonable to assume that
