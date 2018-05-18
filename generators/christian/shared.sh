@@ -1,3 +1,5 @@
+thisScriptPath=$(dirname "$(readlink -e "$0")")
+
 module="module.xml"
 while [[ $# -gt 0 ]]
 do
@@ -21,26 +23,14 @@ then
     exit
 fi
 
-moduleFull="$( readlink -e "$module" )"
-modulePath="$( dirname  "$moduleFull")"
-moduleName="$( basename "$moduleFull")"
-thisScriptPath="$(dirname "$(readlink -e "$0")")"
-
-check_last_run_ended_cleanly() {
-    if [ -f "$moduleFull.original" ]
-    then
-        echo "A previous run terminated unexpectedly. A backup of"
-          "'$moduleName' was saved as '$moduleFull.original'. Please either" \
-          "restore or delete this backup file before running this script." \
-          "Exiting."
-        exit
-    else
-        cp "$moduleFull" "$moduleFull.original"
-    fi
-}
+moduleFull=$( readlink -e "$module" )
+modulePath=$( dirname  "$moduleFull")
+moduleName=$( basename "$moduleFull")
 
 get_next_source() {
-    unstripped=$(grep -m 1 "(?<=<\!--@SOURCE:).+(?=-->)" "$moduleName" -RohP)
+    local unstripped=$(
+        grep -m 1 "(?<=<\!--@SOURCE:).+(?=-->)" "$tmpModuleName" -RohP
+    )
     echo -e "$unstripped" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
 }
 
@@ -53,13 +43,12 @@ escape_sed() {
 }
 
 clean_up() {
-    mv    "$moduleFull.original" "$moduleFull"
-    rm -f "$moduleFull.sed"
+    rm -f "$tmpModuleFull"
     exit
 }
 
 prev_build_autogen_hash() {
-    logicFilePath="$modulePath/module/ui_logic.bsh"
+    local logicFilePath="$modulePath/module/ui_logic.bsh"
 
     if [ -f "$logicFilePath" ]
     then
@@ -84,8 +73,8 @@ this_build_autogen_hash() {
 }
 
 check_backwards_compatibility() {
-    prevHash=$(prev_build_autogen_hash)
-    thisHash=$(this_build_autogen_hash)
+    local prevHash=$(prev_build_autogen_hash)
+    local thisHash=$(this_build_autogen_hash)
 
     if [ "$prevHash" = "" ]
     then
@@ -102,43 +91,43 @@ check_backwards_compatibility() {
 }
 
 apply_source_directives() {
-    # In module.xml, replace any line <!--@SOURCE: path/to/file--> with the contents
-    # of the file at path/to/file.
+    # In module.xml, replace any line <!--@SOURCE: path/to/file--> with the
+    # contents of the file at path/to/file.
     echo "Applying @SOURCE directives..."
     while [[ ! -z $(get_next_source) ]]
     do
-        filename=$(get_next_source)
+        local filename=$(get_next_source)
         if [ ! -f "$filename" ]
         then
             echo "  File '$filename' not found"
         fi
-        whitespace='\s*'                           # Zero or more whitespace chars
-        escaped_filename=$(escape_sed "$filename") # Escape slashes in filename
+        local whitespace='\s*'                           # \geq 0 whitespace
+        local escaped_filename=$(escape_sed "$filename") # Escape slashes
 
-        temp=$(tempfile)
-        cat "$moduleFull" | sed \
+        local tmp=$(tempfile)
+        cat "$tmpModuleFull" | sed \
             -e "/<!--@SOURCE:$whitespace$escaped_filename$whitespace-->/{
             r $filename
             d
-        }" >"$temp"
-        mv "$temp" "$moduleFull"
+        }" >"$tmp"
+        mv "$tmp" "$tmpModuleFull"
     done
     echo
 }
 
 apply_proc_directives() {
-    procupper=$(echo "$1" | awk '{print toupper($1)}')
-    proclower=$(echo "$1" | awk '{print tolower($1)}')
+    local procUpper=$(echo "$1" | awk '{print toupper($1)}')
+    local procLower=$(echo "$1" | awk '{print tolower($1)}')
 
-    cmd=$(
-        grep '@'$procupper'PROC:' "$moduleName" | \
+    local cmd=$(
+        grep '@'$procUpper'PROC:' "$tmpModuleName" | \
         head -n 1 | \
-        sed -rn 's/^\s*<!--\s*@'$procupper'PROC:\s*(.*[^ ])\s*-->\s*$/\1/p'
+        sed -rn 's/^\s*<!--\s*@'$procUpper'PROC:\s*(.*[^ ])\s*-->\s*$/\1/p'
     )
 
     if [ ! -z "$cmd" ]
     then
-        echo "Running ${proclower}-processing command:"
+        echo "Running ${procLower}-processing command:"
         echo "  $cmd"
         eval "$cmd"
     fi
@@ -152,5 +141,13 @@ apply_postproc_directives() {
     apply_proc_directives 'post'
 }
 
+set_up () {
+    tmpModuleFull=$( tempfile -d "$modulePath" -p '.mod-' -s '.xml')
+    tmpModulePath=$( dirname  "$tmpModuleFull")
+    tmpModuleName=$( basename "$tmpModuleFull")
+
+    cp "$moduleFull" "$tmpModuleFull"
+}
+
 trap clean_up SIGHUP SIGINT SIGTERM
-check_last_run_ended_cleanly
+set_up

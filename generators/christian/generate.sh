@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-thisScriptPath="$(dirname "$(readlink -e "$0")")"
+thisScriptPath=$(dirname "$(readlink -e "$0")")
 source "$thisScriptPath/shared.sh"
 
 if [ "$WIREFRAME" != "true" ]
@@ -48,43 +48,43 @@ cp "$thisScriptPath/tests/module/test.bsh"                       "$modulePath/te
 
 cd "$thisScriptPath"
 echo "Generating arch16n..."
-python2 -m generator.module.arch16n       "$moduleFull" >"$modulePath/module/english.0.properties"
+python2 -m generator.module.arch16n       "$tmpModuleFull" >"$modulePath/module/english.0.properties"
 echo "Generating data schema..."
-python2 -m generator.module.dataschema    "$moduleFull" >"$modulePath/module/data_schema.xml"
+python2 -m generator.module.dataschema    "$tmpModuleFull" >"$modulePath/module/data_schema.xml"
 echo "Generating UI test helpers..."
-python2 -m generator.module.test          "$moduleFull" >"$modulePath/tests/ModuleUtil.java"
+python2 -m generator.module.test          "$tmpModuleFull" >"$modulePath/tests/ModuleUtil.java"
 echo "Generating logic..."
-python2 -m generator.module.uilogic       "$moduleFull" >"$modulePath/module/ui_logic.bsh"
+python2 -m generator.module.uilogic       "$tmpModuleFull" >"$modulePath/module/ui_logic.bsh"
 echo "Generating UI schema..."
-python2 -m generator.module.uischema      "$moduleFull" >"$modulePath/module/ui_schema.xml"
+python2 -m generator.module.uischema      "$tmpModuleFull" >"$modulePath/module/ui_schema.xml"
 echo "Generating CSS..."
-python2 -m generator.module.uistyling     "$moduleFull" >"$modulePath/module/ui_styling.css"
+python2 -m generator.module.uistyling     "$tmpModuleFull" >"$modulePath/module/ui_styling.css"
 echo "Generating validation schema..."
-python2 -m generator.module.validation    "$moduleFull" >"$modulePath/module/validation.xml"
+python2 -m generator.module.validation    "$tmpModuleFull" >"$modulePath/module/validation.xml"
 if [ "$WIREFRAME" = "true" ]
 then
     echo "Generating wireframe .gv file..."
-    python2 -m generator.wireframe.datastruct "$moduleFull" >"$modulePath/wireframe/datastruct.gv"
+    python2 -m generator.wireframe.datastruct "$tmpModuleFull" >"$modulePath/wireframe/datastruct.gv"
 fi
 cd - >/dev/null
 
 ################################## WIREFRAME ###################################
 if [ "$WIREFRAME" = "true" ]
 then
-  cd "$modulePath" >/dev/null
+    cd "$modulePath" >/dev/null
 
-  gawk          -f "$modulePath/wireframe/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
-  saxonb-xslt -xsl:"$modulePath/wireframe/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
+    gawk          -f "$modulePath/wireframe/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
+    saxonb-xslt -xsl:"$modulePath/wireframe/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
 
-  cd - >/dev/null
-  cd "$modulePath/wireframe/" >/dev/null
-  chmod +x wireframeElements.sh
-    echo "Generating wireframe .pdf file..."
-    ./wireframeElements.sh >/dev/null
-    cairosvg wireframe.svg -d 70 -f pdf -o wireframe.pdf
-    find . ! -name "wireframe.pdf" -type f -exec rm -f {} +
+    cd - >/dev/null
+    cd "$modulePath/wireframe/" >/dev/null
+    chmod +x wireframeElements.sh
+        echo "Generating wireframe .pdf file..."
+        ./wireframeElements.sh >/dev/null
+        cairosvg wireframe.svg -d 70 -f pdf -o wireframe.pdf
+        find . ! -name "wireframe.pdf" -type f -exec rm -f {} +
 
-  cd - >/dev/null
+    cd - >/dev/null
 fi
 
 ####################### HANDLE POST-PROCESSING DIRECTIVE #######################

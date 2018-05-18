@@ -6,6 +6,9 @@ import util.arch16n
 import util.schema
 import util.table
 import util.xml
+import signal
+
+signal.signal(signal.SIGINT, lambda a, b : sys.exit())
 
 if __name__ == '__main__':
     # PARSE XML

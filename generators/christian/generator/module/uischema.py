@@ -8,6 +8,9 @@ import util.arch16n
 import util.gui
 import util.xml
 from   util.consts import *
+import signal
+
+signal.signal(signal.SIGINT, lambda a, b : sys.exit())
 
 # The namespaces used in the UI schema must be defined here to help us search
 # through the uischema-template.xml using xpath.

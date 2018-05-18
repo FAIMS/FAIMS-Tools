@@ -3,6 +3,9 @@ import sys
 import util.schema
 import util.gui
 import util.xml
+import signal
+
+signal.signal(signal.SIGINT, lambda a, b : sys.exit())
 
 def filterNonAlpha(string):
     return filter(str.isalnum, string)

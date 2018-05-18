@@ -7,6 +7,9 @@ import util.data
 import util.schema
 import util.xml
 import re
+import signal
+
+signal.signal(signal.SIGINT, lambda a, b : sys.exit())
 
 def getDefaultDollarFmtStr(node):
     if util.data.hasVocabType  (node): return '$1'

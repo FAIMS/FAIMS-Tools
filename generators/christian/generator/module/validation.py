@@ -6,6 +6,9 @@ import sys
 from   util.consts import *
 import util.data
 import util.schema
+import signal
+
+signal.signal(signal.SIGINT, lambda a, b : sys.exit())
 
 def getProperty(node):
     if     util.data.hasFileType(node):               return None

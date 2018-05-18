@@ -8,6 +8,9 @@ import util.xml
 import util.data
 from   util.consts import *
 import subprocess
+import signal
+
+signal.signal(signal.SIGINT, lambda a, b : sys.exit())
 
 def format(tuples, fmt='%s', indent='', newline='\n'):
     sep = newline + indent

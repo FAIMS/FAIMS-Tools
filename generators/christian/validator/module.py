@@ -9,6 +9,9 @@ import util.schema
 import util.xml
 import itertools
 import validator
+import signal
+
+signal.signal(signal.SIGINT, lambda a, b : sys.exit())
 
 ################################################################################
 #                                  PARSE XML                                   #
