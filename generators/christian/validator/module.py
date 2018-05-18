@@ -576,3 +576,5 @@ print 'Validation completed with %s error(s) and %s warning(s).' % (
         validator.NUM_E,
         validator.NUM_W
 )
+
+sys.exit(1 if validator.NUM_E else 0)

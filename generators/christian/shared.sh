@@ -20,7 +20,7 @@ done
 if [ ! -f "$module" ]
 then
     echo "Module file not found: $module"
-    exit
+    exit 1
 fi
 
 moduleFull=$( readlink -e "$module" )
@@ -42,9 +42,9 @@ escape_sed() {
         -e 's/\&/\\\&/g'
 }
 
-clean_up() {
+clean_up_and_exit() {
     rm -f "$tmpModuleFull"
-    exit
+    exit $@
 }
 
 prev_build_autogen_hash() {
@@ -149,5 +149,5 @@ set_up () {
     cp "$moduleFull" "$tmpModuleFull"
 }
 
-trap clean_up SIGHUP SIGINT SIGTERM
+trap 'clean_up_and_exit 1' SIGHUP SIGINT SIGTERM
 set_up

@@ -11,4 +11,4 @@ apply_preproc_directives
 cd "$thisScriptPath"
 python2 -m validator.module "$moduleFull"
 
-clean_up
+clean_up_and_exit $?

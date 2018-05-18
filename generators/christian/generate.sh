@@ -92,4 +92,4 @@ cd "$modulePath" >/dev/null
 apply_postproc_directives
 cd - >/dev/null
 
-clean_up
+clean_up_and_exit
