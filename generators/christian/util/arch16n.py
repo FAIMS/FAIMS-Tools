@@ -65,7 +65,7 @@ def getArch16nKey(node, doAddCurlies=True):
     key = key.strip()
     key = re.sub('[^0-9a-zA-Z]', '_', key)
 
-    if doAddCurlies:
+    if doAddCurlies and key != '':
         key = '{' + key + '}'
 
     return key

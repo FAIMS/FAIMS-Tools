@@ -266,9 +266,9 @@ matches = tree.xpath(exp)
 matches = filter(cond, matches)
 matches = util.schema.filterUnannotated(matches)
 
-# Tell the user about the error(s)
+# Tell the user about the warning(s)
 affectedNodes = matches
-helpers.eMsg(msg, affectedNodes)
+helpers.wMsg(msg, affectedNodes)
 
 ################################################################################
 
