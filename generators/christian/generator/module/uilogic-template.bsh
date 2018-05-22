@@ -2495,7 +2495,8 @@ void addMenuEntry(
     String attrName,
     String vocabId,
     String vocabName,
-    String picUrl
+    String picUrl,
+    String parentVocabId
 ) {
   List menuEntries = ATTRIB_NAME_TO_MENU_ENTRIES.get(attrName);
   if (menuEntries == null) {
@@ -2507,6 +2508,7 @@ void addMenuEntry(
   menuEntry.add(vocabId);
   menuEntry.add(vocabName);
   menuEntry.add(picUrl);
+  menuEntry.add(parentVocabId);
 
   menuEntries.add(menuEntry);
 }
@@ -2514,13 +2516,17 @@ void addMenuEntry(
 List getMenuEntries(String attrName) {
   List menuEntries = ATTRIB_NAME_TO_MENU_ENTRIES.get(attrName);
   if (menuEntries == null) return new ArrayList();
-  else                     return menuEntries;
+  else                     return new ArrayList(menuEntries);
+}
+
+List getMenuEntriesFromRef(String ref) {
+  return getMenuEntries(getAttributeName(ref));
 }
 
 List getVocabIdsFromAttribName(String attribName) {
   List vocabIds = ATTRIB_NAME_TO_VOCABIDS.get(attribName);
   if (vocabIds == null) return new ArrayList();
-  else                  return vocabIds;
+  else                  return new ArrayList(vocabIds);
 }
 
 List getVocabIdsFromRef(String ref) {
@@ -2534,10 +2540,10 @@ List getVocabIdsFromRef(String ref) {
  */
 void fetchMenuValues() {
   String q = "";
-  q += "   SELECT vocabid, vocabname, attributename, pictureurl";
-  q += "     FROM vocabulary";
-  q += "     JOIN attributekey USING (attributeid)";
-  q += " ORDER BY vocabcountorder";
+  q += "   SELECT VocabID, VocabName, AttributeName, PictureURL, ParentVocabID";
+  q += "     FROM Vocabulary";
+  q += "     JOIN AttributeKey USING (AttributeID)";
+  q += " ORDER BY VocabCountOrder";
 
   FetchCallback populateHashMap = new FetchCallback() {
     onFetch(List result) {
@@ -2545,10 +2551,11 @@ void fetchMenuValues() {
         result = new ArrayList();
 
       for (List row : result) {
-        String vocabId   = row.get(0);
-        String vocabName = row.get(1);
-        String attrName  = row.get(2);
-        String picUrl    = row.get(3);
+        String vocabId       = row.get(0);
+        String vocabName     = row.get(1);
+        String attrName      = row.get(2);
+        String picUrl        = row.get(3);
+        String parentVocabId = row.get(4);
 
         // Populate VOCABID_TO_VOCABNAME
         VOCABID_TO_VOCABNAME.put(vocabId, vocabName);
@@ -2560,7 +2567,7 @@ void fetchMenuValues() {
         addVocabId(attrName, vocabId);
 
         // Populate ATTRIB_NAME_TO_MENU_ENTRIES
-        addMenuEntry(attrName, vocabId, vocabName, picUrl);
+        addMenuEntry(attrName, vocabId, vocabName, picUrl, parentVocabId);
       }
 
       decAndExecIfModuleLoaded();
