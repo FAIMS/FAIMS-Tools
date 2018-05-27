@@ -8,7 +8,10 @@ then
     exit
 fi
 
-add-apt-repository universe
+if [ -n "$(grep -s Ubuntu /etc/*release)" ]
+then
+    add-apt-repository universe
+fi
 apt-get update
 apt-get install \
         bsh \
