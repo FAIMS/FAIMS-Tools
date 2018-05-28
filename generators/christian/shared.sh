@@ -1,7 +1,7 @@
 thisScriptPath=$(dirname "$(readlink -e "$0")")
 
 module="module.xml"
-while [[ $# -gt 0 ]]
+while [ $# -gt 0 ]
 do
     key="$1"
 
@@ -27,11 +27,22 @@ moduleFull=$( readlink -e "$module" )
 modulePath=$( dirname  "$moduleFull")
 moduleName=$( basename "$moduleFull")
 
+repo_root() {
+    local dir="$1"
+    while [ ! -d "$dir/.git" ]
+    do
+        [ "$dir" = '/' ] && return
+        dir=$(dirname "$(readlink -m "$dir")")
+    done
+
+    echo "$dir"
+}
+
 get_next_source() {
     local unstripped=$(
         grep -m 1 "(?<=<\!--@SOURCE:).+(?=-->)" "$tmpModuleName" -RohP
     )
-    echo -e "$unstripped" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
+    printf "$unstripped" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
 }
 
 # Escape sed's special characters
@@ -94,7 +105,7 @@ apply_source_directives() {
     # In module.xml, replace any line <!--@SOURCE: path/to/file--> with the
     # contents of the file at path/to/file.
     echo "Applying @SOURCE directives..."
-    while [[ ! -z $(get_next_source) ]]
+    while [ ! -z $(get_next_source) ]
     do
         local filename=$(get_next_source)
         if [ ! -f "$filename" ]
@@ -146,8 +157,10 @@ set_up () {
     tmpModulePath=$( dirname  "$tmpModuleFull")
     tmpModuleName=$( basename "$tmpModuleFull")
 
+    repoRoot=$( repo_root "$thisScriptPath")
+
     cp "$moduleFull" "$tmpModuleFull"
 }
 
-trap 'clean_up_and_exit 1' SIGHUP SIGINT SIGTERM
+trap 'clean_up_and_exit 1' HUP INT TERM
 set_up

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 thisScriptPath=$(dirname "$(readlink -e "$0")")
-source "$thisScriptPath/shared.sh"
+. "$thisScriptPath/shared.sh"
 
 if [ "$WIREFRAME" != "true" ]
 then
@@ -12,17 +12,15 @@ fi
 
 if [ $(check_backwards_compatibility) = "0" ]
 then
-
-    echo -e "Notice: The module produced during this run may be broken as it" \
-      "was originally compiled with a different version of FAIMS-Tools. To" \
-      "use the version of FAIMS-Tools that this module was compiled with" \
-      "(recommended), run the following command in your FAIMS-Tools directory" \
-      "and compile the module again:\n" \
-      "  git checkout $(prev_build_autogen_hash)\n" \
-      "\bThis message may not be displayed next run. If you are seeing this" \
-      "after checking out the recommended version of FAIMS-Tools and" \
-      "recompiling, you can safely ignore this message."
-    echo
+    printf "Notice: The module produced during this run may be broken as it "
+    printf "was originally compiled with a different version of FAIMS-Tools. "
+    printf "To use the version of FAIMS-Tools that this module was compiled "
+    printf "with (recommended), run the following command in your FAIMS-Tools "
+    printf "directory and compile the module again:\n"
+    printf "  git checkout $(prev_build_autogen_hash)\n"
+    printf "\bThis message may not be displayed next run. If you are seeing "
+    printf "this after checking out the recommended version of FAIMS-Tools and "
+    printf "recompiling, you can safely ignore this message.\n\n"
 fi
 
 cd "$modulePath" >/dev/null

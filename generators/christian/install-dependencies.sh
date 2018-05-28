@@ -8,12 +8,15 @@ then
     exit
 fi
 
+apt-get update
 if [ -n "$(grep -s Ubuntu /etc/*release)" ]
 then
+    apt-get install software-properties-common -y
     add-apt-repository universe
+    apt-get update
 fi
-apt-get update
 apt-get install \
+        bc \
         bsh \
         default-jre \
         gawk \

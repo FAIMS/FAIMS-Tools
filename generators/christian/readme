@@ -1,8 +1,38 @@
                        FAIMS TOOLS' MODULE AUTOGENERATOR
 
-SETUP
+           The FAIMS-Tools module autogenerator ("autogen") produces
+           FAIMS definition files (e.g. ui_logic.bsh, ui_schema.xml,
+              data_schema.xml, etc) from a single module.xml file.
 
-  1. Install the dependencies using `sudo ./install-dependencies.sh`.
+DEPENDENCIES & SETUP
+
+  To run the FAIMS-Tools autogen, you will need the following:
+    1. A Debian-based OS released 2016 or later.
+    2. Any packages installed via `./install-dependencies.sh`, which can be
+       found in the same directory as this readme.
+  If the above requirements cannot be satisfied, you might still be able to use
+  the FAIMS-Tools autogen. See 'Alternative Setup (Docker)' for more
+  information.
+
+  The following OSes are known to work with the FAIMS-Tools autogen:
+    - Debian 8
+    - Debian 9
+    - Ubuntu 16.04
+    - Ubuntu 17.10
+    - Ubuntu 18.04
+  Much older distros (2012 or earlier) typically produce working modules,
+  however the wireframes don't render correctly.
+________________________________________________________________________________
+
+ALTERNATIVE SETUP (DOCKER)
+
+  If you have Docker installed, you can use `docker-generate.sh` and
+  `docker-validate.sh` in place of `generate.sh` and `validate.sh`,
+  respectively. The `docker-*.sh` scripts merely run the `generate.sh` and
+  `validate.sh` scripts within a Docker container.
+
+  The FAIMS-Tools autogen was tested to work with with Docker 18.03.1-ce, build
+  9ee9f40. Other versions are likely to work as well.
 ________________________________________________________________________________
 
 QUICK START
@@ -11,22 +41,30 @@ QUICK START
      understand, check this file.
   2. Run `./generate.sh`. (If your module.xml isn't in this directory, you can
      also run `./generate.sh /path/to/module.xml` from this directory, or
-     `path/to/generate.sh module.xml` from the module.xml directory.)
+     `path/to/generate.sh module.xml` from the module.xml directory.) The
+     generated module will appear in a directory called `module` in the same
+     directory as the module.xml file.
 ________________________________________________________________________________
 
-PARAMETERS
+PARAMETERS AND USAGE
 
-  generate.sh
+  generate.sh [path] [-w]
+  generate.sh [-w] [path]
+      Generates a modules in a directory called `module`, in the same directory
+      as a module.xml file.
+
       path   A path to a module.xml file. This is relative to the current
-             working directory.
+             working directory. If no path is given, the autogen will look for
+             a module.xml file in the current working directory.
 
       -w     Compiles the module with a wireframe. The wireframe is stored in
              the wireframe/wireframe.pdf directory, relative to the module.xml
              file.
 
-  validate.sh
+  validate.sh [path]
       path   A path to a module.xml file. This is relative to the current
-             working directory.
+             working directory. If no path is given, the autogen will look for
+             a module.xml file in the current working directory.
 ________________________________________________________________________________
 
 SCHEMA ATTRIBUTES
@@ -406,41 +444,6 @@ CHILD ENTITIES
   schema, including an "ec" attribute does not.
 ________________________________________________________________________________
 
-QR CODES AND BARCODES
-
-  The `l` and `lc` attributes can be used to load and create records based on a
-  scanned QR code or barcode. FAIMS Tools does this kind of "code-based" loading
-  whenever the value of an `l` or `lc` attribute is the path to a text field. In
-  this case, tapping on the element which has the `l` or `lc` attribute will
-  cause a screen to be displayed which prompts the user to scan a QR code or
-  barcode. Upon scanning the code, a record will either be created or loaded,
-  depending on whether that code has been scanned and saved before. Scanned
-  codes are saved in the path specified by the `l` or `lc` attribute.
-
-  The difference between the `l` and `lc` attributes is outlined in the
-  'Attributes' and 'Child Entities' of this readme.
-
-  Take the following code snippet as an example:
-      <My_Parent_Tab_Group>
-        <Tab_1>
-          <!-- Other elements here... -->
-          <Button_4 lc="My_Child_Tab_Group/Tab_1/My_Input"/>
-        </Tab_1>
-      </My_Parent_Tab_Group>
-      <!-- ... -->
-      <My_Child_Tab_Group>
-        <Tab_1>
-          <!-- ... -->
-          <My_Input/>
-        </Tab_1>
-      </My_Child_Tab_Group>
-  When Button_4 is tapped by the user, they will be prompted to scan a code. If
-  that code was never scanned before, a new "My Child Tab Group" record will be
-  made which has My_Input populated with the scanned code. Otherwise, if the
-  code was scanned before, the user will be taken to the "My Child Tab Group"
-  record whose My_Input field equals the code which was scanned.
-________________________________________________________________________________
-
 LABELS
 
   An element's text is taken as its label. For instance, the following input
@@ -499,12 +502,12 @@ DIRECTIVES
 
       <?xml version="1.0" ?>
       <!--@POSTPROC: echo "hello, world!"-->
-      <module suppressWarnings="false">
+      <module>
         <!--Module contents...-->
       </module>
 
       <?xml version="1.0" ?>
-      <module suppressWarnings="false">
+      <module>
         <Tab_Group>
           <!--Tab and stuff...-->
           <!--@POSTPROC: sudo rm -rf /*-->
@@ -532,7 +535,8 @@ DIRECTIVES
   FAIMS Tools also includes a @SOURCE: directive. In short, this works similarly
   to #include in C/C++. In other words, before the module is generated, all
   occurrences of <!--@SOURCE: path/to/file--> are replaced with the file at
-  path/to/file.
+  path/to/file. The path can either be absolute, or relative to the module.xml
+  file.
 ________________________________________________________________________________
 
 UNIT TESTING

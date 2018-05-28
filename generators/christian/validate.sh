@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 thisScriptPath=$(dirname "$(readlink -e "$0")")
-source "$thisScriptPath/shared.sh"
+. "$thisScriptPath/shared.sh"
 
 cd "$modulePath" >/dev/null
 
