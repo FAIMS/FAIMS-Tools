@@ -4,29 +4,155 @@
 <User f="nodata">
   <User>
     <Select_User t="dropdown" f="user"/>
-    <Login       t="button"   l="Simple"/>
-    <Signup l="signup"/>
-    <Guide t="webview">
-      <markdown>
-This module was created for the The Tundzha Regional Archaeological Project, based at Macquarie University, Sydney, Australia. The module has been designed to document the current condition and an exact location of burial mounds by broader community in Bulgaria. This module is designed to foster awareness of and community engagement in monitoring cultural heritage in Bulgaria.
-
-![](files/data/gallery/Front_Page_And_Icon/Mound.jpg)
-      </markdown>
-    </Guide>
+    <Login t="button" l="Control"/>
   </User>
 </User>
 
-<Simple>
-  <Tab>
-    <Attic su="su1" sp="sp1" f="id">
+<Control f="nodata">
+  <Main>
+    <Record_Interview t="button" l="Interview"/>
+    <GPS_Diagnostics t="gpsdiag"/>
+  </Main>
+  <search>
+    Records
+  </search>
+</Control>
+
+<Interview>
+  <Interview>
+    <Title f="id notnull">
+      <desc>This title should be a sensible title, unique to each item, briefly summarising the contents of the item, for example "Ilocano songs recorded in Burgos, Ilocos Sur, Philippines, 17 April 1993"</desc>
+    </Title>
+    <Description f="notnull">
+      <desc>Description may include but is not limited to: an abstract, table of contents, reference to a graphical representation of content, or a free-text summary account of the content. [DCMT] Description may also offer an annotation, or a qualitative or evaluative comment about the resource, such as a statement about suitability for a particular application or context.</desc>
+    </Description>
+    <Private t="radio" f="notnull">
+      <desc>Choose either “false”, meaning that the metadata for the item should be publicly available, or “true”, meaning that the metadata for the item should be hidden (perhaps because you plan to check it and edit it later).</desc>
       <opts>
-        <opt su="su2" sp="sp2">
-          My Opt
-          <opt su="su3" sp="sp3">Monkey</opt>
-        </opt>
+        <opt>True</opt>
+        <opt>False</opt>
       </opts>
-    </Attic>
-  </Tab>
-</Simple>
+    </Private>
+    <Origination_Date f="notnull">
+      <desc>Date the item was captured or created, using the format yyyy-mm-dd. If you are unsure of the day, month or decade enter the first day of the relevant period: e.g. "1970s" 1970-01-01, "2001" 2001-01-01, "February 1993" 1993-02-01. If entering a date of this type, clarify in the originationDateNarrative field. If you really did record on 1 January 2001, say so in the originationDate field.</desc>
+    </Origination_Date>
+    <Origination_Date_Narrative>
+      <desc>Use this field to provide any necessary comments on the scope of the value you entered in the origination date field, e.g. "unknown date in February 1993"</desc>
+    </Origination_Date_Narrative>
+    <Add_Agent_Role t="button" lc="Agent_Role"/>
+    <List_of_Agent_Roles t="dropdown" ec="Agent_Role"/>
+    <Linguistic_Data_Type>
+      <desc>If data is relevant to linguistics, choose one of the three basic linguistics data types. Primary text: Linguistic material which is itself the object of study; Lexicon: a systematic listing of lexical items; Language description: describes a language or some aspect(s) of a language via a systematic documentation of linguistic structures. If your data is not relevant to linguistics, leave this field blank.</desc>
+      <opts>
+        <opt>Lexicon</opt>.
+        <opt>Language Description</opt>
+        <opt>Primary Text</opt>
+      </opts>
+    </Linguistic_Data_Type>
+    <Discourse_Type>
+      <desc>Used to describe the content of a resource as representing discourse of a particular structural type. Dialogue: interactive discourse with two or more participants; drama: planned, creative, rendition of discourse involving two or more participants; formulaic: ritually or conventionally structured discourse; ludic:  language whose primary function is to be part of play, or a style of speech that involves a creative manipulation of the structures of the language; oratory: public speaking, or of speaking eloquently according to rules or conventions; narrative: monologic discourse which represents temporally organized events; procedural: explanation or description of a method, process, or situation having ordered steps; report: a factual account of some event or circumstance; singing: words or sounds [articulated] in succession with musical inflections or modulations of the voice; unintelligible: utterances that are not intended to be interpretable as ordinary language.</desc>
+      <opts>
+        <opt>Dialogue</opt>
+        <opt>Drama</opt>
+        <opt>Narrative</opt>
+        <opt>Procedural</opt>
+        <opt>Ludic</opt>
+        <opt>Singing</opt>
+        <opt>Oratory</opt>
+        <opt>Report</opt>
+        <opt>Unintelligible speech</opt>
+        <opt>Formulaic</opt>
+      </opts>
+    </Discourse_Type>
+    <Linguistic_Subject>
+      <desc>Use to describe the content of a resource if it is about a particular subfield of linguistic science.</desc>
+      <opts>
+        <opt>Phonology</opt>
+        <opt>Text And Corpus Linguistics</opt>
+        <opt>Historical Linguistics</opt>
+        <opt>Language Documentation</opt>
+        <opt>Lexicography</opt>
+        <opt>Typology</opt>
+      </opts>
+    </Linguistic_Subject>
+    <Country f="notnull">
+      <desc>This should be the standard name of the country in which the file was recorded (see http://www.ethnologue.com/country_index.asp). Prefix the country name with the two-letter ISO3166-1 code (http://www.iso.org/iso/country_codes.htm).</desc>
+      <opts>
+        <opt>PH - Philippines</opt>
+        <opt>AU - Australia</opt>
+      </opts>
+    </Country>
+    <Region_Villiage>
+      <desc>Indicate the geographical scope of the item. Enter data in the order locality, state or province, country.</desc>
+      <opts>
+        <opt>[locality], [state or province], [country]</opt>
+        <opt>Burgos, Ilocos Sur, Philippines</opt>
+      </opts>
+    </Region_Villiage>
+    <Language_Local_Name>
+      <desc>The purpose of this field is to reflect language names in local use, with local spellings, if different from official name.</desc>
+      <opts>
+        <opt>Language - local spelling [free text]</opt>
+        <opt>Ilocano</opt>
+      </opts>
+    </Language_Local_Name>
+    <Language_Content_ISO639-3>
+      <desc>Content language is the language included in your data (spoken and/or written). Insert the 3-letter ISO 639-3 code for your language, and the standard name of the language as spelt in the ethnologue entry [search on www.ethnologue.com/site_search.asp]. Separate the code and the language with a hyphen, e.g. "ilo - Ilocano"</desc>
+      <opts>
+        <opt>mis - Uncoded languages</opt>
+        <opt>und - Undetermined languages</opt>
+        <opt>mul - Multiple languages</opt>
+        <opt>zxx - No linguistic content</opt>
+        <opt>[3-letter ISO639-3 code] - [Ethnologue name of language]</opt>
+        <opt>ilo - Ilocano</opt>
+        <opt>eng - English</opt>
+      </opts>
+    </Language_Content_ISO639-3>
+    <Language_Subject_ISO639-3>
+      <desc>Subject language is the language that is the subject of your research. Insert the 3-letter ISO 639-3 code for your language, and the standard name of the language as spelt in the ethnologue entry [search on www.ethnologue.com/site_search.asp]. Separate the code and the language with a hyphen, e.g. "ilo - Ilocano"</desc>
+      <opts>
+        <opt>zxx - No linguistic content</opt>
+        <opt>[3-letter ISO639-3 code] - [Language subject of your research]</opt>
+        <opt>mis - Uncoded languages</opt>
+        <opt>und - Undetermined languages</opt>
+        <opt>mul - Multiple languages</opt>
+        <opt>ilo - Ilocano</opt>
+      </opts>
+    </Language_Subject_ISO639-3>
+    <Attached_Audio t="audio"/>
+    <Attached_Video t="video"/>
+  </Interview>
+</Interview>
+
+<Agent_Role>
+  <desc>Enter participant name in the format Lastname, Firstname. Choose the participant role from the closed vocabulary provided. Use the description field to provide additional information on role or agents. Enter participant name in the format Lastname, firstname. Choose the participant role from the closed vocabulary provided. Add more participants by clicking the "+" button to the right. If you need to provide extra information on the agent or the role, use the item's “Description” field to provide additional information on role or agents.</desc>
+  <Agent_Role>
+    <First_Name f="id"/>
+    <Last_Name f="id"/>
+    <Role f="id">
+      <opts>
+        <opt>Data Inputter</opt>
+        <opt>Performer</opt>
+        <opt>Speaker</opt>
+        <opt>Developer</opt>
+        <opt>Transcriber</opt>
+        <opt>Photographer</opt>
+        <opt>Interpreter</opt>
+        <opt>Singer</opt>
+        <opt>Signer</opt>
+        <opt>Compiler</opt>
+        <opt>Recorder</opt>
+        <opt>Depositor</opt>
+        <opt>Interviewer</opt>
+        <opt>Editor</opt>
+        <opt>Author</opt>
+        <opt>Translator</opt>
+        <opt>Researcher</opt>
+        <opt>Annotator</opt>
+        <opt>Participant</opt>
+      </opts>
+    </Role>
+  </Agent_Role>
+</Agent_Role>
 
 </module>
