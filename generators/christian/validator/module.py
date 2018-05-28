@@ -30,6 +30,12 @@ util.schema.normaliseXml(tree)
 print 'Validating schema...'
 print
 
+###################### ROOT NODE SHOULD HAVE CORRECT TAG #######################
+msg = 'Root element must have the tag `%s`' % TAG_MODULE
+
+if tree.tag != TAG_MODULE:
+    helpers.eMsg(msg)
+
 ######################### FLAG NODES WITH THEIR TYPES ##########################
 util.schema.annotateWithXmlTypes(tree)
 

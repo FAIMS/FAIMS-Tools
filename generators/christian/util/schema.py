@@ -260,7 +260,7 @@ def annotateWithXmlTypes(node):
 
     # Determine XML type
     type = ''
-    if   parent == None:
+    if   parent == None and node.tag == TAG_MODULE:
         type = TYPE_MODULE
     elif parentType == TAG_MODULE:
         if   util.isNonLower(node.tag):   type = TYPE_TAB_GROUP
