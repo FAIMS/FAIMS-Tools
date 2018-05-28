@@ -260,7 +260,7 @@ if len(matches) >= 2:
 
 ################################################################################
 
-msg  = 'Text not present in <opt> tag'
+msg  = 'Text not present in <opt> element'
 
 # Select all user-flagged elements
 exp  = '//opt'
@@ -288,7 +288,8 @@ helpers.eMsg(msg, affectedNodes)
 
 ################################################################################
 
-msg  = 'Elements are flagged with "autonum" but <autonum> tag is not present'
+msg  = 'Elements are flagged with "autonum" but <autonum> element is not '
+msg += 'present'
 
 # Select all elements flagged with autonum
 exp  = '//*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_AUTONUM)
