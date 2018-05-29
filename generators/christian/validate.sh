@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-thisScriptPath=$(dirname "$(readlink -e "$0")")
-. "$thisScriptPath/shared.sh"
+THIS_SCRIPT_PATH=$( dirname "$( readlink -e "$0" )" )
+. "$THIS_SCRIPT_PATH/shared.sh"
 
-cd "$modulePath" >/dev/null
+cd "$MODULE_PATH" >/dev/null
 
 apply_source_directives
 apply_preproc_directives
 
-cd "$thisScriptPath"
-python2 -m validator.module "$moduleFull"
+cd "$THIS_SCRIPT_PATH"
+python2 -m validator.module "$MODULE_FULL"
 
 clean_up_and_exit $?

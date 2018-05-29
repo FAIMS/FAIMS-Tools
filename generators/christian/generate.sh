@@ -1,29 +1,37 @@
 #!/usr/bin/env bash
 
-thisScriptPath=$(dirname "$(readlink -e "$0")")
-. "$thisScriptPath/shared.sh"
+THIS_SCRIPT_PATH=$( dirname "$( readlink -e "$0" )" )
+. "$THIS_SCRIPT_PATH/shared.sh"
 
-if [ "$WIREFRAME" != "true" ]
+if [ "$WIREFRAME" = true ] && [ "$OLD_OS" = true ]
 then
-    echo "Notice: Wireframe not being generated. Run this script using the -w" \
-      "argument to produce a wireframe."
-    echo
+    printf "Notice: The wireframe produced during this run may not render "
+    printf "correctly. Consider using a more recent OS or running FAIMS-Tools "
+    printf "via Docker. More information about doing both these things can be "
+    printf "found in the readme under 'Dependencies and Setup' and "
+    printf "'Alternative Setup (Docker)'.\n\n"
 fi
 
-if [ $(check_backwards_compatibility) = "0" ]
+if [ "$WIREFRAME" != true ]
+then
+    printf "Notice: Wireframe not being generated. Run this script using the "
+    printf -- "-w argument to produce a wireframe.\n\n"
+fi
+
+if [ "$(check_module_compatiblity)" != true ]
 then
     printf "Notice: The module produced during this run may be broken as it "
     printf "was originally compiled with a different version of FAIMS-Tools. "
     printf "To use the version of FAIMS-Tools that this module was compiled "
     printf "with (recommended), run the following command in your FAIMS-Tools "
     printf "directory and compile the module again:\n"
-    printf "  git checkout $(prev_build_autogen_hash)\n"
-    printf "\bThis message may not be displayed next run. If you are seeing "
-    printf "this after checking out the recommended version of FAIMS-Tools and "
+    printf "    git checkout $(prev_build_autogen_hash)\n"
+    printf "This message may not be displayed next run. If you are seeing this "
+    printf "after checking out the recommended version of FAIMS-Tools and "
     printf "recompiling, you can safely ignore this message.\n\n"
 fi
 
-cd "$modulePath" >/dev/null
+cd "$MODULE_PATH" >/dev/null
 
 apply_source_directives
 apply_preproc_directives
@@ -31,51 +39,51 @@ apply_preproc_directives
 cd - >/dev/null
 
 ############################ PERFORM THE TRANSFORMS ############################
-mkdir -p "$modulePath/module"
-mkdir -p "$modulePath/wireframe"
-mkdir -p "$modulePath/tests"
+mkdir -p "$MODULE_PATH/module"
+mkdir -p "$MODULE_PATH/wireframe"
+mkdir -p "$MODULE_PATH/tests"
 
-if [ "$WIREFRAME" = "true" ]
+if [ "$WIREFRAME" = true ]
 then
-    cp "$thisScriptPath/generator/wireframe/makeElement.sh"          "$modulePath/wireframe"
-    cp "$thisScriptPath/generator/wireframe/arch16nForWireframe.awk" "$modulePath/wireframe"
-    cp "$thisScriptPath/generator/wireframe/wireframeElements.xsl"   "$modulePath/wireframe"
+    cp "$THIS_SCRIPT_PATH/generator/wireframe/makeElement.sh"          "$MODULE_PATH/wireframe"
+    cp "$THIS_SCRIPT_PATH/generator/wireframe/arch16nForWireframe.awk" "$MODULE_PATH/wireframe"
+    cp "$THIS_SCRIPT_PATH/generator/wireframe/wireframeElements.xsl"   "$MODULE_PATH/wireframe"
 fi
-cp "$thisScriptPath/tests/module/mock.bsh"                       "$modulePath/tests"
-cp "$thisScriptPath/tests/module/test.bsh"                       "$modulePath/tests"
+cp "$THIS_SCRIPT_PATH/tests/module/mock.bsh"                       "$MODULE_PATH/tests"
+cp "$THIS_SCRIPT_PATH/tests/module/test.bsh"                       "$MODULE_PATH/tests"
 
-cd "$thisScriptPath"
+cd "$THIS_SCRIPT_PATH"
 echo "Generating arch16n..."
-python2 -m generator.module.arch16n       "$tmpModuleFull" >"$modulePath/module/english.0.properties"
+python2 -m generator.module.arch16n       "$TMP_MODULE_FULL" >"$MODULE_PATH/module/english.0.properties"
 echo "Generating data schema..."
-python2 -m generator.module.dataschema    "$tmpModuleFull" >"$modulePath/module/data_schema.xml"
+python2 -m generator.module.dataschema    "$TMP_MODULE_FULL" >"$MODULE_PATH/module/data_schema.xml"
 #echo "Generating UI test helpers..."
-#python2 -m generator.module.test          "$tmpModuleFull" >"$modulePath/tests/ModuleUtil.java"
+#python2 -m generator.module.test          "$TMP_MODULE_FULL" >"$MODULE_PATH/tests/ModuleUtil.java"
 echo "Generating logic..."
-python2 -m generator.module.uilogic       "$tmpModuleFull" >"$modulePath/module/ui_logic.bsh"
+python2 -m generator.module.uilogic       "$TMP_MODULE_FULL" >"$MODULE_PATH/module/ui_logic.bsh"
 echo "Generating UI schema..."
-python2 -m generator.module.uischema      "$tmpModuleFull" >"$modulePath/module/ui_schema.xml"
+python2 -m generator.module.uischema      "$TMP_MODULE_FULL" >"$MODULE_PATH/module/ui_schema.xml"
 echo "Generating CSS..."
-python2 -m generator.module.uistyling     "$tmpModuleFull" >"$modulePath/module/ui_styling.css"
+python2 -m generator.module.uistyling     "$TMP_MODULE_FULL" >"$MODULE_PATH/module/ui_styling.css"
 echo "Generating validation schema..."
-python2 -m generator.module.validation    "$tmpModuleFull" >"$modulePath/module/validation.xml"
-if [ "$WIREFRAME" = "true" ]
+python2 -m generator.module.validation    "$TMP_MODULE_FULL" >"$MODULE_PATH/module/validation.xml"
+if [ "$WIREFRAME" = true ]
 then
     echo "Generating wireframe .gv file..."
-    python2 -m generator.wireframe.datastruct "$tmpModuleFull" >"$modulePath/wireframe/datastruct.gv"
+    python2 -m generator.wireframe.datastruct "$TMP_MODULE_FULL" >"$MODULE_PATH/wireframe/datastruct.gv"
 fi
 cd - >/dev/null
 
 ################################## WIREFRAME ###################################
-if [ "$WIREFRAME" = "true" ]
+if [ "$WIREFRAME" = true ]
 then
-    cd "$modulePath" >/dev/null
+    cd "$MODULE_PATH" >/dev/null
 
-    gawk          -f "$modulePath/wireframe/arch16nForWireframe.awk"   "$modulePath/module/english.0.properties" >"$modulePath/wireframe/arch16n.xml"
-    saxonb-xslt -xsl:"$modulePath/wireframe/wireframeElements.xsl"  -s:"$modulePath/module/ui_schema.xml"        >"$modulePath/wireframe/wireframeElements.sh"
+    gawk          -f "$MODULE_PATH/wireframe/arch16nForWireframe.awk"   "$MODULE_PATH/module/english.0.properties" >"$MODULE_PATH/wireframe/arch16n.xml"
+    saxonb-xslt -xsl:"$MODULE_PATH/wireframe/wireframeElements.xsl"  -s:"$MODULE_PATH/module/ui_schema.xml"        >"$MODULE_PATH/wireframe/wireframeElements.sh"
 
     cd - >/dev/null
-    cd "$modulePath/wireframe/" >/dev/null
+    cd "$MODULE_PATH/wireframe/" >/dev/null
     chmod +x wireframeElements.sh
         echo "Generating wireframe .pdf file..."
         ./wireframeElements.sh >/dev/null
@@ -86,11 +94,11 @@ then
 fi
 
 ####################### HANDLE POST-PROCESSING DIRECTIVE #######################
-cd "$modulePath" >/dev/null
+cd "$MODULE_PATH" >/dev/null
 apply_postproc_directives
 cd - >/dev/null
 
 ########################### COPY CONVENIENCE SCRIPT ############################
-cp "$thisScriptPath/../../module-dev-scripts/upload.py" "$modulePath"
+cp "$THIS_SCRIPT_PATH/../../module-dev-scripts/upload.py" "$MODULE_PATH"
 
 clean_up_and_exit

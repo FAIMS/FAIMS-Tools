@@ -8,8 +8,11 @@ then
     exit
 fi
 
+THIS_SCRIPT_PATH=$(dirname "$(readlink -e "$0")")
+source "$THIS_SCRIPT_PATH/shared.sh" --defs-only
+
 apt-get update
-if [ -n "$(grep -s Ubuntu /etc/*release)" ]
+if [ "$(os_id)" = ubuntu ]
 then
     apt-get install software-properties-common -y
     add-apt-repository universe

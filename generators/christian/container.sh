@@ -4,7 +4,7 @@ if ! which docker >/dev/null
 then
     printf 'Docker could not be found. Please install Docker and/or add it to '
     printf 'your $PATH.\n'
-    exit
+    exit 1
 fi
 
 # Get first argument, which will be passed to `docker run`. Remaining arguments
@@ -12,21 +12,18 @@ fi
 cmd="$1"
 shift
 
-# `shared.sh` defines some variables. It also consumes arguments, so we save
-# them in `args`.
-thisScriptPath=$(dirname "$(readlink -e "$0")")
-args=$@
-source "$thisScriptPath/shared.sh"
+THIS_SCRIPT_PATH=$( dirname "$( readlink -e "$0" )" )
+source "$THIS_SCRIPT_PATH/shared.sh"
 
-docker build -t autogen:latest "$thisScriptPath"
+docker build -t autogen:latest "$THIS_SCRIPT_PATH"
 echo -e "\n\n\n"
 
 docker run \
-    -v "$thisScriptPath":"$thisScriptPath" \
-    -v "$modulePath":"$modulePath" \
-    -v "$tmpModulePath":"$tmpModulePath" \
-    -v "$repoRoot":"$repoRoot" \
+    -v "$THIS_SCRIPT_PATH":"$THIS_SCRIPT_PATH" \
+    -v "$MODULE_PATH":"$MODULE_PATH" \
+    -v "$TMP_MODULE_PATH":"$TMP_MODULE_PATH" \
+    -v "$REPO_ROOT":"$REPO_ROOT" \
     -w $(pwd) \
     autogen \
-    "$thisScriptPath/$cmd.sh" \
-    $args
+    "$THIS_SCRIPT_PATH/$cmd.sh" \
+    $@

@@ -4,9 +4,11 @@
            FAIMS definition files (e.g. ui_logic.bsh, ui_schema.xml,
               data_schema.xml, etc) from a single module.xml file.
 
-DEPENDENCIES & SETUP
 
-  To run the FAIMS-Tools autogen, you will need the following:
+
+DEPENDENCIES AND SETUP
+
+  The FAIMS-Tools autogen has the following recommended requirements:
     1. A Debian-based OS released 2016 or later.
     2. Any packages installed via `./install-dependencies.sh`, which can be
        found in the same directory as this readme.
@@ -20,8 +22,9 @@ DEPENDENCIES & SETUP
     - Ubuntu 16.04
     - Ubuntu 17.10
     - Ubuntu 18.04
-  Much older distros (2012 or earlier) typically produce working modules,
-  however the wireframes don't render correctly.
+  Older distros (around 2014 or earlier) typically produce working modules,
+  however the wireframes don't render correctly. Ubuntu 14.04, for example, is
+  known to produce working modules.
 ________________________________________________________________________________
 
 ALTERNATIVE SETUP (DOCKER)
@@ -48,16 +51,18 @@ ________________________________________________________________________________
 
 PARAMETERS AND USAGE
 
-  generate.sh [path] [-w]
-  generate.sh [-w] [path]
+  generate.sh [path] [-w|--wireframe]
+  generate.sh [-w|--wireframe] [path]
       Generates a modules in a directory called `module`, in the same directory
       as a module.xml file.
 
-      path   A path to a module.xml file. This is relative to the current
+      path
+             A path to a module.xml file. This is relative to the current
              working directory. If no path is given, the autogen will look for
              a module.xml file in the current working directory.
 
-      -w     Compiles the module with a wireframe. The wireframe is stored in
+      -w, --wireframe
+             Compiles the module with a wireframe. The wireframe is stored in
              the wireframe/wireframe.pdf directory, relative to the module.xml
              file.
 
