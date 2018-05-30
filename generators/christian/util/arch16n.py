@@ -33,6 +33,7 @@ def getLabelFromText(node):
 
 def hasArch16Entry(node):
     if node.xpath('./ancestor-or-self::rels'):   return False
+    if schema.isFlagged(node, FLAG_HTMLDESC):    return False
     if schema.isFlagged(node, FLAG_NOLABEL):     return False
 
     if schema.getXmlType(node) == TYPE_COLS:     return False
@@ -41,7 +42,6 @@ def hasArch16Entry(node):
 
     if node.tag == TAG_COL:                      return False
     if node.tag == TAG_COLS:                     return False
-    if node.tag == TAG_DESC:                     return False
     if node.tag == TAG_FMT:                      return False
     if node.tag == TAG_GROUP:                    return False
     if node.tag == TAG_LOGIC:                    return False
