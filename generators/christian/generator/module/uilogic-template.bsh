@@ -3116,7 +3116,8 @@ for (String tabGroup : getTabGroups()) {
   if (isFlaggedNodata    (tabGroup)) continue;
   if (hasNoUi            (tabGroup)) continue;
   if (isFlaggedNoautosave(tabGroup)) continue;
-  addOnEvent(tabGroup, "show", "saveTabGroup", new Object[]{tabGroup});
+  String funStr = fun2str("saveTabGroup", new Object[]{tabGroup});
+  addOnEvent(tabGroup, "show", funStr);
 }
 
 {{defs-on-click}}
