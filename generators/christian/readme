@@ -135,11 +135,22 @@ ________________________________________________________________________________
 
 FLAGS
 
+  Flags are specified using the `f` attribute. For in the following, the `id`
+  and `noannotation` flags are used:
+
+      <My_Identifier f="id noannotation"/>
+
+  Although the above example shows the use of flags on a GUI/Data element, flags
+  can also be used on tabs and tab groups. The complete list of flags is given
+  here:
+
   autonum         For use with <autonum> tag. (See 'Autonumbering'.)
   hidden          Equivalent to faims_hidden="true".
   htmldesc        Equivalent to faims_html_description="true"
   id              Equivalent to isIdentifier="true".
   noannotation    Equivalent to faims_annotation="false".
+  noautosave      Prevents a tab group from being automatically saved when the
+                  user navigates away from it or changes its contents.
   nocertainty     Equivalent to faims_certainty="false".
   nolabel         Prevents labels from being displayed or generated from element
                   names.
