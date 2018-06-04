@@ -1,3 +1,10 @@
+/*
+ * This file provides mock classes and functions which allow you to run a
+ * module's ui_logic.bsh file without errors. The intent is to allow you, the
+ * developer, to perform unit testing just by running the UI logic on your
+ * desktop, without having to upload your logic to a server first.
+ */
+
 // CLASSES
 public interface FetchCallback {
   void onFetch(Object result);

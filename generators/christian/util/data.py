@@ -177,9 +177,11 @@ def isTopLevelArchEntNode(node, parentNode):
             isDataElement(node) and \
             not isDataElement(parentNode)
 
-# Returns a list of lists, with homonymous nodes grouped by their names. Nodes
-# are "homonymous" if they share the same name but have different contents.
 def getHomonymousNodes(node, getNodesFun):
+    '''
+    Returns a list of lists, with homonymous nodes grouped by their names. Nodes
+    are "homonymous" if they share the same name but have different contents.
+    '''
     homonymousNodes = []
 
     nodes = getNodesFun(node)

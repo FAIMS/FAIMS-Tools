@@ -1,2 +1,2 @@
-NUM_E = 0
-NUM_W = 0
+NUM_E = 0 # Counter for validation errors
+NUM_W = 0 # Counter for validation warnings

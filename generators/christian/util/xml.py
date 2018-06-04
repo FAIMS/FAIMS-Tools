@@ -34,6 +34,10 @@ def getAttribVal(node, attribName):
     return None
 
 def appendToAttrib(node, attribName, attribVal):
+    '''
+    Appends the string `attribVal` to the attribute `attribName` in `node`.
+    `node` is an lxml Element.
+    '''
     oldAttribVal = getAttribVal(node, attribName) or ''
     if not attribVal:
         return
@@ -54,6 +58,10 @@ def setSourceline(t, sourceline):
         setSourceline(e, sourceline)
 
 def getAll(node, keep=None, descendantOrSelf=True):
+    '''
+    Returns the list of nodes which are the descendants of `node`. Optionally,
+    `node` can be included in the list.
+    '''
     keepIsNone     = keep == None
     keepIsFunction = hasattr(keep, '__call__')
     assert keepIsNone or keepIsFunction
@@ -67,10 +75,6 @@ def getAll(node, keep=None, descendantOrSelf=True):
         all = filter(keep, all)
 
     return all
-
-def getNonLower(t):
-    nodes = [i for i in t if re.search('[^a-z]', i.tag)] # TODO: Might be failing due to comments
-    return nodes
 
 def appendNotNone(src, dst):
     if src == None:
@@ -109,6 +113,18 @@ def getIndex(node):
     else:              return parent.index(node)
 
 def getPath(node):
+    '''
+    Returns a list of strings representing the ancestors of `node`, plus `node`
+    itself. The strings are the ancestors' tag names. For example, if `node` is
+    the lxml element `<My_ID/>` from a module.xml file which contains the
+    following:
+
+    <My_Tab_Group>
+      <My_Tab>
+        <My_ID/>
+      </My_Tab>
+    </My_Tab_Group>
+    '''
     if node == None:
         return []
     if node is node.getroottree().getroot():

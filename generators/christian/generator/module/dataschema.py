@@ -217,12 +217,14 @@ def addTerm(source, target):
     for m in matches:
         addTerm(m, term)
 
-# Returns a key for sorted() such that <description> elements appear at the
-# start of their parent <ArchaeologicalElement>, elements not having (text in)
-# <pos> tags appear at the end of their parent <ArchaeologicalElement>, and all
-# other elements are sorted in ascending order of the text in their <pos> tags.
-# The text is interpreted as an integer.
 def propKey(prop):
+    '''
+    Returns a key for sorted() such that <description> elements appear at the
+    start of their parent <ArchaeologicalElement>, elements not having (text in)
+    <pos> tags appear at the end of their parent <ArchaeologicalElement>, and
+    all other elements are sorted in ascending order of the text in their <pos>
+    tags. The text is interpreted as an integer.
+    '''
     startPos = - sys.maxint - 1  # sys.minint isn't defined, so we make our own
     endPos   =   sys.maxint
 

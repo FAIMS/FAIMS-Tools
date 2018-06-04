@@ -1,4 +1,5 @@
 parse_args() {
+    # Parse arguments to this script
     MODULE="module.xml"
     while [ $# -gt 0 ]
     do
@@ -29,6 +30,7 @@ validate_module_location() {
 }
 
 repo_root() {
+    # Prints the full root directory of the autogen's git repo.
     local dir="$1"
     while [ ! -d "$dir/.git" ]
     do
@@ -40,14 +42,15 @@ repo_root() {
 }
 
 get_next_source() {
+    # Prints the first @SOURCE direcive's filename
     local unstripped=$(
         grep -m 1 "(?<=<\!--@SOURCE:).+(?=-->)" "$TMP_MODULE_NAME" -RohP
     )
     printf "$unstripped" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
 }
 
-# Escape sed's special characters
 escape_sed() {
+    # Escape sed's special characters
     echo "$1" |
     sed \
         -e 's/\//\\\//g' \
@@ -60,6 +63,7 @@ clean_up_and_exit() {
 }
 
 prev_build_autogen_hash() {
+    # Prints the hash of the autogen which already built the module
     local logicFilePath="$MODULE_PATH/module/ui_logic.bsh"
 
     if [ -f "$logicFilePath" ]
@@ -75,6 +79,7 @@ prev_build_autogen_hash() {
 }
 
 this_build_autogen_hash() {
+    # Prints the git hash of this autogen
     cd "$THIS_SCRIPT_PATH" >/dev/null
 
     git log | sed \
@@ -128,6 +133,7 @@ apply_source_directives() {
 }
 
 apply_proc_directives() {
+    # Apply @POSTPROC or @PREPROC
     local procUpper=$( echo "$1" | awk '{print toupper($1)}' )
     local procLower=$( echo "$1" | awk '{print tolower($1)}' )
 
@@ -166,12 +172,13 @@ release() {
 }
 
 os_id() {
-    # Echos 'debian', 'ubuntu', etc
+    # Prints the name of your operating system e.g. 'debian', 'ubuntu', etc
     release ID
 }
 
 os_ver() {
-    # Echos the OS version, e.g. '16.04' if you're running Ubuntu 16.04
+    # Prints your operating system's version number e.g. '16.04' if you're
+    # running Ubuntu 16.04
     release VERSION_ID
 }
 

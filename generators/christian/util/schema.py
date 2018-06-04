@@ -23,6 +23,21 @@ import os.path
 INVALID_ATTRIB_NAMES_IN_FMT = None
 
 def getPath(node, isInitialCall=True):
+    '''
+    Returns the `onEvent`-style path of a `node` as a list. For example, if
+    `node` is the lxml element `<My_ID/>` from a module.xml file which contains
+    the following:
+
+    <My_Tab_Group>
+      <My_Tab>
+        <My_ID/>
+      </My_Tab>
+    </My_Tab_Group>
+
+    Then `getPath` will return `["My_Tab_Group", "My_Tab", "My_ID"]`. You can
+    get the slash-separated list (i.e. "My_Tab_Group/My_Tab/My_ID") by using
+    `getPathString`.
+    '''
     nodeTypes = [
             TYPE_GUI_DATA,
             TYPE_SEARCH,
@@ -47,6 +62,10 @@ def getPathString(node, sep='/'):
     return sep.join(getPath(node))
 
 def nodeHash(node, hashLen=10):
+    '''
+    Produces a hash of an lxml Element `node` based on the path string returned
+    by `getPathString`.
+    '''
     path = getPathString(node)
     hash = hashlib.sha256(path)
     hash = hash.hexdigest()
@@ -67,7 +86,10 @@ def filterUnannotated(nodes):
     return filter(cond, nodes)
 
 def isAnnotated(node):
-    ''' Returns `True` iff `node` was annotated with an XML TYPE from `consts`.
+    '''
+    Returns `True` if and only if `node` was annotated with an XML TYPE from
+    `consts`. Annotation is an indicator that the lxml `node` and its ancestors
+    are valid.
     '''
     try:
         return node.attrib[RESERVED_XML_TYPE] != ''
@@ -98,6 +120,10 @@ def isFlaggedList(node, flags, checkAncestors=True, attribName=ATTRIB_F):
     return False
 
 def isFlaggedStr(node, flag, checkAncestors=None, attribName=ATTRIB_F):
+    '''
+    Return `True` if `node` is flagged with `flag`, where `node` is an lxml
+    element and `flag` is a string.
+    '''
     # Set the default value of `checkAncestors` if it hasn't been passed
     requiresAncestorCheck = (FLAG_NODATA, FLAG_NOUI, FLAG_NOWIRE)
     if checkAncestors == None:
@@ -116,6 +142,30 @@ def isFlaggedStr(node, flag, checkAncestors=None, attribName=ATTRIB_F):
     return False
 
 def nextFreeName(baseName, node):
+    '''
+    Suggests a tag name that will be unique in the parent of `node`. The
+    suggested name will start with `baseName` and end with a number. For
+    example, if `node` is `<foo/>` in the following
+
+        <Colgroup>
+          <Col_1/>
+          <Col_2/>
+          <foo/>
+          <Bar_1/>
+          <Bar_2/>
+          <Bar_3/>
+          <Foo_Bar_1/>
+          <Foo_Bar_4/>
+          <Foo_Bar_5/>
+          <Foo_Bar_6/>
+        </Colgroup>
+
+    then the following statements are true:
+
+        `nextFreeName('foo',     node) == 'foo_1'`,
+        `nextFreeName('Col',     node) == 'Col_3'`.
+        `nextFreeName('Foo_Bar', node) == 'Foo_Bar_2'`.
+    '''
     parent = node.getparent()
     if parent == None:
         return None
@@ -139,8 +189,18 @@ def cacheSchema(node, filename):
 
 # Warning: Modifies `node` by reference
 def parseSchema(node):
+    '''
+    Annotates the schema given by `node` with computed information, such as
+    attribute names. `parseSchema` also expands some elements, such as
+    `<search/>`, into a more explicit form.
+
+    The annotated and modified `node` is saved in your system's /tmp/ directory
+    as a human-readable XML for the purpose of caching. It can be useful to view
+    this file, or disable caching altogether during development.
+    '''
     filename = getSchemaCacheFilename(node)
     cachedSchema = getCachedSchema(filename)
+    #cachedSchema = None # Uncomment to disable caching
     if cachedSchema != None:
         return cachedSchema
 
@@ -157,6 +217,15 @@ def normaliseXml(node):
     stripComments(node)
 
 def normaliseAttributes(node):
+    '''
+    Sort the values of XML attributes in module.xml alphabetically and remove
+    superfluous whitespace. For example, in module.xml,
+       <My_ID f="noannotation      id nocertainty    "/>
+    will become
+       <My_ID f="id noannotation nocertainty"/>
+
+    XML attributes for which whitepace is meaningful are not modified.
+    '''
     # Don't normalise stuff in <rels>
     if node.xpath('./ancestor-or-self::rels'):
         return
@@ -214,6 +283,10 @@ def getUiType(node, force=False):
     return UI_TYPE_INPUT
 
 def hasElementFlaggedWith(tabGroup, flag):
+    '''
+    Returns `True` if and only if any descendant element of `tabGroup` has
+    `f="... flag ..."`.
+    '''
     exp  = './/*[@%s="%s"]' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
     cond = lambda e: isFlagged(e, flag)
     matches = tabGroup.xpath(exp)
@@ -221,9 +294,16 @@ def hasElementFlaggedWith(tabGroup, flag):
     return len(matches) > 0
 
 def hasElementFlaggedWithId(tabGroup):
-    return hasElementFlaggedWith(tabGroup, 'id')
+    return hasElementFlaggedWith(tabGroup, FLAG_ID)
 
 def getParent(node, xmlType, orSelf=False):
+    '''
+    Gets the ancestor of `node` whose `RESERVED_XML_TYPE` attribute equals
+    `xmlType`. `RESERVED_XML_TYPE` attributes are typically set by
+    `util.schema.annotateWithXmlTypes`, when `parseSchema` runs. This means that
+    you can view the annotated `node` with a text editor by checking your /tmp
+    directory.
+    '''
     if node == None:
         return None
 
@@ -245,6 +325,11 @@ def getParentGuiDataElement(node, orSelf=False):
     return getParent(node, TYPE_GUI_DATA, orSelf)
 
 def annotateWithXmlTypes(node):
+    '''
+    Annotates the module.xml file given by `node` with `RESERVED_XML_TYPE`
+    attributes. These "XML types" indicate whether the node represents a tab,
+    tab group, GUI/Data element (such as an input or dropdown), etc.
+    '''
     if node == []:   return
     if node == None: return
 
@@ -314,6 +399,9 @@ def annotateWithXmlTypes(node):
             annotateWithXmlTypes(child)
 
 def normaliseSchema(node):
+    '''
+    Predominantly expands special module.xml elements such as <search/>.
+    '''
     normaliseImplied(node)
     normaliseProps(node)
     normaliseSchemaRec(node)
@@ -323,6 +411,32 @@ def normaliseSchema(node):
     normaliseSignup(node)
 
 def normaliseProps(node):
+    '''
+    Takes the `module.xml` file given by `node` and annotates it with its
+    long-form FAIMS attribute name if necessary. For example, consider a module
+    which contains two fields having the same name but differing in their
+    content:
+
+        <My_Tabgroup_A>
+          ...
+          <My_ID f="id">
+            <desc>This ID has a description</desc>
+          </My_ID>
+          ...
+        </My_Tabgroup_A>
+
+        <My_Tabgroup_B>
+          ...
+          <My_ID f="id">
+            <!--This ID doesn't have a description-->
+          </My_ID>
+          ...
+        </My_Tabgroup_B>
+
+    `normaliseProps` will assign the first and second `My_ID` the FAIMS
+    attribute names 'My Tabgroup A My ID' and 'My Tabgroup B My ID',
+    respectively.
+    '''
     homoProps = data.getHomonymousProps(node)
     homoProps = itertools.chain.from_iterable(homoProps) # Flatten
 
@@ -428,7 +542,6 @@ def normaliseMap(node):
 
 def normaliseImplied(node):
     normaliseImpliedCss(node)
-    #normaliseImpliedFlags(node)
     normaliseImpliedFmt(node)
 
 def normaliseImpliedCss(node):
@@ -443,16 +556,12 @@ def normaliseImpliedCss(node):
     for n in notNull:
         xml.appendToAttrib(n, ATTRIB_C, CSS_REQUIRED)
 
-def normaliseImpliedFlags(node):
-    isList = lambda n: getUiType(n) == UI_TYPE_LIST
-    lists = util.xml.getAll(node, isList)
-
-    tabs = [getParentTab(l) for l in lists]
-    for t in tabs:
-        xml.appendToAttrib(t, ATTRIB_F, FLAG_NOSCROLL)
-
 def normaliseImpliedFmt(node):
-    # <fmt>{{Attrib_Name}}</fmt> implies <Attrib_Name f="id>...
+    '''
+    Flags any GUI/Data elements with `f="id"` whenever such GUI/Data elements
+    are mentioned in the <fmt> element of its parent tab group. For example,
+    `<fmt>{{Attrib_Name}}</fmt>` implies `<Attrib_Name f="id>`.
+    '''
     nodes = util.schema.getTabGroups(node)
     for n in nodes:
         normaliseImpliedFmtInTabGroup(n)
@@ -710,19 +819,6 @@ def getTimestamp(node):
 
     return e,
 
-def replaceElement(element, replacements, tag='__REPLACE__'):
-    replacements = replacements.replace('\n', ' ')
-    replacements = replacements.replace('\r', ' ')
-    replacements = re.sub('>\s+<', '><', replacements)
-    replacements = replacements.replace('__REPLACE__', tag)
-    replacements = '<root>%s</root>' % replacements
-    replacements = etree.fromstring(replacements)
-
-    originalSourceline = element.sourceline
-    xml.setSourceline(replacements, originalSourceline)
-
-    return xml.replaceElement(element, replacements)
-
 def isInTestTime(node):
     aVal = util.xml.getAttribVal(node, ATTRIB_TEST_MODE)
 
@@ -730,6 +826,11 @@ def isInTestTime(node):
            str(True).lower()
 
 def getLink(node, attribName=None):
+    '''
+    Gets the value of any XML attribute which represents a link. For example,
+    running `getLink` on the `node` `<My_Button l="Destination_Tab_Group"/>`
+    will return the string `"Destination_Tab_Group"`.
+    '''
     if attribName != None:
         return util.xml.getAttribVal(node, attribName)
 
@@ -740,8 +841,11 @@ def getLink(node, attribName=None):
 
     return None
 
-# Recursive version of `getLink`
 def getLinks(node, attribName=None):
+    '''
+    A recursive version of `getLink` which returns a list of all the links in
+    `node` or its descendants. The links are strings.
+    '''
     if node == None:
         return []
     if hasLink(node, attribName):
@@ -756,6 +860,11 @@ def hasValidLink(node):
     return getLinkedNode(node) != None
 
 def getEntity(node):
+    '''
+    Returns the archent name denoted by the value of `node`'s `e` or `ec`
+    attribute. For example, running `getEntity` on the `node`
+    `<My_List ec="My_Tab_Group"/>` returns the string `"My_Tab_Group"`.
+    '''
     link = util.xml.getAttribVal(node, ATTRIB_E)
     if link:
         return link.replace('_', ' ')
@@ -770,6 +879,12 @@ def hasEntity(node):
     return bool(getEntity(node))
 
 def getNodeAtPath(tree, pathString):
+    '''
+    Returns the lxml element from `tree` specified by `pathString`. For example,
+    if `tree` is parsed module.xml file and
+    `pathString == "My_Tab_Group/Tab_A/My_ID"` then `getNodeAtPath` will return
+    the lxml element `<My_ID/>` (unless it doesn't exist).
+    '''
     pathString = pathString.replace('!', '')
 
     root  = tree.getroottree().getroot()
@@ -782,10 +897,19 @@ def getLinkedNode(node):
     return getNodeAtPath(node, getLink(node))
 
 def getLinkedNodes(node, attribName=None):
+    '''
+    Like `getLinks`, but instead of returning a list of strings, returns a list
+    of the lxml elements which those strings represent.
+    '''
     root = node.getroottree().getroot()
     return [getNodeAtPath(root, path) for path in getLinks(node, attribName)]
 
 def isValidPath(root, path, pathType):
+    '''
+    Validates the path string given by `path`. A path string is valid if the
+    corresponding node in `root` exists. Path strings are specified in the same
+    way as for `onEvent` in BeanShell.
+    '''
     if not path:
         return False
 
@@ -808,23 +932,15 @@ def isValidPath(root, path, pathType):
         return False
 
 def getEntryPoint(node):
+    '''
+    Returns the first tab group that will be displayed when the module is loaded
+    on a device. `node` is an lxml element storing the parsed module.xml file.
+    '''
     tabGroups = getTabGroups(node)
 
     if len(tabGroups) >= 1:
         return tabGroups[0]
     return None
-
-def hasReservedName(node):
-    return node != None and isReservedName(node.tag)
-
-def isReservedName(name):
-    return name in TYPES
-
-def hasUserDefinedName(node):
-    return node != None and isUserDefinedName(node.tag)
-
-def isUserDefinedName(name):
-    return name != None and name.istitle()
 
 def isHierarchical(node):
     return getUiType(node) in MENU_UI_TYPES \

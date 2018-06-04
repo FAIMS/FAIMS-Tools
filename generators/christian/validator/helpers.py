@@ -7,14 +7,27 @@ import util.xml
 import validator
 
 def wMsg(notice, nodes=None, expected=None, moreLocations=None):
+    '''
+    Print a warning message (`notice`) about `nodes`.
+    '''
     notice = 'WARNING: ' + notice
     if printNotice(notice, nodes, expected, moreLocations): validator.NUM_W += 1
 
 def eMsg(notice, nodes=None, expected=None, moreLocations=None):
+    '''
+    Print an error message (`notice`) about `nodes`.
+    '''
     notice = 'ERROR:   ' + notice
     if printNotice(notice, nodes, expected, moreLocations): validator.NUM_E += 1
 
 def printNotice(notice, nodes=None, expected=None, moreLocations=None):
+    '''
+    `notice` is a string,
+    `nodes` is a list of lxml Elements and `expected` is a list of strings.
+    `moreLocations` allows you to override the default locations that are
+    printed in the message. If they are given `len(moreLocations)` must equal
+    `len(nodes)`.
+    '''
     if expected is None: expected = []
     if nodes != None:
         nodes = filter(lambda x: x.sourceline != None, nodes)
