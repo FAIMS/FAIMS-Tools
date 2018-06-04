@@ -14,17 +14,17 @@ DEPENDENCIES AND SETUP
        found in the same directory as this readme.
   If the above requirements cannot be satisfied, you might still be able to use
   the FAIMS-Tools autogen. See 'Alternative Setup (Docker)' for more
-  information.
+  information. Older distros (around 2014 or earlier) typically produce working
+  modules, however the wireframes don't render correctly. Ubuntu 14.04, for
+  example, is known to produce working modules.
 
-  The following OSes are known to work with the FAIMS-Tools autogen:
+  The following OSes are known to work with the FAIMS-Tools autogen completely,
+  including the correct generation of wireframes:
     - Debian 8
     - Debian 9
     - Ubuntu 16.04
     - Ubuntu 17.10
     - Ubuntu 18.04
-  Older distros (around 2014 or earlier) typically produce working modules,
-  however the wireframes don't render correctly. Ubuntu 14.04, for example, is
-  known to produce working modules.
 ________________________________________________________________________________
 
 ALTERNATIVE SETUP (DOCKER)
@@ -40,7 +40,7 @@ ________________________________________________________________________________
 
 QUICK START
 
-  1. Modify the example module.xml. If you see something there which you don't
+  1. Modify the example `module.xml`. If you see something there which you don't
      understand, check this file.
   2. Run `./generate.sh`. (If your module.xml isn't in this directory, you can
      also run `./generate.sh /path/to/module.xml` from this directory, or
@@ -53,7 +53,7 @@ PARAMETERS AND USAGE
 
   generate.sh [path] [-w|--wireframe]
   generate.sh [-w|--wireframe] [path]
-      Generates a modules in a directory called `module`, in the same directory
+      Generates a module in a directory called `module`, in the same directory
       as a module.xml file.
 
       path
@@ -541,7 +541,7 @@ DIRECTIVES
   to #include in C/C++. In other words, before the module is generated, all
   occurrences of <!--@SOURCE: path/to/file--> are replaced with the file at
   path/to/file. The path can either be absolute, or relative to the module.xml
-  file.
+  file parent directory.
 ________________________________________________________________________________
 
 UNIT TESTING
