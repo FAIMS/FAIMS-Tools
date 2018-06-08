@@ -322,7 +322,7 @@ text 15,110 "List"
 
 	;;
 
-	webview)
+	webview|table)
 	cat >> $tmp/drawfile.mvg <<- EOM
 		<path d="M 5 5 L $[$width-5] 5 L $[$width-5] 75 L 5 75 Z" fill="#f0f0f0" stroke="black"/>
 		<text x="$[$width/2]" y="46" font-family="Roboto" font-size="14" fill="black" text-anchor="middle"> $2 </text>
