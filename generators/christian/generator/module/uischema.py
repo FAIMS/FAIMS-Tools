@@ -119,6 +119,7 @@ def getBodyTabChildren(node):
     if type == UI_TYPE_MAP:       return getBodyMap      (node)
     if type == UI_TYPE_PICTURE:   return getBodyPicture  (node)
     if type == UI_TYPE_RADIO:     return getBodyRadio    (node)
+    if type == UI_TYPE_TABLE:     return getBodyTable    (node)
     if type == UI_TYPE_VIDEO:     return getBodyVideo    (node)
     if type == UI_TYPE_VIEWFILES: return getBodyViewfiles(node)
     if type == UI_TYPE_WEB:       return getBodyWebview  (node)
@@ -174,6 +175,9 @@ def getBodyPicture(node):
 
 def getBodyRadio(node):
     return getBodySelect1(node, appearance='full')
+
+def getBodyTable(node):
+    return getBodyInput(node, faims_table='true')
 
 def getBodyVideo(node):
     return getBodySelect(node, type='video', faims_sync='true')
