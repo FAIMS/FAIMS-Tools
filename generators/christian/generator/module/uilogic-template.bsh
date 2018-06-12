@@ -1583,6 +1583,23 @@ List getAttribsForArchEnt(String archEntType) {
   return attribs;
 }
 
+List getDummyGeometry(String archEntType) {
+  String tabGroupRef = archEntType.replaceAll(" ", "_");
+
+  if (getTakeFromGpsMappings().get(tabGroupRef) == null)
+    return null;
+
+  Double northing = 1.f;
+  Double easting  = 1.f;
+
+  MapPos mapPos = new MapPos(easting, northing);
+  Point samplePoint = new Point(mapPos, null, (PointStyle) null, null);
+  ArrayList geolist = new ArrayList();
+  geolist.add(samplePoint);
+
+  return geolist;
+}
+
 void displayRecordDigest(int numCreated) {
   String q = "";
   q += "   SELECT '{All}', count(*)";
@@ -1672,12 +1689,13 @@ PerfSaveCallback(tree, String parentUuid) {
 
 void saveArchEnts(tree, String parentUuid) {
   String archEntName = tree.label;
+  List   geometry    = getDummyGeometry(archEntName);
   int    numEnts     = tree.data;
   cb                 = PerfSaveCallback(tree, parentUuid);
 
   for (int i = 0; i < numEnts; i++) {
     List attribs = getAttribsForArchEnt(archEntName);
-    saveArchEnt(null, archEntName, (List) null, attribs, cb);
+    saveArchEnt(null, archEntName, geometry, attribs, cb);
   }
 }
 
