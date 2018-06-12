@@ -1182,6 +1182,28 @@ int getNumDummyPhotosAtNode(tree) {
     PERF_PHOTOS_PER_FIELD;
 }
 
+int getNumSavedPhotos() {
+  String dirStr = "/sdcard/faims/modules/" + getModuleId() + "/files/server/";
+  return getNumFilesInDir(dirStr);
+}
+
+int getNumFilesInDir(String path) {
+  File file = new File(path);
+  return getNumFilesInDir(file);
+}
+
+int getNumFilesInDir(File dir) {
+  int num = 0;
+
+  File[] files = dir.listFiles();
+  if (files == null) return num;
+
+  for (File file : dir.listFiles())
+    num += file.isFile() ? 1 : getNumFilesInDir(file);
+
+  return num;
+}
+
 int getNumDummyRecords() {
   getNumDummyRecords(PERF_TYPE_TREE);
 }
@@ -1211,8 +1233,32 @@ float getFileSizeInMBytes(String path) {
   return file.length() / 1000.f / 1000.f;
 }
 
+float getDirSizeInMBytes(String path) {
+  File file = new File(path);
+  return getDirSizeInMBytes(file);
+}
+
+float getDirSizeInMBytes(File dir) {
+  float length = 0;
+
+  File[] files = dir.listFiles();
+  if (files == null) return length;
+
+  for (File file : dir.listFiles())
+    length += file.isFile()
+      ? file.length() / 1000.f / 1000.f
+      : getDirSizeInMBytes(file);
+
+  return length;
+}
+
 float getSizeDummyPhotosInMBytes() {
   return getNumDummyPhotos() * getFileSizeInMBytes(PERF_TEST_IMG);
+}
+
+float getSizeSavedPhotosInMBytes() {
+  String dirStr = "/sdcard/faims/modules/" + getModuleId() + "/files/server/";
+  return getDirSizeInMBytes(dirStr);
 }
 
 String megabytesToString(float mb) {
@@ -1225,8 +1271,16 @@ String getSizeDummyPhotosInMBytesAsString() {
   return megabytesToString(getSizeDummyPhotosInMBytes());
 }
 
+String getSizeSavedPhotosInMBytesAsString() {
+  return megabytesToString(getSizeSavedPhotosInMBytes());
+}
+
 float getFreeSpaceInMBytes() {
-  StatFs statFs = new StatFs(Environment.getRootDirectory().getAbsolutePath());
+  return getFreeSpaceInMBytes(Environment.getRootDirectory().getAbsolutePath());
+}
+
+float getFreeSpaceInMBytes(String path) {
+  StatFs statFs = new StatFs(path);
   return statFs.getBlockCount() * statFs.getBlockSize() / 1000.f / 1000.f;
 }
 
@@ -1556,6 +1610,14 @@ void displayRecordDigest(int numCreated) {
         body += "\t- " + type + ": " + num + "\n";
       }
 
+      body += "\nThere are " +
+        getNumSavedPhotos() +
+        " saved files on this device. There is " +
+        getFreeSpaceInMBytesAsString() +
+        " MB of free space on this device, of which the saved files use " +
+        getSizeSavedPhotosInMBytesAsString() +
+        " MB.";
+
       if (dialog != null)
         dialog.dismiss();
       showWarning(head, body);
@@ -1688,7 +1750,7 @@ PerfImageDownloader() {
       return;
 
     String filStr = "/sdcard/faims/modules/" + getModuleId() +
-        "/files/app/test.jpg";
+        "/files/test.jpg";
     String urlStr = "https://raw.githubusercontent.com/FAIMS/FAIMS-Tools/" +
         "master/test-images/construction-2894x1924.jpg";
 
