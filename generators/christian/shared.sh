@@ -147,7 +147,7 @@ apply_proc_directives() {
     then
         echo "Running ${procLower}-processing command:"
         echo "  $cmd"
-        eval "$cmd"
+        bash -c "$cmd"
     fi
 }
 
