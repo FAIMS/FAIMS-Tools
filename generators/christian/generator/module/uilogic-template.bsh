@@ -923,6 +923,21 @@ void addOnEvent(String ref, String event, String statement, int precedence) {
   addToOnEventPriorities(ref, event, statement, precedence, ON_EVT_STMTS);
 }
 
+/* Adds a condition to be checked before any expressions bound by `addOnEvent`
+ * are evaluated. `check` is `boolean` expression which must evaluate to `true`
+ * before the bound expressions evaluate. For instance, in the following logic,
+ * `onShowMyTabGroup()` will never be evaluated:
+ *
+ * ```
+ * boolean myChecker() {
+ *   showWarning("I'm Sorry, Dave", "I'm afraid I can't do that.");
+ *   return false;
+ * }
+ *
+ * addOnEvent    ("My_Tab_Group", "show", "onShowMyTabGroup()");
+ * addOnEventCond("My_Tab_Group", "show", "myChecker()");
+ * ```
+ */
 void addOnEventCond(String ref, String event, String check) {
   addToOnEventPriorities(ref, event, check, PRECEDENCE_MID, ON_EVT_CONDS);
 }
