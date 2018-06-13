@@ -4,12 +4,12 @@ FAIMS Tools is a collection of scripts to make module development easier.
 This readme outlines what's contained in each directory. Further information
 can often be found in individual readme files within directories.
 
-# formatter	
-# generators/christian	
- # generate.sh	
- # validate.sh
-# module-dev-scripts	
-# userManagement
+1. formatter	
+2. generators/christian	
+ * generate.sh	
+ * validate.sh
+3. module-dev-scripts	
+4. userManagement
 
 
 ## formatter 
