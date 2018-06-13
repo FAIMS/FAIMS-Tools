@@ -6,8 +6,8 @@ can often be found in individual readme files within directories.
 
 1. formatter	
 2. generators/christian	
- * generate.sh	
- * validate.sh
+ 1. generate.sh	
+ 2. validate.sh
 3. module-dev-scripts	
 4. userManagement
 
