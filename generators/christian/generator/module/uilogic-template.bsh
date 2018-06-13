@@ -1787,8 +1787,8 @@ PerfImageDownloader() {
 
     String filStr = "/sdcard/faims/modules/" + getModuleId() +
         "/files/test.jpg";
-    String urlStr = "https://raw.githubusercontent.com/FAIMS/FAIMS-Tools/" +
-        "master/generator/tests/images/construction-2894x1924.jpg";
+    String urlStr = "https://github.com/FAIMS/FAIMS-Tools/raw/master/" +
+        "generators/christian/tests/images/construction-2894x1924.jpg";
 
     if (detectFile(filStr))
       return;
