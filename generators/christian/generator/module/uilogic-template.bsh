@@ -388,6 +388,9 @@ boolean hasVpRef(String ref) {
   return getVpRef(ref) != null;
 }
 
+/* Returns `true` if `ref` refers to a hierarhical menu. (e.g. a hierarchical
+ * dropdown or hierarchical picture gallery.) Returns `false` otherwise.
+ */
 boolean isHier(String ref) {
   return HIER_REFS.contains(ref);
 }
