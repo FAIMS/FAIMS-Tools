@@ -1,7 +1,10 @@
 # FAIMS Tools
 
 FAIMS Tools is a collection of scripts to make module development easier. This readme outlines what's contained in each directory. Further information can often be found in individual readme files within directories. 
-Further instructions how to use FAIMS Tools and the autogen can be found in the [User to Developer Instructions](https://github.com/FAIMS/UserToDev/blob/master/UserToDev.pdf). For information about FAIMS, visit the [FAIMS Webpage](https://www.fedarch.org/) or the [FAIMS Mobile Platform User Guide](https://faimsproject.atlassian.net/wiki/spaces/MobileUser/pages/4784159/Introduction).
+
+Further instructions how to use FAIMS Tools and the autogen can be found in the [User to Developer Instructions](https://github.com/FAIMS/UserToDev/blob/master/UserToDev.pdf). 
+
+For information about FAIMS, visit the [FAIMS Webpage](https://www.fedarch.org/) or the [FAIMS Mobile Platform User Guide](https://faimsproject.atlassian.net/wiki/spaces/MobileUser/pages/4784159/Introduction).
 Alternatively, you can contact us at enquiries@fedarch.org and we will get back to you within one business day.
 
 1. formatter	
