@@ -6,10 +6,10 @@ can often be found in individual readme files within directories.
 
 1. formatter	
 2. generators/christian	
- 1. generate.sh	
- 2. validate.sh
 3. module-dev-scripts	
 4. userManagement
+5. generate.sh	
+6. validate.sh
 
 
 ## formatter 
@@ -35,3 +35,9 @@ into files. *If you are not sure what this means, do not interact with this dire
 This is a collection of scripts which make it possible to manage user accounts
 on a FAIMS server from a command-line interface. Illustrative examples of such
 scripts are `addUser.py` to add a list of users to the server by one command and `delUser.py` to delete them, also using one command.
+
+## generate.sh	
+See generators/christian for details.
+
+## validate.sh
+See generators/christian for details.
