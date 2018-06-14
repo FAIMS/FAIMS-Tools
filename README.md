@@ -1,4 +1,4 @@
-# FAIMS Tools                                          ![alt text](https://github.com/FAIMS/faimsWebsite/blob/master/images/FAIMS-Med-BO.png "FAIMS Logo")
+# FAIMS Tools ![FAIMS](https://github.com/FAIMS/faimsWebsite/blob/master/images/FAIMS-CYMK-FULL-VECTOR.png)
 
 FAIMS Tools is a collection of scripts to make module development easier. This readme outlines what's contained in each directory. Further information can often be found in individual readme files within directories. 
 
