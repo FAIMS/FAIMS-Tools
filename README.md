@@ -17,8 +17,12 @@ Alternatively, you can contact us at enquiries@fedarch.org and we will get back 
 
 
 ## formatter 
-TBD
 
+Software in this directory allows you to execute SQLite queries as they would be in [the FAIMS app](https://github.com/FAIMS/faims-android). In particular, `formatter` deals with [format strings](https://faimsproject.atlassian.net/wiki/spaces/FAIMS/pages/3014726/FAIMS+Data+UI+and+Logic+Cook-Book#FAIMSData,UIandLogicCook-Book-AttributeFormatString) correctly, however it also allows queries which depend on spatialite to be run.
+
+The most commonly used script is `testFormat.sh`. If `testFormat.sh` is given the path of a file containing a query as its first argument, another file will be created with that query's output. The file will be created in the current working directory.
+
+A list of dependencies can be found in `formatter`'s readme.
 
 ## generators/christian
 
