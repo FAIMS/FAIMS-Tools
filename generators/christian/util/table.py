@@ -5,7 +5,7 @@ XML TYPE           | ATTRIBUTES ALLOWED
 module             | suppressWarnings, test_mode
 tab group          | f
 tab                | f
-group              | t
+group              | t, s
 GUI/data element   | b, c, e, ec, f, l, lc, ll, lq, t, s, vp, i, sp, su
 markdown           |
 cols               | f

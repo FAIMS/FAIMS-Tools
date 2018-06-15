@@ -11,7 +11,8 @@ DEPENDENCIES AND SETUP
   The FAIMS-Tools autogen has the following recommended requirements:
     1. A Debian-based OS released 2016 or later.
     2. Any packages installed via `./install-dependencies.sh`, which can be
-       found in the same directory as this readme.
+       found in the same directory as this readme. Simply run
+       `sudo ./install-dependencies.sh` to install the required packages.
   If the above requirements cannot be satisfied, you might still be able to use
   the FAIMS-Tools autogen. See 'Alternative Setup (Docker)' for more
   information. Older distros (around 2014 or earlier) typically produce working
@@ -107,6 +108,7 @@ SCHEMA ATTRIBUTES
   suppressWarnings   Deprecated. Used to prevent warnings from being shown when
                      equal to "true" and present in the <module> tag. Does not
                      suppress errors.
+  s                  Alias for faims_style
   sp, su             In <opt> tags and GUI elements, equivalent to
                      SemanticMapPredicate and SemanticMapURL attributes,
                      respectively.
@@ -567,21 +569,6 @@ UNIT TESTING
 ________________________________________________________________________________
 
 KNOWN ISSUES
-
-  Arbitrarily nested group elements cannot be specified within a tab. For
-  example, the code generated from the following module.xml is undefined:
-      <?xml version="1.0" ?>
-      <module>
-        <Tab_Group>
-          <Tab>
-            <Field_1 t="group">
-              <Field_2 t="group"/>  <!-- Well, *there's* your problem! -->
-            </Field_1>
-          </Tab>
-        </Tab_Group>
-      </module>
-  Moreover, the programmer will not be warned about this and should expect un-
-  expected behaviour.
 
   Concerning the naming conventions used: one may notice that the distinction
   between a type (i.e. t attribute) and a reserved element can be a bit
