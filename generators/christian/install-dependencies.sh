@@ -21,7 +21,6 @@ fi
 apt-get install \
         bc \
         bsh \
-        default-jre \
         gawk \
         git \
         graphviz \
