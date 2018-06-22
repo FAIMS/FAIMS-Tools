@@ -78,6 +78,7 @@ TAG_AUTHOR    = 'author'
 TAG_AUTONUM   = 'autonum'
 TAG_COL       = 'col'
 TAG_COLS      = 'cols'
+TAG_CSS       = 'css'
 TAG_DESC      = 'desc'
 TAG_FMT       = 'fmt'
 TAG_GPS       = 'gps'
@@ -97,6 +98,7 @@ TAGS = [
         if k.startswith('TAG_')
 ]
 
+TYPE_CSS       = 'css'
 TYPE_APP       = 'app'
 TYPE_AUTHOR    = 'author'
 TYPE_AUTONUM   = 'autonum'

@@ -50,6 +50,7 @@ document        | 1 <= module <= 1      |
 module          | 1 <= tab group        |
 module          | 0 <= logic   <= 1     |
 module          | 0 <= rels    <= 1     |
+module          | 0 <= css     <= 1     |
 
 tab group       | 1 <= tab              |
 tab group       | 0 <= desc     <= 1    |
@@ -86,6 +87,7 @@ document             | /           | module
 module               | /[^a-z]/    | tab group
 module               | logic       | <logic>
 module               | rels        | <rels>
+module               | css         | <css>
 
 tab group            | /[^a-z]/    | tab
 tab group            | desc        | <desc>

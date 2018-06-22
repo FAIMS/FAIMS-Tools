@@ -351,6 +351,7 @@ def annotateWithXmlTypes(node):
         if   util.isNonLower(node.tag):   type = TYPE_TAB_GROUP
         elif node.tag == TAG_LOGIC:       type = TYPE_LOGIC
         elif node.tag == TAG_RELS:        type = TYPE_RELS
+        elif node.tag == TAG_CSS:         type = TYPE_CSS
     elif parentType == TYPE_TAB_GROUP:
         if   util.isNonLower(node.tag):   type = TYPE_TAB
         elif node.tag == TAG_DESC:        type = TYPE_DESC

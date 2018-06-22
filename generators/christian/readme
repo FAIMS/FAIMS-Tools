@@ -248,6 +248,9 @@ RESERVED ELEMENT NAMES AND RECOMMENDED NAMING CONVENTIONS
                    marked with f="autonum".  (See 'Autonumbering'.)
     - <col>        One column in a <cols> tag
     - <cols>       Columns
+    - <css>        CSS styles. These are appended to the generated
+                   `ui_styling.css` file. The <css> tag is typically used with
+                   the `c` attribute.
     - <desc>       Description to put in the data schema
     - <logic>      UI logic which is appened to end of generated file.
     - <module>
