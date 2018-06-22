@@ -476,29 +476,6 @@ helpers.wMsg(msg, matches)
 
 ################################################################################
 
-msg  = 'The `ll` attribute might be more appropriate than `l` for one or more '
-msg += 'elements'
-
-# By the end of this, `linkerNodes` should contain the elements that:
-#   1) Share a tab group with an element that has f="user"; and
-#   2) Link to a tab group other than that mentioned in 1).
-cond = lambda e: e != None
-userNodes = util.xml.getAll(tree, lambda e: util.schema.isFlagged(e, FLAG_USER))
-parentTabGroups = [util.schema.getParentTabGroup(n) for n in userNodes]
-parentTabGroups = filter(cond, parentTabGroups)
-
-cond = lambda n: util.schema.getParentTabGroup(
-                util.schema.getLinkedNode(n), True
-        ) not in (None, util.schema.getParentTabGroup(n))
-linkerNodes = [util.xml.getAll(n, util.schema.hasLink) for n in parentTabGroups]
-linkerNodes = itertools.chain.from_iterable(linkerNodes) # Flatten
-linkerNodes = filter(lambda n: not util.xml.hasAttrib(n, ATTRIB_LL), linkerNodes)
-linkerNodes = filter(cond, linkerNodes)
-
-helpers.wMsg(msg, linkerNodes)
-
-################################################################################
-
 msg  = 'The `makeVocab` function is being called in <logic>.  Consider using'
 msg += ' the `vp` attribute instead.  If this cannot be done, ensure that '
 msg += 'handwritten calls to `makeVocab` occur upon module load by using '
