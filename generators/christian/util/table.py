@@ -285,6 +285,11 @@ Saved_Map_Configuration=Saved Map Configuration
 Loaded_Map_Configuration=Loaded Map Configuration
 
 toast_saved=saved
+
+inc_field_head=Starting ID Not Valid
+inc_field_body_1=The starting ID for 
+inc_field_body_2= should be an integer. The number you entered has been rounded before being incremented.
+inc_field_body_3= should be an integer. The contents of this field could not be incremented.
 '''
 
 ATTRIBS       = tablehelper.parseTable(ATTRIBS)

@@ -3757,9 +3757,39 @@ Integer incField(String ref, Integer defaultVal) {
     return defaultVal;
   }
 
-  Integer inc = Integer.parseInt(val) + 1;
-  setFieldValue(ref, inc);
-  insertIntoLocalSettings(ref, inc.toString());
+  Integer inc = null;
+  try {
+    inc = Integer.parseInt(val) + 1;
+  } catch (Exception e) { ; }
+
+  if (inc == null) {
+    try {
+      Double dinc = Double.parseDouble(val) + 1;
+      inc = Math.round(dinc);
+
+      String head, body;
+      head  = "{inc_field_head}";
+      body  = "{inc_field_body_1}" + getArch16nKey(ref) + "{inc_field_body_2}";
+
+      showWarning(head, body);
+    } catch (Exception e) {
+      Log.d("incField", "" + e);
+      ;
+    }
+  }
+
+  if (inc == null) {
+    String head, body;
+    head  = "{inc_field_head}";
+    body  = "{inc_field_body_1}" + getArch16nKey(ref) + "{inc_field_body_3}";
+
+    showWarning(head, body);
+  }
+
+  if (inc != null) {
+    setFieldValue(ref, inc);
+    insertIntoLocalSettings(ref, inc.toString());
+  }
 
   return inc;
 }
