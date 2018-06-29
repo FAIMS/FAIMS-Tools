@@ -1,5 +1,11 @@
 import tablehelper
 
+# The globals defined here are mostly used for validation, however, `ARCH16N`
+# is used elsewhere. The `table.py` file should arguably be merged with
+# `consts.py`.
+
+# A (string representation of a) table of allowed attributes for each XML type.
+# XML Types are explained in `consts.py`.
 ATTRIBS = '''
 XML TYPE           | ATTRIBUTES ALLOWED
 module             | suppressWarnings, test_mode
@@ -26,6 +32,7 @@ search             |
 timestamp          | f
 '''
 
+# A (string representation of a) table of allowed values for each XML attribute.
 ATTRIB_VALS = '''
 ATTRIBUTE    | ALLOWED VALUES (ONE-OF)     | ALLOWED VALUES (MANY-OF)
 b            | date, decimal, string, time |
@@ -43,6 +50,7 @@ t            | audio, button, camera, checkbox, dropdown, file, gpsdiag, group, 
 vp           | $link-gui                   |
 '''
 
+# Constraints on the number of elements which can be within other elements.
 CARDINALITIES = '''
 PARENT XML TYPE | DIRECT CHILD COUNT    | DESCENDANT COUNT
 document        | 1 <= module <= 1      |
@@ -80,6 +88,7 @@ opt            | 0 <=  desc  <= 1      |
 opt            | 0 <=  opt             |
 '''
 
+# Used by the validator suggest XML types
 TYPES = '''
 PARENT XML TYPE      | PATTERN     | MATCH XML TYPE
 document             | /           | module
@@ -122,40 +131,7 @@ GUI/data element     | markdown    | <markdown>
 <opt>                | desc        | <desc>
 '''
 
-# Types (t attribute in module.xml schema) of menu-like items
-MENU_TS = [
-    'checkbox',
-    'dropdown',
-    'list',
-    'picture',
-    'radio'
-]
-
-# Types (t attribute in module.xml schema) where <desc> is allowed to go
-DESC_TS = [
-    'audio',
-    'camera',
-    'checkbox',
-    'dropdown',
-    'file',
-    'input',
-    'list',
-    'picture',
-    'radio',
-    'video'
-]
-
-REPLACEMENTS_BY_T_ATTRIB = {
-        'audio'  : '<__REPLACE__        t="dropdown"/>\
-                    <Button___REPLACE__ t="button"/>',
-        'camera' : '<__REPLACE__        t="dropdown"/>\
-                    <Button___REPLACE__ t="button"/>',
-        'file'   : '<__REPLACE__        t="dropdown"/>\
-                    <Button___REPLACE__ t="button"/>',
-        'video'  : '<__REPLACE__        t="dropdown"/>\
-                    <Button___REPLACE__ t="button"/>',
-}
-
+# Arch 16n entries which should be included in every module
 ARCH16N = '''
 A_next_ID_has_not_been_entered_please_provide_one=A next ID has not been entered. Please provide one.
 Accuracy=Accuracy
@@ -294,6 +270,8 @@ inc_field_body_2= should be an integer. The number you entered has been rounded 
 inc_field_body_3= should be an integer. The contents of this field could not be incremented.
 '''
 
+# Turn the string representations above into more expressive data types (e.g.
+# tables get parsed into lists of lists).
 ATTRIBS       = tablehelper.parseTable(ATTRIBS)
 ATTRIB_VALS   = tablehelper.parseTable(ATTRIB_VALS)
 CARDINALITIES = tablehelper.parseTable(CARDINALITIES)

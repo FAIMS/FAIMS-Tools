@@ -2,9 +2,11 @@ RESERVED_XML_TYPE  = '__RESERVED_XML_TYPE__'
 RESERVED_IGNORE    = '__RESERVED_IGNORE__'
 RESERVED_PROP_NAME = '__RESERVED_PROP_NAME__'
 
-SEP_FLAGS = ' '
-SEP_DATA  = ' '
+SEP_FLAGS = ' ' # What's considered a separator in the `f` attribute
+SEP_DATA  = ' ' # Used to separate archent name from attrib name during data
+                # schema generation
 
+# XML attributes which the user can use in the `module.xml` file.
 ATTRIB_B         = 'b'
 ATTRIB_C         = 'c'
 ATTRIB_E         = 'e'
@@ -48,6 +50,8 @@ CSS = [
         if k.startswith('CSS_')
 ]
 
+# Strings which the user is allowed to include in the `module.xml` file's `f`
+# attribute.
 FLAG_AUTONUM      = 'autonum'
 FLAG_HIDDEN       = 'hidden'
 FLAG_HTMLDESC     = 'htmldesc'
@@ -73,6 +77,7 @@ FLAGS = [
         if k.startswith('FLAG_')
 ]
 
+# Tags which the user can use in the `module.xml` file.
 TAG_APP       = 'app'
 TAG_AUTHOR    = 'author'
 TAG_AUTONUM   = 'autonum'
@@ -98,6 +103,35 @@ TAGS = [
         if k.startswith('TAG_')
 ]
 
+# XML Types -- If `module.xml` had an idiomatic XML schema, these wouldn't be
+# needed because whoever writes the `module.xml` file would explicitly provide
+# the so called "XML types" as XML tags. For instance,
+#
+#     <My_Tabgroup>
+#       <My_Tab f="noscroll">
+#         <My_Input t="input"/>
+#       </My_Tab>
+#     </My_Tabgroup>
+#
+# would look more like:
+#
+#     <tab-group name="My Tabgroup">
+#       <tab name="My Tab" f="noscroll">
+#         <gui-data-element name="My Input" t="input"/>
+#       </tab>
+#     </tab-group>
+#
+# Because the types aren't explicitly provided by the user, they need to be
+# inferred by running `annotateWithXmlTypes`. One might expect that this
+# transforms the first form (above) to the second. However
+# `annotateWithXmlTypes` instead puts the XML types in an attribute named by the
+# `RESERVED_XML_TYPE` variable.
+#
+# The reason for this weirdness is twofold: 1) it makes it easier to port old
+# modules to the `module.xml` format because the latter is similar to the
+# former's `ui_schema.xml`. 2) It makes the `module.xml` more concise. If either
+# of these weren't the case, it'd be undeniably better to have defined
+# `module.xml`'s schema idiomatically.
 TYPE_CSS       = 'css'
 TYPE_APP       = 'app'
 TYPE_AUTHOR    = 'author'
@@ -126,6 +160,8 @@ TYPES = [
         if k.startswith('TYPE_')
 ]
 
+# UI Types -- These are the strings which can appear in the `module.xml` file's
+# `t` attribute.
 UI_TYPE_AUDIO     = 'audio'
 UI_TYPE_BUTTON    = 'button'
 UI_TYPE_CAMERA    = 'camera'
@@ -149,6 +185,7 @@ UI_TYPES = [
         if k.startswith('UI_TYPES_')
 ]
 
+# Types (t attribute in module.xml schema) of menu-like items
 MENU_UI_TYPES = [
         UI_TYPE_CHECKBOX,
         UI_TYPE_DROPDOWN,
@@ -175,6 +212,8 @@ MEASURE_UI_TYPES = [
         UI_TYPE_INPUT
 ]
 
+# UI types of composite elements. These will be expanded into multiple GUI/Data
+# elements as the module is generated.
 GUI_DATA_UI_TYPES = [
         TYPE_AUTHOR,
         TYPE_GPS,
@@ -183,9 +222,25 @@ GUI_DATA_UI_TYPES = [
         TYPE_TIMESTAMP,
 ]
 
+# UI types of GUI/Data elements whose parent tabs shoudl probably be flagged
+# with `f="noscroll"` to avoid layout issues.
 NO_SCROLL_UI_TYPES = [
         UI_TYPE_MAP,
         UI_TYPE_LIST,
+]
+
+# Types (t attribute in module.xml schema) where <desc> is allowed to go
+DATA_UI_TYPES = [
+    UI_TYPE_AUDIO,
+    UI_TYPE_CAMERA,
+    UI_TYPE_CHECKBOX,
+    UI_TYPE_DROPDOWN,
+    UI_TYPE_FILE,
+    UI_TYPE_INPUT,
+    UI_TYPE_LIST,
+    UI_TYPE_PICTURE,
+    UI_TYPE_RADIO,
+    UI_TYPE_VIDEO
 ]
 
 ORIGINAL_TAG = '__ORIGINAL_TAG__'

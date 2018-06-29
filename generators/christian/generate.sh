@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# This script generates the module definition files (and, optionally, the
+# wireframe) from the `module.xml` file. This is done by by executing the
+# Python scripts in the `generator` directory.  Additionally, the @POSTPROC,
+# @PREPROC and @SOURCE directives are applied by this Bash script.
+
 THIS_SCRIPT_PATH=$( dirname "$( readlink -e "$0" )" )
 . "$THIS_SCRIPT_PATH/shared.sh"
 

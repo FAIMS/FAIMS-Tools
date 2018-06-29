@@ -18,19 +18,8 @@ def isDataElement(node):
     if    xml.hasAttrib(node, ATTRIB_E):    return False
     if    xml.hasAttrib(node, ATTRIB_EC):   return False
 
-    dataTypes = [
-        UI_TYPE_AUDIO,
-        UI_TYPE_CAMERA,
-        UI_TYPE_CHECKBOX,
-        UI_TYPE_DROPDOWN,
-        UI_TYPE_FILE,
-        UI_TYPE_INPUT,
-        UI_TYPE_LIST,
-        UI_TYPE_PICTURE,
-        UI_TYPE_RADIO,
-        UI_TYPE_VIDEO,
-    ]
-    return schema.isTabGroup(node) or schema.getUiType(node, True) in dataTypes
+    return schema.isTabGroup(node) or \
+            schema.getUiType(node, True) in DATA_UI_TYPES
 
 def formsArchEnt(node):
     return bool(getArchEntName(node))
@@ -79,8 +68,7 @@ def getAttribType(node, isSpecific=False):
     typesSpecific    = ('measure', 'file',    'vocab')
     typesNonSpecific = ('measure', 'measure', 'vocab')
 
-    if isSpecific: types = typesSpecific
-    else:          types = typesNonSpecific
+    types = typesSpecific if isSpecific else typesNonSpecific
 
     if hasMeasureType(node): return types[0]
     if hasFileType   (node): return types[1]
@@ -156,6 +144,27 @@ def getHierarchyForTopLevelNode(node, seenLinks=None):
     )
 
 def getTopLevelArchEntNodes(node, parentNode=None):
+    '''
+    If the parent-child hierarchy looks like this:
+
+        - Legacy
+        - Site
+            - Trench
+                - Trench Files
+                - Locus
+                    - Soil Munsel Color
+                    - Sediment Aggregate
+                    - FCN
+                    - Photograph Log
+                - Stratum Feature
+                    - Photograph Log
+                - FCN
+                - Diary
+              - Legacy
+
+    then the nodes corresponding to 'Legacy' and 'Site' will be returned by
+    `getTopLevelArchEntNodes`.
+    '''
     if schema.getXmlType(node) == TYPE_MODULE:
         nodes = list(set(getTopLevelArchEntNodes(schema.getEntryPoint(node))))
         nodes.sort(key=getArchEntName)
@@ -172,6 +181,10 @@ def getTopLevelArchEntNodes(node, parentNode=None):
         return top
 
 def isTopLevelArchEntNode(node, parentNode):
+    '''
+    "Top level" implies a hierarchy. In this case the hierarchy is one of
+    parent-child relationships in the data schema.
+    '''
     return node != None and parentNode != None and \
             schema.isTabGroup(node) and \
             isDataElement(node) and \

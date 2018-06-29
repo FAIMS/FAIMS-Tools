@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# This script validates the module the `module.xml` file by executing the
+# Python scripts in the `validator` directory. Additionally, @PREPROC and
+# @SOURCE directives are applied by this Bash script.
+
 THIS_SCRIPT_PATH=$( dirname "$( readlink -e "$0" )" )
 . "$THIS_SCRIPT_PATH/shared.sh"
 

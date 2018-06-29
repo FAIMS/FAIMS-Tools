@@ -886,6 +886,8 @@ def getNodeAtPath(tree, pathString):
     `pathString == "My_Tab_Group/Tab_A/My_ID"` then `getNodeAtPath` will return
     the lxml element `<My_ID/>` (unless it doesn't exist).
     '''
+    if pathString == None:
+        return None
     pathString = pathString.replace('!', '')
 
     root  = tree.getroottree().getroot()

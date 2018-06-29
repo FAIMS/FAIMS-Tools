@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 from   lxml import etree
 import copy
@@ -62,7 +62,7 @@ class GraphModule(object):
     def getUserSpecifiedLinks(self, node):
         links = ['/* User-specified links */']
 
-        for n in node.xpath('//*[@l or @lc or @ll]'):
+        for n in util.xml.getAll(node, util.schema.hasValidLink):
             # Determine `nodeFrom` and `nodeTo`. `nodeTo` is always a tab.
             nodeFrom = n
             nodeTo   = util.schema.getLinkedNode(n)
@@ -91,7 +91,7 @@ class GraphModule(object):
     def getGraphConstrainingLinks(self, node):
         links = ['/* Graph-constraining links */']
 
-        for n in node.xpath('//*[@l or @lc or @ll]'):
+        for n in util.xml.getAll(node, util.schema.hasValidLink):
             # Determine `nodeFrom` and `nodeTo`
             nodeFrom = util.schema.getParentTabGroup(n)
             nodeTo   = util.schema.getLinkedNode(n)
@@ -241,6 +241,10 @@ class GraphTab(object):
 ################################################################################
 
 class GuiBlock(object):
+    '''
+    Elements which are direct children of a tab form GUI/Data Blocks. Such
+    elements are GUI/Data elements and <cols> elements.
+    '''
     prefix_elem  = '_'
     prefix_block = 'struct_Elems_'
 

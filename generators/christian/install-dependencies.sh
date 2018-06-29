@@ -1,6 +1,8 @@
 #!/bin/bash
 # Tested on: 16.04.03 LTS
 
+# This script installs the programs that the autogen needs to run.
+
 if [ "$EUID" -ne 0 ]
 then
     echo "Please run me with root privileges. Example:"

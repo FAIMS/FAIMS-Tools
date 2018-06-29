@@ -359,12 +359,12 @@ helpers.eMsg(msg, affectedNodes)
 ################################################################################
 
 msg  = 'Only elements whose t attribute is equivalent to one of the following '
-msg += 'may contain <opts> tags: %s' % ', '.join(util.table.MENU_TS)
+msg += 'may contain <opts> tags: %s' % ', '.join(MENU_UI_TYPES)
 
 # Get <opts> tags which are the children of GUI/data elements
 exp  = '//*[@%s="%s"]/opts' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
-# Filter out <opts> tags whose element's t attrib *is* in DESC_TS
-cond = lambda e: not util.schema.getUiType(e.getparent()) in util.table.MENU_TS
+# Filter out <opts> tags whose element's t attrib *is* in MENU_UI_TYPES
+cond = lambda e: not util.schema.getUiType(e.getparent()) in MENU_UI_TYPES
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 # Effectively, filter out <opts> tags which were already complained about
@@ -392,12 +392,12 @@ helpers.eMsg(msg, affectedNodes)
 ################################################################################
 
 msg  = 'Only elements whose t attribute is equivalent to one of the following '
-msg += 'may contain <desc> tags: %s' % ', '.join(util.table.DESC_TS)
+msg += 'may contain <desc> tags: %s' % ', '.join(DATA_UI_TYPES)
 
 # Get <desc> tags which are the children of GUI/data elements
 exp  = '//*[@%s="%s"]/desc' % (RESERVED_XML_TYPE, TYPE_GUI_DATA)
-# Filter out <desc> tags whose element's t attrib *is* in DESC_TS
-cond = lambda e: not util.schema.getUiType(e.getparent()) in util.table.DESC_TS
+# Filter out <desc> tags whose element's t attrib *is* in DATA_UI_TYPES
+cond = lambda e: not util.schema.getUiType(e.getparent()) in DATA_UI_TYPES
 matches = tree.xpath(exp)
 matches = filter(cond, matches)
 # Effectively, filter out <desc> tags which were already complained about

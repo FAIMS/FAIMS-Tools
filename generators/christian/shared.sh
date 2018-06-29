@@ -1,3 +1,10 @@
+# This script defines global variables and functions used by other scripts,
+# particularly the following:
+#   * `generate.sh`
+#   * `validate.sh`
+#   * `container.sh`
+#   * `install-dependencies.sh`
+
 parse_args() {
     # Parse arguments to this script
     MODULE="module.xml"

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This script runs either `generate.sh` or `validate.sh` within the container
+# defined by `Dockerfile`.
+
 if ! which docker >/dev/null
 then
     printf 'Docker could not be found. Please install Docker and/or add it to '
@@ -23,7 +26,7 @@ docker run \
     -v "$MODULE_PATH":"$MODULE_PATH" \
     -v "$TMP_MODULE_PATH":"$TMP_MODULE_PATH" \
     -v "$REPO_ROOT":"$REPO_ROOT" \
-    -w $(pwd) \
+    -w "$(pwd)" \
     autogen \
     "$THIS_SCRIPT_PATH/$cmd.sh" \
     $@
