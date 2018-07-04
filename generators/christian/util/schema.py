@@ -21,6 +21,9 @@ import itertools
 import os.path
 
 INVALID_ATTRIB_NAMES_IN_FMT = None
+RE_OFFSET_ELEMENT_LINE = re.compile('<!--@OFFSET: (\d+)-->(\r\n|\r|\n)')
+RE_OFFSET_ELEMENT      = re.compile('<!--@OFFSET: (\d+)-->')
+RE_OFFSET_COMMENT      = re.compile(    '@OFFSET: (\d+)')
 
 def getPath(node, isInitialCall=True):
     '''
@@ -212,6 +215,35 @@ def parseSchema(node):
 
     return node
 
+def getOffset(node):
+    if not node.text:
+        return 0
+
+    if node.tag is etree.Comment: m = RE_OFFSET_COMMENT.finditer(node.text)
+    else:                         m = RE_OFFSET_ELEMENT.finditer(node.text)
+
+    return reduce(lambda total, m : total + int(m.group(1)), m, 0)
+
+def annotateWithOriginalSourceLines(node):
+    maybeOffsetNodes = node.xpath('//self::comment() | //self::*')
+
+    totalOffset        = 0
+    shiftedSourceStart = 0
+    for n in maybeOffsetNodes:
+        offset = getOffset(n)
+        totalOffset += offset
+        shiftedSourceline = n.sourceline - totalOffset
+
+        if offset:
+            shiftedSourceStart = shiftedSourceline + offset
+        elif shiftedSourceline > shiftedSourceStart:
+            shiftedSourceStart = 0
+
+        if shiftedSourceStart:
+            n.sourceline = shiftedSourceStart
+        else:
+            n.sourceline = shiftedSourceline
+
 def normaliseXml(node):
     normaliseAttributes(node)
     stripComments(node)
@@ -246,6 +278,11 @@ def stripComments(node):
     for c in comments:
         p = c.getparent()
         p.remove(c)
+
+    maybeOffsetElements = node.xpath('.//self::*')
+    for n in maybeOffsetElements:
+        if n.text:
+            n.text = RE_OFFSET_ELEMENT_LINE.sub('', n.text)
 
 def getUiType(node, force=False):
     '''

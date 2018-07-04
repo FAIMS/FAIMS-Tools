@@ -22,6 +22,7 @@ tree = util.xml.parseXml(filenameModule)
 print 'Parsing XML completed'
 print
 
+util.schema.annotateWithOriginalSourceLines(tree)
 util.schema.normaliseXml(tree)
 
 ################################################################################

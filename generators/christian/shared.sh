@@ -36,6 +36,36 @@ validate_module_location() {
     fi
 }
 
+validate_module_xml() {
+  # Determine module location
+  if [ -n "$TMP_MODULE_FULL" ];
+  then
+      local module="$TMP_MODULE_FULL"
+  else
+      local module="$MODULE"
+  fi
+
+  # Validate module XML
+  local errors="$( xmllint "$module" 2>&1 1>/dev/null )"
+
+  # Exit if no errors
+  if [ -z "$errors" ];
+  then
+      return 0
+  fi
+
+  # Use $* as the error message if it's been provided, else display $error
+  if [ -n "$*" ];
+  then
+      echo "$*"
+  elif [ -n "$errors" ];
+  then
+      echo "$errors"
+  fi
+
+  clean_up_and_exit 1
+}
+
 repo_root() {
     # Prints the full root directory of the autogen's git repo.
     local dir="$1"
@@ -127,14 +157,19 @@ apply_source_directives() {
         fi
         local whitespace='\s*'                             # \geq 0 whitespace
         local escaped_filename=$( escape_sed "$filename" ) # Escape slashes
+        local lines=$( cat "$filename" | wc -l )
 
         local tmp=$(tempfile)
         cat "$TMP_MODULE_FULL" | sed \
             -e "/<!--@SOURCE:$whitespace$escaped_filename$whitespace-->/{
+            a <!--@OFFSET: $lines-->
             r $filename
             d
         }" >"$tmp"
         mv "$tmp" "$TMP_MODULE_FULL"
+
+        validate_module_xml "    '$filename' makes '$MODULE_NAME' invalid." \
+          "Exiting."
     done
     echo
 }
@@ -225,5 +260,6 @@ parse_args $@
 if [ "$DEFS_ONLY" != true ]
 then
     validate_module_location
+    validate_module_xml
     set_up
 fi

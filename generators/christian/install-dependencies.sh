@@ -27,6 +27,7 @@ apt-get install \
         git \
         graphviz \
         libsaxonb-java \
+        libxml2-utils \
         pandoc \
         python-cairosvg \
         python-lxml \

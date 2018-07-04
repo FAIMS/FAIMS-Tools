@@ -13,6 +13,6 @@ apply_source_directives
 apply_preproc_directives
 
 cd "$THIS_SCRIPT_PATH"
-python2 -m validator.module "$MODULE_FULL"
+python2 -m validator.module "$TMP_MODULE_FULL"
 
 clean_up_and_exit $?
