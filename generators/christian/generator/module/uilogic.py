@@ -838,6 +838,92 @@ def getNavButtonBindsAdd(tree, t):
 
     return t.replace(placeholder, replacement)
 
+def getTutorialSearchTabGroupString(tree):
+    hasSearchType = lambda e: util.schema.getXmlType(e) == TYPE_TUTORIALSEARCH
+    nodes = util.xml.getAll(tree, hasSearchType)
+    if not len(nodes): return ''
+    search = nodes[0]
+    searchTG = util.schema.getParentTabGroup(search)
+    return util.schema.getPathString(searchTG)
+
+def getTutorialSearchBinds(tree, t):
+    placeholder = '{{binds-tutorial-search}}'
+    tgStr = getTutorialSearchTabGroupString(tree)
+    if not tgStr:
+        return t.replace(placeholder, '')
+
+    replacement = \
+      'addOnEvent("{{tab-group-tutorial-search}}/Tutorial_Search"               , "show"  , "tutorialSearch()");' \
+    '\naddOnEvent("{{tab-group-tutorial-search}}/Tutorial_Search/Entity_List"   , "click" , "loadEntity();");' \
+    '\naddOnEvent("{{tab-group-tutorial-search}}/Tutorial_Search/Search_Button" , "click" , "tutorialSearch()");' \
+    '\naddOnEvent("{{tab-group-tutorial-search}}/Tutorial_Search/Search_Term"   , "click" , "clearSearch()");' \
+
+    return t.replace(placeholder, replacement)
+
+def getTutorialSearchTabGroup(tree, t):
+    placeholder = '{{tab-group-tutorial-search}}'
+    replacement = getTutorialSearchTabGroupString(tree)
+
+    return t.replace(placeholder, replacement)
+
+def getTutorialSearchEntities(tree, t):
+    hasSearchType = lambda e: util.schema.getXmlType(e) == TYPE_TUTORIALSEARCH
+    searchNodes = util.xml.getAll(tree, hasSearchType)
+
+    nodes = util.schema.getTabGroups(tree, isGuiAndData)
+    arch16nKeys  = [util.arch16n.getArch16nKey(n) for n in nodes]
+    archEntNames = [util.data.getArchEntName  (n) for n in nodes]
+
+    placeholder = '{{tutorial-search-entities}}'
+    fmt         = 'entityTypes.add(new NameValuePair("%s", "%s"));'
+    replacement = \
+      'addOnEvent("{{tab-group-tutorial-search}}/Tutorial_Search/Entity_Types"  , "click" , "tutorialSearch()");' \
+    '\nentityTypes = new ArrayList();' \
+    '\nentityTypes.add(new NameValuePair("{All}", ""));' + \
+    '\n' + format(zip(arch16nKeys, archEntNames), fmt) + \
+    '\npopulateDropDown("{{tab-group-tutorial-search}}/Tutorial_Search/Entity_Types", entityTypes);'
+    if len(nodes) <= 1 or len(searchNodes) < 1:
+        replacement = ''
+
+    return t.replace(placeholder, replacement)
+
+def getTutorialSearchType(tree, t):
+    nodes = util.schema.getTabGroups(tree, isGuiAndData)
+
+    placeholder = '{{type-tutorial-search}}'
+    if len(nodes) <= 1:
+        replacement = 'String type = "";'
+    else:
+        replacement = 'String type = getFieldValue(refEntityTypes);'
+
+    return t.replace(placeholder, replacement)
+
+def getTutorialLoadEntityDefs(tree, t):
+    nodes    = util.schema.getTabGroups(tree, isGuiAndData)
+    refs     = [util.schema.getPathString(n) for n in nodes]
+    funNames = [getFunName(n) for n in nodes]
+
+    placeholder = '{{tutorial-defs-load-entity}}'
+    fmt = \
+      'void load%sFrom(String uuid) {' \
+    '\n  String tabgroup = "%s";' \
+    '\n  setUuid(tabgroup, uuid);' \
+    '\n  if (isNull(uuid)) return;' \
+    '\n' \
+    '\n  FetchCallback cb = new FetchCallback() {' \
+    '\n    onFetch(result) {' \
+    '\n      populateEntityListsInTabGroup(tabgroup);' \
+    '\n      executeOnEvent(tabgroup, "fetch");' \
+    '\n    }' \
+    '\n  };' \
+    '\n' \
+    '\n  executeOnEvent(tabgroup, "prefetch");' \
+    '\n  showTabGroup(tabgroup, uuid, cb);' \
+    '\n}'
+    replacement = format(zip(funNames, refs), fmt)
+
+    return t.replace(placeholder, replacement)
+
 def getSearchTabGroupString(tree):
     hasSearchType = lambda e: util.schema.getXmlType(e) == TYPE_SEARCH
     nodes = util.xml.getAll(tree, hasSearchType)
@@ -1075,6 +1161,10 @@ def getHandWrittenLogic(tree, t):
 
     return t.replace(placeholder, replacement)
 
+
+
+
+
 def getUiLogic(tree):
     templateFileName = 'generator/module/uilogic-template.bsh'
 
@@ -1122,6 +1212,11 @@ def getUiLogic(tree):
     t = getDefsTabGroupBinds(tree, t)
     t = getNavButtonBindsDel(tree, t)
     t = getNavButtonBindsAdd(tree, t)
+    t = getTutorialSearchBinds(tree, t)
+    t = getTutorialSearchEntities(tree, t)
+    t = getTutorialSearchType(tree, t)
+    t = getTutorialSearchTabGroup(tree, t)
+    t = getTutorialLoadEntityDefs(tree, t)
     t = getSearchBinds(tree, t)
     t = getSearchEntities(tree, t)
     t = getSearchType(tree, t)

@@ -44,6 +44,7 @@ def getPath(node, isInitialCall=True):
     nodeTypes = [
             TYPE_GUI_DATA,
             TYPE_SEARCH,
+            TYPE_TUTORIALSEARCH,
             TYPE_TAB,
             TYPE_TAB_GROUP,
             TYPE_AUTHOR,
@@ -393,6 +394,7 @@ def annotateWithXmlTypes(node):
         if   util.isNonLower(node.tag):   type = TYPE_TAB
         elif node.tag == TAG_DESC:        type = TYPE_DESC
         elif node.tag == TAG_SEARCH:      type = TYPE_SEARCH
+        elif node.tag == TAG_TUTORIALSEARCH:   type = TYPE_TUTORIALSEARCH
         elif node.tag == TAG_FMT:         type = TYPE_FMT
     elif parentType == TYPE_TAB:
         if   guessedType == TAG_GROUP:    type = TYPE_GROUP
@@ -494,6 +496,7 @@ def normaliseSchemaRec(node):
     if getXmlType(node) == TYPE_AUTONUM:   newNodes = getAutonum  (node)
     if getXmlType(node) == TYPE_GPS:       newNodes = getGps      (node)
     if getXmlType(node) == TYPE_SEARCH:    newNodes = getSearch   (node)
+    if getXmlType(node) == TYPE_TUTORIALSEARCH: newNodes = getTutorialSearch(node)
     if getXmlType(node) == TYPE_TIMESTAMP: newNodes = getTimestamp(node)
     newNodes = xml.replaceElement(node, newNodes)
 
@@ -840,6 +843,36 @@ def getSearch(node):
 
     return search,
 
+def getTutorialSearch(node):
+    search = Element(
+            'Tutorial_Search',
+            { RESERVED_XML_TYPE : TYPE_TAB },
+            f='nodata noscroll'
+    )
+    cols = SubElement(search, 'Colgroup_0', { RESERVED_XML_TYPE : TYPE_COLS }, t=UI_TYPE_GROUP, s='orientation')
+    lCol = SubElement(cols,   'Col_0',      { RESERVED_XML_TYPE : TYPE_COL  }, t=UI_TYPE_GROUP, s='even')
+    rCol = SubElement(cols,   'Col_1',      { RESERVED_XML_TYPE : TYPE_COL  }, t=UI_TYPE_GROUP, s='large')
+
+    term = SubElement(lCol,   'Search_Term',   t=UI_TYPE_INPUT)
+    btn  = SubElement(rCol,   'Search_Button', t=UI_TYPE_BUTTON)
+
+    # Add 'Entity Types' dropdown if there's more than one entity to choose from
+    isGuiAndData = lambda e: util.gui. isGuiNode    (e) and \
+                             util.data.isDataElement(e)
+    nodes = getTabGroups(node, isGuiAndData, descendantOrSelf=False)
+    if len(nodes) > 1:
+        SubElement(search, 'Entity_Types', t=UI_TYPE_DROPDOWN)
+
+    SubElement(search, 'Entity_List',  t=UI_TYPE_LIST)
+
+    for n in search:
+        annotateWithXmlTypes(n)
+    search.attrib[RESERVED_XML_TYPE] = TYPE_TUTORIALSEARCH
+
+    btn.text = 'Search'
+
+    return search,
+
 def getTimestamp(node):
     flags = getFlagsString(node)
 
@@ -1007,7 +1040,7 @@ def isTabGroup(node):
     return getXmlType(node) == TYPE_TAB_GROUP
 
 def isTab(node):
-    return getXmlType(node) in (TYPE_TAB, TYPE_SEARCH)
+    return getXmlType(node) in (TYPE_TAB, TYPE_SEARCH, TYPE_TUTORIALSEARCH)
 
 def isGuiDataElement(node, includeCols=False):
     if includeCols: return getXmlType(node) in GUI_DATA_UI_TYPES + [TYPE_COLS]

@@ -29,6 +29,7 @@ logic              |
 pos                |
 rels               |
 search             |
+tutorialsearch     |
 timestamp          | f
 '''
 
@@ -63,6 +64,7 @@ module          | 0 <= css     <= 1     |
 tab group       | 1 <= tab              |
 tab group       | 0 <= desc     <= 1    |
 tab group       | 0 <= search   <= 1    |
+tab group       | 0 <= tutorialsearch <= 1 |
 tab group       | 0 <= fmt      <= 1    |
 
 tab             | 0 <= autonum     <= 1 |
@@ -101,6 +103,7 @@ module               | css         | <css>
 tab group            | /[^a-z]/    | tab
 tab group            | desc        | <desc>
 tab group            | search      | <search>
+tab group            | tutorialsearch | <tutorialsearch>
 tab group            | fmt         | <fmt>
 
 tab                  | /[^a-z]/    | GUI/data element

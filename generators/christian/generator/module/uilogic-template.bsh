@@ -3597,6 +3597,48 @@ void search(){
 {{defs-load-entity}}
 
 /******************************************************************************/
+/*                              TUTORIAL SEARCH                               */
+/******************************************************************************/
+{{binds-tutorial-search}}
+
+{{tutorial-search-entities}}
+
+void clearSearch(){
+  setFieldValue("{{tab-group-tutorial-search}}/Tutorial_Search/Search_Term","");
+}
+
+void tutorialSearch(){
+  String refEntityList  = "{{tab-group-tutorial-search}}/Tutorial_Search/Entity_List";
+  String refSearchTerm  = "{{tab-group-tutorial-search}}/Tutorial_Search/Search_Term";
+  String refEntityTypes = "{{tab-group-tutorial-search}}/Tutorial_Search/Entity_Types";
+
+  {{type-tutorial-search}}
+  String term = getFieldValue(refSearchTerm);
+  String searchQuery = "SELECT uuid, response "+
+                       "  FROM latestNonDeletedArchEntFormattedIdentifiers  "+
+                       " WHERE uuid in (SELECT uuid "+
+                       "                  FROM latestNonDeletedArchEntIdentifiers "+
+                       "                 WHERE measure LIKE {term}||'%'  "+
+                       "                   AND ( aenttypename = {type} OR '' = {type} ) "+
+                       "                )  "+
+                       " ORDER BY substr(uuid, 7, 13) desc, response " +
+                       " LIMIT ? "+
+                       "OFFSET ? ";
+  searchQuery = dbReplaceFirst(searchQuery, "{term}", term);
+  searchQuery = dbReplaceFirst(searchQuery, "{type}", type);
+  searchQuery = dbReplaceFirst(searchQuery, "{type}", type);
+
+  populateMenu(refEntityList, MSG_LOADING);
+  populateCursorList(refEntityList, searchQuery, 25);
+  refreshTabgroupCSS("{{tab-group-tutorial-search}}");
+
+  Log.d("Module", "Search query: " + searchQuery);
+}
+
+{{tutorial-defs-load-entity}}
+
+
+/******************************************************************************/
 /*                          TAKE FROM GPS BUTTON(S)                           */
 /******************************************************************************/
 {{binds-take-from-gps}}
