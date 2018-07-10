@@ -153,6 +153,7 @@ def getTabs(tree, t):
 def getAttribNamesNonStandard(tree, t):
     """Populate the map ATTRIB_NAMES_NON_STANDARD. Map the path string of a element that have
     duplicate name with another element to its attribute name"""
+
     hasNonStdAttr = lambda n: util.xml.hasAttrib(n, RESERVED_PROP_NAME)
 
     nodes     = util.xml.getAll(tree, hasNonStdAttr)
@@ -166,6 +167,8 @@ def getAttribNamesNonStandard(tree, t):
     return t.replace(placeholder, replacement)
 
 def getMenuTypes(tree, t):
+    """Populate the list menuTypes with the UI type for menu, e.g, checkbox, dropdown, list"""
+
     fmt          = 'menuTypes.add("%s");'
     placeholder  = '{{menu-ui-types}}'
     replacement  = format(MENU_UI_TYPES, fmt, indent='  ')
@@ -173,6 +176,7 @@ def getMenuTypes(tree, t):
     return t.replace(placeholder, replacement)
 
 def getMediaTypes(tree, t):
+    """Populate the list mediaTypes with the UI type for media, e.g, audio, camera"""
     fmt          = 'mediaTypes.add("%s");'
     placeholder  = '{{media-ui-types}}'
     replacement  = format(MEDIA_UI_TYPES, fmt, indent='  ')
@@ -180,6 +184,8 @@ def getMediaTypes(tree, t):
     return t.replace(placeholder, replacement)
 
 def getNodataTabGroups(tree, t):
+    """Populate the list NODATA_TAB_GROUPS with the path string of elements with no data flag"""
+
     isNodata = lambda e : util.schema.isFlagged(e, FLAG_NODATA)
 
     nodes = util.schema.getTabGroups(tree, keep=isNodata)
@@ -192,6 +198,8 @@ def getNodataTabGroups(tree, t):
     return t.replace(placeholder, replacement)
 
 def getNoautosaveTabGroups(tree, t):
+    """Populate the list NOAUTOSAVE_TAB_GROUPS with the path string of elements with no data flag"""
+
     isNoAutosave = lambda e : util.schema.isFlagged(e, FLAG_NOAUTOSAVE)
 
     nodes = util.schema.getTabGroups(tree, keep=isNoAutosave)
@@ -270,6 +278,10 @@ def getPerfTimedCalls(tree, t):
     return t.replace(anchorText, '')
 
 def getPersistBinds(tree, t):
+    """For each elements flagged with the persist flag, call the function persistOverSession with
+    two parameters, first parameter is the path string of the element, the second parameter is a
+    boolean value to determine whether to overwrite the value, if the presist flag is appended with
+    a ! character then the value is true, otherwise false."""
     isPersist = lambda e: util.schema.isFlagged(e, FLAG_PERSIST) or \
                           util.schema.isFlagged(e, FLAG_PERSIST_OW)
 
@@ -286,6 +298,12 @@ def getPersistBinds(tree, t):
     return t.replace(placeholder, replacement)
 
 def getInheritanceBinds(tree, t):
+    """For each element with the i(nheritance) attribute, call the function inheritFieldValue for
+    every element it inherits the value with three parameters, the first parameter is the path
+    string of the element that will inherited, the second parameter is the path string of the
+    element that will inherit the value, and the third parameter is a boolean value that will
+    indicate to check if the inherited value is in the parent attribute if set to true, otherwise
+    false"""
     hasI  = lambda e: util.xml.hasAttrib(e, ATTRIB_I)
     nodes = util.xml.getAll(tree, hasI)
 
@@ -315,6 +333,10 @@ def getInheritanceBinds(tree, t):
     return t.replace(placeholder, replacement)
 
 def getNodataMenus(tree, t):
+    """For each element flagged with that is a menu type and is inside a tabgroup flagged with no
+    data, call the addNodataDropdownEntry with three parameter, first parameter is the path
+    stringstring of the element, second parameter is the arch16n string value, the third parameter
+    is the arch16n string key"""
     isOpt    = lambda n: util.schema.getXmlType(n) == TAG_OPT
     isNodata = lambda n: util.schema.isFlagged(n, FLAG_NODATA)
 
@@ -334,6 +356,10 @@ def getNodataMenus(tree, t):
     return t.replace(placeholder, replacement)
 
 def getGpsDiagUpdate(tree, t):
+    """For all elements that is of type gpsdiag, call the addOnEvent function with three parameters,
+    the first parameter is the path string of the element, the second parameter is the string
+    'show', the third parameter is the string 'updateGPSDiagnostics()' which is the function that
+    will be called when the tab that element is located in is shown"""
     nodes = util.gui.getAll(tree, UI_TYPE_GPSDIAG)
     refs  = [util.schema.getPathString(n) for n in nodes]
 
