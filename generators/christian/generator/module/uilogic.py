@@ -13,10 +13,13 @@ import signal
 signal.signal(signal.SIGINT, lambda a, b : sys.exit())
 
 def format(tuples, fmt='%s', indent='', newline='\n'):
+    """Format placeholders with values"""
     sep = newline + indent
     return sep.join(fmt % tuple for tuple in tuples)
 
 def getUserMenuUiType(tree):
+    """Return the type of the node which contains the registered users of the module"""
+
     isFlagged = lambda e: util.schema.isFlagged(e, FLAG_USER)
     nodes = util.xml.getAll(tree, isFlagged)
     if len(nodes) != 1: return None
@@ -24,6 +27,8 @@ def getUserMenuUiType(tree):
     return util.schema.getUiType(node)
 
 def isGuiAndData(e):
+    """"Check if element is a GUI node and is a data element"""
+
     return util.gui. isGuiNode    (e) and \
            util.data.isDataElement(e)
 
@@ -39,6 +44,8 @@ def getFunName(node):
     return pathSep.join(path).replace('_', '')
 
 def getHeader(tree, t):
+    """Return the header which contains the SHA1 of the commit to document which version of
+    FAIMS-Tools is used to genenrate the FAIMS module definition file"""
     header  = '/*\n'
     header += ' * GENERATED WITH FAIMS-TOOLS, SHA1: '
     header += subprocess.check_output(['git', 'rev-parse', 'HEAD'])
@@ -47,6 +54,9 @@ def getHeader(tree, t):
     return header + t
 
 def getRefsToTypes(tree, t):
+    """Populate the map REF_TO_TYPE. For all GUI elements, map the path string of the GUI element to
+    its UI type, and store it into the map REF_TO_TYPE"""
+
     hasRef = lambda n : bool(util.schema.getPathString(n))
 
     nodes = util.schema.getGuiDataElements(tree, keep=hasRef) + \
@@ -61,6 +71,8 @@ def getRefsToTypes(tree, t):
     return t.replace(placeholder, replacement)
 
 def getDataRefs(tree, t):
+    """Populate the list DATA_REFS with the path string for all data elements in the module"""
+
     nodes = util.schema.getGuiDataElements(tree, util.data.isDataElement)
     refs  = [util.schema.getPathString(n) for n in nodes]
     types = [util.schema.getUiType(n)     for n in nodes]
@@ -72,6 +84,8 @@ def getDataRefs(tree, t):
     return t.replace(placeholder, replacement)
 
 def getNoUiRefs(tree, t):
+    """Populate the list NO_UI_REFS with the path string for all data elements with no UI"""
+
     isNoUi = lambda e: util.schema.isFlagged(e, FLAG_NOUI)
 
     nodes = util.schema.getGuiDataElements(tree, isNoUi) + \
@@ -86,6 +100,8 @@ def getNoUiRefs(tree, t):
     return t.replace(placeholder, replacement)
 
 def getVpRefs(tree, t):
+    """Populate the map VP_REF_TO_REF with the ref of a element with the vp attribute mapped to the
+    ref of the element with the vocab"""
     hasVp       = lambda e: util.xml.hasAttrib(e, ATTRIB_VP)
     nodes       = util.xml.getAll(tree, hasVp)
     refs        = [util.schema.getPathString(n) for n in nodes]
@@ -99,6 +115,8 @@ def getVpRefs(tree, t):
     return t.replace(placeholder, replacement)
 
 def getHierRefs(tree, t):
+    """HIER_REF contains the path string of elements with hierarchical data, such as a hierarchical
+    dropdown menu"""
     nodes = util.schema.getGuiDataElements(tree, util.schema.isHierarchical)
     refs  = [util.schema.getPathString(n) for n in nodes]
 
@@ -109,6 +127,8 @@ def getHierRefs(tree, t):
     return t.replace(placeholder, replacement)
 
 def getTabGroups(tree, t):
+    """Populate the list TAB_GROUPS_AS_LIST with the path string  of all tab groups"""
+
     nodes = util.schema.getTabGroups(tree)
     refs  = [util.schema.getPathString(tg) for tg in nodes]
 
@@ -119,6 +139,8 @@ def getTabGroups(tree, t):
     return t.replace(placeholder, replacement)
 
 def getTabs(tree, t):
+    """Populate the list TABS_AS_LIST with the path string of all tabs"""
+
     nodes = util.schema.getTabs(tree)
     refs  = [util.schema.getPathString(n) for n in nodes]
 
@@ -129,6 +151,8 @@ def getTabs(tree, t):
     return t.replace(placeholder, replacement)
 
 def getAttribNamesNonStandard(tree, t):
+    """Populate the map ATTRIB_NAMES_NON_STANDARD. Map the path string of a element that have
+    duplicate name with another element to its attribute name"""
     hasNonStdAttr = lambda n: util.xml.hasAttrib(n, RESERVED_PROP_NAME)
 
     nodes     = util.xml.getAll(tree, hasNonStdAttr)
