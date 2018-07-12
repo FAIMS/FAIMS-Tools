@@ -934,6 +934,18 @@ def getNodeAtPath(tree, pathString):
     else:          return None
 
 def getLinkedNode(node):
+    '''
+    Returns the lxml element from getNodeAtPath function with the path being the element that the
+    node is linked to, that is, the value from the link attribute (attributes in
+    LINK_ATTRIBS) that the node have.
+
+    Example:
+     <New_Square t="button" l="Square"/>
+
+     If <New_Square/> node is the element passed into the getLinkedNode function, then the function
+     should return the <Square/> element.
+
+    '''
     return getNodeAtPath(node, getLink(node))
 
 def getLinkedNodes(node, attribName=None):

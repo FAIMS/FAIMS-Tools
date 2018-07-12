@@ -13,13 +13,12 @@ import signal
 signal.signal(signal.SIGINT, lambda a, b : sys.exit())
 
 def format(tuples, fmt='%s', indent='', newline='\n'):
-    """Format placeholders with values"""
+    """Format placeholders with values."""
     sep = newline + indent
     return sep.join(fmt % tuple for tuple in tuples)
 
 def getUserMenuUiType(tree):
-    """Return the type of the node which contains the registered users of the module"""
-
+    """Return the type of the node which contains the registered users of the module."""
     isFlagged = lambda e: util.schema.isFlagged(e, FLAG_USER)
     nodes = util.xml.getAll(tree, isFlagged)
     if len(nodes) != 1: return None
@@ -27,17 +26,18 @@ def getUserMenuUiType(tree):
     return util.schema.getUiType(node)
 
 def isGuiAndData(e):
-    """"Check if element is a GUI node and is a data element"""
-
+    """"Check if element is a GUI node and is a data element."""
     return util.gui. isGuiNode    (e) and \
            util.data.isDataElement(e)
 
 def getFunName(node):
+    """Get the function name from a node.If the node is a tabgroup, it will return the name of
+    the tabgroup, if the node is a element nested within a tab element then it will return
+    the name of the tabgroup concatenated with the element name."""
     pathSep = ''
 
     if type(node) == str: path = node.split('/')
     else:                 path = util.schema.getPath(node)
-
     if len(path) == 3:
         path = path[0], path[-1]
 
@@ -45,7 +45,7 @@ def getFunName(node):
 
 def getHeader(tree, t):
     """Return the header which contains the SHA1 of the commit to document which version of
-    FAIMS-Tools is used to genenrate the FAIMS module definition file"""
+    FAIMS-Tools is used to genenrate the FAIMS module definition file."""
     header  = '/*\n'
     header += ' * GENERATED WITH FAIMS-TOOLS, SHA1: '
     header += subprocess.check_output(['git', 'rev-parse', 'HEAD'])
@@ -55,8 +55,7 @@ def getHeader(tree, t):
 
 def getRefsToTypes(tree, t):
     """Populate the map REF_TO_TYPE. For all GUI elements, map the path string of the GUI element to
-    its UI type, and store it into the map REF_TO_TYPE"""
-
+    its UI type, and store it into the map REF_TO_TYPE."""
     hasRef = lambda n : bool(util.schema.getPathString(n))
 
     nodes = util.schema.getGuiDataElements(tree, keep=hasRef) + \
@@ -72,7 +71,6 @@ def getRefsToTypes(tree, t):
 
 def getDataRefs(tree, t):
     """Populate the list DATA_REFS with the path string for all data elements in the module"""
-
     nodes = util.schema.getGuiDataElements(tree, util.data.isDataElement)
     refs  = [util.schema.getPathString(n) for n in nodes]
     types = [util.schema.getUiType(n)     for n in nodes]
@@ -84,8 +82,7 @@ def getDataRefs(tree, t):
     return t.replace(placeholder, replacement)
 
 def getNoUiRefs(tree, t):
-    """Populate the list NO_UI_REFS with the path string for all data elements with no UI"""
-
+    """Populate the list NO_UI_REFS with the path string for all data elements with no UI."""
     isNoUi = lambda e: util.schema.isFlagged(e, FLAG_NOUI)
 
     nodes = util.schema.getGuiDataElements(tree, isNoUi) + \
@@ -101,7 +98,7 @@ def getNoUiRefs(tree, t):
 
 def getVpRefs(tree, t):
     """Populate the map VP_REF_TO_REF with the ref of a element with the vp attribute mapped to the
-    ref of the element with the vocab"""
+    ref of the element with the vocab."""
     hasVp       = lambda e: util.xml.hasAttrib(e, ATTRIB_VP)
     nodes       = util.xml.getAll(tree, hasVp)
     refs        = [util.schema.getPathString(n) for n in nodes]
@@ -116,7 +113,7 @@ def getVpRefs(tree, t):
 
 def getHierRefs(tree, t):
     """HIER_REF contains the path string of elements with hierarchical data, such as a hierarchical
-    dropdown menu"""
+    dropdown menu."""
     nodes = util.schema.getGuiDataElements(tree, util.schema.isHierarchical)
     refs  = [util.schema.getPathString(n) for n in nodes]
 
@@ -127,8 +124,7 @@ def getHierRefs(tree, t):
     return t.replace(placeholder, replacement)
 
 def getTabGroups(tree, t):
-    """Populate the list TAB_GROUPS_AS_LIST with the path string  of all tab groups"""
-
+    """Populate the list TAB_GROUPS_AS_LIST with the path string  of all tab groups."""
     nodes = util.schema.getTabGroups(tree)
     refs  = [util.schema.getPathString(tg) for tg in nodes]
 
@@ -140,7 +136,6 @@ def getTabGroups(tree, t):
 
 def getTabs(tree, t):
     """Populate the list TABS_AS_LIST with the path string of all tabs"""
-
     nodes = util.schema.getTabs(tree)
     refs  = [util.schema.getPathString(n) for n in nodes]
 
@@ -152,8 +147,7 @@ def getTabs(tree, t):
 
 def getAttribNamesNonStandard(tree, t):
     """Populate the map ATTRIB_NAMES_NON_STANDARD. Map the path string of a element that have
-    duplicate name with another element to its attribute name"""
-
+    duplicate name with another element to its attribute name."""
     hasNonStdAttr = lambda n: util.xml.hasAttrib(n, RESERVED_PROP_NAME)
 
     nodes     = util.xml.getAll(tree, hasNonStdAttr)
@@ -167,8 +161,7 @@ def getAttribNamesNonStandard(tree, t):
     return t.replace(placeholder, replacement)
 
 def getMenuTypes(tree, t):
-    """Populate the list menuTypes with the UI type for menu, e.g, checkbox, dropdown, list"""
-
+    """Populate the list menuTypes with the UI type for menu, e.g, checkbox, dropdown, list."""
     fmt          = 'menuTypes.add("%s");'
     placeholder  = '{{menu-ui-types}}'
     replacement  = format(MENU_UI_TYPES, fmt, indent='  ')
@@ -176,7 +169,7 @@ def getMenuTypes(tree, t):
     return t.replace(placeholder, replacement)
 
 def getMediaTypes(tree, t):
-    """Populate the list mediaTypes with the UI type for media, e.g, audio, camera"""
+    """Populate the list mediaTypes with the UI type for media, e.g, audio, camera."""
     fmt          = 'mediaTypes.add("%s");'
     placeholder  = '{{media-ui-types}}'
     replacement  = format(MEDIA_UI_TYPES, fmt, indent='  ')
@@ -184,8 +177,7 @@ def getMediaTypes(tree, t):
     return t.replace(placeholder, replacement)
 
 def getNodataTabGroups(tree, t):
-    """Populate the list NODATA_TAB_GROUPS with the path string of elements with no data flag"""
-
+    """Populate the list NODATA_TAB_GROUPS with the path string of elements with no data flag."""
     isNodata = lambda e : util.schema.isFlagged(e, FLAG_NODATA)
 
     nodes = util.schema.getTabGroups(tree, keep=isNodata)
@@ -198,8 +190,7 @@ def getNodataTabGroups(tree, t):
     return t.replace(placeholder, replacement)
 
 def getNoautosaveTabGroups(tree, t):
-    """Populate the list NOAUTOSAVE_TAB_GROUPS with the path string of elements with no data flag"""
-
+    """Populate the list NOAUTOSAVE_TAB_GROUPS with the path string of elements with no data flag."""
     isNoAutosave = lambda e : util.schema.isFlagged(e, FLAG_NOAUTOSAVE)
 
     nodes = util.schema.getTabGroups(tree, keep=isNoAutosave)
@@ -303,7 +294,7 @@ def getInheritanceBinds(tree, t):
     string of the element that will inherited, the second parameter is the path string of the
     element that will inherit the value, and the third parameter is a boolean value that will
     indicate to check if the inherited value is in the parent attribute if set to true, otherwise
-    false"""
+    false."""
     hasI  = lambda e: util.xml.hasAttrib(e, ATTRIB_I)
     nodes = util.xml.getAll(tree, hasI)
 
@@ -336,7 +327,7 @@ def getNodataMenus(tree, t):
     """For each element flagged with that is a menu type and is inside a tabgroup flagged with no
     data, call the addNodataDropdownEntry with three parameter, first parameter is the path
     stringstring of the element, second parameter is the arch16n string value, the third parameter
-    is the arch16n string key"""
+    is the arch16n string key."""
     isOpt    = lambda n: util.schema.getXmlType(n) == TAG_OPT
     isNodata = lambda n: util.schema.isFlagged(n, FLAG_NODATA)
 
@@ -359,7 +350,7 @@ def getGpsDiagUpdate(tree, t):
     """For all elements that is of type gpsdiag, call the addOnEvent function with three parameters,
     the first parameter is the path string of the element, the second parameter is the string
     'show', the third parameter is the string 'updateGPSDiagnostics()' which is the function that
-    will be called when the tab that element is located in is shown"""
+    will be called when the tab that element is located in is shown."""
     nodes = util.gui.getAll(tree, UI_TYPE_GPSDIAG)
     refs  = [util.schema.getPathString(n) for n in nodes]
 
@@ -391,6 +382,8 @@ def getMap(tree, t):
     return t.replace(placeholder, replacement)
 
 def getGpsDiagRef(tree, t):
+    """Replace the placeholder string {{gps-diag-ref}} with the path string of the first element
+    with the type gpsdiag."""
     nodes = util.gui.getAll(tree, UI_TYPE_GPSDIAG)
     refs  = [util.schema.getPathString(n) for n in nodes]
 
@@ -400,6 +393,7 @@ def getGpsDiagRef(tree, t):
     return t.replace(placeholder, replacement)
 
 def getUsers(tree, t):
+    """Replace the placeholder string {{user-menu-path}} with the path string of the user menu."""
     isFlagged = lambda e: util.schema.isFlagged(e, FLAG_USER)
     nodes = util.xml.getAll(tree, isFlagged)
     refs  = [util.schema.getPathString(n) for n in nodes]
@@ -410,6 +404,8 @@ def getUsers(tree, t):
     return t.replace(placeholder, replacement)
 
 def getUsersSelectedUser(tree, t):
+    """Replace the placeholder string {{users-selecteduser}} with the String selectedUser and
+    store the value of the selected user into that variable"""
     placeholder = '{{users-selecteduser}}'
 
     if   getUserMenuUiType(tree) == UI_TYPE_LIST:
@@ -422,6 +418,8 @@ def getUsersSelectedUser(tree, t):
     return t.replace(placeholder, replacement)
 
 def getBindsOnClickSignup(tree, t):
+    """For each element with the l attribute equal to signup, bind the element on click to call the
+    function onClickSignup__()."""
     isSignupLink = lambda e: util.xml.getAttribVal(e, ATTRIB_L) == LINK_SIGNUP
     nodes = util.schema.getGuiDataElements(tree, isSignupLink)
     refs  = [util.schema.getPathString(n) for n in nodes]
@@ -433,6 +431,7 @@ def getBindsOnClickSignup(tree, t):
     return t.replace(placeholder, replacement)
 
 def getValidationString(node, fieldPairs):
+    """Return the validation method for the node with the placeholder values replaced with the fields to be validated."""
     fpFmt = 'f.add(fieldPair("%s", "%s"));'
     fpStr = format(fieldPairs, fpFmt, indent='  ')
 
@@ -450,6 +449,8 @@ def getValidationString(node, fieldPairs):
     return funFmt % (funName, fpStr)
 
 def getValidation(tree, t):
+    """For each tabgroup element that can be validated, generate the validate function for that tab
+    group."""
     placeholder = '{{validation}}'
     replacement = ''
 
@@ -472,6 +473,8 @@ def getValidation(tree, t):
     return t.replace(placeholder, replacement)
 
 def getAuthor(tree, t):
+    """Populate the map tabgroupToAuthor with the name of the tabgroup element mapped to the path
+    string of the element that contains the author."""
     isAuthor      = lambda e: util.schema.getXmlType(e) == TAG_AUTHOR
     authors       = util.xml.getAll(tree, isAuthor)
     tabGroupNames = [util.schema.getParentTabGroup(a).tag for a in authors]
@@ -484,6 +487,8 @@ def getAuthor(tree, t):
     return t.replace(placeholder, replacement)
 
 def getTimestamp(tree, t):
+    """Populate the map tabGroupToTimestamp with the name of the tabgroup element mapped to the path
+    string of the element that contains the timestamp."""
     isTimestamp   = lambda e: util.schema.getXmlType(e) == TAG_TIMESTAMP
     timestamp     = util.xml.getAll(tree, isTimestamp)
     tabGroupNames = [util.schema.getParentTabGroup(a).tag for a in timestamp]
@@ -496,6 +501,7 @@ def getTimestamp(tree, t):
     return t.replace(placeholder, replacement)
 
 def getXLinksToY(tree, attribName, isData):
+
     assert attribName in LINK_ATTRIBS
 
     hasAttrib = lambda e: util.xml.hasAttrib(e, attribName)
@@ -610,6 +616,8 @@ def getOnClickDefs(tree, t):
     return t.replace(placeholder, replacement)
 
 def getOnClickBinds(tree, t):
+    """For each element with either the l, ll, or lc attribute, bind the element on click to call
+    the method that will handle the event."""
     LNodes  = getXLinksToY(tree, ATTRIB_L,  isData=None)
     LLNodes = getXLinksToY(tree, ATTRIB_LL, isData=None)
     LCNodes = getXLinksToY(tree, ATTRIB_LC, isData=True)
@@ -625,6 +633,8 @@ def getOnClickBinds(tree, t):
     return t.replace(placeholder, replacement)
 
 def getMediaBinds(tree, t):
+    """For each element that is of media type, bind the element on click to call the method that
+    will handle the event."""
     type2fun = {
         UI_TYPE_AUDIO  : 'attachAudioTo',
         UI_TYPE_CAMERA : 'attachPictureTo',
@@ -648,6 +658,8 @@ def getMediaBinds(tree, t):
     return t.replace(placeholder, replacement)
 
 def getFileBinds(tree, t):
+    """For each element that is of file type, bind the element on click to call the method that
+    will handle the event."""
     nodes  = util.gui.getAll(tree, UI_TYPE_VIEWFILES)
     refs   = [util.schema.getPathString(n)         for n in nodes]
     tgRefs = [util.schema.getParentTabGroup(n).tag for n in nodes]
@@ -659,6 +671,8 @@ def getFileBinds(tree, t):
     return t.replace(placeholder, replacement)
 
 def getTabGroupsToValidate(tree, t):
+    """Replace the placeholder {{tabgroups-to-validate}} with the list that contains the names of
+    the tabgroups to validate."""
     nodes = util.xml.getAll(tree, lambda e: util.schema.isFlagged(e, FLAG_NOTNULL))
     nodes = [util.schema.getParentTabGroup(n) for n in nodes]
     refs  = [util.schema.getPathString(n)     for n in nodes]
@@ -671,6 +685,9 @@ def getTabGroupsToValidate(tree, t):
     return t.replace(placeholder, replacement)
 
 def getNoNextIds(tree):
+    """For each element flagged with autonum, generated a conditional statement that checks if the field
+    value of that element passed into isNull function, returns true, then show a warning
+    message."""
     # Get the path of the autonum tag's parent
     wasAutoNum  = lambda e: util.xml.getAttribVal(e, ORIGINAL_TAG) == TAG_AUTONUM
     nodes       = util.xml.getAll(tree.getroottree(), wasAutoNum)
@@ -699,6 +716,8 @@ def getNoNextIds(tree):
     return format(refs, fmt, indent='  ')
 
 def getIncAutoNum(tree):
+    """For each element flagged with autonum, generate a call to the incAutonum function and pass
+    in the path string of that element."""
     # Get refs for nodes flagged with 'autonum'
     isAutoNumed = lambda e: util.schema.isFlagged(e, FLAG_AUTONUM)
     nodes       = util.xml.getAll(tree, isAutoNumed)
@@ -708,6 +727,8 @@ def getIncAutoNum(tree):
     return format(refs, fmt, indent='  ')
 
 def getDefsTabGroupBindsNew(tree):
+    """For each tabgroup that is a GUI element and a data element, generate the new function which
+    generates a new record of that type and bind it to execute on create event for that tabgroup."""
     nodes          = util.schema.getTabGroups(tree, isGuiAndData)
     newFunNames    = [getFunName(n) for n in nodes]
     refs           = [util.schema.getPathString(n) for n in nodes]
@@ -750,6 +771,8 @@ def getDefsTabGroupBindsNew(tree):
     )
 
 def getOnSaveBinds(tree, t):
+    """For each tabgroup that is a GUI element and a data element, bind a function that will
+    populate the list of ArchEnt for that tabgroup on save."""
     tabGroups    = util.schema.getTabGroups(tree, isGuiAndData)
     tabGroupRefs = [util.schema.getPathString(n) for n in tabGroups]
 
@@ -761,6 +784,9 @@ def getOnSaveBinds(tree, t):
 
 # Media list population calls
 def getDefsTabGroupBindsDuplicateMP_(nodes):
+    """Take a tabgroup node as argument, for each element nested within tabgroup node that
+    is of media type, generate the appropriate function that when the record is
+    duplicated, populate the media attribute with empty value. Return the string"""
     type2Fun = {
             UI_TYPE_AUDIO  : 'populateFileList',
             UI_TYPE_CAMERA : 'populateCameraPictureGallery',
@@ -769,29 +795,38 @@ def getDefsTabGroupBindsDuplicateMP_(nodes):
     }
     isMediaType = lambda e: util.schema.getUiType(e) in type2Fun
     nodes = util.xml.getAll(nodes, isMediaType)
-
     funs  = [type2Fun[util.schema.getUiType(n)] for n in nodes]
     refs  = [util.schema.getPathString(n)       for n in nodes]
-
     fmt = '%s("%s", new ArrayList());'
     return format(zip(funs, refs), fmt, indent='  ')
 
 def getDefsTabGroupBindsDuplicateMP(nodes):
+    """Takes a list of tabgroup nodes, for each node, generate the appropriate function for it media
+    attributes that when a record of that tabgroup type is duplicated, populate it media
+    attributes with empty value, returns a list of strings"""
     return [getDefsTabGroupBindsDuplicateMP_(n) for n in nodes]
 
 def getDefsTabGroupBindsDuplicateME_(nodes):
-    isMediaType = lambda e: util.schema.getUiType(e) in MEDIA_UI_TYPES
-    nodes       = util.xml.getAll(nodes, isMediaType)
-    attribNames   = [util.data.getAttribName(n) for n in nodes]
+   """Take a tabgroup node as argument, for each element nested within tabgroup node that is of
+   media type, add it into a list that contains attributes to be excluded from
+   duplication. Returns a string."""
+   isMediaType = lambda e: util.schema.getUiType(e) in MEDIA_UI_TYPES
+   nodes       = util.xml.getAll(nodes, isMediaType)
+   attribNames   = [util.data.getAttribName(n) for n in nodes]
+   fmt = 'excludeAttributes.add("%s");'
 
-    fmt = 'excludeAttributes.add("%s");'
-
-    return format(zip(attribNames), fmt, indent='      ')
+   return format(zip(attribNames), fmt, indent='      ')
 
 def getDefsTabGroupBindsDuplicateME(nodes):
+    """Takes a list of tabgroup nodes as argument, for each tabgroup node, generate the string
+    that add the attributes to be excluded into the list that contains attributes to be excluded
+    from duplication. Returns a list of strings."""
     return [getDefsTabGroupBindsDuplicateME_(n) for n in nodes]
 
 def getDefsTabGroupBindsDuplicate(tree):
+    """For each tabgroup that is a GUI element and a data element, generate the duplicate function
+    which generates a record with duplicate values from the current record and bind that function
+    on copy."""
     nodes         = util.schema.getTabGroups(tree, isGuiAndData)
     dupFunNames   = [getFunName(n) for n in nodes]
     refs          = [util.schema.getPathString(n) for n in nodes]
@@ -860,6 +895,9 @@ def getDefsTabGroupBindsDuplicate(tree):
     )
 
 def getDefsTabGroupBinds(tree, t):
+    """Replace the placeholder string in the template string t with the functions to
+    generate new entities based on the tree passed in, then generate the function to
+    duplicate entities. Returns a string."""
     placeholder = '{{defs-tabgroup-binds}}'
     replacement = '\n'.join([
         getDefsTabGroupBindsNew         (tree),
@@ -869,6 +907,8 @@ def getDefsTabGroupBinds(tree, t):
     return t.replace(placeholder, replacement)
 
 def getNavButtonBindsDel(tree, t):
+    """For each tabgroups, generating binding to remove navigation buttons when the tabgroup
+    is shown."""
     nodes = util.schema.getTabGroups(tree, util.gui.isGuiNode)
     refs  = [util.schema.getPathString(n) for n in nodes]
 
@@ -879,6 +919,9 @@ def getNavButtonBindsDel(tree, t):
     return t.replace(placeholder, replacement)
 
 def getNavButtonBindsAdd(tree, t):
+    """For each tabgroups, generating binding to add navigation buttons when the tabgroup
+    is shown."""
+
     nodes = util.schema.getTabGroups(tree, isGuiAndData)
     refs  = [util.schema.getPathString(n) for n in nodes]
 
@@ -889,6 +932,7 @@ def getNavButtonBindsAdd(tree, t):
     return t.replace(placeholder, replacement)
 
 def getSearchTabGroupString(tree):
+    """Return the path string of the tabgroup that the <search> element is nested in."""
     hasSearchType = lambda e: util.schema.getXmlType(e) == TYPE_SEARCH
     nodes = util.xml.getAll(tree, hasSearchType)
     if not len(nodes): return ''
@@ -897,6 +941,8 @@ def getSearchTabGroupString(tree):
     return util.schema.getPathString(searchTG)
 
 def getSearchBinds(tree, t):
+    """Bind the elements of the special <search> element defined in autogen with their handler
+    functions."""
     placeholder = '{{binds-search}}'
     tgStr = getSearchTabGroupString(tree)
     if not tgStr:
@@ -911,12 +957,17 @@ def getSearchBinds(tree, t):
     return t.replace(placeholder, replacement)
 
 def getSearchTabGroup(tree, t):
+    """Replace the placeholder string {{tab-group-search}} with the path string of the tabgroup
+    that contains the <search> element."""
     placeholder = '{{tab-group-search}}'
     replacement = getSearchTabGroupString(tree)
 
     return t.replace(placeholder, replacement)
 
 def getSearchEntities(tree, t):
+    """Replace the placeholder string {{search-entities}} with a bind the entity type button
+    with search function on 'click'. Populate the list that contains name value pairs of the
+    entity type, the name refer to the Arch16n key, the value is string value."""
     hasSearchType = lambda e: util.schema.getXmlType(e) == TYPE_SEARCH
     searchNodes = util.xml.getAll(tree, hasSearchType)
 
@@ -938,6 +989,8 @@ def getSearchEntities(tree, t):
     return t.replace(placeholder, replacement)
 
 def getSearchType(tree, t):
+    """Replace the placeholder string {{type-search}} with the String that contains the field
+    value of the entity type list. If no entity types, then the string will be a empty string."""
     nodes = util.schema.getTabGroups(tree, isGuiAndData)
 
     placeholder = '{{type-search}}'
@@ -949,6 +1002,8 @@ def getSearchType(tree, t):
     return t.replace(placeholder, replacement)
 
 def getLoadEntityDefs(tree, t):
+    """For all tabgroups that is a GUI element and data element, generate the load function for the
+    tabgroup based on the uuid."""
     nodes    = util.schema.getTabGroups(tree, isGuiAndData)
     refs     = [util.schema.getPathString(n) for n in nodes]
     funNames = [getFunName(n) for n in nodes]
@@ -975,6 +1030,8 @@ def getLoadEntityDefs(tree, t):
     return t.replace(placeholder, replacement)
 
 def getTakeFromGpsBinds(tree, t):
+    """For each <gps> element, bind the button to record the GPS information for that
+    tabgroup on 'click'."""
     isGps  = lambda e: util.schema.getXmlType(e) == TYPE_GPS
     nodes  = util.xml.getAll(tree, isGps)
     btns   = [n.getnext().getnext() for n in nodes] # Take from GPS buttons
@@ -990,6 +1047,8 @@ def getTakeFromGpsBinds(tree, t):
     return t.replace(placeholder, replacement)
 
 def getTakeFromGpsMappings(tree, t):
+    """Replace the placeholder string {{take-from-gps-mappings}} with string to populate the map
+    that contains the path string of the tabgroup/tab that that the <gps> element is nested in."""
     isGps  = lambda e: util.schema.getXmlType(e) == TYPE_GPS
     nodes  = util.xml.getAll(tree, isGps)
 
@@ -1006,6 +1065,8 @@ def getTakeFromGpsMappings(tree, t):
     return t.replace(placeholder, replacement)
 
 def getControlStartingIdPaths(tree, t):
+    """Replace the placeholder string {{control-starting-id-paths}} with the list
+    populated with the list that contains the path string of the elements that contains the next id."""
     wasAutoNum = lambda e: util.xml.getAttribVal(e, ORIGINAL_TAG) == TAG_AUTONUM
     nodes      = util.xml.getAll(tree, wasAutoNum)
     refs       = [util.schema.getPathString(n) for n in nodes]
@@ -1017,6 +1078,7 @@ def getControlStartingIdPaths(tree, t):
     return t.replace(placeholder, replacement)
 
 def getQrBinds(tree, t):
+    """For all button with the lq or lcq attribute, bind the handler function to the button."""
     nodes      = getXLinksToY(tree, ATTRIB_LQ,  isData=None)
     nodes     += getXLinksToY(tree, ATTRIB_LCQ, isData=None)
 
@@ -1032,6 +1094,9 @@ def getQrBinds(tree, t):
     return t.replace(placeholder, replacement)
 
 def getIncAutonumMap(tree, t):
+    """Populate the map that maps the destination of the autonum to the source. The key of each
+    entry is the path string of the destination of the autonum value, the value is the source
+    of the autonum."""
     wasAutoNum = lambda e: util.xml.getAttribVal(e, ORIGINAL_TAG) == TAG_AUTONUM
     nodes      = util.xml.getAll(tree, wasAutoNum)
     srcRefs    = [util.schema.getPathString(n)           for n in nodes]
@@ -1044,6 +1109,8 @@ def getIncAutonumMap(tree, t):
     return t.replace(placeholder, replacement)
 
 def markdownToHtml(markdown):
+    """Use pandoc to convert the markdown passed into the function into HTML. If pandoc is not
+    found, output error message."""
     markdown = markdown or ''
     markdown = markdown.strip()
 
@@ -1065,6 +1132,8 @@ def markdownToHtml(markdown):
         exit()
 
 def getPopulationMarkdown(tree, t):
+    """For each node with the markdown tag, convert the markdown for that node into HTML, populate
+    the web view of that node with the HTML."""
     nodes = util.xml.getAll(tree, lambda n: n.tag == TAG_MARKDOWN)
     refs  = [util.schema.getParentGuiDataElement(n) for n in nodes]
     refs  = [util.schema.getPathString(r)           for r in refs]
@@ -1078,6 +1147,8 @@ def getPopulationMarkdown(tree, t):
     return t.replace(placeholder, replacement)
 
 def getEntityMenus(tree, t):
+    """Replace the placeholder string {{entity-menus}} with string that the entity list of the
+    nodes with the e or ec attribute."""
     isEntList    = lambda e: util.xml.hasAttrib(e, ATTRIB_E ) or \
                              util.xml.hasAttrib(e, ATTRIB_EC)
 
@@ -1105,6 +1176,8 @@ def getEntityMenus(tree, t):
     return t.replace(placeholder, replacement)
 
 def getEntityLoading(tree, t):
+    """For each node that have entities, bind the handler function that load the entity chosen
+    when the element is clicked on."""
     dropdown = lambda e: 'true' if util.schema.getUiType(e) == \
                                     UI_TYPE_DROPDOWN \
                                 else ''
@@ -1120,6 +1193,8 @@ def getEntityLoading(tree, t):
     return t.replace(placeholder, replacement)
 
 def getHandWrittenLogic(tree, t):
+    """Replace the placeholder string {{hand-written-logic}} with handwritten logic provided
+    inside the <logic> element."""
     placeholder = '{{hand-written-logic}}'
     replacement = util.schema.getLogic(tree)
 
@@ -1195,6 +1270,5 @@ if __name__ == '__main__':
     filenameModule = sys.argv[1]
     tree = util.xml.parseXml(filenameModule)
     tree = util.schema.parseSchema(tree)
-
     # GENERATE AND OUTPUT UI LOGIC
     print getUiLogic(tree).encode('utf-8'),
