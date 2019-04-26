@@ -104,6 +104,6 @@ apply_postproc_directives
 cd - >/dev/null
 
 ########################### COPY CONVENIENCE SCRIPT ############################
-cp "$THIS_SCRIPT_PATH/../../module-dev-scripts/upload.py" "$MODULE_PATH"
+cp "$THIS_SCRIPT_PATH/../../module-dev-scripts/upload_selenium.py" "$MODULE_PATH"
 
 clean_up_and_exit
