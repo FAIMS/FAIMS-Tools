@@ -12,10 +12,14 @@ from pprint import pprint
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select
+
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.alert import Alert
 from fabric import Connection
 import invoke
+import shutil
 
 FILENAMES = {
 		'filename_arch16n':'english.0.properties',
@@ -40,6 +44,7 @@ parser.add_argument('--rm', action='store_true', help="remove module(s) with sam
 parser.add_argument('--replace', action='store_true', help="remove module(s) with same base name and upload new one")
 parser.add_argument('--state-string', default='automatic', help="An extra state string in the module name?")
 parser.add_argument('--base-url', default='dev26.fedarch.org', help="Which server to use? Do not include protocol (http://)")
+parser.add_argument('--only-maps', action='store_true', help="Only upload maps")
 args = parser.parse_args()
 BASE_URL    = args.base_url
 # Make sure all specification files are in the path'd directory
@@ -56,19 +61,24 @@ for file in FILENAMES:
 
 try:
 	with open('conf.json', 'r') as confjson:
-		module_name = json.load(confjson)['module_name']
+		jsondata = json.load(confjson)
+		module_name = jsondata['module_name']
+		module_srid = jsondata['SRID']
+		print("Jsondata found:",jsondata)
 
 except:
+	print("Making default conf file")
 	moduleParts = module_location.parts
-	
+	moduleJsonData = {'module_name':module_name, 'srid': 4326}
+	module_srid = 4326
 	if moduleParts[-1] == 'module': 
 		module_name = str(moduleParts[-2])
 		with open(module_location / '..' / 'conf.json', 'w') as confjson:
-			json.dump( {'module_name':module_name}, confjson)
+			json.dump( moduleJsonData, confjson)
 	else:                          
 		module_name = str(moduleParts[-1])
 		with open(module_location / 'conf.json', 'w') as confjson:
-			json.dump({'module_name':module_name}, confjson)
+			json.dump(moduleJsonData, confjson)
 
 
 
@@ -92,6 +102,48 @@ def login(driver, baseurl, username, password):
 def addFile(driver, file_path, field_name):
 	element = driver.find_element_by_xpath("//input[@name='{}']".format(field_name) )
 	element.send_keys(str(file_path))
+
+
+def upload_data(driver, module_name, args):
+	# driver.get("http://{}/project_modules".format(baseurl))
+
+	tarballs = glob.glob('**/data*.tar.gz')
+	if len(tarballs) > 1:
+		raise ValueError("Too many data tarballs!")
+	elif len(tarballs) == 0:
+		print("No data tarball found, skipping upload.")
+		return
+	tarballpath = tarballs[0]
+	
+	tarballname = os.path.split(tarballpath)[-1]
+
+	element = WebDriverWait(driver, 1).until(
+				EC.element_to_be_clickable((By.XPATH, "//a[contains(text(), '{} {}')]".format(module_name, args.state_string)))
+		)
+	element.click()
+	print("Uploading files...")
+	element = WebDriverWait(driver, 3).until(
+			EC.element_to_be_clickable((By.XPATH, "//a[contains(text(), 'Upload Files')]"))
+	)
+	element.click()
+	print("Choose file...")
+	element = driver.find_element_by_xpath("//input[@name='project_module[file]']")
+	element.send_keys(str(Path(os.getcwd()) / tarballpath))
+	element = driver.find_element_by_xpath("//input[@name='commit']")
+	element.click()
+	alert = driver.switch_to.alert
+	alert.accept()
+	alerts = driver.find_elements_by_class_name('alert-success')
+	errors = driver.find_elements_by_class_name('alert-error')
+	responses = driver.find_elements_by_class_name('help-inline')
+
+	for alert in alerts:
+		print("Success: {}".format(alert.text).replace("×\n", ""))
+	for alert in errors:
+		print("Alert Error: {}".format(alert.text).replace("×\n", ""))
+	for response in responses:
+		print("Error: {}".format(response.text).replace("×\n", ""))
+		raise ValueError("Error in module upload.")
 
 def upload_module(driver, module_name, filenames,args, do_upload_data_schema=False):
 	try:
@@ -124,8 +176,12 @@ def upload_module(driver, module_name, filenames,args, do_upload_data_schema=Fal
 	element = driver.find_element_by_xpath("//input[@name='project_module[name]']" )
 	#module_name += datetime.now().strftime(' {} %Y-%m-%d'.format(args.state_string))
 	element.clear()
-	element.send_keys("{} {} {}".format(module_name, args.state_string, datetime.now().strftime('%Y-%m-%d')))
-
+	local_module_name= "{} {} {}".format(module_name, args.state_string, datetime.now().strftime('%Y-%m-%d'))
+	element.send_keys(local_module_name)
+	select = Select(driver.find_element_by_id('project_module_srid'))
+	print("Applying SRID: {}".format(module_srid))
+	select.select_by_value(str(module_srid))
+	
 	element = driver.find_element_by_xpath("//input[@name='project_module[version]']" )
 	element.clear()
 	element.send_keys(str(datetime.now()))
@@ -153,7 +209,8 @@ def upload_module(driver, module_name, filenames,args, do_upload_data_schema=Fal
 		print("Alert Error: {}".format(alert.text).replace("×\n", ""))
 	for response in responses:
 		print("Error: {}".format(response.text).replace("×\n", ""))
-
+		raise ValueError("Error in module upload.")
+	
 #chrome_options = webdriver.ChromeOptions()
 #chrome_options.add_experimental_option('prefs', profile)
 #driver = webdriver.Chrome(options=chrome_options)
@@ -195,11 +252,16 @@ driver = webdriver.Chrome()
 try:
 	if args.rm or args.replace:
 		delete_module(module_name, BASE_URL, args)
-	if not args.rm:
+	if not args.rm and not args.only_maps:
 
 		login(driver, BASE_URL, USERNAME, PASSWORD)
 		upload_module(driver, module_name, FILENAMES, args)
-
+		driver.get("http://{}/project_modules".format(BASE_URL))
+		upload_data(driver, module_name, args)
+	if args.only_maps:
+		
+		upload_data(driver, module_name, args)
+		
 finally:
 	if not DEBUG:
 		driver.quit()

@@ -999,7 +999,7 @@ def markdownToHtml(markdown):
 
     try:
         p = subprocess.Popen(
-                ['pandoc', '-S', '--normalize'],
+                ['pandoc', '-f', 'markdown+smart'],
                 stdout=subprocess.PIPE,
                 stdin =subprocess.PIPE,
                 stderr=subprocess.STDOUT
