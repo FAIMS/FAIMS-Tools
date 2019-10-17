@@ -43,11 +43,13 @@ QUICK START
 
   1. Modify the example `module.xml`. If you see something there which you don't
      understand, check this file.
-  2. Run `./generate.sh`. (If your module.xml isn't in this directory, you can
-     also run `./generate.sh /path/to/module.xml` from this directory, or
-     `path/to/generate.sh module.xml` from the module.xml directory.) The
-     generated module will appear in a directory called `module` in the same
-     directory as the module.xml file.
+  2. Run `./validate.sh` to check your `module.xml`. (If your `module.xml` isn't
+     in this directory, you can also run `./validate.sh /path/to/module.xml`
+     from this directory, or `path/to/validate.sh module.xml` from the
+     `module.xml` directory.)
+  3. Run `./generate.sh` similarly to `validate.sh`. (e.g. `./validate.sh
+     /path/to/module.xml`.) The generated module will appear in a directory
+     called `module` in the same directory as the `module.xml` file.
 ________________________________________________________________________________
 
 PARAMETERS AND USAGE
