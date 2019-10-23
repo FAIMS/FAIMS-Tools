@@ -157,7 +157,7 @@ apply_source_directives() {
         fi
         local whitespace='\s*'                             # \geq 0 whitespace
         local escaped_filename=$( escape_sed "$filename" ) # Escape slashes
-        local lines=$( cat "$filename" | wc -l )
+        local lines=$( cat "$filename" 2>/dev/null | wc -l )
 
         local tmp=$(tempfile)
         cat "$TMP_MODULE_FULL" | sed \
