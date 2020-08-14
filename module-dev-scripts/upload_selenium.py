@@ -69,16 +69,17 @@ try:
 except:
 	print("Making default conf file")
 	moduleParts = module_location.parts
-	moduleJsonData = {'module_name':module_name, 'srid': 4326}
-	module_srid = 4326
 	if moduleParts[-1] == 'module': 
 		module_name = str(moduleParts[-2])
-		with open(module_location / '..' / 'conf.json', 'w') as confjson:
-			json.dump( moduleJsonData, confjson)
+		conf_location = module_location / '..' / 'conf.json'
 	else:                          
 		module_name = str(moduleParts[-1])
-		with open(module_location / 'conf.json', 'w') as confjson:
-			json.dump(moduleJsonData, confjson)
+		conf_location = module_location / 'conf.json'
+
+	moduleJsonData = {'module_name':module_name, 'srid': 4326}
+	module_srid = 4326
+	with open(conf_location, 'w') as confjson:
+		json.dump( moduleJsonData, confjson)
 
 
 
