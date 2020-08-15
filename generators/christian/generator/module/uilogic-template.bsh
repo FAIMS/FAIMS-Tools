@@ -591,6 +591,10 @@ String getArch16nKey(String ref) {
   else                     return "{" + lastRefPart + "}";
 }
 
+String getArch16nVal(String ref) {
+  return arch16nSubstituteValues(getArch16nKey(ref));
+}
+
 String guessArch16nVal(String ref) {
   return guessArch16nValFromRef(ref);
 }
@@ -620,7 +624,7 @@ String guessArch16nValFromKey(String key) {
  */
 String arch16nSubstituteValues(String unSubbed) {
   if (isInUnitTestTime())
-    return "";
+    return unSubbed;
 
   List entries = new ArrayList();
   entries.add(new NameValuePair(unSubbed, ""));
