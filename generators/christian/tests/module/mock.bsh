@@ -328,6 +328,7 @@ public class android {
 }
 
 Map FIELD_VALUES = new HashMap();
+Map WEB_VIEW_VALUES = new HashMap();
 
 // FUNCTION DEFINITIONS
 Dialog cleanSyncedFiles() { return null; }
@@ -366,8 +367,10 @@ void populateHierarchicalPictureGallery(String s1, String s2) { return; }
 void populateList(String s, Collection c) { return; }
 void populatePictureGallery(String s, Collection c) { return; }
 void populateRadioGroup(String s, Collection c) { return; }
-void populateWebViewHtml(String s1, String s2) { return; }
-void populateWebView(String s1, String s2) { return; }
+void populateWebViewHtml(String ref, String val) {
+  WEB_VIEW_VALUES.put(ref, val);
+}
+void populateWebView(String ref, String path) { return; }
 void setFieldValue(String ref, Object val) {
   FIELD_VALUES.put(ref, "" + val);
 }
