@@ -15,7 +15,7 @@ mkdir $1/vectors
 find $1 -name "*.shp" -type f
 
 
-rm spatialite.$1.$2.db
+rm -f spatialite.$1.$2.db
 
 
 parallel --jobs 1 --will-cite "ogr2ogr -t_srs EPSG:$2 {//}/vectors/{/.}.$2.shp {}; spatialite_tool -i -shp {//}/vectors/{/.}.$2 -d spatialite.$1.$2.db -t {/.} -g Geometry -c utf-8 -s $2; sqlite3 spatialite.$1.$2.db \"SELECT CreateSpatialIndex('{/.}', 'Geometry');\"" ::: $(find $1 -name "*.shp" -type f)
