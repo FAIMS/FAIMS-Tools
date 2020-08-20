@@ -108,7 +108,7 @@ cp "$THIS_SCRIPT_PATH/../../module-dev-scripts/upload_selenium.py" "$MODULE_PATH
 
 # Add the upload selenium script to gitignore.
 
-if ! grep -q "upload_selenium.py" "$MODULE_PATH/.gitignore" 2>/dev/null ; then
-    echo "upload_selenium.py" >> .gitignore
+if ! grep -q -F "upload*.py" "$MODULE_PATH/.gitignore" 2>/dev/null ; then
+    echo "upload*.py" >> .gitignore
 fi
 clean_up_and_exit
