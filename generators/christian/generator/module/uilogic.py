@@ -484,6 +484,11 @@ def getOnClickDefs(tree, t):
     # @lc link
     fmtLC = \
       'void onClick%s () {' \
+    '\n  triggerAutoSave();' \
+    '\n  if (getUuid("%s") == null) {' \
+    '\n    showToast("{You_must_save_this_tabgroup_first}");' \
+    '\n    return;' \
+    '\n  }' \
     '\n  new%s("%s");' \
     '\n}'
 
@@ -548,6 +553,7 @@ def getOnClickDefs(tree, t):
     strLC = format(
             zip(
                 [getFunName(e)                        for e in LCNodes],
+                [util.schema.getParentTabGroup(e).tag for e in LCNodes],
                 [getFunName(util.schema.getLink(e))   for e in LCNodes],
                 [util.schema.getParentTabGroup(e).tag for e in LCNodes]
             ),
