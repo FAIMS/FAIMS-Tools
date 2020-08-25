@@ -37,6 +37,8 @@ LINK_ATTRIBS = [
 
 BIND_DATE    = 'date'
 BIND_DECIMAL = 'decimal'
+BIND_INTEGER = 'integer'
+BIND_LONG    = 'long'
 BIND_STRING  = 'string'
 BIND_TIME    = 'time'
 BINDS = [

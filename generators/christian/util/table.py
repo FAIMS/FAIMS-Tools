@@ -35,7 +35,7 @@ timestamp          | f
 # A (string representation of a) table of allowed values for each XML attribute.
 ATTRIB_VALS = '''
 ATTRIBUTE    | ALLOWED VALUES (ONE-OF)     | ALLOWED VALUES (MANY-OF)
-b            | date, decimal, string, time |
+b            | date, decimal, integer, long, string, time |
 c            |                             |
 ec           | $link-tabgroup              |
 f            |                             | autonum, hidden, id, noannotation, nocertainty, nodata, nolabel, noscroll, nosync, nothumb, nothumbnail, notnull, noui, nowire, readonly, user, persist, persist!, htmldesc, noautosave
