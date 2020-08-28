@@ -56,6 +56,7 @@ then
 fi
 cp "$THIS_SCRIPT_PATH/tests/module/mock.bsh"                       "$MODULE_PATH/tests"
 cp "$THIS_SCRIPT_PATH/tests/module/test.bsh"                       "$MODULE_PATH/tests"
+cp "$THIS_SCRIPT_PATH/tests/module/mock-overrides.bsh"             "$MODULE_PATH/tests"
 
 cd "$THIS_SCRIPT_PATH"
 echo "Generating arch16n..."

@@ -63,6 +63,7 @@ void validateRefs() {
 
 sourceRelative("mock.bsh");
 sourceRelative("../module/ui_logic.bsh");
+sourceRelative("mock-overrides.bsh");
 
 validateRefs();
 print("=== ALL VARIABLES STARTING WITH 'REF' CONTAIN VALID REFS ===");
