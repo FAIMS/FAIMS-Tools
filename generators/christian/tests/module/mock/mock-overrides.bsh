@@ -1,0 +1,14 @@
+Map MENU_VALUES = new HashMap();
+
+boolean setMenuValue(String ref, String val) {
+  MENU_VALUES.put(ref, "" + val);
+  return true;
+}
+
+String getMenuValue(String ref) {
+  String out = MENU_VALUES.get(ref);
+  if (out == null)
+    return "";
+  else
+    return out;
+}

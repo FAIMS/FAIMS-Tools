@@ -54,9 +54,9 @@ then
     cp "$THIS_SCRIPT_PATH/generator/wireframe/arch16nForWireframe.awk" "$MODULE_PATH/wireframe"
     cp "$THIS_SCRIPT_PATH/generator/wireframe/wireframeElements.xsl"   "$MODULE_PATH/wireframe"
 fi
-cp "$THIS_SCRIPT_PATH/tests/module/mock.bsh"                       "$MODULE_PATH/tests"
-cp "$THIS_SCRIPT_PATH/tests/module/test.bsh"                       "$MODULE_PATH/tests"
-cp "$THIS_SCRIPT_PATH/tests/module/mock-overrides.bsh"             "$MODULE_PATH/tests"
+cp -r "$THIS_SCRIPT_PATH/tests/module/mock"                           "$MODULE_PATH/tests"
+cp    "$THIS_SCRIPT_PATH/tests/module/test.bsh"                       "$MODULE_PATH/tests"
+cp    "$THIS_SCRIPT_PATH/tests/module/test.sh"                        "$MODULE_PATH/tests"
 
 cd "$THIS_SCRIPT_PATH"
 echo "Generating arch16n..."
