@@ -470,3 +470,5 @@ void setMapFocusPoint(String ref, double longitude, double latitude) { }
 void scanCode(String callback) { execute(callback); }
 String getLastScanContents(){ return null; }
 void removeActionBarItem(String name) { return; }
+void setToolsEnabled(String ref, boolean enabled) { return; }
+void onToolEvent(String ref, String type, String callback) { return; }
