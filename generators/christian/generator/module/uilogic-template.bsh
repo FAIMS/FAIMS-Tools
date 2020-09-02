@@ -2,6 +2,7 @@ import android.util.Log;
 import android.os.Build.MODEL;
 import java.util.concurrent.atomic.AtomicInteger;
 import android.database.DatabaseUtils;
+import java.util.concurrent.Callable;
 
 // Beanshell won't let me write "\0".
 final String SEP = Character.toString ((char) 0);
@@ -3346,6 +3347,12 @@ void saveEntitiesToRel(String type, String entity1, String entity2, String callb
   saveEntitiesToHierRel(type, entity1, entity2, e1verb, e2verb, callback);
 }
 
+void saveEntitiesToRel(String type, String entity1, String entity2, Callable callback) {
+  String e1verb = null;
+  String e2verb = null;
+  saveEntitiesToHierRel(type, entity1, entity2, e1verb, e2verb, callback);
+}
+
 /** Saves two entity id's as a hierachical relation with some callback executed. **/
 void saveEntitiesToHierRel(String type, String entity1, String entity2, String e1verb, String e2verb, String callback) {
   if (isNull(entity1) || isNull(entity2)) return;
@@ -3354,6 +3361,44 @@ void saveEntitiesToHierRel(String type, String entity1, String entity2, String e
     onSaveAssociation(entity_id, rel_id) {
       if(!isNull(callback)) {
          execute(callback);
+      }
+    }
+    onError(message) {
+      Log.e("saveEntitiesToHierRel", message);
+      showToast(message);
+    }
+  };
+
+  SaveCallback addMoreToRel = new SaveCallback() {
+    onSaveAssociation(entity_id, rel_id) {
+      addReln(entity2, rel_id, e2verb, execCallback);
+    }
+    onError(message) {
+      Log.e("saveEntitiesToHierRel", message);
+      showToast(message);
+    }
+  };
+
+  SaveCallback addToRel = new SaveCallback() {
+    onSave(rel_id, newRecord) {
+      addReln(entity1, rel_id, e1verb, addMoreToRel);
+    }
+    onError(message) {
+      Log.e("saveEntitiesToHierRel", message);
+      showToast(message);
+    }
+  };
+
+  saveRel(null, type, null, null, addToRel);
+}
+
+void saveEntitiesToHierRel(String type, String entity1, String entity2, String e1verb, String e2verb, Callable callback) {
+  if (isNull(entity1) || isNull(entity2)) return;
+
+  SaveCallback execCallback = new SaveCallback() {
+    onSaveAssociation(entity_id, rel_id) {
+      if(callback == null) {
+         callback.call();
       }
     }
     onError(message) {
