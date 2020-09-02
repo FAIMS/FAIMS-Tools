@@ -308,6 +308,8 @@ HashMap ATTRIB_NAMES_NON_STANDARD         = new HashMap();
 List    NODATA_TAB_GROUPS                 = new ArrayList();
 List    NOAUTOSAVE_TAB_GROUPS             = new ArrayList();
 HashSet NOAUTOSAVE_TAB_GROUPS_AS_HASH_SET = null;
+HashMap REF_TO_FLAG_STRING                = new HashMap();
+
 {{is-flagged-nodata}}
 
 {{refs-to-types}}
@@ -327,6 +329,8 @@ HashSet NOAUTOSAVE_TAB_GROUPS_AS_HASH_SET = null;
 {{get-tabs}}
 
 {{attrib-names-non-standard}}
+
+{{refs-to-flag-strings}}
 
 String getType(String ref) {
   String type = REF_TO_TYPE.get(ref);
@@ -2549,15 +2553,23 @@ boolean populateMenu(
   return true;
 }
 
+boolean populateMenu(String ref, List entries, boolean hasNull) {
+  return populateMenu(null, ref, "", entries, hasNull);
+}
+
 boolean populateMenu(String ref, List entries) {
   return populateMenu(null, ref, "", entries, true);
 }
 
-void populateMenu(String ref, String entry) {
+void populateMenu(String ref, String entry, boolean hasNull) {
   List entries  = new ArrayList();
   entries.add(new NameValuePair(entry, ""));
 
-  populateMenu(ref, entries);
+  populateMenu(ref, entries, hasNull);
+}
+
+void populateMenu(String ref, String entry) {
+  populateMenu(ref, entry, false);
 }
 
 /******************************************************************************/
@@ -3054,6 +3066,24 @@ String validateFields(List fields, String format) {
   }
 
   return out;
+}
+
+List getRefsToValidateByTabGroup(String tabGroup) {
+  List f = new ArrayList(); // Fields to be validated
+  for (String ref : getRefsMatching(tabGroup + "/*"))
+    if (REF_TO_FLAG_STRING.get(ref).contains("notnull"))
+      f.add(fieldPair(ref, getArch16nKey(ref)));
+  return f;
+}
+
+String getValidationMessage(String tabGroup, String format) {
+  List f = getRefsToValidateByTabGroup(tabGroup);
+  return validateFields(f, format);
+}
+
+void validateTabGroup(String tabGroup) {
+  String validationMessage = getValidationMessage(tabGroup, "PLAINTEXT");
+  showWarning("{validation_results}", validationMessage);
 }
 
 {{validation}}

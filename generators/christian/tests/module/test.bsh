@@ -43,9 +43,12 @@ void validateRefs() {
    * ui_logic.bsh) whose name starts with "REF_" but which doesn't refer to a
    * GUI/Data element in the UI schema.
    */
-  Set  ignore = new HashSet(); ignore.add("REF_TO_TYPE");
+  Set  ignore = new HashSet();
   List vars   = Arrays.asList(super.namespace.getVariableNames());
   List refs   = new ArrayList();
+
+  ignore.add("REF_TO_FLAG_STRING");
+  ignore.add("REF_TO_TYPE");
 
   for (var : vars) {
     if (ignore.contains(var))    continue;

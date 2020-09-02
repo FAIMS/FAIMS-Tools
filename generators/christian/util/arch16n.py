@@ -67,7 +67,10 @@ def getArch16nVal(node, force=False):
 def getArch16nKey(node, doAddCurlies=True):
     if not hasArch16Entry(node): return ''
 
-    key = getArch16nVal(node)
+    key = (
+            node.tag
+            if schema.isGuiDataElement(node)
+            else getArch16nVal(node))
     key = key.strip()
     key = re.sub('[^0-9a-zA-Z]', '_', key)
 

@@ -141,6 +141,21 @@ def getAttribNamesNonStandard(tree, t):
 
     return t.replace(placeholder, replacement)
 
+def getRefsToFlagStrings(tree, t):
+    hasRef = lambda n : bool(util.schema.getPathString(n))
+
+    nodes = util.schema.getGuiDataElements(tree, keep=hasRef) + \
+            util.schema.getTabs(tree, keep=hasRef) + \
+            util.schema.getTabGroups(tree, keep=hasRef)
+    refs  = [util.schema.getPathString(n)  for n in nodes]
+    flags = [util.schema.getFlagsString(n) for n in nodes]
+
+    fmt         = 'REF_TO_FLAG_STRING.put("%s", "%s");'
+    placeholder = '{{refs-to-flag-strings}}'
+    replacement = format(zip(refs, flags), fmt)
+
+    return t.replace(placeholder, replacement)
+
 def getMenuTypes(tree, t):
     fmt          = 'menuTypes.add("%s");'
     placeholder  = '{{menu-ui-types}}'
@@ -382,22 +397,16 @@ def getBindsOnClickSignup(tree, t):
 
     return t.replace(placeholder, replacement)
 
-def getValidationString(node, fieldPairs):
-    fpFmt = 'f.add(fieldPair("%s", "%s"));'
-    fpStr = format(fieldPairs, fpFmt, indent='  ')
-
+def getValidationString(node):
     funName = getFunName(node)
+    tabGroup = util.schema.getPathString(node)
     funFmt  = \
       'void validate%s() {' \
-    '\n  List f = new ArrayList(); // Fields to be validated' \
-    '\n  %s' \
-    '\n' \
-    '\n  String validationMessage = validateFields(f, "PLAINTEXT");' \
-    '\n  showWarning("{validation_results}", validationMessage);' \
+    '\n  validateTabGroup("%s");' \
     '\n}' \
     '\n'
 
-    return funFmt % (funName, fpStr)
+    return funFmt % (funName, tabGroup)
 
 def getValidation(tree, t):
     placeholder = '{{validation}}'
@@ -407,17 +416,7 @@ def getValidation(tree, t):
     isNotNull = lambda e: util.schema.hasElementFlaggedWith(e, FLAG_NOTNULL)
     tabGroups = util.schema.getTabGroups(tree, isNotNull)
     for n in tabGroups:
-        archEntName = util.data.getArchEntName(n)
-        #if not archEntName: continue
-
-        # Validate-able nodes
-        V = util.xml.getAll(n, lambda n: util.schema.isFlagged(n, FLAG_NOTNULL))
-        # Field pairs
-        refs   = [util.schema. getPathString(v) for v in V]
-        labels = [util.arch16n.getArch16nKey(v) for v in V]
-        fieldPairs = zip(refs, labels)
-
-        replacement += getValidationString(n, fieldPairs)
+        replacement += getValidationString(n)
 
     return t.replace(placeholder, replacement)
 
@@ -1096,6 +1095,7 @@ def getUiLogic(tree):
     t = getTabGroups(tree, t)
     t = getTabs(tree, t)
     t = getAttribNamesNonStandard(tree, t)
+    t = getRefsToFlagStrings(tree, t)
     t = getMenuTypes(tree, t)
     t = getMediaTypes(tree, t)
     t = getRefsToTypes(tree, t)
