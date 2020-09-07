@@ -876,6 +876,7 @@ def getSearchEntities(tree, t):
     searchNodes = util.xml.getAll(tree, hasSearchType)
 
     nodes = util.schema.getTabGroups(tree, isGuiAndData)
+    nodes.sort(key=util.arch16n.getArch16nVal)
     arch16nKeys  = [util.arch16n.getArch16nKey(n) for n in nodes]
     archEntNames = [util.data.getArchEntName  (n) for n in nodes]
 
