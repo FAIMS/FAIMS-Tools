@@ -155,7 +155,6 @@ Enable_Sync=Enable Sync
 Entity_List=Entity List
 Entity_Types=Entity Types
 External_GPS_Disabled=External GPS disabled
-External_GPS_Enabled=External GPS enabled
 GPS_Not_Initialised=GPS Not Initialised
 GPS_is_no_longer_initialised=GPS is no longer initialised
 GPS_is_not_initialised=GPS is not initialised

@@ -2912,12 +2912,6 @@ addActionBarItem("external_gps", new ToggleActionButtonCallback() {
       stopGPS();
     }
     startExternalGPS();
-    if(isBluetoothConnected()) {
-      showToast("{External_GPS_Enabled}");
-    } else {
-      showToast("{Please_Enable_Bluetooth}");
-      this.actionOn();
-    }
     updateGPSDiagnostics();
   }
 });
