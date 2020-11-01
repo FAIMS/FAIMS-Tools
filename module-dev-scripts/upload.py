@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-# TODO: Make autogen copy yaml, include them in .gitignore
-
-# TODO: git clean -xdf on perachora repo
 from   datetime  import datetime
 from   enum      import Enum
 from   mechanize import Browser, _response
@@ -183,6 +180,28 @@ def read_secrets(secrets_path: Path) -> Secrets:
 
 ################################################################################
 
+def get_module_name(args: Args, config: Config) -> str:
+    base_module_name = config.project_module.get('name')
+
+    if not base_module_name:
+        base_module_name = subprocess.run(
+            [
+                '/usr/bin/env',
+                'bash',
+                '-c',
+                'basename `git rev-parse --show-toplevel`'
+            ],
+            capture_output=True
+        ).stdout.decode('utf-8').strip()
+
+    if not base_module_name:
+        base_module_name = args.module_dir.parent.absolute().name
+
+    return base_module_name + (
+        datetime.now().strftime(' %Y-%m-%d') if args.add_date else '')
+
+################################################################################
+
 def find_csrf_token(res: mechanize._response.response_seek_wrapper) -> str:
     token = res.get_data()
     token = token.decode('utf-8')
@@ -317,27 +336,6 @@ def set_users(br: Browser, module_name: str, users: Optional[List[str]]) -> None
         res = br.open(link, data)
 
     print()
-
-
-def get_module_name(args: Args, config: Config) -> str:
-    base_module_name = config.project_module.get('name')
-
-    if not base_module_name:
-        base_module_name = subprocess.run(
-            [
-                '/usr/bin/env',
-                'bash',
-                '-c',
-                'basename `git rev-parse --show-toplevel`'
-            ],
-            capture_output=True
-        ).stdout.decode('utf-8').strip()
-
-    if not base_module_name:
-        base_module_name = args.module_dir.parent.absolute().name
-
-    return base_module_name + (
-        datetime.now().strftime(' %Y-%m-%d') if args.add_date else '')
 
 
 def upload_module(

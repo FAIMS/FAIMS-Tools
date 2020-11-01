@@ -105,11 +105,13 @@ apply_postproc_directives
 cd - >/dev/null
 
 ########################### COPY CONVENIENCE SCRIPT ############################
-cp "$THIS_SCRIPT_PATH/../../module-dev-scripts/upload_selenium.py" "$MODULE_PATH"
+cp "$THIS_SCRIPT_PATH/../../module-dev-scripts/upload.py" "$MODULE_PATH"
+cp "$THIS_SCRIPT_PATH/../../module-dev-scripts/upload-config.yaml" "$MODULE_PATH"
+cp "$THIS_SCRIPT_PATH/../../module-dev-scripts/upload-secrets.yaml" "$MODULE_PATH"
 
-# Add the upload selenium script to gitignore.
-
-if ! grep -q -F "upload*.py" "$MODULE_PATH/.gitignore" 2>/dev/null ; then
-    echo "upload*.py" >> .gitignore
+# Add the upload script's secrets to gitignore.
+if ! grep -q -F 'upload-secrets.*' "$MODULE_PATH/.gitignore" 2>/dev/null ; then
+    echo 'upload-secrets.*' >> .gitignore
 fi
+
 clean_up_and_exit
