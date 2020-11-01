@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# TODO: Make template json with comments explaining the schema
+# TODO: Make autogen copy yaml, include them in .gitignore
 
 # TODO: git clean -xdf on perachora repo
 from   datetime  import datetime
@@ -15,6 +15,7 @@ import mechanize
 import re
 import subprocess
 import urllib
+import yaml
 
 ################################################################################
 
@@ -66,13 +67,13 @@ def read_args() -> Args:
     parser.add_argument(
         '--config',
         type=Path,
-        default=Path(__file__).parent / Path('upload-config.json'),
-        help="location of the config file")
+        default=Path(__file__).parent / Path('upload-config.yaml'),
+        help="location of the config file in yaml or json format")
     parser.add_argument(
         '--secrets',
         type=Path,
-        default=Path(__file__).parent / Path('upload-secrets.json'),
-        help="location of the secrets file")
+        default=Path(__file__).parent / Path('upload-secrets.yaml'),
+        help="location of the secrets file in yaml or json format")
     parser.add_argument(
         '--server',
         type=str,
@@ -155,22 +156,30 @@ def ensure_needed_files(files: Iterable[File]) -> None:
 
 ################################################################################
 
-def read_config(config_path: Path) -> Config:
-    with config_path.open('r') as config_file:
-        config = json.load(config_file)
+def read_serialised(serialised: Path) -> Dict:
+    with serialised.open('r') as config_file:
+        if serialised.suffix.lower() in ('.yaml', '.yml'):
+            return yaml.safe_load(config_file)
+        elif serialised.suffix.lower() in ('.json',):
+            return json.load(config_file)
+        else:
+            raise Exception('Unrecognised serialisation format')
 
-        return Config(
-            users=config.get('users'),
-            project_module=config['project_module'],
-        )
+
+def read_config(config_path: Path) -> Config:
+    config = read_serialised(config_path)
+    return Config(
+        users=config.get('users'),
+        project_module=config['project_module'],
+    )
+
 
 def read_secrets(secrets_path: Path) -> Secrets:
-    with secrets_path.open('r') as secrets_file:
-        secrets = json.load(secrets_file)
-        return Secrets(
-            username=secrets['username'],
-            password=secrets['password'],
-        )
+    secrets = read_serialised(secrets_path)
+    return Secrets(
+        username=secrets['username'],
+        password=secrets['password'],
+    )
 
 ################################################################################
 
