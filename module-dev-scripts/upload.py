@@ -167,7 +167,9 @@ def read_config(config_path: Path) -> Config:
     config = read_serialised(config_path)
     return Config(
         users=config.get('users'),
-        project_module=config['project_module'],
+        project_module={
+            str(k): str(v) for k, v in config['project_module'].items()
+        },
     )
 
 
@@ -231,7 +233,7 @@ def login(br: Browser, secrets: Secrets) -> None:
     res = br.submit()
 
     if res.geturl().endswith('/sign_in'):
-        raise Exception('Could not login')
+        raise Exception('Could not login (likely due to invalid credentials)')
 
 
 def go_home(br: Browser) -> None:
@@ -239,11 +241,12 @@ def go_home(br: Browser) -> None:
 
 
 def delete_module(br: Browser, args: Args, config: Config) -> None:
+    module_name = get_module_name(args, config)
 
-    print('Deleting module...')
+    print(f'Deleting module with name {module_name}...')
     # Try clicking on link to module config page
     try:
-        res = br.follow_link(text_regex=f'^{get_module_name(args, config)}$')
+        res = br.follow_link(text_regex=f'^{module_name}$')
     except:
         print('Cannot delete module; does not exist.')
         print()
@@ -301,7 +304,7 @@ def set_users(br: Browser, module_name: str, users: Optional[List[str]]) -> None
         if username in username_to_user_id}
 
     for username, user_id in users_to_add.items():
-        print(f'Adding user: {username}...')
+        print(f'Adding user {username}...')
         params = {
             u'authenticity_token' : find_csrf_token(res),
             u'user_id'            : user_id,
@@ -408,9 +411,9 @@ def upload_module(
 
     data_file = next(iter(f for f in files if f.form_name == 'data'), None)
     if (
-        data_file and
-        data_file.neediness >= Neediness.WANT and
-        data_file.path.is_file()):
+            data_file and
+            data_file.neediness >= Neediness.WANT and
+            data_file.path.is_file()):
         print(f'Uploading {data_file.path}...')
         go_home(br)
         br.follow_link(text_regex=f'^{module_name}$')
