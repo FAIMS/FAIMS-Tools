@@ -8,10 +8,13 @@
 #
 # Users can be specified as follows:
 #
-#   users:
-#     - "Brian Ballsun-Stanton"
-#     - "Petra Hermankova"
-#     - "Faims Admin"
+
+users:
+  - Adela Sobotkova
+  - Brian Ballsun-Stanton
+  - Faims Admin
+  - Penny Crook
+
 #
 # The server provides a default list of users when the module is created. If a
 # list of users isn't provided in this yaml file, the default list will remain
