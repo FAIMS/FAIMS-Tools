@@ -95,8 +95,9 @@ escape_sed() {
 }
 
 clean_up_and_exit() {
+    local rc=$?
     rm -f "$TMP_MODULE_FULL"
-    exit $@
+    exit "$rc"
 }
 
 prev_build_autogen_hash() {
@@ -254,7 +255,7 @@ set_up() {
 
 ##################################### MAIN #####################################
 
-trap 'clean_up_and_exit 1' HUP INT TERM
+trap 'clean_up_and_exit' EXIT
 
 parse_args $@
 if [ "$DEFS_ONLY" != true ]
